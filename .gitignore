@@ -1,4 +1,8 @@
+.*
 
 *.tfstate
 *.tfstate.backup
 *.tfvars
+
+*-key.pem
+*_key.pem]
