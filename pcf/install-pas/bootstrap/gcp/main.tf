@@ -107,6 +107,10 @@ output "vpn_admin_password" {
   value = "${module.bootstrap.vpn_admin_password}"
 }
 
+output "default_openssh_public_key" {
+  value = "${module.bootstrap.default_openssh_public_key}"
+}
+
 output "concourse_admin_password" {
   value = "${module.bootstrap.concourse_admin_password}"
 }

@@ -16,6 +16,10 @@ resource "google_compute_instance" "ops-manager" {
   network_interface {
     subnetwork = "${google_compute_subnetwork.subnet-ops-manager.name}"
   }
+
+  metadata {
+    ssh-keys = "ubuntu:${data.terraform_remote_state.bootstrap.default_openssh_public_key}"
+  }
 }
 
 resource "google_storage_bucket" "director" {
