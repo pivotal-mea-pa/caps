@@ -16,6 +16,7 @@ outputs:
 
 params:
   IAAS_TYPE:
+  GCP_SERVICE_ACCOUNT_KEY:
 
 run:
   path: automation-pipelines/pcf/install-pas/pipeline/tasks/apply-terraform-patch/task.sh
