@@ -4,7 +4,7 @@ resource "google_compute_instance" "ops-manager" {
   machine_type = "n1-standard-2"
   zone         = "${var.gcp_zone_1}"
 
-  tags = ["${var.prefix}-opsman"]
+  tags = ["${var.prefix}", "${var.prefix}-opsman"]
 
   boot_disk {
     initialize_params {
