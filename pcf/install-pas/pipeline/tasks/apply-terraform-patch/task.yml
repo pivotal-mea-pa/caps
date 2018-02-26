@@ -1,0 +1,21 @@
+---
+platform: linux
+
+image_resource:
+  type: docker-image
+  source:
+    repository: czero/rootfs
+
+inputs:
+- name: automation-pipelines
+- name: pcf-pipelines
+  path: pcf-pipelines-orig
+
+outputs:
+- name: pcf-pipelines
+
+params:
+  IAAS_TYPE:
+
+run:
+  path: automation-pipelines/pcf/install-pas/pipeline/tasks/apply-terraform-patch/task.sh
