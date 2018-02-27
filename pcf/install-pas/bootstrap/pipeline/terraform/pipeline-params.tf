@@ -30,6 +30,7 @@ data "template_file" "pcf-pipeline-parameters" {
   }
 }
 
-output "pcf-pipeline-parameter" {
-  value = "${data.template_file.pcf-pipeline-parameters.rendered}"
+resource "local_file" "foo" {
+  content  = "${data.template_file.pcf-pipeline-parameters.rendered}"
+  filename = "params.yml"
 }

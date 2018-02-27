@@ -1,0 +1,27 @@
+---
+resources:
+
+- name: automation-pipelines
+  type: git
+  source:
+    uri: https://github.com/mevansam/automation-pipelines.git
+    branch: master
+
+jobs:
+- name: set-pipelines
+  public: false
+  plan:
+  - aggregate:
+    - get: automation-pipelines
+  - task: configure-install-pas-pipeline
+    file: automation-pipelines/pcf/install-pas/bootstrap/pipeline/tasks/configure-install-pas-pipeline/task.sh
+    params:
+      CONCOURSE_URL: {{concourse_url}}
+      CONCOURSE_USER: {{concourse_user}}
+      CONCOURSE_PASSWORD: {{concourse_password}}
+      GOOGLE_PROJECT: {{google_project}}
+      GOOGLE_CREDENTIALS_JSON: {{google_credentials_json}}
+      GOOGLE_REGION: {{google_region}}
+      BOOTSTRAP_STATE_BUCKET: {{bootstrap_state_bucket}}
+      BOOTSTRAP_STATE_PREFIX: {{bootstrap_state_prefix}}
+      PCF_PAS_RUNTIME_TYPE: {{pcf_pas_runtime_type}}

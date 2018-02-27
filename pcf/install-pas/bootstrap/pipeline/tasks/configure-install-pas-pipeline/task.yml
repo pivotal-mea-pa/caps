@@ -1,0 +1,24 @@
+---
+platform: linux
+
+image_resource:
+  type: docker-image
+  source:
+    repository: appbricks/automation-tools
+
+inputs:
+- name: automation-pipelines
+
+params:
+  CONCOURSE_URL:
+  CONCOURSE_USER:
+  CONCOURSE_PASSWORD:
+  GOOGLE_PROJECT:
+  GOOGLE_CREDENTIALS_JSON:
+  GOOGLE_REGION:
+  BOOTSTRAP_STATE_BUCKET:
+  BOOTSTRAP_STATE_PREFIX:
+  PCF_PAS_RUNTIME_TYPE:
+
+run:
+  path: automation-pipelines/pcf/install-pas/bootstrap/pipeline/tasks/configure-install-pas-pipeline/task.sh
