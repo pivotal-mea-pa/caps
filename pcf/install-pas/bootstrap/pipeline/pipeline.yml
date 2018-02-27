@@ -13,6 +13,7 @@ jobs:
   plan:
   - aggregate:
     - get: automation-pipelines
+      trigger: true
   - task: configure-install-pas-pipeline
     file: automation-pipelines/pcf/install-pas/bootstrap/pipeline/tasks/configure-install-pas-pipeline/task.yml
     params:
