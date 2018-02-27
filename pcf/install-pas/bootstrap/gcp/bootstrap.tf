@@ -54,7 +54,21 @@ module "bootstrap" {
   #
   # Bootstrap pipeline
   #
-  # bootstrap_pipeline_file = "../../../pipelines/bootstrap-hello-world/pipeline.yml"
+  bootstrap_pipeline_file = "../pipeline/pipeline.yml"
 
-  bootstrap_pipeline_vars = ""
+  # This is a YML file snippet. It is important not to include
+  # the '---' header as that is created via the bastion module 
+  # when the complete params file is rendered.
+  bootstrap_pipeline_vars = <<PIPELINE_VARS
+google_project: ${var.gcp_project}
+google_region: ${var.gcp_region}
+
+google_credentials_json: |
+  ${indent(2, file(var.gcp_credentials))}
+
+bootstrap_state_bucket: ${var.bootstrap_state_bucket}
+bootstrap_state_prefix: ${var.bootstrap_state_prefix}
+
+pcf_pas_runtime_type: srt
+PIPELINE_VARS
 }

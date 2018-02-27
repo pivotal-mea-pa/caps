@@ -57,3 +57,15 @@ variable "opsman_password" {
 variable "mysql_monitor_recipient_email" {
   type = "string"
 }
+
+#
+# Bootstrap state attributes
+#
+
+variable "bootstrap_state_bucket" {
+  type = "string"
+}
+
+variable "bootstrap_state_prefix" {
+  type = "string"
+}

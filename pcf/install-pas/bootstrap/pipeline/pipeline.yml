@@ -14,7 +14,7 @@ jobs:
   - aggregate:
     - get: automation-pipelines
   - task: configure-install-pas-pipeline
-    file: automation-pipelines/pcf/install-pas/bootstrap/pipeline/tasks/configure-install-pas-pipeline/task.sh
+    file: automation-pipelines/pcf/install-pas/bootstrap/pipeline/tasks/configure-install-pas-pipeline/task.yml
     params:
       CONCOURSE_URL: {{concourse_url}}
       CONCOURSE_USER: {{concourse_user}}
