@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -euo pipefail
+set -xeuo pipefail
 
 export OPSMAN_DOMAIN_OR_IP_ADDRESS="opsman.$PCF_ERT_DOMAIN"
 
