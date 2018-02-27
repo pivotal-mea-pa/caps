@@ -133,7 +133,9 @@ jobs:
       PCF_ERT_DOMAIN: {{pcf_ert_domain}}
       SYSTEM_DOMAIN: {{system_domain}}
       APPS_DOMAIN: {{apps_domain}}
-      NETWORKING_POE_SSL_CERTS: {{networking_poe_ssl_certs}}
+      POE_SSL_NAME1: {{poe_ssl_name1}}
+      POE_SSL_CERT1: {{poe_ssl_cert1}}
+      POE_SSL_KEY1: {{poe_ssl_key1}}
       DB_APP_USAGE_SERVICE_USERNAME: {{db_app_usage_service_username}}
       DB_APP_USAGE_SERVICE_PASSWORD: {{db_app_usage_service_password}}
       DB_AUTOSCALE_USERNAME: {{db_autoscale_username}}
@@ -212,7 +214,7 @@ jobs:
       OPSMAN_USERNAME: {{opsman_admin_username}}
       OPSMAN_PASSWORD: {{opsman_admin_password}}
 
-- name: upload-srt
+- name: upload-ert
   serial_groups: [opsman]
   plan:
   - aggregate:
@@ -225,7 +227,7 @@ jobs:
       resource: pivnet-elastic-runtime
       params:
         globs:
-        - "srt*.pivotal"
+        - "cf*.pivotal"
   - task: upload-tile
     file: pcf-pipelines/tasks/upload-product-and-stemcell/task.yml
     params:
@@ -238,6 +240,8 @@ jobs:
       OM_IP: ""
       OPSMAN_CLIENT_ID: ""
       OPSMAN_CLIENT_SECRET: ""
+
+
   - task: stage-tile
     file: pcf-pipelines/tasks/stage-product/task.yml
     params:
@@ -247,24 +251,27 @@ jobs:
       OPSMAN_CLIENT_ID: ""
       OPSMAN_CLIENT_SECRET: ""
 
+
 - name: deploy-ert
   serial_groups: [opsman]
   plan:
   - aggregate:
-    - get: automation-pipelines
     - get: pcf-pipelines
     - get: pivnet-opsmgr
-      passed: [upload-srt]
+      passed: [upload-ert]
       trigger: true
       params: {globs: []}
     - get: terraform-state
-  - task: configure-srt
-    file: automation-pipelines/pcf/install-pas/pipeline/tasks/configure-srt/task.yml
+  - task: configure-ert
+    file: pcf-pipelines/tasks/configure-ert/task.yml
     params:
       pcf_iaas: gcp
       pcf_az_1: {{gcp_zone_1}}
       pcf_az_2: {{gcp_zone_2}}
       pcf_az_3: {{gcp_zone_3}}
+      POE_SSL_NAME1: {{poe_ssl_name1}}
+      POE_SSL_CERT1: {{poe_ssl_cert1}}
+      POE_SSL_KEY1: {{poe_ssl_key1}}
       gcp_storage_access_key: {{gcp_storage_access_key}}
       gcp_storage_secret_key: {{gcp_storage_secret_key}}
       PCF_ERT_DOMAIN: {{pcf_ert_domain}}
@@ -321,9 +328,14 @@ jobs:
       INTERNET_CONNECTED: {{internet_connected}}
       CONTAINER_NETWORKING_NW_CIDR: {{container_networking_nw_cidr}}
       SECURITY_ACKNOWLEDGEMENT: {{security_acknowledgement}}
-      CREDHUB_ENCRYPTION_KEYS: {{credhub_encryption_keys}}
+      CREDUB_ENCRYPTION_KEY_NAME1: {{credhub_encryption_key_name1}}
+      CREDUB_ENCRYPTION_KEY_SECRET1: {{credhub_encryption_key_secret1}}
+      CREDUB_ENCRYPTION_KEY_NAME2: {{credhub_encryption_key_name2}}
+      CREDUB_ENCRYPTION_KEY_SECRET2: {{credhub_encryption_key_secret2}}
+      CREDUB_ENCRYPTION_KEY_NAME3: {{credhub_encryption_key_name3}}
+      CREDUB_ENCRYPTION_KEY_SECRET3: {{credhub_encryption_key_secret3}}
+      CREDHUB_PRIMARY_ENCRYPTION_NAME: {{credhub_primary_encryption_name}}
       # aws specific
-      NETWORKING_POE_SSL_CERTS:
       S3_ENDPOINT:
       # azure specific
       pcf_ert_saml_cert:
