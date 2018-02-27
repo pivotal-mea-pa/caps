@@ -1,5 +1,6 @@
 #!/bin/bash
-set -eu
+
+set -euo pipefail
 
 cp -r pcf-pipelines-orig/* pcf-pipelines/
 
