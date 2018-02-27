@@ -1,10 +1,12 @@
 #
 # Create storage bucket for pcf-pipelines terraform state
 #
-resource "google_storage_bucket" "image-store" {
-  name          = "pcf-tfacc-state-euw3"
-  location      = "europe-west3"
+resource "google_storage_bucket" "pas-terraform-state" {
+  name          = "${var.vpc_name}-pas-states"
+  location      = "${var.gcp_region}"
   storage_class = "REGIONAL"
+
+  force_destroy = true
 
   versioning {
     enabled = true
