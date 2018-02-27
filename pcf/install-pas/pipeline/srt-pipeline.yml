@@ -1,0 +1,357 @@
+groups: []
+
+resource_types:
+- name: pivnet
+  type: docker-image
+  source:
+    repository: pivotalcf/pivnet-resource
+    tag: latest-final
+
+- name: gcs
+  type: docker-image
+  source:
+    repository: frodenas/gcs-resource
+
+resources:
+- name: pcf-pipelines
+  type: git
+  source:
+    uri: https://github.com/pivotal-cf/pcf-pipelines.git
+    branch: master
+
+- name: automation-pipelines
+  type: git
+  source:
+    uri: https://github.com/mevansam/automation-pipelines.git
+    branch: master
+
+- name: terraform-state
+  type: gcs
+  source:
+    bucket: {{terraform_statefile_bucket}}
+    json_key: {{gcp_service_account_key}}
+    versioned_file: terraform.tfstate
+
+- name: pivnet-opsmgr
+  type: pivnet
+  source:
+    api_token: {{pivnet_token}}
+    product_slug: ops-manager
+    product_version: {{opsman_major_minor_version}}
+    sort_by: semver
+
+- name: pivnet-elastic-runtime
+  type: pivnet
+  source:
+    api_token: {{pivnet_token}}
+    product_slug: elastic-runtime
+    product_version: {{ert_major_minor_version}}
+    sort_by: semver
+
+jobs:
+- name: wipe-env
+  serial_groups: [terraform]
+  ensure:
+    put: terraform-state
+    params:
+      file: wipe-output/*.tfstate
+  plan:
+  - aggregate:
+    - get: pcf-pipelines
+    - get: terraform-state
+  - task: wipe
+    file: pcf-pipelines/install-pcf/gcp/tasks/wipe-env/task.yml
+    params:
+      GCP_PROJECT_ID: {{gcp_project_id}}
+      GCP_REGION: {{gcp_region}}
+      GCP_SERVICE_ACCOUNT_KEY: {{gcp_service_account_key}}
+      GCP_RESOURCE_PREFIX: {{gcp_resource_prefix}}
+      OPSMAN_DOMAIN_OR_IP_ADDRESS: {{opsman_domain_or_ip_address}}
+      OPSMAN_USERNAME: {{opsman_admin_username}}
+      OPSMAN_PASSWORD: {{opsman_admin_password}}
+      OPSMAN_ZONE: {{gcp_zone_1}}
+
+- name: upload-opsman-image
+  plan:
+  - get: pcf-pipelines
+  - get: pivnet-opsmgr
+    trigger: true
+    params:
+      globs:
+      - "*GCP.yml"
+  - task: upload
+    file: pcf-pipelines/install-pcf/gcp/tasks/upload-opsman/task.yml
+    params:
+      GCP_PROJECT_ID: {{gcp_project_id}}
+      GCP_REGION: {{gcp_region}}
+      GCP_SERVICE_ACCOUNT_KEY: {{gcp_service_account_key}}
+
+- name: bootstrap-terraform-state
+  serial: true
+  plan:
+  - get: pcf-pipelines
+  - task: create-terraform-state
+    params:
+      TERRAFORM_STATEFILE_BUCKET: {{terraform_statefile_bucket}}
+      GCP_SERVICE_ACCOUNT_KEY: {{gcp_service_account_key}}
+    file: pcf-pipelines/install-pcf/gcp/tasks/create-initial-terraform-state/task.yml
+
+- name: create-infrastructure
+  serial_groups: [terraform]
+  ensure:
+    put: terraform-state
+    params:
+      file: create-infrastructure-output/*.tfstate
+  plan:
+  - aggregate:
+    - get: terraform-state
+    - get: automation-pipelines
+    - get: pcf-pipelines
+    - get: pivnet-opsmgr
+      passed: [upload-opsman-image]
+      params:
+        globs:
+        - "*GCP.yml"
+  # Override default terraform template 
+  # files with a more customized configuration
+  - task: apply-terraform-patch
+    file: automation-pipelines/pcf/install-pas/pipeline/tasks/apply-terraform-patch/task.yml
+    params:
+      IAAS_TYPE: gcp
+      GCP_SERVICE_ACCOUNT_KEY: {{gcp_service_account_key}}
+  - task: create-infrastructure
+    file: pcf-pipelines/install-pcf/gcp/tasks/create-infrastructure/task.yml
+    params:
+      GCP_PROJECT_ID: {{gcp_project_id}}
+      GCP_REGION: {{gcp_region}}
+      GCP_SERVICE_ACCOUNT_KEY: ./pcf-pipelines/install-pcf/gcp/terraform/gcp_service_account_key.json
+      GCP_ZONE_1: {{gcp_zone_1}}
+      GCP_ZONE_2: {{gcp_zone_2}}
+      GCP_ZONE_3: {{gcp_zone_3}}
+      GCP_RESOURCE_PREFIX: {{gcp_resource_prefix}}
+      GCP_STORAGE_BUCKET_LOCATION: {{gcp_storage_bucket_location}}
+      PCF_ERT_DOMAIN: {{pcf_ert_domain}}
+      SYSTEM_DOMAIN: {{system_domain}}
+      APPS_DOMAIN: {{apps_domain}}
+      NETWORKING_POE_SSL_CERTS: {{networking_poe_ssl_certs}}
+      DB_APP_USAGE_SERVICE_USERNAME: {{db_app_usage_service_username}}
+      DB_APP_USAGE_SERVICE_PASSWORD: {{db_app_usage_service_password}}
+      DB_AUTOSCALE_USERNAME: {{db_autoscale_username}}
+      DB_AUTOSCALE_PASSWORD: {{db_autoscale_password}}
+      DB_DIEGO_USERNAME: {{db_diego_username}}
+      DB_DIEGO_PASSWORD: {{db_diego_password}}
+      DB_NOTIFICATIONS_USERNAME: {{db_notifications_username}}
+      DB_NOTIFICATIONS_PASSWORD: {{db_notifications_password}}
+      DB_ROUTING_USERNAME: {{db_routing_username}}
+      DB_ROUTING_PASSWORD: {{db_routing_password}}
+      DB_UAA_USERNAME: {{db_uaa_username}}
+      DB_UAA_PASSWORD: {{db_uaa_password}}
+      DB_CCDB_USERNAME: {{db_ccdb_username}}
+      DB_CCDB_PASSWORD: {{db_ccdb_password}}
+      DB_ACCOUNTDB_USERNAME: {{db_accountdb_username}}
+      DB_ACCOUNTDB_PASSWORD: {{db_accountdb_password}}
+      DB_NETWORKPOLICYSERVERDB_USERNAME: {{db_networkpolicyserverdb_username}}
+      DB_NETWORKPOLICYSERVERDB_PASSWORD: {{db_networkpolicyserverdb_password}}
+      DB_NFSVOLUMEDB_USERNAME: {{db_nfsvolumedb_username}}
+      DB_NFSVOLUMEDB_PASSWORD: {{db_nfsvolumedb_password}}
+      DB_LOCKET_USERNAME: {{db_locket_username}}
+      DB_LOCKET_PASSWORD: {{db_locket_password}}
+      DB_SILK_USERNAME: {{db_silk_username}}
+      DB_SILK_PASSWORD: {{db_silk_password}}
+
+- name: configure-director
+  serial_groups: [opsman]
+  plan:
+  - aggregate:
+    - get: pcf-pipelines
+    - get: pivnet-opsmgr
+      passed: [create-infrastructure]
+      params: {globs: []}
+  - task: check-opsman-dns
+    attempts: 3
+    file: pcf-pipelines/install-pcf/gcp/tasks/check-opsman-dns/task.yml
+    params:
+      OPSMAN_DOMAIN_OR_IP_ADDRESS: {{opsman_domain_or_ip_address}}
+  - task: config-opsman-auth
+    file: pcf-pipelines/tasks/config-opsman/task.yml
+    params:
+      OPSMAN_DOMAIN_OR_IP_ADDRESS: {{opsman_domain_or_ip_address}}
+      OPS_MGR_USR: {{opsman_admin_username}}
+      OPS_MGR_PWD: {{opsman_admin_password}}
+      OM_DECRYPTION_PWD: {{opsman_admin_password}}
+  - task: configure-director
+    file: pcf-pipelines/install-pcf/gcp/tasks/config-director/task.yml
+    params:
+      OPSMAN_DOMAIN_OR_IP_ADDRESS: {{opsman_domain_or_ip_address}}
+      OPS_MGR_USR: {{opsman_admin_username}}
+      OPS_MGR_PWD: {{opsman_admin_password}}
+      OPS_MGR_TRUSTED_CERTS: {{opsman_trusted_certs}}
+      GCP_PROJECT_ID: {{gcp_project_id}}
+      GCP_REGION: {{gcp_region}}
+      GCP_ZONE_1: {{gcp_zone_1}}
+      GCP_ZONE_2: {{gcp_zone_2}}
+      GCP_ZONE_3: {{gcp_zone_3}}
+      GCP_RESOURCE_PREFIX: {{gcp_resource_prefix}}
+      GCP_SERVICE_ACCOUNT_KEY: {{gcp_service_account_key}}
+
+- name: deploy-director
+  serial_groups: [opsman]
+  plan:
+  - aggregate:
+    - get: pcf-pipelines
+    - get: pivnet-opsmgr
+      passed: [configure-director]
+      trigger: true
+      params: {globs: []}
+  - task: deploy-director
+    file: pcf-pipelines/tasks/apply-changes/task.yml
+    params:
+      OPSMAN_DOMAIN_OR_IP_ADDRESS: {{opsman_domain_or_ip_address}}
+      OPSMAN_CLIENT_ID: ""
+      OPSMAN_CLIENT_SECRET: ""
+      OPSMAN_USERNAME: {{opsman_admin_username}}
+      OPSMAN_PASSWORD: {{opsman_admin_password}}
+
+- name: upload-srt
+  serial_groups: [opsman]
+  plan:
+  - aggregate:
+    - get: pcf-pipelines
+    - get: pivnet-opsmgr
+      passed: [deploy-director]
+      trigger: true
+      params: {globs: []}
+    - get: pivnet-product
+      resource: pivnet-elastic-runtime
+      params:
+        globs:
+        - "srt*.pivotal"
+  - task: upload-tile
+    file: pcf-pipelines/tasks/upload-product-and-stemcell/task.yml
+    params:
+      OPSMAN_DOMAIN_OR_IP_ADDRESS: {{opsman_domain_or_ip_address}}
+      OPS_MGR_USR: {{opsman_admin_username}}
+      OPS_MGR_PWD: {{opsman_admin_password}}
+      PIVNET_API_TOKEN: {{pivnet_token}}
+      IAAS: "google"
+      NO_PROXY: ""
+      OM_IP: ""
+      OPSMAN_CLIENT_ID: ""
+      OPSMAN_CLIENT_SECRET: ""
+  - task: stage-tile
+    file: pcf-pipelines/tasks/stage-product/task.yml
+    params:
+      OPSMAN_DOMAIN_OR_IP_ADDRESS: {{opsman_domain_or_ip_address}}
+      OPSMAN_USERNAME: {{opsman_admin_username}}
+      OPSMAN_PASSWORD: {{opsman_admin_password}}
+      OPSMAN_CLIENT_ID: ""
+      OPSMAN_CLIENT_SECRET: ""
+
+- name: deploy-srt
+  serial_groups: [opsman]
+  plan:
+  - aggregate:
+    - get: automation-pipelines
+    - get: pcf-pipelines
+    - get: pivnet-opsmgr
+      passed: [upload-srt]
+      trigger: true
+      params: {globs: []}
+    - get: terraform-state
+  - task: configure-srt
+    file: automation-pipelines/pcf/install-pas/pipeline/tasks/configure-srt/task.yml
+    params:
+      pcf_iaas: gcp
+      pcf_az_1: {{gcp_zone_1}}
+      pcf_az_2: {{gcp_zone_2}}
+      pcf_az_3: {{gcp_zone_3}}
+      gcp_storage_access_key: {{gcp_storage_access_key}}
+      gcp_storage_secret_key: {{gcp_storage_secret_key}}
+      PCF_ERT_DOMAIN: {{pcf_ert_domain}}
+      SYSTEM_DOMAIN: {{system_domain}}
+      APPS_DOMAIN: {{apps_domain}}
+      OPS_MGR_USR: {{opsman_admin_username}}
+      OPS_MGR_PWD: {{opsman_admin_password}}
+      terraform_prefix: {{gcp_resource_prefix}}
+      db_diego_username: {{db_diego_username}}
+      db_diego_password: {{db_diego_password}}
+      db_notifications_username: {{db_notifications_username}}
+      db_notifications_password: {{db_notifications_password}}
+      db_autoscale_username: {{db_autoscale_username}}
+      db_autoscale_password: {{db_autoscale_password}}
+      db_uaa_username: {{db_uaa_username}}
+      db_uaa_password: {{db_uaa_password}}
+      db_app_usage_service_username: {{db_app_usage_service_username}}
+      db_app_usage_service_password: {{db_app_usage_service_password}}
+      db_ccdb_username: {{db_ccdb_username}}
+      db_ccdb_password: {{db_ccdb_password}}
+      db_routing_username: {{db_routing_username}}
+      db_routing_password: {{db_routing_password}}
+      db_accountdb_username: {{db_accountdb_username}}
+      db_accountdb_password: {{db_accountdb_password}}
+      db_networkpolicyserverdb_username: {{db_networkpolicyserverdb_username}}
+      db_networkpolicyserverdb_password: {{db_networkpolicyserverdb_password}}
+      db_nfsvolumedb_username: {{db_nfsvolumedb_username}}
+      db_nfsvolumedb_password: {{db_nfsvolumedb_password}}
+      db_silk_username: {{db_silk_username}}
+      db_silk_password: {{db_silk_password}}
+      db_locket_username: {{db_locket_username}}
+      db_locket_password: {{db_locket_password}}
+      mysql_monitor_recipient_email: {{mysql_monitor_recipient_email}}
+      MYSQL_BACKUPS: {{mysql_backups}}
+      MYSQL_BACKUPS_SCP_SERVER: {{mysql_backups_scp_server}}
+      MYSQL_BACKUPS_SCP_PORT: {{mysql_backups_scp_port}}
+      MYSQL_BACKUPS_SCP_USER: {{mysql_backups_scp_user}}
+      MYSQL_BACKUPS_SCP_KEY: {{mysql_backups_scp_key}}
+      MYSQL_BACKUPS_SCP_DESTINATION: {{mysql_backups_scp_destination}}
+      MYSQL_BACKUPS_SCP_CRON_SCHEDULE: {{mysql_backups_scp_cron_schedule}}
+      MYSQL_BACKUPS_S3_ENDPOINT_URL: {{mysql_backups_s3_endpoint_url}}
+      MYSQL_BACKUPS_S3_BUCKET_NAME: {{mysql_backups_s3_bucket_name}}
+      MYSQL_BACKUPS_S3_BUCKET_PATH: {{mysql_backups_s3_bucket_path}}
+      MYSQL_BACKUPS_S3_ACCESS_KEY_ID: {{mysql_backups_s3_access_key_id}}
+      MYSQL_BACKUPS_S3_SECRET_ACCESS_KEY: {{mysql_backups_s3_secret_access_key}}
+      MYSQL_BACKUPS_S3_CRON_SCHEDULE: {{mysql_backups_s3_cron_schedule}}
+      HAPROXY_FORWARD_TLS: {{haproxy_forward_tls}}
+      HAPROXY_BACKEND_CA: {{haproxy_backend_ca}}
+      ROUTER_TLS_CIPHERS: {{router_tls_ciphers}}
+      HAPROXY_TLS_CIPHERS: {{haproxy_tls_ciphers}}
+      routing_disable_http: {{routing_disable_http}}
+      ROUTING_CUSTOM_CA_CERTIFICATES: {{routing_custom_ca_certificates}}
+      ROUTING_TLS_TERMINATION: {{routing_tls_termination}}
+      INTERNET_CONNECTED: {{internet_connected}}
+      CONTAINER_NETWORKING_NW_CIDR: {{container_networking_nw_cidr}}
+      SECURITY_ACKNOWLEDGEMENT: {{security_acknowledgement}}
+      CREDHUB_ENCRYPTION_KEYS: {{credhub_encryption_keys}}
+      # aws specific
+      NETWORKING_POE_SSL_CERTS:
+      S3_ENDPOINT:
+      # azure specific
+      pcf_ert_saml_cert:
+      pcf_ert_saml_key:
+      pcf_ert_networking_pointofentry:
+      azure_access_key:
+      azure_account_name:
+      azure_buildpacks_container:
+      azure_droplets_container:
+      azure_packages_container:
+      azure_resources_container:
+      OPSMAN_CLIENT_ID: ""
+      OPSMAN_CLIENT_SECRET: ""
+  - task: disable-errands
+    file: pcf-pipelines/tasks/disable-errands/task.yml
+    params:
+      PRODUCT_NAME: cf
+      OPSMAN_DOMAIN_OR_IP_ADDRESS: {{opsman_domain_or_ip_address}}
+      OPSMAN_USERNAME: {{opsman_admin_username}}
+      OPSMAN_PASSWORD: {{opsman_admin_password}}
+      ERRANDS_TO_DISABLE: {{ert_errands_to_disable}}
+      OPSMAN_CLIENT_ID: ""
+      OPSMAN_CLIENT_SECRET: ""
+  - task: deploy-ert
+    file: pcf-pipelines/tasks/apply-changes/task.yml
+    params:
+      OPSMAN_DOMAIN_OR_IP_ADDRESS: {{opsman_domain_or_ip_address}}
+      OPSMAN_USERNAME: {{opsman_admin_username}}
+      OPSMAN_PASSWORD: {{opsman_admin_password}}
+      OPSMAN_CLIENT_ID: ""
+      OPSMAN_CLIENT_SECRET: ""
