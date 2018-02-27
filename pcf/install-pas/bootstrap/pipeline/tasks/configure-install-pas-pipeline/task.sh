@@ -6,7 +6,7 @@ echo "$GOOGLE_CREDENTIALS_JSON" > .gcp-service-account.json
 export GOOGLE_CREDENTIALS=$(pwd)/.gcp-service-account.json
 
 TASK_TERRAFORM_PATH=automation-pipelines/pcf/install-pas/bootstrap/pipeline/terraform
-TASK_PARAMS_TEMPLATE_PATH=automation-pipelines/pcf/install-pas/bootstrap/pipeline/tasks/set-install-pas-pipeline
+TASK_PARAMS_TEMPLATE_PATH=automation-pipelines/pcf/install-pas/bootstrap/pipeline/tasks/configure-install-pas-pipeline
 INSTALL_PAS_PIPELINE_PATH=automation-pipelines/pcf/install-pas/pipeline
 
 terraform init $TASK_TERRAFORM_PATH
