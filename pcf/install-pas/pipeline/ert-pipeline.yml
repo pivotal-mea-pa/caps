@@ -122,6 +122,8 @@ jobs:
   - task: create-infrastructure
     file: pcf-pipelines/install-pcf/gcp/tasks/create-infrastructure/task.yml
     params:
+      TF_VAR_bootstrap_state_bucket: {{bootstrap_state_bucket}}
+      TF_VAR_bootstrap_state_prefix: {{bootstrap_state_prefix}}
       GCP_PROJECT_ID: {{gcp_project_id}}
       GCP_REGION: {{gcp_region}}
       GCP_SERVICE_ACCOUNT_KEY: ./pcf-pipelines/install-pcf/gcp/terraform/gcp_service_account_key.json
@@ -130,8 +132,6 @@ jobs:
       GCP_ZONE_3: {{gcp_zone_3}}
       GCP_RESOURCE_PREFIX: {{gcp_resource_prefix}}
       GCP_STORAGE_BUCKET_LOCATION: {{gcp_storage_bucket_location}}
-      BOOTSTRAP_STATE_BUCKET: {{bootstrap_state_bucket}}
-      BOOTSTRAP_STATE_PREFIX: {{bootstrap_state_prefix}}
       PCF_ERT_DOMAIN: {{pcf_ert_domain}}
       SYSTEM_DOMAIN: {{system_domain}}
       APPS_DOMAIN: {{apps_domain}}
