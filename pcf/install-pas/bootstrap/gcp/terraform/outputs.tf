@@ -42,8 +42,8 @@ output "vpc_dns_zone" {
   value = "${var.vpc_dns_zone}"
 }
 
-output "vpc_parent_dns_zone_name" {
-  value = "${var.vpc_parent_dns_zone_name}"
+output "vpc_dns_zone_name" {
+  value = "${module.bootstrap.vpc_dns_zone_name}"
 }
 
 #
