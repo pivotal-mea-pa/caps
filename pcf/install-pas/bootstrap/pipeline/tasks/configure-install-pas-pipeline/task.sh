@@ -32,8 +32,10 @@ fly -t default set-pipeline -n \
 fly -t default pause-job -j install-pas/upload-opsman-image
 fly -t default unpause-pipeline -p install-pas
 
-bootstrap_state_job_status=$(fly -t local watch \
+set +e
+bootstrap_state_job_status=$(fly -t default watch \
   -j install-pas/bootstrap-terraform-state 2>&1)
+set -e
 
 if [[ "$bootstrap_state_job_status" == "error: job has no builds" ]]; then
 
