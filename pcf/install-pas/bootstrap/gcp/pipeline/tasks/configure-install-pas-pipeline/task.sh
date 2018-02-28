@@ -5,7 +5,7 @@ set -euo pipefail
 echo "$GOOGLE_CREDENTIALS_JSON" > .gcp-service-account.json
 export GOOGLE_CREDENTIALS=$(pwd)/.gcp-service-account.json
 
-TERRAFORM_PARAMS_PATH=install-pas-pipeline/pcf/install-pas/pipelines/$IAAS_TYPE/terraform/params
+TERRAFORM_PARAMS_PATH=install-pas-pipeline/pcf/install-pas/pipeline/$IAAS_TYPE/terraform/params
 INSTALL_PAS_PIPELINE_PATH=install-pas-pipeline/pcf/install-pas/pipeline/$IAAS_TYPE
 
 terraform init $TERRAFORM_PARAMS_PATH
