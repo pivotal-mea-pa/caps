@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -euo pipefail
+set -xeuo pipefail
 
 echo "$GOOGLE_CREDENTIALS_JSON" > .gcp-service-account.json
 export GOOGLE_CREDENTIALS=$(pwd)/.gcp-service-account.json
@@ -14,7 +14,7 @@ terraform apply -auto-approve \
   -var "bootstrap_state_bucket=$BOOTSTRAP_STATE_BUCKET" \
   -var "bootstrap_state_prefix=$BOOTSTRAP_STATE_PREFIX" \
   -var "params_file=params.yml" \
-  $TERRAFORM_PARAMS_PATH >/dev/null
+  $TERRAFORM_PARAMS_PATH
 
 fly -t default login -c $CONCOURSE_URL -u ''$CONCOURSE_USER'' -p ''$CONCOURSE_PASSWORD''
 fly -t default sync
@@ -24,7 +24,7 @@ fly -t default set-pipeline -n \
   -c $INSTALL_PAS_PIPELINE_PATH/$PCF_PAS_RUNTIME_TYPE-pipeline.yml \
   -v "bootstrap_state_bucket=$BOOTSTRAP_STATE_BUCKET" \
   -v "bootstrap_state_prefix=$BOOTSTRAP_STATE_PREFIX" \
-  -l params.yml >/dev/null
+  -l params.yml
 
 # Unpause the pipeline but pause uploading opsman 
 # image until the terraform state has been bootstrapped
