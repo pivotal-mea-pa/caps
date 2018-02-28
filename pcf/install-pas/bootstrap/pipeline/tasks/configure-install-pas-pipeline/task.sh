@@ -23,16 +23,24 @@ fly -t default sync
 fly -t default set-pipeline -n \
   -p install-pas \
   -c $INSTALL_PAS_PIPELINE_PATH/$PCF_PAS_RUNTIME_TYPE-pipeline.yml \
+  -v "bootstrap_state_bucket=$BOOTSTRAP_STATE_BUCKET" \
+  -v "bootstrap_state_prefix=$BOOTSTRAP_STATE_PREFIX" \
   -l params.yml >/dev/null 2>&1
 
-fly -t default unpause-pipeline \
-  -p install-pas \
+# Unpause the pipeline but pause uploading opsman 
+# image until the terraform state has been bootstrapped
+fly -t default pause-job -j install-pas/upload-opsman-image
+fly -t default unpause-pipeline -p install-pas
 
-fly -t default trigger-job \
-  -j install-pas/bootstrap-terraform-state
+bootstrap_state_job_status=$(fly -t local watch \
+  -j install-pas/bootstrap-terraform-state 2>&1)
 
-fly -t default watch \
-  -j install-pas/bootstrap-terraform-state
+if [[ "$bootstrap_state_job_status" == "error: job has no builds" ]]; then
 
-fly -t default watch \
-  -j install-pas/upload-opsman-image
+  # Bootstrap the Terraform state if it has not been 
+  # done before and wait until the job finishes
+  fly -t default trigger-job -j install-pas/bootstrap-terraform-state
+  fly -t default watch -j install-pas/bootstrap-terraform-state
+fi
+
+fly -t default unpause-job -j install-pas/upload-opsman-image
