@@ -3,6 +3,14 @@
 # GCP configuration to the Bootstrap VCP.
 #
 
+variable "bootstrap_state_bucket" {
+  type = "string"
+}
+
+variable "bootstrap_state_prefix" {
+  type = "string"
+}
+
 # Import Bootstrap state
 data "terraform_remote_state" "bootstrap" {
   backend = "gcs"
