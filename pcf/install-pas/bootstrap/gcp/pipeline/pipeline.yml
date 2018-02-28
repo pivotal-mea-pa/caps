@@ -7,6 +7,7 @@ resources:
     uri: https://github.com/mevansam/automation-pipelines.git
     branch: master
     paths: 
+    - pcf/install-pas/bootstrap/gcp/pipeline/**
     - pcf/install-pas/pipeline/**
 
 jobs:
