@@ -50,10 +50,6 @@ variable "pivnet_token" {
   type = "string"
 }
 
-variable "opsman_password" {
-  type = "string"
-}
-
 variable "mysql_monitor_recipient_email" {
   type = "string"
 }
