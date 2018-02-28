@@ -17,7 +17,7 @@ jobs:
     - get: install-pas-pipeline
       trigger: true
   - task: configure
-    file: install-pas-pipeline/pcf/install-pas/bootstrap/gcp/pipelines/tasks/configure-install-pas-pipeline/task.yml
+    file: install-pas-pipeline/pcf/install-pas/bootstrap/gcp/pipeline/tasks/configure-install-pas-pipeline/task.yml
     params:
       IAAS_TYPE: {{iaas_type}}
       CONCOURSE_URL: {{concourse_url}}
