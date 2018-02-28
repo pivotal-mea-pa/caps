@@ -7,27 +7,25 @@ usage () {
 
 [[ -n $2 ]] || usage
 
-cd $2
+cd $2/terraform
 tf_output=$(terraform output) || exit 1
 cd - >/dev/null 2>&1
-
-set -x
 
 if [[ $1 == login ]]; then
     host=$(echo -e "$tf_output" | awk '/bastion_admin_fqdn/{ print $3 }')
     password=$(echo -e "$tf_output" | awk '/concourse_admin_password/{ print $3 }')
 
-    echo  "Checking connectivity to $host This will hang if you are not logged on to the VPN."
+    echo -e "\nChecking connectivity to $host...\n  * This will hang if you are not logged on to the VPN."
     nc -v -z -w 1 $host 22 >/dev/null 2>&1
     if [[ $? -ne 0 ]]; then
         echo "ERROR! Unable to reach SSH port of $host."
         exit 1
     fi
 
-    echo "Creating SSH tunnel in order to access Concourse."
+    echo -e "\nCreating SSH tunnel in order to access Concourse."
     ps -ef | awk '/8080\:127\.0\.0\.1\:8080/{ print $2 }' | sudo xargs kill -15
     ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no \
-        -i $2/vpn-admin-ssh-key.pem vpn_admin@$host \
+        -i $2/terraform/vpn-admin-ssh-key.pem vpn_admin@$host \
         -L 8080:127.0.0.1:8080 -N >/dev/null 2>&1 &
 
     sleep 2
@@ -38,7 +36,8 @@ if [[ $1 == login ]]; then
     fi
 
     fly -t local sync >/dev/null 2>&1
-    open http://localhost:8080
+
+    echo -e "\nThe Concourse UI is available via the following URL: http://localhost:8080\n"
 
 elif [[ $1 == logout ]]; then
     ps -ef | awk '/8080\:127\.0\.0\.1\:8080/{ print $2 }' | sudo xargs kill -15
