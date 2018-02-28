@@ -51,7 +51,13 @@ resource "google_dns_record_set" "doppler-dns" {
 
   managed_zone = "${google_dns_managed_zone.env_dns_zone.name}"
 
-  rrdatas = ["${google_compute_address.ssh-and-doppler.address}"]
+  # Smoke Test errands fail when run from control instance.
+  # It appears that connection to port 443 is refused by
+  # the TCP load balancer google_compute_target_pool.cf-gorouter
+  # "${var.prefix}-wss-logs".
+  #
+  # rrdatas = ["${google_compute_address.ssh-and-doppler.address}"]
+  rrdatas = ["${google_compute_global_address.pcf.address}"]
 }
 
 resource "google_dns_record_set" "loggregator-dns" {
@@ -61,7 +67,13 @@ resource "google_dns_record_set" "loggregator-dns" {
 
   managed_zone = "${google_dns_managed_zone.env_dns_zone.name}"
 
-  rrdatas = ["${google_compute_address.ssh-and-doppler.address}"]
+  # Smoke Test errands fail when run from control instance.
+  # It appears that connection to port 443 is refused by
+  # the TCP load balancer google_compute_target_pool.cf-gorouter
+  # "${var.prefix}-wss-logs".
+  #
+  # rrdatas = ["${google_compute_address.ssh-and-doppler.address}"]
+  rrdatas = ["${google_compute_global_address.pcf.address}"]
 }
 
 resource "google_dns_record_set" "tcp-dns" {
