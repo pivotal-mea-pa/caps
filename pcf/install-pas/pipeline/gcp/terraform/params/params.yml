@@ -185,4 +185,4 @@ poe_ssl_key1:
 security_acknowledgement: X
 
 # Whether or not the ERT VMs are internet connected.
-internet_connected: true
+internet_connected: false
