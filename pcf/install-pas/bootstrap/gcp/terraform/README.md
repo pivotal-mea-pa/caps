@@ -13,7 +13,7 @@ terraform plan \
     -var="bootstrap_state_bucket=$TF_VAR_state_bucket" \
     -var="bootstrap_state_prefix=$TF_VAR_state_prefix"
 
-terraform apply \
+terraform apply -auto-approve \
     -var="bootstrap_state_bucket=$TF_VAR_state_bucket" \
     -var="bootstrap_state_prefix=$TF_VAR_state_prefix"
 ```
