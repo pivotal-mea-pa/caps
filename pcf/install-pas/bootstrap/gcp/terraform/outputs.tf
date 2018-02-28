@@ -64,7 +64,7 @@ output "opsman_admin_password" {
 }
 
 output "pas_system_dbpassword" {
-  value     = "${random_string.opsman-admin-password.result}"
+  value     = "${random_string.pas-system-dbpassword.result}"
   sensitive = true
 }
 
