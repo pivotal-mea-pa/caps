@@ -7,7 +7,7 @@ image_resource:
     repository: appbricks/automation-tools
 
 inputs:
-- name: automation-pipelines
+- name: install-pas-pipeline
 
 params:
   CONCOURSE_URL:
@@ -21,4 +21,4 @@ params:
   PCF_PAS_RUNTIME_TYPE:
 
 run:
-  path: automation-pipelines/pcf/install-pas/bootstrap/pipeline/tasks/configure-install-pas-pipeline/task.sh
+  path: install-pas-pipeline/pcf/install-pas/bootstrap/pipeline/tasks/configure-install-pas-pipeline/task.sh

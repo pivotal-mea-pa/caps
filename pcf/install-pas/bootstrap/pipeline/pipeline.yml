@@ -17,7 +17,7 @@ jobs:
     - get: install-pas-pipeline
       trigger: true
   - task: configure
-    file: automation-pipelines/pcf/install-pas/bootstrap/pipeline/tasks/configure-install-pas-pipeline/task.yml
+    file: install-pas-pipeline/pcf/install-pas/bootstrap/pipeline/tasks/configure-install-pas-pipeline/task.yml
     params:
       CONCOURSE_URL: {{concourse_url}}
       CONCOURSE_USER: {{concourse_user}}
