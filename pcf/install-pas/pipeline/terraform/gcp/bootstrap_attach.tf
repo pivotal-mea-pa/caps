@@ -8,8 +8,8 @@ data "terraform_remote_state" "bootstrap" {
   backend = "gcs"
 
   config {
-    bucket = "appbricks-euw3-tf-states"
-    prefix = "tfacc/cf1-bs"
+    bucket = "${var.bootstrap_state_bucket}"
+    prefix = "${var.bootstrap_state_prefix}"
   }
 }
 

@@ -130,6 +130,8 @@ jobs:
       GCP_ZONE_3: {{gcp_zone_3}}
       GCP_RESOURCE_PREFIX: {{gcp_resource_prefix}}
       GCP_STORAGE_BUCKET_LOCATION: {{gcp_storage_bucket_location}}
+      BOOTSTRAP_STATE_BUCKET: {{bootstrap_state_bucket}}
+      BOOTSTRAP_STATE_PREFIX: {{bootstrap_state_prefix}}
       PCF_ERT_DOMAIN: {{pcf_ert_domain}}
       SYSTEM_DOMAIN: {{system_domain}}
       APPS_DOMAIN: {{apps_domain}}
