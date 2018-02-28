@@ -114,7 +114,7 @@ jobs:
         - "*GCP.yml"
   # Override default terraform template 
   # files with a more customized configuration
-  - task: apply-terraform-patch
+  - task: add-infrastructure-ext
     file: automation-pipelines/pcf/install-pas/pipeline/tasks/apply-terraform-patch/task.yml
     params:
       IAAS_TYPE: gcp

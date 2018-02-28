@@ -19,6 +19,7 @@ jobs:
   - task: configure
     file: install-pas-pipeline/pcf/install-pas/bootstrap/pipeline/tasks/configure-install-pas-pipeline/task.yml
     params:
+      IAAS_TYPE: {{iaas_type}}
       CONCOURSE_URL: {{concourse_url}}
       CONCOURSE_USER: {{concourse_user}}
       CONCOURSE_PASSWORD: {{concourse_password}}

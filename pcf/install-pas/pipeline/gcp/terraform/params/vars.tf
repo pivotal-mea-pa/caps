@@ -11,6 +11,6 @@ variable "bootstrap_state_prefix" {
 }
 
 # Relative path to the params template file
-variable "params_template_file" {
+variable "params_file" {
   type = "string"
 }

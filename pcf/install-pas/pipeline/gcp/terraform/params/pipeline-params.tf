@@ -3,7 +3,7 @@
 #
 
 data "template_file" "pcf-pipeline-parameters" {
-  template = "${file(var.params_template_file)}"
+  template = "${file("${path.module}/params.yml")}"
 
   vars {
     gcp_project     = "${data.terraform_remote_state.bootstrap.gcp_project}"
@@ -30,7 +30,7 @@ data "template_file" "pcf-pipeline-parameters" {
   }
 }
 
-resource "local_file" "foo" {
+resource "local_file" "params-yml" {
   content  = "${data.template_file.pcf-pipeline-parameters.rendered}"
-  filename = "params.yml"
+  filename = "${var.params_file}"
 }

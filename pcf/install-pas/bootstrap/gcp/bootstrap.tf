@@ -60,6 +60,8 @@ module "bootstrap" {
   # the '---' header as that is created via the bastion module 
   # when the complete params file is rendered.
   bootstrap_pipeline_vars = <<PIPELINE_VARS
+iaas_type: gcp
+
 google_project: ${var.gcp_project}
 google_region: ${var.gcp_region}
 

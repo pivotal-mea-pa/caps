@@ -10,6 +10,7 @@ inputs:
 - name: install-pas-pipeline
 
 params:
+  IAAS_TYPE:
   CONCOURSE_URL:
   CONCOURSE_USER:
   CONCOURSE_PASSWORD:
