@@ -22,4 +22,4 @@ params:
   PCF_PAS_RUNTIME_TYPE:
 
 run:
-  path: install-pas-pipeline/pcf/install-pas/bootstrap/pipelines/tasks/configure-install-pas-pipeline/task.sh
+  path: install-pas-pipeline/pcf/install-pas/bootstrap/gcp/pipelines/tasks/configure-install-pas-pipeline/task.sh

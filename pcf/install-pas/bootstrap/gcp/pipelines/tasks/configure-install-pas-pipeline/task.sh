@@ -5,16 +5,16 @@ set -euo pipefail
 echo "$GOOGLE_CREDENTIALS_JSON" > .gcp-service-account.json
 export GOOGLE_CREDENTIALS=$(pwd)/.gcp-service-account.json
 
-TASK_TERRAFORM_PATH=install-pas-pipeline/pcf/install-pas/pipeline/$IAAS_TYPE/terraform/params
-INSTALL_PAS_PIPELINE_PATH=install-pas-pipeline/pcf/install-pas/pipeline
+TERRAFORM_PARAMS_PATH=install-pas-pipeline/pcf/install-pas/pipelines/$IAAS_TYPE/terraform/params
+INSTALL_PAS_PIPELINE_PATH=install-pas-pipeline/pcf/install-pas/pipelines/$IAAS_TYPE
 
-terraform init $TASK_TERRAFORM_PATH
+terraform init $TERRAFORM_PARAMS_PATH
   
 terraform apply -auto-approve \
   -var "bootstrap_state_bucket=$BOOTSTRAP_STATE_BUCKET" \
   -var "bootstrap_state_prefix=$BOOTSTRAP_STATE_PREFIX" \
   -var "params_file=params.yml" \
-  $TASK_TERRAFORM_PATH >/dev/null 2>&1
+  $TERRAFORM_PARAMS_PATH >/dev/null 2>&1
 
 fly -t default login -c $CONCOURSE_URL -u ''$CONCOURSE_USER'' -p ''$CONCOURSE_PASSWORD''
 fly -t default sync
