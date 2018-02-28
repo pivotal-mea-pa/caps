@@ -15,7 +15,7 @@ terraform apply -auto-approve \
   -var "bootstrap_state_bucket=$BOOTSTRAP_STATE_BUCKET" \
   -var "bootstrap_state_prefix=$BOOTSTRAP_STATE_PREFIX" \
   -var "params_template_file=$TASK_PARAMS_TEMPLATE_PATH/params.yml" \
-  $TASK_TERRAFORM_PATH 
+  $TASK_TERRAFORM_PATH >/dev/null 2>&1
 
 fly -t default login -c $CONCOURSE_URL -u ''$CONCOURSE_USER'' -p ''$CONCOURSE_PASSWORD''
 fly -t default sync
