@@ -12,7 +12,7 @@ inputs:
 - name: terraform-state
 
 run:
-  path: automation-pipelines/pcf/install-pas/pipelines/tasks/configure-srt/task.sh
+  path: automation-pipelines/pcf/install-pas/pipeline/tasks/configure-srt/task.sh
 
 params:
   pcf_iaas:

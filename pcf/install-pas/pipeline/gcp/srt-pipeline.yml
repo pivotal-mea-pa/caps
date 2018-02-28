@@ -116,7 +116,7 @@ jobs:
   # Override default terraform template 
   # files with a more customized configuration
   - task: add-infrastructure-ext
-    file: automation-pipelines/pcf/install-pas/pipelines/tasks/apply-terraform-patch/task.yml
+    file: automation-pipelines/pcf/install-pas/pipeline/tasks/apply-terraform-patch/task.yml
     params:
       IAAS_TYPE: gcp
       GCP_SERVICE_ACCOUNT_KEY: {{gcp_service_account_key}}
@@ -265,7 +265,7 @@ jobs:
       params: {globs: []}
     - get: terraform-state
   - task: configure-srt
-    file: automation-pipelines/pcf/install-pas/pipelines/tasks/configure-srt/task.yml
+    file: automation-pipelines/pcf/install-pas/pipeline/tasks/configure-srt/task.yml
     params:
       pcf_iaas: gcp
       pcf_az_1: {{gcp_zone_1}}
