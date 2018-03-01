@@ -8,7 +8,8 @@ resources:
     branch: master
     paths: 
     - pcf/install-pas/bootstrap/gcp/pipeline/**
-    - pcf/install-pas/pipeline/**
+    - pcf/install-pas/pipeline/gcp/**
+    - pcf/install-pas/pipeline/tasks/**
 
 jobs:
 - name: configure-install-pas-pipeline
