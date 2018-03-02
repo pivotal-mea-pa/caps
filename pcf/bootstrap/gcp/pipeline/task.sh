@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -xeuo pipefail
+set -euo pipefail
 
 echo "$GOOGLE_CREDENTIALS_JSON" > .gcp-service-account.json
 export GOOGLE_CREDENTIALS=$(pwd)/.gcp-service-account.json
