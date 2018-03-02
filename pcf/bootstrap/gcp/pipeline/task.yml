@@ -22,4 +22,4 @@ params:
   PCF_PAS_RUNTIME_TYPE:
 
 run:
-  path: automation/pcf/bootstrap/gcp/pipeline
+  path: automation/pcf/bootstrap/gcp/pipeline/task.sh
