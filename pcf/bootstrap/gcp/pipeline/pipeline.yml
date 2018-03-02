@@ -1,25 +1,25 @@
 ---
 resources:
 
-- name: install-pas-pipeline
+- name: automation
   type: git
   source:
     uri: https://github.com/mevansam/automation-pipelines.git
-    branch: master
+    branch: {{automation-pipeline-branch}}
     paths: 
-    - pcf/install-pas/bootstrap/gcp/pipeline/**
+    - pcf/bootstrap/**
     - pcf/install-pas/pipeline/gcp/**
     - pcf/install-pas/pipeline/tasks/**
 
 jobs:
-- name: configure-install-pas-pipeline
+- name: bootstrap
   public: false
   plan:
   - aggregate:
-    - get: install-pas-pipeline
+    - get: automation
       trigger: true
   - task: configure
-    file: install-pas-pipeline/pcf/install-pas/bootstrap/gcp/pipeline/tasks/configure-install-pas-pipeline/task.yml
+    file: automation/pcf/bootstrap/gcp/pipeline/task.yml
     params:
       IAAS_TYPE: {{iaas_type}}
       CONCOURSE_URL: {{concourse_url}}

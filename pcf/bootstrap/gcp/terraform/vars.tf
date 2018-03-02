@@ -65,3 +65,7 @@ variable "bootstrap_state_bucket" {
 variable "bootstrap_state_prefix" {
   type = "string"
 }
+
+variable "automation_pipeline_branch" {
+  default = "master"
+}

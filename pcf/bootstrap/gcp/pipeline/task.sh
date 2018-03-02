@@ -5,14 +5,19 @@ set -euo pipefail
 echo "$GOOGLE_CREDENTIALS_JSON" > .gcp-service-account.json
 export GOOGLE_CREDENTIALS=$(pwd)/.gcp-service-account.json
 
-TERRAFORM_PARAMS_PATH=install-pas-pipeline/pcf/install-pas/pipeline/$IAAS_TYPE/terraform/params
-INSTALL_PAS_PIPELINE_PATH=install-pas-pipeline/pcf/install-pas/pipeline/$IAAS_TYPE
+TERRAFORM_PARAMS_PATH=automation/pcf/bootstrap/$IAAS_TYPE/params
+INSTALL_PAS_PIPELINE_PATH=automation/pcf/install-pas/pipeline/$IAAS_TYPE
 
 terraform init $TERRAFORM_PARAMS_PATH
-  
+
+#
+# Configure install-pas pipeline
+#
+
 terraform apply -auto-approve \
   -var "bootstrap_state_bucket=$BOOTSTRAP_STATE_BUCKET" \
   -var "bootstrap_state_prefix=$BOOTSTRAP_STATE_PREFIX" \
+  -var "params_template_file=$INSTALL_PAS_PIPELINE_PATH/params.yml" \
   -var "params_file=params.yml" \
   $TERRAFORM_PARAMS_PATH >/dev/null
 
@@ -21,7 +26,7 @@ fly -t default sync
 
 fly -t default set-pipeline -n \
   -p install-pas \
-  -c $INSTALL_PAS_PIPELINE_PATH/$PCF_PAS_RUNTIME_TYPE-pipeline.yml \
+  -c $INSTALL_PAS_PIPELINE_PATH/${PCF_PAS_RUNTIME_TYPE}-pipeline.yml \
   -v "bootstrap_state_bucket=$BOOTSTRAP_STATE_BUCKET" \
   -v "bootstrap_state_prefix=$BOOTSTRAP_STATE_PREFIX" \
   -l params.yml >/dev/null

@@ -71,6 +71,8 @@ google_credentials_json: |
 bootstrap_state_bucket: ${var.bootstrap_state_bucket}
 bootstrap_state_prefix: ${var.bootstrap_state_prefix}
 
+automation-pipeline-branch: ${var.automation_pipeline_branch}
+
 pcf_pas_runtime_type: srt
 PIPELINE_VARS
 }
