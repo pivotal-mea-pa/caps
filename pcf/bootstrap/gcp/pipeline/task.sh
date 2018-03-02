@@ -56,6 +56,8 @@ if [[ "$bootstrap_state_job_status" == "error: job has no builds" ]]; then
 
     # Start the install by starting the upload-opsman-image job 
     fly -t default trigger-job -j install-pas/upload-opsman-image
+  else
+    echo "Terraform state is not empty so the install pipeline will not be run!"
   fi
 else
   set -e
