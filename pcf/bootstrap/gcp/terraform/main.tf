@@ -18,6 +18,11 @@ data "google_compute_zones" "zones" {
 # by the PCF install automation pipelines.
 #
 
+resource "random_string" "concourse-admin-password" {
+  length  = 10
+  special = false
+}
+
 resource "random_string" "opsman-admin-password" {
   length  = 10
   special = false

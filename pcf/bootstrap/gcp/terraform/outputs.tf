@@ -116,5 +116,5 @@ output "default_openssh_public_key" {
 }
 
 output "concourse_admin_password" {
-  value = "${module.bootstrap.concourse_admin_password}"
+  value = "${random_string.concourse-admin-password.result}"
 }

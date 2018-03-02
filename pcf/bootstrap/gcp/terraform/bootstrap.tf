@@ -52,6 +52,11 @@ module "bootstrap" {
   vpn_network = "192.168.111.0/24"
 
   #
+  # Concourse Settings
+  #
+  concourse_admin_password = "${random_string.concourse-admin-password.result}"
+
+  #
   # Bootstrap pipeline
   #
   bootstrap_pipeline_file = "../pipeline/pipeline.yml"
