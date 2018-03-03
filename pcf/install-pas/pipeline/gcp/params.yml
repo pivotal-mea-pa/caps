@@ -43,6 +43,8 @@ pivnet_token: '${pivnet_token}'
 # opsman_admin_username/opsman_admin_password needs to be specified
 opsman_admin_username: admin
 opsman_admin_password: '${opsman_admin_password}'
+opsman_client_id:
+opsman_client_secret:
 
 # This should be your pcf_ert_domain with "opsman." as a prefix
 opsman_domain_or_ip_address: opsman.pas.${vpc_dns_zone}
@@ -186,3 +188,21 @@ security_acknowledgement: X
 
 # Whether or not the ERT VMs are internet connected.
 internet_connected: false
+
+#
+# Common variables for tile uploads
+#
+
+
+# Set to true to enable all errands, false to disable all or leave blank to keep states the same.
+enable_errands:
+
+# The globs regular expression for the PivNet resource to download the product
+# release files. "*pivotal" is the default.
+# For products such as ERT, it is recommended to use "cf*pivotal" to avoid the
+# extra download of the SRT file in PCF 1.12.*
+product_globs: "*pivotal"
+
+# The IaaS name for which stemcell to download. This must match the IaaS name
+# within the stemcell to download, e.g. "vsphere", "aws", "azure", "google" must be lowercase.
+iaas_type: google

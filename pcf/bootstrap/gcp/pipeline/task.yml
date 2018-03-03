@@ -20,6 +20,7 @@ params:
   BOOTSTRAP_STATE_BUCKET:
   BOOTSTRAP_STATE_PREFIX:
   PCF_PAS_RUNTIME_TYPE:
+  PRODUCTS:
 
 run:
   path: automation/pcf/bootstrap/gcp/pipeline/task.sh

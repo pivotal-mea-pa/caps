@@ -80,5 +80,8 @@ automation-pipeline-branch: ${var.automation_pipeline_branch}
 
 pcf_pas_state_bucket: ${google_storage_bucket.pas-terraform-state.name}
 pcf_pas_runtime_type: srt
+
+product: '${var.products}'
+
 PIPELINE_VARS
 }

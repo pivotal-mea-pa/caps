@@ -32,3 +32,4 @@ jobs:
       BOOTSTRAP_STATE_PREFIX: {{bootstrap_state_prefix}}
       PCF_PAS_STATE_BUCKET: {{pcf_pas_state_bucket}}
       PCF_PAS_RUNTIME_TYPE: {{pcf_pas_runtime_type}}
+      PRODUCTS: {{product}}
