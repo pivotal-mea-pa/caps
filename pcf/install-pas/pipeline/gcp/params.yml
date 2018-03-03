@@ -50,14 +50,7 @@ opsman_client_secret:
 opsman_domain_or_ip_address: opsman.pas.${vpc_dns_zone}
 
 # PCF Ops Manager minor version to track
-#opsman_major_minor_version: 2\.[0-9\]+\.[0-9]+$
-
-#
-# Fix Ops Manager version as updates can potentially replace the 
-# current instance which is dangerous if it has not been exported.
-# This needs to be handled as an upgrade condition.
-#
-opsman_major_minor_version: 2\.0\.6$
+opsman_major_minor_version: ${opsman_major_minor_version}
 
 # Optional PEM-encoded certificates to add to BOSH director
 opsman_trusted_certs: |
@@ -138,10 +131,10 @@ apps_domain: apps.pas.${vpc_dns_zone}
 #     autoscaling
 #     autoscaling-register-broker
 #     nfsbrokerpush
-ert_errands_to_disable: none
+ert_errands_to_disable: ${ert_errands_to_disable}
 
 # PCF Elastic Runtime minor version to track
-ert_major_minor_version: 2\.[0-9\]+\.[0-9]+$
+ert_major_minor_version: ${ert_major_minor_version}
 
 # Required if haproxy_forward_tls is enabled - HAProxy will use the CA provided to verify the certificates provided by the router.
 haproxy_backend_ca:

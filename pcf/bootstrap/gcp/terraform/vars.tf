@@ -50,6 +50,34 @@ variable "pivnet_token" {
   type = "string"
 }
 
+# PCF Ops Manager minor version to track
+variable "opsman_major_minor_version" {
+  type = "string"
+}
+
+# PCF Elastic Runtime minor version to track
+variable "ert_major_minor_version" {
+  type = "string"
+}
+
+# Errands to disable prior to deploying ERT
+# Valid values:
+#   all
+#   none
+#   "" (empty string)
+#   Any combination of the following, separated by comma:
+#     smoke-tests
+#     push-apps-manager
+#     notifications
+#     notifications-ui
+#     push-pivotal-account
+#     autoscaling
+#     autoscaling-register-broker
+#     nfsbrokerpush
+variable "ert_errands_to_disable" {
+  default = "none"
+}
+
 variable "mysql_monitor_recipient_email" {
   type = "string"
 }
