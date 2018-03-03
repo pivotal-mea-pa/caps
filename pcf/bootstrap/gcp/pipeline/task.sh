@@ -44,7 +44,7 @@ done
 
 [[ $i -ne 0 ]] && \
   cat pipeline$i.yml \
-    | yaml_patch -o $INSTALL_PAS_PIPELINE_PATH/patches/schedule-patch.yml > pipeline.yml
+    | yaml_patch -o $INSTALL_PAS_PIPELINE_PATH/patches/schedule-patch.yml > pipeline0.yml
 
 set +x
 
@@ -53,7 +53,7 @@ fly -t default sync
 
 fly -t default set-pipeline -n \
   -p install-pas \
-  -c pipeline.yml \
+  -c pipeline0.yml \
   -v "bootstrap_state_bucket=$BOOTSTRAP_STATE_BUCKET" \
   -v "bootstrap_state_prefix=$BOOTSTRAP_STATE_PREFIX" \
   -l params.yml >/dev/null
