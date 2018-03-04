@@ -24,9 +24,13 @@ data "terraform_remote_state" "bootstrap" {
 #
 # Add Name Servers for ERT zone to bootstrap VPC zone.
 #
+data "google_dns_managed_zone" "vpc" {
+  name = "${data.terraform_remote_state.bootstrap.vpc_dns_zone_name}"
+}
+
 resource "google_dns_record_set" "vpc" {
   name         = "${google_dns_managed_zone.env_dns_zone.dns_name}"
-  managed_zone = "${data.terraform_remote_state.bootstrap.vpc_dns_zone_name}"
+  managed_zone = "${data.google_dns_managed_zone.vpc.name}"
 
   type = "NS"
   ttl  = 300

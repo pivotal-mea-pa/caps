@@ -10,7 +10,6 @@ inputs:
 - name: automation
 
 params:
-  IAAS_TYPE:
   CONCOURSE_URL:
   CONCOURSE_USER:
   CONCOURSE_PASSWORD:

@@ -6,8 +6,9 @@ echo "$GOOGLE_CREDENTIALS_JSON" > .gcp-service-account.json
 export GOOGLE_CREDENTIALS=$(pwd)/.gcp-service-account.json
 gcloud auth activate-service-account --key-file=$GOOGLE_CREDENTIALS
 
-TERRAFORM_PARAMS_PATH=automation/pcf/bootstrap/$IAAS_TYPE/params
-INSTALL_PAS_PIPELINE_PATH=automation/pcf/install-pas/pipeline
+TERRAFORM_PARAMS_PATH=automation/pcf/bootstrap/gcp/params
+INSTALL_PCF_PIPELINE_PATH=automation/pcf/install-pcf/pipeline
+INSTALL_PCF_PATCHES=automation/pcf/install-pcf/patches
 
 terraform init $TERRAFORM_PARAMS_PATH
 
@@ -18,13 +19,13 @@ terraform init $TERRAFORM_PARAMS_PATH
 terraform apply -auto-approve \
   -var "bootstrap_state_bucket=$BOOTSTRAP_STATE_BUCKET" \
   -var "bootstrap_state_prefix=$BOOTSTRAP_STATE_PREFIX" \
-  -var "params_template_file=$INSTALL_PAS_PIPELINE_PATH/$IAAS_TYPE/params.yml" \
+  -var "params_template_file=$INSTALL_PCF_PIPELINE_PATH/gcp/params.yml" \
   -var "params_file=params.yml" \
   $TERRAFORM_PARAMS_PATH >/dev/null
 
 set -x
 
-cp $INSTALL_PAS_PIPELINE_PATH/$IAAS_TYPE/${PCF_PAS_RUNTIME_TYPE}-pipeline.yml pipeline0.yml
+cp $INSTALL_PCF_PIPELINE_PATH/gcp/${PCF_PAS_RUNTIME_TYPE}-pipeline.yml pipeline0.yml
 i=0 && j=1
 for p in $(echo -e "$PRODUCTS"); do 
   product_name=${p%:*}
@@ -32,7 +33,7 @@ for p in $(echo -e "$PRODUCTS"); do
   product_slug=${slug_and_version%/*}
   product_version=${slug_and_version#*/}
 
-  eval "echo \"$(cat $INSTALL_PAS_PIPELINE_PATH/patches/install-tile-patch.yml)\"" \
+  eval "echo \"$(cat $INSTALL_PCF_PATCHES/install-tile-patch.yml)\"" \
     > ${product_name}-patch.yml
 
   cat pipeline$i.yml \
@@ -44,7 +45,7 @@ done
 
 [[ $i -ne 0 ]] && \
   cat pipeline$i.yml \
-    | yaml_patch -o $INSTALL_PAS_PIPELINE_PATH/patches/schedule-patch.yml > pipeline0.yml
+    | yaml_patch -o $INSTALL_PCF_PATCHES/schedule-patch.yml > pipeline0.yml
 
 set +x
 
@@ -52,7 +53,7 @@ fly -t default login -c $CONCOURSE_URL -u ''$CONCOURSE_USER'' -p ''$CONCOURSE_PA
 fly -t default sync
 
 fly -t default set-pipeline -n \
-  -p install-pas \
+  -p install-pcf \
   -c pipeline0.yml \
   -v "bootstrap_state_bucket=$BOOTSTRAP_STATE_BUCKET" \
   -v "bootstrap_state_prefix=$BOOTSTRAP_STATE_PREFIX" \
@@ -60,11 +61,11 @@ fly -t default set-pipeline -n \
 
 # Unpause the pipeline. The pipeline jobs will rerun in 
 # an idempotent manner if a prior installation is found.
-fly -t default unpause-pipeline -p install-pas
+fly -t default unpause-pipeline -p install-pcf
 
 # set +e
 # bootstrap_state_job_status=$(fly -t default watch \
-#   -j install-pas/bootstrap-terraform-state 2>&1)
+#   -j install-pcf/bootstrap-terraform-state 2>&1)
 
 # if [[ "$bootstrap_state_job_status" == "error: job has no builds" ]]; then
 
@@ -78,11 +79,11 @@ fly -t default unpause-pipeline -p install-pas
 
 #     # Bootstrap the Terraform state if it is 
 #     # empty and wait until the job finishes
-#     fly -t default trigger-job -j install-pas/bootstrap-terraform-state
-#     fly -t default watch -j install-pas/bootstrap-terraform-state
+#     fly -t default trigger-job -j install-pcf/bootstrap-terraform-state
+#     fly -t default watch -j install-pcf/bootstrap-terraform-state
 
 #     # Start the install by starting the upload-opsman-image job 
-#     fly -t default trigger-job -j install-pas/upload-opsman-image
+#     fly -t default trigger-job -j install-pcf/upload-opsman-image
 #   else
 #     echo "Terraform state is not empty so the install pipeline will not be run!"
 #   fi
@@ -90,6 +91,6 @@ fly -t default unpause-pipeline -p install-pas
 #   set -e
 # fi
 
-fly -t default trigger-job -j install-pas/bootstrap-terraform-state
-fly -t default watch -j install-pas/bootstrap-terraform-state
-fly -t default trigger-job -j install-pas/upload-opsman-image
+fly -t default trigger-job -j install-pcf/bootstrap-terraform-state
+fly -t default watch -j install-pcf/bootstrap-terraform-state
+fly -t default trigger-job -j install-pcf/upload-opsman-image

@@ -8,8 +8,8 @@ resources:
     branch: {{automation-pipeline-branch}}
     paths: 
     - pcf/bootstrap/**
-    - pcf/install-pas/pipeline/gcp/**
-    - pcf/install-pas/pipeline/tasks/**
+    - pcf/install-pcf/pipeline/gcp/**
+    - pcf/install-pcf/pipeline/tasks/**
 
 jobs:
 - name: bootstrap
@@ -21,7 +21,6 @@ jobs:
   - task: configure
     file: automation/pcf/bootstrap/gcp/pipeline/task.yml
     params:
-      IAAS_TYPE: {{iaas_type}}
       CONCOURSE_URL: {{concourse_url}}
       CONCOURSE_USER: {{concourse_user}}
       CONCOURSE_PASSWORD: {{concourse_password}}
