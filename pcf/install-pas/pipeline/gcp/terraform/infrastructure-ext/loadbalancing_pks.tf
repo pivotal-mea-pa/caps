@@ -4,7 +4,7 @@ resource "google_compute_address" "pks-api" {
 }
 
 resource "google_dns_record_set" "pks-api" {
-  name         = "*.pks.${var.pcf_ert_domain}."
+  name         = "*.pks.${data.google_dns_managed_zone.vpc.dns_name}"
   managed_zone = "${data.terraform_remote_state.bootstrap.vpc_dns_zone_name}"
 
   type = "A"
