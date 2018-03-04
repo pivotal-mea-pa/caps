@@ -60,7 +60,7 @@
         NO_PROXY: ""
         OM_IP: ""
     - task: stage-and-apply-tile
-      file: automation-pipelines/pcf/install-pcf/pipeline/tasks/stage-product/task.yml
+      file: automation-pipelines/pcf/install-pcf/tasks/stage-product/task.yml
       params:
         OPSMAN_CLIENT_ID: {{opsman_client_id}}
         OPSMAN_CLIENT_SECRET: {{opsman_client_secret}}

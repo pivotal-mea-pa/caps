@@ -265,7 +265,7 @@ jobs:
       OPSMAN_CLIENT_ID: ""
       OPSMAN_CLIENT_SECRET: ""
   - task: stage-tile
-    file: automation-pipelines/pcf/install-pcf/pipeline/tasks/stage-product/task.yml
+    file: automation-pipelines/pcf/install-pcf/tasks/stage-product/task.yml
     params:
       OPSMAN_DOMAIN_OR_IP_ADDRESS: {{opsman_domain_or_ip_address}}
       OPSMAN_USERNAME: {{opsman_admin_username}}
