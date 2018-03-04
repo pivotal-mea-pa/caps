@@ -1,4 +1,4 @@
-// PKS public address
+// PKS static address
 resource "google_compute_address" "pks-api" {
   name = "${var.prefix}-pks-api"
 }
@@ -10,7 +10,7 @@ resource "google_dns_record_set" "pks-api" {
   type = "A"
   ttl  = 300
 
-  rrdatas = ["${google_compute_global_address.pks-api.address}"]
+  rrdatas = ["${google_compute_address.pks-api.address}"]
 }
 
 // PKS target pool
