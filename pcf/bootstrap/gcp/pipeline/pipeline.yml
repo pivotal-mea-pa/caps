@@ -4,8 +4,8 @@ resources:
 - name: automation
   type: git
   source:
-    uri: https://github.com/mevansam/automation-pipelines.git
-    branch: {{automation-pipeline-branch}}
+    uri: {{automation_pipelines_url}}
+    branch: {{automation_pipelines_branch}}
     paths: 
     - pcf/bootstrap/**
     - pcf/install-pcf/pipeline/gcp/**

@@ -101,6 +101,10 @@ variable "bootstrap_state_prefix" {
   type = "string"
 }
 
-variable "automation_pipeline_branch" {
+variable "automation_pipeline_url" {
+  default = "https://github.com/mevansam/automation-pipelines.git"
+}
+
+variable "automation_pipelines_branch" {
   default = "master"
 }

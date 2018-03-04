@@ -50,6 +50,14 @@ output "vpc_dns_zone_name" {
 # PCF Install params
 #
 
+output "automation_pipelines_url" {
+  value = "${var.automation_pipelines_url}"
+}
+
+output "automation_pipelines_branch" {
+  value = "${var.automation_pipelines_branch}"
+}
+
 output "pas_terraform_state_bucket" {
   value = "${google_storage_bucket.pas-terraform-state.name}"
 }

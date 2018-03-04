@@ -22,8 +22,8 @@ resources:
 - name: automation-pipelines
   type: git
   source:
-    uri: https://github.com/mevansam/automation-pipelines.git
-    branch: master
+    uri: {{automation_pipelines_url}}
+    branch: {{automation_pipelines_branch}}
 
 - name: terraform-state
   type: gcs

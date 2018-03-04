@@ -1,5 +1,11 @@
 ---
 #
+# Automation repo detauls
+#
+automation_pipelines_url: ${automation_pipelines_url}
+automation_pipelines_branch: ${automation_pipelines_branch}
+
+#
 # GCP Credentials
 #
 

@@ -18,6 +18,9 @@ data "template_file" "pcf-pipeline-parameters" {
 
     vpc_name = "${data.terraform_remote_state.bootstrap.vpc_name}"
 
+    automation_pipelines_url    = "${data.terraform_remote_state.bootstrap.automation_pipelines_url}"
+    automation_pipelines_branch = "${data.terraform_remote_state.bootstrap.automation_pipelines_branch}"
+
     pas_terraform_state_bucket = "${data.terraform_remote_state.bootstrap.pas_terraform_state_bucket}"
 
     pivnet_token           = "${data.terraform_remote_state.bootstrap.pivnet_token}"
