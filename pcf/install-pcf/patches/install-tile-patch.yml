@@ -24,9 +24,10 @@
 - op: add
   path: /jobs/-
   value:
-    name: upload-${product_name}-tile
+    name: upload-and-apply-${product_name}-tile
     plan:
     - aggregate:
+      - get: automation-pipelines
       - get: pcf-pipelines
       - get: pivnet-opsmgr
         passed: [deploy-director]
