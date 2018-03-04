@@ -17,7 +17,9 @@
     - get: schedule
       trigger: true
     - get: ${product_name}-tile
-      params: { globs: [{{product_globs}}] }
+      params:
+        globs:
+        - {{product_globs}}
 
 - op: add
   path: /jobs/-
@@ -34,7 +36,9 @@
         resource: ${product_name}-tile
         passed: [${product_name}-tile-regulator]
         trigger: true
-        params: { globs: [{{product_globs}}] }
+        params:
+          globs:
+          - {{product_globs}}
     - task: wait-opsman-clear
       file: pcf-pipelines/tasks/wait-opsman-clear/task.yml
       params:
