@@ -239,6 +239,7 @@ jobs:
   serial_groups: [opsman]
   plan:
   - aggregate:
+    - get: automation-pipelines
     - get: pcf-pipelines
     - get: pivnet-opsmgr
       passed: [deploy-director]
