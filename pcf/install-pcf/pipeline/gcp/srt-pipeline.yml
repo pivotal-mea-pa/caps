@@ -231,7 +231,9 @@ jobs:
   - get: schedule
     trigger: true
   - get: pas-tile
-    params: { globs: ["srt*.pivotal"] }
+    params: 
+      globs: 
+      - "srt*.pivotal"
 
 - name: upload-srt
   serial_groups: [opsman]
@@ -246,7 +248,9 @@ jobs:
       resource: pas-tile
       passed: [pas-tile-regulator]
       trigger: true
-      params: { globs: ["srt*.pivotal"] }
+      params: 
+        globs: 
+        - "srt*.pivotal"
   - task: upload-tile
     file: pcf-pipelines/tasks/upload-product-and-stemcell/task.yml
     params:
