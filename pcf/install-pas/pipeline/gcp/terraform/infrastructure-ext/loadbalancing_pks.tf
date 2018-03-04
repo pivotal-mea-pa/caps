@@ -1,24 +1,21 @@
-// PKS API Health check
-resource "google_compute_health_check" "pks-tcp" {
-  name = "${var.prefix}-pks-tcp"
+// PKS public address
+resource "google_compute_address" "pks-api" {
+  name = "${var.prefix}-pks-api"
+}
 
-  check_interval_sec  = 30
-  timeout_sec         = 5
-  healthy_threshold   = 10
-  unhealthy_threshold = 2
+resource "google_dns_record_set" "wildcard-apps-dns" {
+  name         = "*.pks.${var.pcf_ert_domain}."
+  managed_zone = "${data.terraform_remote_state.bootstrap.vpc_dns_zone_name}"
 
-  tcp_health_check {
-    port = "9021"
-  }
+  type = "A"
+  ttl  = 300
+
+  rrdatas = ["${google_compute_global_address.pks-api.address}"]
 }
 
 // PKS target pool
 resource "google_compute_target_pool" "pks-api" {
   name = "${var.prefix}-pks-api"
-
-  health_checks = [
-    "${google_compute_health_check.pks-tcp.name}",
-  ]
 }
 
 // PKS API tcp forwarding rule
@@ -27,7 +24,7 @@ resource "google_compute_forwarding_rule" "pks-api" {
   target      = "${google_compute_target_pool.pks-api.self_link}"
   port_range  = "9021"
   ip_protocol = "TCP"
-  ip_address  = "${google_compute_address.cf-tcp.address}"
+  ip_address  = "${google_compute_address.pks-api.address}"
 }
 
 // PKS UAA tcp forwarding rule
@@ -36,5 +33,5 @@ resource "google_compute_forwarding_rule" "pks-uaa" {
   target      = "${google_compute_target_pool.pks-api.self_link}"
   port_range  = "8443"
   ip_protocol = "TCP"
-  ip_address  = "${google_compute_address.cf-tcp.address}"
+  ip_address  = "${google_compute_address.pks-api.address}"
 }
