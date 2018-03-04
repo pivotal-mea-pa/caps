@@ -78,14 +78,15 @@ variable "ert_errands_to_disable" {
   default = "none"
 }
 
-variable "mysql_monitor_recipient_email" {
-  type = "string"
-}
-
 # List of products to install. This should be a comma separated list of 
 # 'product_name:product_slug/product_version_regex' as required by the pipeline at
 # https://github.com/pivotal-cf/pcf-pipelines/tree/master/upgrade-tile.
 variable "products" {
+  type = "string"
+}
+
+# Email to send mysql service health alerts
+variable "mysql_monitor_recipient_email" {
   type = "string"
 }
 
@@ -101,7 +102,7 @@ variable "bootstrap_state_prefix" {
   type = "string"
 }
 
-variable "automation_pipeline_url" {
+variable "automation_pipelines_url" {
   default = "https://github.com/mevansam/automation-pipelines.git"
 }
 
