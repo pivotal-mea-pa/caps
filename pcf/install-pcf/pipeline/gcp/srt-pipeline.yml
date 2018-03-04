@@ -40,13 +40,22 @@ resources:
     product_version: {{opsman_major_minor_version}}
     sort_by: semver
 
-- name: pivnet-elastic-runtime
+- name: pas-tile
   type: pivnet
   source:
     api_token: {{pivnet_token}}
     product_slug: elastic-runtime
     product_version: {{ert_major_minor_version}}
     sort_by: semver
+
+- name: schedule
+  type: time
+  source:
+    interval: 30m
+    start: "12:00 AM"
+    stop: "11:59 PM"
+    location: America/Los_Angeles
+    days: [Sunday, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday]
 
 jobs:
 - name: wipe-env
@@ -217,6 +226,13 @@ jobs:
       OPSMAN_USERNAME: {{opsman_admin_username}}
       OPSMAN_PASSWORD: {{opsman_admin_password}}
 
+- name: pas-tile-regulator
+  plan:
+  - get: schedule
+    trigger: true
+  - get: pas-tile
+    params: { globs: [] }
+
 - name: upload-srt
   serial_groups: [opsman]
   plan:
@@ -227,7 +243,9 @@ jobs:
       trigger: true
       params: {globs: []}
     - get: pivnet-product
-      resource: pivnet-elastic-runtime
+      resource: pas-tile
+      passed: [pas-tile-regulator]
+      trigger: true
       params:
         globs:
         - "srt*.pivotal"
@@ -258,10 +276,11 @@ jobs:
   - aggregate:
     - get: automation-pipelines
     - get: pcf-pipelines
-    - get: pivnet-opsmgr
+    - get: pivnet-product
+      resource: pas-tile
       passed: [upload-srt]
       trigger: true
-      params: {globs: []}
+      params: { globs: [] }
     - get: terraform-state
   - task: configure-srt
     file: automation-pipelines/pcf/install-pcf/pipeline/tasks/configure-srt/task.yml

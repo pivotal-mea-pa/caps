@@ -43,9 +43,9 @@ for p in $(echo -e "$PRODUCTS"); do
   i=$(($i+1)) && j=$(($j+1))
 done
 
-[[ $i -ne 0 ]] && \
-  cat pipeline$i.yml \
-    | yaml_patch -o $INSTALL_PCF_PATCHES/schedule-patch.yml > pipeline0.yml
+# [[ $i -ne 0 ]] && \
+#   cat pipeline$i.yml \
+#     | yaml_patch -o $INSTALL_PCF_PATCHES/schedule-patch.yml > pipeline0.yml
 
 set +x
 
@@ -54,7 +54,7 @@ fly -t default sync
 
 fly -t default set-pipeline -n \
   -p install-pcf \
-  -c pipeline0.yml \
+  -c pipeline$i.yml \
   -v "bootstrap_state_bucket=$BOOTSTRAP_STATE_BUCKET" \
   -v "bootstrap_state_prefix=$BOOTSTRAP_STATE_PREFIX" \
   -l params.yml >/dev/null
@@ -63,34 +63,38 @@ fly -t default set-pipeline -n \
 # an idempotent manner if a prior installation is found.
 fly -t default unpause-pipeline -p install-pcf
 
-# set +e
-# bootstrap_state_job_status=$(fly -t default watch \
-#   -j install-pcf/bootstrap-terraform-state 2>&1)
+set +e
+bootstrap_state_job_status=$(fly -t default watch \
+  -j install-pcf/bootstrap-terraform-state 2>&1)
 
-# if [[ "$bootstrap_state_job_status" == "error: job has no builds" ]]; then
+if [[ "$bootstrap_state_job_status" == "error: job has no builds" ]]; then
 
-#   result=0
-#   gsutil ls "gs://$PCF_PAS_STATE_BUCKET" | grep terraform.tfstate >/dev/null 2>&1
-#   [[ $? -eq 0 ]] && \
-#     result=$(gsutil cat "gs://$PCF_PAS_STATE_BUCKET/terraform.tfstate" | jq '.modules[0].resources | length')
+  # Bootstrap the Terraform state if it is 
+  # empty and wait until the job finishes
+  fly -t default trigger-job -j install-pcf/bootstrap-terraform-state
+  fly -t default watch -j install-pcf/bootstrap-terraform-state
 
-#   if [[ $result -eq 0 ]]; then
-#     set -e
+  # Start the install by starting the upload-opsman-image job 
+  fly -t default trigger-job -j install-pcf/upload-opsman-image
+  
+  # result=0
+  # gsutil ls "gs://$PCF_PAS_STATE_BUCKET" | grep terraform.tfstate >/dev/null 2>&1
+  # [[ $? -eq 0 ]] && \
+  #   result=$(gsutil cat "gs://$PCF_PAS_STATE_BUCKET/terraform.tfstate" | jq '.modules[0].resources | length')
 
-#     # Bootstrap the Terraform state if it is 
-#     # empty and wait until the job finishes
-#     fly -t default trigger-job -j install-pcf/bootstrap-terraform-state
-#     fly -t default watch -j install-pcf/bootstrap-terraform-state
+  # if [[ $result -eq 0 ]]; then
+  #   set -e
 
-#     # Start the install by starting the upload-opsman-image job 
-#     fly -t default trigger-job -j install-pcf/upload-opsman-image
-#   else
-#     echo "Terraform state is not empty so the install pipeline will not be run!"
-#   fi
-# else
-#   set -e
-# fi
+  #   # Bootstrap the Terraform state if it is 
+  #   # empty and wait until the job finishes
+  #   fly -t default trigger-job -j install-pcf/bootstrap-terraform-state
+  #   fly -t default watch -j install-pcf/bootstrap-terraform-state
 
-fly -t default trigger-job -j install-pcf/bootstrap-terraform-state
-fly -t default watch -j install-pcf/bootstrap-terraform-state
-fly -t default trigger-job -j install-pcf/upload-opsman-image
+  #   # Start the install by starting the upload-opsman-image job 
+  #   fly -t default trigger-job -j install-pcf/upload-opsman-image
+  # else
+  #   echo "Terraform state is not empty so the install pipeline will not be run!"
+  # fi
+else
+  set -e
+fi
