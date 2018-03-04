@@ -17,7 +17,7 @@
     - get: schedule
       trigger: true
     - get: ${product_name}-tile
-      params: { globs: [] }
+      params: { globs: [{{product_globs}}] }
 
 - op: add
   path: /jobs/-
@@ -33,10 +33,8 @@
       - get: pivnet-product
         resource: ${product_name}-tile
         passed: [${product_name}-tile-regulator]
-        #trigger: true
-        params:
-          globs:
-          - {{product_globs}}
+        trigger: true
+        params: { globs: [{{product_globs}}] }
     - task: wait-opsman-clear
       file: pcf-pipelines/tasks/wait-opsman-clear/task.yml
       params:
@@ -57,3 +55,13 @@
         PIVNET_API_TOKEN: {{pivnet_token}}
         NO_PROXY: ""
         OM_IP: ""
+    - task: stage-and-apply-tile
+      file: automation-pipelines/pcf/install-pcf/pipeline/tasks/stage-product/task.yml
+      params:
+        OPSMAN_CLIENT_ID: {{opsman_client_id}}
+        OPSMAN_CLIENT_SECRET: {{opsman_client_secret}}
+        OPSMAN_USERNAME: {{opsman_admin_username}}
+        OPSMAN_PASSWORD: {{opsman_admin_password}}
+        OPSMAN_DOMAIN_OR_IP_ADDRESS: {{opsman_domain_or_ip_address}}
+        STAGE_AND_APPLY: true
+        ENABLE_ERRANDS: {{enable_errands}}

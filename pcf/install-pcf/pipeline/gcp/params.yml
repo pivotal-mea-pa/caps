@@ -200,7 +200,8 @@ internet_connected: false
 #
 
 
-# Set to true to enable all errands, false to disable all or leave blank to keep states the same.
+# Set to true to enable all errands for product tiles other than the pas tile, 
+# false to disable all or leave blank to keep states the same.
 enable_errands:
 
 # The globs regular expression for the PivNet resource to download the product

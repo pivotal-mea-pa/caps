@@ -231,7 +231,7 @@ jobs:
   - get: schedule
     trigger: true
   - get: pas-tile
-    params: { globs: [] }
+    params: { globs: ["srt*.pivotal"] }
 
 - name: upload-srt
   serial_groups: [opsman]
@@ -246,9 +246,7 @@ jobs:
       resource: pas-tile
       passed: [pas-tile-regulator]
       trigger: true
-      params:
-        globs:
-        - "srt*.pivotal"
+      params: { globs: ["srt*.pivotal"] }
   - task: upload-tile
     file: pcf-pipelines/tasks/upload-product-and-stemcell/task.yml
     params:
@@ -262,13 +260,14 @@ jobs:
       OPSMAN_CLIENT_ID: ""
       OPSMAN_CLIENT_SECRET: ""
   - task: stage-tile
-    file: pcf-pipelines/tasks/stage-product/task.yml
+    file: automation-pipelines/pcf/install-pcf/pipeline/tasks/stage-product/task.yml
     params:
       OPSMAN_DOMAIN_OR_IP_ADDRESS: {{opsman_domain_or_ip_address}}
       OPSMAN_USERNAME: {{opsman_admin_username}}
       OPSMAN_PASSWORD: {{opsman_admin_password}}
       OPSMAN_CLIENT_ID: ""
       OPSMAN_CLIENT_SECRET: ""
+      STAGE_AND_APPLY: false
 
 - name: deploy-srt
   serial_groups: [opsman]
