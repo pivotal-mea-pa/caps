@@ -3,7 +3,7 @@ resource "google_compute_address" "pks-api" {
   name = "${var.prefix}-pks-api"
 }
 
-resource "google_dns_record_set" "wildcard-apps-dns" {
+resource "google_dns_record_set" "pks-api" {
   name         = "*.pks.${var.pcf_ert_domain}."
   managed_zone = "${data.terraform_remote_state.bootstrap.vpc_dns_zone_name}"
 
