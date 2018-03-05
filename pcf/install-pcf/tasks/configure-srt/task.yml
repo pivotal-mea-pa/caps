@@ -9,6 +9,7 @@ image_resource:
 inputs:
 - name: automation-pipelines
 - name: pcf-pipelines
+- name: pivnet-product
 - name: terraform-state
 
 run:
