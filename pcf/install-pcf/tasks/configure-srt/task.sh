@@ -14,13 +14,9 @@ INSTALLED_VERSION=$(om-linux \
 
 if [[ -n "$INSTALLED_VERSION" ]]; then
   NEW_VERSION=$(cat pivnet-product/version | cut -d'#' -f1)
-
-  if [[ "$NEW_VERSION" != "$INSTALLED_VERSION" ]]; then
-    ./pcf-pipelines/tasks/apply-changes/task.sh
-  else
-    echo "The Application Runtime version $NEW_VERSION has already been installed. No further changes will be made."
-    exit 0
-  fi
+  echo "The Application Runtime version $INSTALLED_VERSION has already been configured."
+  echo "No further changes required to install version $NEW_VERSION."
+  exit 0
 fi
 
 #
