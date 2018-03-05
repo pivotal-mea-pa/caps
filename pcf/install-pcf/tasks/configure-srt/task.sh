@@ -21,7 +21,7 @@ if [[ -n "$INSTALLED_VERSION" ]]; then
     echo "The Application Runtime version $NEW_VERSION has already been installed. No further changes will be made."
     exit 0
   fi
-if
+fi
 
 #
 # Configure and install SRT when a installed version is not found
