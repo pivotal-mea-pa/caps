@@ -15,8 +15,30 @@ resource "google_sql_database_instance" "master" {
 
       authorized_networks = [
         {
-          name  = "ert"
-          value = "${google_compute_subnetwork.subnet-ert.ip_cidr_range}"
+          name  = "nat-1"
+          value = "${google_compute_instance.nat-gateway-pri.network_interface.0.access_config.0.assigned_nat_ip}"
+        },
+        {
+          name = "nat-2"
+
+          value = "${
+            data.terraform_remote_state.bootstrap.max_azs >= 2
+              ? google_compute_instance.nat-gateway-sec.network_interface.0.access_config.0.assigned_nat_ip
+              : google_compute_instance.nat-gateway-pri.network_interface.0.access_config.0.assigned_nat_ip
+          }"
+        },
+        {
+          name = "nat-3"
+
+          value = "${
+            data.terraform_remote_state.bootstrap.max_azs >= 2
+              ? google_compute_instance.nat-gateway-ter.network_interface.0.access_config.0.assigned_nat_ip
+              : google_compute_instance.nat-gateway-pri.network_interface.0.access_config.0.assigned_nat_ip
+          }"
+        },
+        {
+          name  = "all"
+          value = "0.0.0.0/0"
         },
       ]
     }
