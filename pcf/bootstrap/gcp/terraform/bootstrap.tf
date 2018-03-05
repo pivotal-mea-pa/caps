@@ -31,7 +31,7 @@ module "bootstrap" {
 
   vpc_subnet_start = "0"
 
-  max_azs = "1"
+  max_azs = "${var.max_azs}"
 
   bastion_host_name = "vpn"
 

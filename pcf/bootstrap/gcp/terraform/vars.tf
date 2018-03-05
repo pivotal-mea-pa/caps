@@ -34,6 +34,10 @@ variable "vpc_name" {
   type = "string"
 }
 
+variable "max_azs" {
+  default = "1"
+}
+
 variable "vpc_dns_zone" {
   type = "string"
 }

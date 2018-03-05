@@ -38,6 +38,10 @@ output "vpc_name" {
   value = "${var.vpc_name}"
 }
 
+output "max_azs" {
+  value = "${var.max_azs}"
+}
+
 output "vpc_dns_zone" {
   value = "${var.vpc_dns_zone}"
 }
