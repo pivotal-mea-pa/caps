@@ -74,7 +74,7 @@ if [ "$(echo $UNSTAGED_PRODUCT | jq '. | length')" -gt 0 ]; then
       curl -path /api/installation_settings \
       | jq -r '.products[] | select(.identifier=="'$PRODUCT_NAME'") | select(.prepared==true) | .product_version')
   
-    if [[ "$INSTALLED_VERSION" !=  "$full_version" ]]; then
+    if [[ -n "$INSTALLED_VERSION" && "$INSTALLED_VERSION" !=  "$full_version" ]]; then
       om-linux --target "https://${OPSMAN_DOMAIN_OR_IP_ADDRESS}" \
         --skip-ssl-validation \
         --client-id "${OPSMAN_CLIENT_ID}" \
@@ -87,6 +87,8 @@ if [ "$(echo $UNSTAGED_PRODUCT | jq '. | length')" -gt 0 ]; then
 
       ./pcf-pipelines/tasks/toggle-errands/task.sh
       ./pcf-pipelines/tasks/apply-changes/task.sh
+    else
+      echo "Skipping staging and upgrade of $PRODUCT_NAME version $desired_version as a prior installed version was not found."
     fi
 
   else
