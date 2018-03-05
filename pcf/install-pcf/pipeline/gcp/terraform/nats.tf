@@ -16,7 +16,7 @@ resource "google_compute_instance" "nat-gateway-pri" {
     subnetwork = "${google_compute_subnetwork.subnet-ops-manager.name}"
 
     access_config {
-      // Ephemeral
+      nat_ip = "${google_compute_address.nat-primary.address}"
     }
   }
 
@@ -47,7 +47,7 @@ resource "google_compute_instance" "nat-gateway-sec" {
     subnetwork = "${google_compute_subnetwork.subnet-ops-manager.name}"
 
     access_config {
-      // Ephemeral
+      nat_ip = "${google_compute_address.nat-secondary.address}"
     }
   }
 
@@ -78,7 +78,7 @@ resource "google_compute_instance" "nat-gateway-ter" {
     subnetwork = "${google_compute_subnetwork.subnet-ops-manager.name}"
 
     access_config {
-      // Ephemeral
+      nat_ip = "${google_compute_address.nat-tertiary.address}"
     }
   }
 
@@ -87,6 +87,18 @@ resource "google_compute_instance" "nat-gateway-ter" {
   sudo sh -c 'echo 1 > /proc/sys/net/ipv4/ip_forward'
   sudo iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
   EOF
+}
+
+resource "google_compute_address" "nat-primary" {
+  name = "${var.prefix}-nat-primary"
+}
+
+resource "google_compute_address" "nat-secondary" {
+  name = "${var.prefix}-nat-secondary"
+}
+
+resource "google_compute_address" "nat-tertiary" {
+  name = "${var.prefix}-nat-tertiary"
 }
 
 resource "google_compute_route" "nat-primary" {
