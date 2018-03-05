@@ -301,8 +301,11 @@ jobs:
       PCF_ERT_DOMAIN: {{pcf_ert_domain}}
       SYSTEM_DOMAIN: {{system_domain}}
       APPS_DOMAIN: {{apps_domain}}
-      OPS_MGR_USR: {{opsman_admin_username}}
-      OPS_MGR_PWD: {{opsman_admin_password}}
+      OPSMAN_DOMAIN_OR_IP_ADDRESS: {{opsman_domain_or_ip_address}}
+      OPSMAN_USERNAME: {{opsman_admin_username}}
+      OPSMAN_PASSWORD: {{opsman_admin_password}}
+      OPSMAN_CLIENT_ID: ""
+      OPSMAN_CLIENT_SECRET: ""
       terraform_prefix: {{gcp_resource_prefix}}
       db_diego_username: {{db_diego_username}}
       db_diego_password: {{db_diego_password}}
@@ -371,8 +374,6 @@ jobs:
       azure_droplets_container:
       azure_packages_container:
       azure_resources_container:
-      OPSMAN_CLIENT_ID: ""
-      OPSMAN_CLIENT_SECRET: ""
   - task: disable-errands
     file: pcf-pipelines/tasks/disable-errands/task.yml
     params:
