@@ -2,7 +2,30 @@
 
 set -euo pipefail
 
-export OPSMAN_DOMAIN_OR_IP_ADDRESS="opsman.$PCF_ERT_DOMAIN"
+INSTALLED_VERSION=$(om-linux \
+  --skip-ssl-validation \
+  --client-id "${OPSMAN_CLIENT_ID}" \
+  --client-secret "${OPSMAN_CLIENT_SECRET}" \
+  --username "${OPSMAN_USERNAME}" \
+  --password "${OPSMAN_PASSWORD}" \
+  --target "https://${OPSMAN_DOMAIN_OR_IP_ADDRESS}" \
+  curl -path /api/installation_settings \
+  | jq -r '.products[] | select(.identifier=="'cf'") | select(.prepared==true) | .product_version')
+
+if [[ -n "$INSTALLED_VERSION" ]]; then
+  NEW_VERSION=$(cat pivnet-product/version | cut -d'#' -f1)
+
+  if [[ "$NEW_VERSION" != "$INSTALLED_VERSION" ]]; then
+    ./pcf-pipelines/tasks/apply-changes/task.sh
+  else
+    echo "The Application Runtime version $NEW_VERSION has already been installed. No further changes will be made."
+    exit 0
+  fi
+if
+
+#
+# Configure and install SRT when a installed version is not found
+#
 
 source pcf-pipelines/functions/generate_cert.sh
 
