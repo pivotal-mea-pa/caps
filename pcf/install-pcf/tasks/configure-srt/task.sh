@@ -20,6 +20,13 @@ if [[ -n "$INSTALLED_VERSION" ]]; then
 fi
 
 #
+# Copy creds to environment variables required by dependent script functions
+#
+
+export OPS_MGR_USR=$OPSMAN_USERNAME
+export OPS_MGR_PWD=$OPSMAN_PASSWORD
+
+#
 # Configure and install SRT when a installed version is not found
 #
 
