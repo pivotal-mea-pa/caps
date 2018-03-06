@@ -9,7 +9,7 @@ resource "google_compute_instance" "ops-manager" {
   boot_disk {
     initialize_params {
       image = "${var.pcf_opsman_image_name}"
-      size  = 50
+      size  = 160
     }
   }
 
