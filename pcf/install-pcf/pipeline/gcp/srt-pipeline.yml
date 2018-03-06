@@ -265,6 +265,14 @@ jobs:
       OM_IP: ""
       OPSMAN_CLIENT_ID: ""
       OPSMAN_CLIENT_SECRET: ""
+  - task: wait-opsman-clear
+    file: pcf-pipelines/tasks/wait-opsman-clear/task.yml
+    params:
+      OPSMAN_CLIENT_ID: {{opsman_client_id}}
+      OPSMAN_CLIENT_SECRET: {{opsman_client_secret}}
+      OPSMAN_USERNAME: {{opsman_admin_username}}
+      OPSMAN_PASSWORD: {{opsman_admin_password}}
+      OPSMAN_DOMAIN_OR_IP_ADDRESS: {{opsman_domain_or_ip_address}}
   - task: stage-tile
     file: automation-pipelines/pcf/install-pcf/tasks/stage-product/task.yml
     params:
@@ -287,14 +295,6 @@ jobs:
       trigger: true
       params: { globs: [] }
     - get: terraform-state
-  - task: wait-opsman-clear
-    file: pcf-pipelines/tasks/wait-opsman-clear/task.yml
-    params:
-      OPSMAN_CLIENT_ID: {{opsman_client_id}}
-      OPSMAN_CLIENT_SECRET: {{opsman_client_secret}}
-      OPSMAN_USERNAME: {{opsman_admin_username}}
-      OPSMAN_PASSWORD: {{opsman_admin_password}}
-      OPSMAN_DOMAIN_OR_IP_ADDRESS: {{opsman_domain_or_ip_address}}
   - task: configure-srt
     file: automation-pipelines/pcf/install-pcf/tasks/configure-srt/task.yml
     params:
