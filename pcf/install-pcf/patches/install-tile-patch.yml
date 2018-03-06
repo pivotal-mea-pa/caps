@@ -17,9 +17,10 @@
     - get: schedule
       trigger: true
     - get: ${product_name}-tile
-      params:
-        globs:
-        - {{product_globs}}
+      params: {globs: []}
+      # params:
+      #   globs:
+      #   - {{product_globs}}
 
 - op: add
   path: /jobs/-

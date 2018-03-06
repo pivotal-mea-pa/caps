@@ -231,9 +231,10 @@ jobs:
   - get: schedule
     trigger: true
   - get: pas-tile
-    params: 
-      globs: 
-      - "srt*.pivotal"
+    params: {globs: []}
+    # params: 
+    #   globs: 
+    #   - "srt*.pivotal"
 
 - name: upload-srt
   serial_groups: [opsman]
