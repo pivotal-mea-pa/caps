@@ -6,9 +6,6 @@ resources:
   source:
     uri: {{automation_pipelines_url}}
     branch: {{automation_pipelines_branch}}
-    paths: 
-    - pcf/bootstrap/**
-    - pcf/install-and-upgrade/**
 
 jobs:
 - name: bootstrap
