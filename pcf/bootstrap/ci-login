@@ -7,7 +7,9 @@ usage () {
 
 [[ -n $2 ]] || usage
 
-cd $2/terraform
+root_dir=$(cd $(dirname $BASH_SOURCE) && pwd)
+
+cd $root_dir/$2/terraform
 tf_output=$(terraform output) || exit 1
 cd - >/dev/null 2>&1
 
@@ -25,7 +27,7 @@ if [[ $1 == login ]]; then
     echo -e "\nCreating SSH tunnel in order to access Concourse."
     ps -ef | awk '/8080\:127\.0\.0\.1\:8080/{ print $2 }' | sudo xargs kill -15
     ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no \
-        -i $2/terraform/vpn-admin-ssh-key.pem vpn_admin@$host \
+        -i $root_dir/$2/terraform/vpn-admin-ssh-key.pem vpn_admin@$host \
         -L 8080:127.0.0.1:8080 -N >/dev/null 2>&1 &
 
     sleep 2

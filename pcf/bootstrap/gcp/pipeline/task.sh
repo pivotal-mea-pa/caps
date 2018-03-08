@@ -7,8 +7,8 @@ export GOOGLE_CREDENTIALS=$(pwd)/.gcp-service-account.json
 gcloud auth activate-service-account --key-file=$GOOGLE_CREDENTIALS
 
 TERRAFORM_PARAMS_PATH=automation/pcf/bootstrap/gcp/params
-INSTALL_PCF_PIPELINE_PATH=automation/pcf/install-pcf/pipeline
-INSTALL_PCF_PATCHES=automation/pcf/install-pcf/patches
+INSTALL_PCF_PIPELINE_PATH=automation/pcf/install-and-upgrade/pipeline
+INSTALL_PCF_PATCHES=automation/pcf/install-and-upgrade/patches
 
 terraform init $TERRAFORM_PARAMS_PATH
 
@@ -53,7 +53,7 @@ fly -t default login -c $CONCOURSE_URL -u ''$CONCOURSE_USER'' -p ''$CONCOURSE_PA
 fly -t default sync
 
 fly -t default set-pipeline -n \
-  -p install-pcf \
+  -p PCF_install-and-upgrade \
   -c pipeline$i.yml \
   -v "bootstrap_state_bucket=$BOOTSTRAP_STATE_BUCKET" \
   -v "bootstrap_state_prefix=$BOOTSTRAP_STATE_PREFIX" \
@@ -61,21 +61,21 @@ fly -t default set-pipeline -n \
 
 # Unpause the pipeline. The pipeline jobs will rerun in 
 # an idempotent manner if a prior installation is found.
-fly -t default unpause-pipeline -p install-pcf
+fly -t default unpause-pipeline -p PCF_install-and-upgrade
 
 set +e
 bootstrap_state_job_status=$(fly -t default watch \
-  -j install-pcf/bootstrap-terraform-state 2>&1)
+  -j PCF_install-and-upgrade/bootstrap-terraform-state 2>&1)
 
 if [[ "$bootstrap_state_job_status" == "error: job has no builds" ]]; then
 
   # Bootstrap the Terraform state if it is 
   # empty and wait until the job finishes
-  fly -t default trigger-job -j install-pcf/bootstrap-terraform-state
-  fly -t default watch -j install-pcf/bootstrap-terraform-state
+  fly -t default trigger-job -j PCF_install-and-upgrade/bootstrap-terraform-state
+  fly -t default watch -j PCF_install-and-upgrade/bootstrap-terraform-state
 
   # Start the install by starting the upload-opsman-image job 
-  fly -t default trigger-job -j install-pcf/upload-opsman-image
+  fly -t default trigger-job -j PCF_install-and-upgrade/upload-opsman-image
   
   # result=0
   # gsutil ls "gs://$PCF_PAS_STATE_BUCKET" | grep terraform.tfstate >/dev/null 2>&1
@@ -87,11 +87,11 @@ if [[ "$bootstrap_state_job_status" == "error: job has no builds" ]]; then
 
   #   # Bootstrap the Terraform state if it is 
   #   # empty and wait until the job finishes
-  #   fly -t default trigger-job -j install-pcf/bootstrap-terraform-state
-  #   fly -t default watch -j install-pcf/bootstrap-terraform-state
+  #   fly -t default trigger-job -j PCF_install-and-upgrade/bootstrap-terraform-state
+  #   fly -t default watch -j PCF_install-and-upgrade/bootstrap-terraform-state
 
   #   # Start the install by starting the upload-opsman-image job 
-  #   fly -t default trigger-job -j install-pcf/upload-opsman-image
+  #   fly -t default trigger-job -j PCF_install-and-upgrade/upload-opsman-image
   # else
   #   echo "Terraform state is not empty so the install pipeline will not be run!"
   # fi

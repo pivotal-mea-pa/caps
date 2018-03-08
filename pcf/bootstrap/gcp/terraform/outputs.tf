@@ -62,6 +62,10 @@ output "automation_pipelines_branch" {
   value = "${var.automation_pipelines_branch}"
 }
 
+output "backups_bucket" {
+  value = "${google_storage_bucket.backups.name}"
+}
+
 output "pas_terraform_state_bucket" {
   value = "${google_storage_bucket.pas-terraform-state.name}"
 }

@@ -8,7 +8,7 @@ resources:
     branch: {{automation_pipelines_branch}}
     paths: 
     - pcf/bootstrap/**
-    - pcf/install-pcf/**
+    - pcf/install-and-upgrade/**
 
 jobs:
 - name: bootstrap

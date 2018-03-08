@@ -6,7 +6,7 @@ cp -r pcf-pipelines-orig/* pcf-pipelines/
 
 # Copy terraform templates that patch the pcf-piplines 
 # templates and attaches PCF VPC it to the bootstrap VPC.
-cp automation-pipelines/pcf/install-pcf/pipeline/$IAAS_TYPE/terraform/* \
+cp automation-pipelines/pcf/install-and-upgrade/pipeline/$IAAS_TYPE/terraform/* \
     pcf-pipelines/install-pcf/$IAAS_TYPE/terraform/
 
 # Save service key to a json file as Terraform GCS 
