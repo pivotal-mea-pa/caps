@@ -24,7 +24,8 @@ outputs:
 
 params:
   TRACE:
-  SSH_KEY:
+
+  ## Ops Manager credentials
   OPSMAN_HOST:
   OPSMAN_USER:
   OPSMAN_PASSWD:

@@ -11,7 +11,6 @@ fi
 set -e
 
 source job-session/env
-bosh_vm_creds
 bosh_client_creds
 
 backup::download "$BACKUP_TYPE" "$BACKUP_TARGET" "$RESTORE_TIMESTAMP" director

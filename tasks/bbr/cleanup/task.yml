@@ -7,21 +7,23 @@ image_resource:
     repository: appbricks/automation-tools
 
 inputs:
-- name: automation-pipelines
-- name: job-session
+- name: automation-pipeline
+- name: backup-timestamp
 
 run:
-  path: automation-pipelines/tasks/bbr/restore-director/task.sh
+  path: automation-pipelines/tasks/bbr/cleanup/task.sh
+
+outputs:
+- name: restore-timestamp
 
 params:
   TRACE: Y
 
-  RESTORE_TIMESTAMP:
-
-  ## BBR Credentials 
-  BBR_SSH_KEY:
-  BOSH_HOST:
   BACKUP_TIMESTAMP:
+
+  ## Backups older than the number of days 
+  ## given in this variable will be deleted.
+  BACKUP_AGE:
 
   ## Backup storage backend type should be one of 'scp', 's3', 'swift'
   BACKUP_TYPE:

@@ -21,22 +21,13 @@ jobs:
   plan:
 
   - aggregate:
-    - get: pipeline-src
+    - get: automation-pipelines
     - get: daily
       trigger: true
 
   - task: prepare-backup
     privileged: true
-    config:
-      platform: linux
-      image_resource: *automation-image-resource
-      inputs:
-      - name: pipeline-src
-      run:
-        path: pipeline-src/scripts/prepare-opsman-backup.sh
-      outputs:
-      - name: backup-timestamp
-      - name: job-session
+    task: automation-pipelines/pcf/backup-and-restore/tasks/prepare-opsman-backup/task.yml
     params: 
       <<: *backup-restore-common-params
       <<: *backup-restore-storage-params
@@ -45,48 +36,21 @@ jobs:
 
     - task: backup-opsman
       privileged: true
-      config:
-        platform: linux
-        image_resource: *automation-image-resource
-        inputs:
-        - name: pipeline-src
-        - name: backup-timestamp
-        - name: job-session
-        run:
-          path: pipeline-src/scripts/backup-opsman.sh
+      task: automation-pipelines/pcf/backup-and-restore/tasks/backup-opsman/task.yml
       params: 
         <<: *backup-restore-common-params
         <<: *backup-restore-storage-params
 
     - task: backup-director
       privileged: true
-      config:
-        platform: linux
-        image_resource: *automation-image-resource
-        inputs:
-        - name: pipeline-src
-        - name: backup-timestamp
-        - name: job-session
-        run:
-          path: pipeline-src/scripts/bbr-backup-director.sh
+      task: automation-pipelines/tasks/bbr/backup-director/task.yml
       params: 
         <<: *backup-restore-common-params
         <<: *backup-restore-storage-params
     
     - task: backup-pas-tile
       privileged: true
-      config:
-        platform: linux
-        image_resource: *automation-image-resource
-        inputs:
-        - name: pipeline-src
-        - name: backup-timestamp
-        - name: job-session
-        run:
-          path: pipeline-src/scripts/bbr-backup-deployment.sh
-          args:
-          - "cf-."
-          - "ert"
+      task: automation-pipelines/tasks/bbr/backup-pas/task.yml
       params: 
         <<: *backup-restore-common-params
         <<: *backup-restore-storage-params
@@ -97,10 +61,10 @@ jobs:
       platform: linux
       image_resource: *automation-image-resource
       inputs:
-      - name: pipeline-src
+      - name: automation-pipelines
       - name: backup-timestamp
       run:
-        path: pipeline-src/scripts/cleanup-backup.sh
+        path: automation-pipelines/scripts/cleanup-backup.sh
         args: 
         - {{backup_age}}
     params: 
@@ -118,7 +82,7 @@ jobs:
   plan:
 
   - aggregate:
-    - get: pipeline-src
+    - get: automation-pipelines
 
   - task: import-ops-manager-backup
     privileged: true
@@ -126,9 +90,9 @@ jobs:
       platform: linux
       image_resource: *automation-image-resource
       inputs:
-      - name: pipeline-src
+      - name: automation-pipelines
       run:
-        path: pipeline-src/scripts/restore-opsman.sh
+        path: automation-pipelines/scripts/restore-opsman.sh
       outputs:
       - name: job-session
     params: 
@@ -142,10 +106,10 @@ jobs:
       platform: linux
       image_resource: *automation-image-resource
       inputs:
-      - name: pipeline-src
+      - name: automation-pipelines
       - name: job-session
       run:
-        path: pipeline-src/scripts/bbr-restore-director.sh
+        path: automation-pipelines/scripts/bbr-restore-director.sh
     params: 
       <<: *backup-restore-common-params
       <<: *backup-restore-storage-params
@@ -156,7 +120,7 @@ jobs:
       platform: linux
       image_resource: *automation-image-resource
       run:
-        path: pipeline-src/scripts/opsman-apply-changes.sh
+        path: automation-pipelines/scripts/opsman-apply-changes.sh
     params: 
       <<: *backup-restore-common-params
 
@@ -170,7 +134,7 @@ jobs:
   plan:
 
   - aggregate:
-    - get: pipeline-src
+    - get: automation-pipelines
 
   - task: prepare-opsman-restore
     privileged: true
@@ -178,9 +142,9 @@ jobs:
       platform: linux
       image_resource: *automation-image-resource
       inputs:
-      - name: pipeline-src
+      - name: automation-pipelines
       run:
-        path: pipeline-src/scripts/prepare-opsman-restore.sh
+        path: automation-pipelines/scripts/prepare-opsman-restore.sh
       outputs:
       - name: job-session
     params: 
@@ -193,10 +157,10 @@ jobs:
       platform: linux
       image_resource: *automation-image-resource
       inputs:
-      - name: pipeline-src
+      - name: automation-pipelines
       - name: job-session
       run:
-        path: pipeline-src/scripts/opsman-scale-deployment.sh
+        path: automation-pipelines/scripts/opsman-scale-deployment.sh
         args: ["cf-", "mysql", 1]
     params: 
       <<: *backup-restore-common-params
@@ -207,10 +171,10 @@ jobs:
       platform: linux
       image_resource: *automation-image-resource
       inputs:
-      - name: pipeline-src
+      - name: automation-pipelines
       - name: job-session
       run:
-        path: pipeline-src/scripts/opsman-apply-changes.sh
+        path: automation-pipelines/scripts/opsman-apply-changes.sh
         args: [no_errands]
     params: 
       <<: *backup-restore-common-params
@@ -221,10 +185,10 @@ jobs:
       platform: linux
       image_resource: *automation-image-resource
       inputs:
-      - name: pipeline-src
+      - name: automation-pipelines
       - name: job-session
       run:
-        path: pipeline-src/scripts/bbr-restore-deployment.sh
+        path: automation-pipelines/scripts/bbr-restore-deployment.sh
         args: ["cf-.", "ert"]
     params: 
       <<: *backup-restore-common-params
@@ -236,10 +200,10 @@ jobs:
       platform: linux
       image_resource: *automation-image-resource
       inputs:
-      - name: pipeline-src
+      - name: automation-pipelines
       - name: job-session
       run:
-        path: pipeline-src/scripts/opsman-scale-deployment.sh
+        path: automation-pipelines/scripts/opsman-scale-deployment.sh
         args: ["cf-", "mysql", 3]
     params: 
       <<: *backup-restore-common-params
@@ -250,17 +214,17 @@ jobs:
       platform: linux
       image_resource: *automation-image-resource
       inputs:
-      - name: pipeline-src
+      - name: automation-pipelines
       - name: job-session
       run:
-        path: pipeline-src/scripts/opsman-apply-changes.sh
+        path: automation-pipelines/scripts/opsman-apply-changes.sh
         args: [no_errands]
     params: 
       <<: *backup-restore-common-params
 
 resources:
 
-- name: pipeline-src
+- name: automation-pipelines
   type: git
   source:
     uri: {{pipeline_src_repo}}

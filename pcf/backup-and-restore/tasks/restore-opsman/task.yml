@@ -1,28 +1,25 @@
 ---
 platform: linux
 
-# This task configuraiton file is used for testing only. The following fly command acts as the test harness.
-#
-# fly options: -i pipeline-src=../ -i restore-timestamp=.test-data -o job-session=.test-data
-
 image_resource:
   type: docker-image
   source: 
     repository: appbricks/automation-tools
 
 inputs:
-- name: pipeline-src
+- name: automation-pipelines
 - name: restore-timestamp
 
 run:
-  path: pipeline-src/scripts/restore-opsman.sh
+  path: automation-pipelines/pcf/backup-and-restore/tasks/restore-opsman/task.sh
 
 outputs:
 - name: job-session
 
 params:
-  TRACE:
-  SSH_KEY:
+  TRACE: Y
+
+  ## Ops Manager credentials
   OPSMAN_HOST:
   OPSMAN_USER:
   OPSMAN_PASSWD:

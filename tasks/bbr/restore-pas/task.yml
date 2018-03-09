@@ -8,22 +8,23 @@ image_resource:
 
 inputs:
 - name: automation-pipelines
-- name: backup-timestamp
 - name: job-session
 
 run:
-  path: automation-pipelines/tasks/bbr/common/backup-deployment.sh
-  args: ["cf-.", "ert"]
+  path: automation-pipelines/tasks/bbr/common/restore-deployment.sh
+  args: ["cf-.*", "ert"]
 
 params:
-  TRACE:
+  TRACE: Y
 
-  BBR_SSH_KEY:
+  RESTORE_TIMESTAMP:
+
+  ## Bosh Credentials
+  CA_CERT:
   BOSH_HOST:
-  BOSH_VM_USER:
-  BOSH_VM_PASSWD:
-  BACKUP_TIMESTAMP:
-
+  BOSH_CLIENT:
+  BOSH_CLIENT_SECRET:
+  
   ## Backup storage backend type should be one of 'scp', 's3', 'swift'
   BACKUP_TYPE:
   BACKUP_TARGET:

@@ -15,8 +15,9 @@ run:
   path: automation-pipelines/tasks/bbr/backup-director/task.sh
 
 params:
-  TRACE:
+  TRACE: Y
 
+  ## BBR Credentials 
   BBR_SSH_KEY:
   BOSH_HOST:
   BACKUP_TIMESTAMP:
