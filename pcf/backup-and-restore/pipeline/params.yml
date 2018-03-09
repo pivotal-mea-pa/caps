@@ -1,0 +1,108 @@
+---
+
+# Set this value to non-empty value 
+# to trace task shell execution
+trace_tasks:
+
+# Locale to use for timer resources
+locale: 
+
+# Slack notification endpoint
+slack_webhook_url: 
+slack_username: 
+
+# SSH Key to inject into the image to allow SSH to remote 
+# instances containing resources that need to be accessible
+ssh_key:
+
+# The github user to use when updating version files
+git_user: 
+
+# The github key to use when updating version files
+git_key:
+
+# The User token to use when downloading stemcells and 
+# releases from the Pivotal Website (network.pivotal.io)
+pivnet_api_token:
+
+# The automation-pipelines repository
+pipeline_src_repo: https://github.com/appbricks/ops-automation-pipelines.git
+pipeline_src_repo_branch: master
+
+# Docker registry access
+docker_insecure_registries:
+docker_registry_user: 
+docker_registry_pass: 
+
+# Docker image paths
+automation_image: appbricks/automation-tools
+
+# Concourse pool repository and path contain 
+# locks and metadata for backup and restore jobs
+environment_pool_repo: 
+environment_pool_branch: master
+environment_pool_path: 
+environment: 
+
+# Pivotal Ops Manager host and credentials
+opsman_host: 
+opsman_user:
+opsman_passwd:
+opsman_ssh_user: 
+opsman_ssh_passwd:
+opsman_pass_phrase: 
+pcfops_client: 
+pcfops_secret: 
+
+# Backup time and interval
+backup_interval:
+backup_interval_start:
+backup_interval_end:
+
+# Backups older than this age will be cleaned up
+backup_age: 2
+
+# Type of backup storage backend 
+backup_storage_type: scp
+
+# Destination target name where backup folder will be uploaded to
+backup_target:
+
+## Credentials for uploading backups via SCP to a remote host path
+backup_ssh_user: 
+backup_ssh_host: 
+backup_ssh_password: 
+
+## Credentials for S3 access
+s3_endpoint: 
+s3_bucket_name: 
+aws_access_key_id: 
+aws_secret_access_key: 
+aws_region: 
+
+## OpenStack credentials for Swift access
+os_auth_url: 
+os_identity_api_version: 
+os_project_domain_name: 
+os_project_name: 
+os_user_domain_name: 
+os_username: 
+os_password: 
+
+## Mount options to upload backups via a remote mount. This
+## removes the need to have sufficient disk space on the 
+## concourse workers as backups are downloaded directly
+## to the mount path. Only one of S3FS/Cloudfuse/NFS
+## maybe used. To configure the correct mount simply
+## set the mount path.
+mount_options:
+
+## S3FS mount path
+s3fs_mount:
+s3fs_use_path_request_style:
+
+## Cloudfuse mount path
+cloudfuse_mount:
+
+## NFS mount path
+nfs_mount:
