@@ -82,7 +82,7 @@ pcf_pas_runtime_type: srt
 
 pivnet_token: "${var.pivnet_token}"
 
-opsman_domain_or_ip_address: opsman.pas.${vpc_dns_zone}
+opsman_domain_or_ip_address: opsman.pas.${var.vpc_dns_zone}
 opsman_client_id:
 opsman_client_secret:
 opsman_admin_username: admin
