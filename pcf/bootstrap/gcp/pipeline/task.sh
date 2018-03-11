@@ -81,7 +81,7 @@ set -x
 # Wait until the Pivotal Application Service
 # tile has been successfully deployed.
 b=1
-while ; do
+while true; do
   r=$(fly -t default watch -j PCF_install-and-upgrade/deploy-${PCF_PAS_RUNTIME_TYPE} -b $b 2>&1)
   [[ $? -eq 0 ]] && break
 
