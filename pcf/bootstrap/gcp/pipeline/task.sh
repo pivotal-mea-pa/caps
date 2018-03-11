@@ -76,8 +76,6 @@ if [[ "$bootstrap_state_job_status" == "error: job has no builds" ]]; then
   fly -t default trigger-job -j PCF_install-and-upgrade/upload-opsman-image
 fi
 
-set -x
-
 # Wait until the Pivotal Application Service
 # tile has been successfully deployed.
 b=1
@@ -96,7 +94,8 @@ while true; do
 done
 
 set -e
-exit 0
+
+set -x
 
 # Setup buildpack upgrade pipeline
 om_cli="om --skip-ssl-validation 
