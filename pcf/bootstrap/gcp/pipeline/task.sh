@@ -131,6 +131,11 @@ fly -t default unpause-pipeline -p PCF_upgrade-buildpacks
 
 # Setup backup and restore pipeline
 
+rm -fr .terraform/
+rm terraform.tfstate
+
+terraform init $TERRAFORM_PARAMS_PATH
+
 terraform apply -auto-approve \
   -var "bootstrap_state_bucket=$BOOTSTRAP_STATE_BUCKET" \
   -var "bootstrap_state_prefix=$BOOTSTRAP_STATE_PREFIX" \
