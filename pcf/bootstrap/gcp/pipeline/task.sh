@@ -124,7 +124,8 @@ fly -t default set-pipeline -n \
   -v "pivnet_token=$PIVNET_API_TOKEN" \
   -v "cf_api_uri=$cf_api_uri" \
   -v "cf_user=$cf_user" \
-  -v "cf_password=$cf_password" >/dev/null
+  -v "cf_password=$cf_password" \
+  -v "git_private_key=" >/dev/null
 
 fly -t default unpause-pipeline -p PCF_upgrade-buildpacks
 
