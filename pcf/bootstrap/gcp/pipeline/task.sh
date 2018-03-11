@@ -96,8 +96,6 @@ done
 
 set -e
 
-set -x
-
 # Setup buildpack upgrade pipeline
 om_cli="om --skip-ssl-validation 
   --target https://${OPSMAN_DOMAIN_OR_IP_ADDRESS} 
