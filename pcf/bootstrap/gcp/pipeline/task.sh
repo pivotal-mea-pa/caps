@@ -10,6 +10,7 @@ TERRAFORM_PARAMS_PATH=automation/pcf/bootstrap/gcp/params
 INSTALL_PCF_PIPELINE_PATH=automation/pcf/install-and-upgrade/pipeline
 INSTALL_PCF_PATCHES=automation/pcf/install-and-upgrade/patches
 BACKUP_AND_RESTORE_PIPELINE_PATH=automation/pcf/backup-and-restore/pipeline
+BACKUP_AND_RESTORE_PATCHES=automation/pcf/backup-and-restore/patches
 
 terraform init $TERRAFORM_PARAMS_PATH
 
@@ -116,16 +117,19 @@ cf_api_uri=https://api.$cf_sys_domain
 echo -e "\n" | cf login --skip-ssl-validation -a $cf_api_uri -u $cf_user -p $cf_password
 
 curl -L https://raw.githubusercontent.com/pivotal-cf/pcf-pipelines/master/upgrade-buildpacks/pipeline.yml \
-  -o upgrade-buildpacks-pipeline.yml
+  -o upgrade-buildpacks-pipeline-orig.yml
 
+cat upgrade-buildpacks-pipeline-orig.yml \
+    | yaml_patch -o $BACKUP_AND_RESTORE_PATCHES/upgrade-buildpacks-patch.yml \
+    > upgrade-buildpacks-pipeline.yml
+    
 fly -t default set-pipeline -n \
   -p PCF_upgrade-buildpacks \
   -c upgrade-buildpacks-pipeline.yml \
   -v "pivnet_token=$PIVNET_API_TOKEN" \
   -v "cf_api_uri=$cf_api_uri" \
   -v "cf_user=$cf_user" \
-  -v "cf_password=$cf_password" \
-  -v "git_private_key=" >/dev/null
+  -v "cf_password=$cf_password" >/dev/null
 
 fly -t default unpause-pipeline -p PCF_upgrade-buildpacks
 

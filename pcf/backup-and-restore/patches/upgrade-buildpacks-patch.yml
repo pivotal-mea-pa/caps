@@ -1,0 +1,7 @@
+---
+
+- op: replace
+  path: /resources/name=pcf-pipelines/source
+  value:
+    uri: https://github.com/pivotal-cf/pcf-pipelines
+    branch: master
