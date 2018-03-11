@@ -80,6 +80,14 @@ automation_pipelines_branch: ${var.automation_pipelines_branch}
 pcf_pas_state_bucket: ${google_storage_bucket.pas-terraform-state.name}
 pcf_pas_runtime_type: srt
 
+pivnet_token: "${var.pivnet_token}"
+
+opsman_domain_or_ip_address: opsman.pas.${vpc_dns_zone}
+opsman_client_id:
+opsman_client_secret:
+opsman_admin_username: admin
+opsman_admin_password: ${random_string.opsman-admin-password.result}
+
 product: '${var.products}'
 
 PIPELINE_VARS

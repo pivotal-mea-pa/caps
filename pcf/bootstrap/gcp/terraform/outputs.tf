@@ -51,8 +51,12 @@ output "vpc_dns_zone_name" {
 }
 
 #
-# PCF Install params
+# Concourse Automation common attributes
 #
+
+output "locale" {
+  value = "${var.locale}"
+}
 
 output "automation_pipelines_url" {
   value = "${var.automation_pipelines_url}"
@@ -62,9 +66,9 @@ output "automation_pipelines_branch" {
   value = "${var.automation_pipelines_branch}"
 }
 
-output "backups_bucket" {
-  value = "${google_storage_bucket.backups.name}"
-}
+#
+# PCF Install params
+#
 
 output "pas_terraform_state_bucket" {
   value = "${google_storage_bucket.pas-terraform-state.name}"
@@ -103,6 +107,30 @@ output "ert_errands_to_disable" {
 
 output "mysql_monitor_recipient_email" {
   value = "${var.mysql_monitor_recipient_email}"
+}
+
+#
+# Backup / Restore pipeline params
+#
+
+output "backups_bucket" {
+  value = "${google_storage_bucket.backups.name}"
+}
+
+output "backup_interval" {
+  value = "${var.backup_interval}"
+}
+
+output "backup_interval_start" {
+  value = "${var.backup_interval_start}"
+}
+
+output "backup_interval_end" {
+  value = "${var.backup_interval_end}"
+}
+
+output "backup_age" {
+  value = "${var.backup_age}"
 }
 
 #

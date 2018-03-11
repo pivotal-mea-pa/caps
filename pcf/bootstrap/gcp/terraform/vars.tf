@@ -47,6 +47,23 @@ variable "vpc_parent_dns_zone_name" {
 }
 
 #
+# Concourse Automation common attributes
+#
+
+# Locale to use for time resources
+variable "locale" {
+  type = "string"
+}
+
+variable "automation_pipelines_url" {
+  default = "https://github.com/mevansam/automation-pipelines.git"
+}
+
+variable "automation_pipelines_branch" {
+  default = "master"
+}
+
+#
 # PCF Install params
 #
 
@@ -95,6 +112,26 @@ variable "mysql_monitor_recipient_email" {
 }
 
 #
+# Backup / Restore pipeline params
+#
+
+variable "backup_interval" {
+  default = "1h"
+}
+
+variable "backup_interval_start" {
+  default = "02:00 AM"
+}
+
+variable "backup_interval_end" {
+  default = "02:30 AM"
+}
+
+variable "backup_age" {
+  default = "2"
+}
+
+#
 # Bootstrap state attributes
 #
 
@@ -104,12 +141,4 @@ variable "bootstrap_state_bucket" {
 
 variable "bootstrap_state_prefix" {
   type = "string"
-}
-
-variable "automation_pipelines_url" {
-  default = "https://github.com/mevansam/automation-pipelines.git"
-}
-
-variable "automation_pipelines_branch" {
-  default = "master"
 }

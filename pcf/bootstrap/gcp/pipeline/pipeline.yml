@@ -27,4 +27,10 @@ jobs:
       BOOTSTRAP_STATE_PREFIX: {{bootstrap_state_prefix}}
       PCF_PAS_STATE_BUCKET: {{pcf_pas_state_bucket}}
       PCF_PAS_RUNTIME_TYPE: {{pcf_pas_runtime_type}}
+      PIVNET_API_TOKEN: {{pivnet_token}}
+      OPSMAN_DOMAIN_OR_IP_ADDRESS: {{opsman_domain_or_ip_address}}
+      OPSMAN_CLIENT_ID: {{opsman_client_id}}
+      OPSMAN_CLIENT_SECRET: {{opsman_client_secret}}
+      OPSMAN_USERNAME: {{opsman_admin_username}}
+      OPSMAN_PASSWORD: {{opsman_admin_password}}
       PRODUCTS: {{product}}

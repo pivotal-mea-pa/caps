@@ -18,6 +18,8 @@ data "template_file" "pcf-pipeline-parameters" {
 
     vpc_name = "${data.terraform_remote_state.bootstrap.vpc_name}"
 
+    locale = "${data.terraform_remote_state.bootstrap.locale}"
+
     automation_pipelines_url    = "${data.terraform_remote_state.bootstrap.automation_pipelines_url}"
     automation_pipelines_branch = "${data.terraform_remote_state.bootstrap.automation_pipelines_branch}"
 
@@ -34,6 +36,12 @@ data "template_file" "pcf-pipeline-parameters" {
     ert_errands_to_disable     = "${data.terraform_remote_state.bootstrap.ert_errands_to_disable}"
 
     mysql_monitor_recipient_email = "${data.terraform_remote_state.bootstrap.mysql_monitor_recipient_email}"
+
+    backup_interval       = "${data.terraform_remote_state.bootstrap.backup_interval}"
+    backup_interval_start = "${data.terraform_remote_state.bootstrap.backup_interval_start}"
+    backup_interval_end   = "${data.terraform_remote_state.bootstrap.backup_interval_end}"
+    backup_age            = "${data.terraform_remote_state.bootstrap.backup_age}"
+    backups_bucket        = "${data.terraform_remote_state.bootstrap.backups_bucket}"
   }
 }
 
