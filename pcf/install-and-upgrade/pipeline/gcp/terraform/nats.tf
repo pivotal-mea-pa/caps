@@ -6,6 +6,8 @@ resource "google_compute_instance" "nat-gateway-pri" {
   can_ip_forward = true
   tags           = ["${var.prefix}-nat-instance", "nat-traverse"]
 
+  allow_stopping_for_update = true
+
   boot_disk {
     initialize_params {
       image = "ubuntu-1404-trusty-v20160610"
@@ -37,6 +39,8 @@ resource "google_compute_instance" "nat-gateway-sec" {
   can_ip_forward = true
   tags           = ["${var.prefix}-nat-instance", "nat-traverse"]
 
+  allow_stopping_for_update = true
+
   boot_disk {
     initialize_params {
       image = "ubuntu-1404-trusty-v20160610"
@@ -67,6 +71,8 @@ resource "google_compute_instance" "nat-gateway-ter" {
   zone           = "${var.gcp_zone_3}"
   can_ip_forward = true
   tags           = ["${var.prefix}-nat-instance", "nat-traverse"]
+
+  allow_stopping_for_update = true
 
   boot_disk {
     initialize_params {
