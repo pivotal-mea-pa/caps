@@ -1,0 +1,28 @@
+---
+platform: linux
+
+image_resource:
+  type: docker-image
+  source: 
+    repository: appbricks/automation-tools
+
+inputs:
+- name: automation-pipelines
+- name: job-session
+
+run:
+  path: automation-pipelines/tasks/opsman/common/scale-deployment.sh
+  args: ["cf-", "mysql", 1]
+
+params:
+  TRACE: Y
+
+  ## Ops Manager credentials
+  OPSMAN_HOST:
+  OPSMAN_USER:
+  OPSMAN_PASSWD:
+  OPSMAN_SSH_USER:
+  OPSMAN_SSH_PASSWD:
+  OPSMAN_PASS_PHRASE:
+  PCFOPS_CLIENT:
+  PCFOPS_SECRET:
