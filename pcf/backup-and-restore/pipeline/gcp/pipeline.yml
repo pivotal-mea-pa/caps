@@ -23,7 +23,7 @@ jobs:
   - aggregate:
     - get: automation-pipelines
     - get: daily
-      # trigger: true
+      trigger: true
 
   - task: prepare-backup
     privileged: true
@@ -47,13 +47,15 @@ jobs:
       params: 
         <<: *backup-restore-common-params
         <<: *backup-restore-storage-params
-    
-    - task: backup-pas-tile
-      privileged: true
-      file: automation-pipelines/tasks/bbr/backup-pas/task.yml
-      params: 
-        <<: *backup-restore-common-params
-        <<: *backup-restore-storage-params
+
+    # PAS Tile backup in GCP fails during the DB backup stage. This will be fixed with PCF 2.1.x
+    #    
+    # - task: backup-pas-tile
+    #   privileged: true
+    #   file: automation-pipelines/tasks/bbr/backup-pas/task.yml
+    #   params: 
+    #     <<: *backup-restore-common-params
+    #     <<: *backup-restore-storage-params
 
   - task: cleanup
     privileged: true
