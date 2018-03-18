@@ -16,9 +16,15 @@ run:
 params:
   TRACE: Y
 
+  # The IAAS where the instances are deployed
+  IAAS:
+
   # GCP Credentials
   GCP_SERVICE_ACCOUNT_KEY:
   GCP_PROJECT_ID:
+
+  # A label to identify this environments instanes
+  LABEL:
 
   # Bosh login credentials
   BOSH_HOST:
@@ -27,11 +33,12 @@ params:
   CA_CERT:
 
   # Space separated regex patterns to match with 
-  # deployment names of deployments to stop 
+  # deployment names of deployments to stop. If
+  # this variable is not provided then all 
+  # deployments Bosh manages will be started.
   DEPLOYMENTS:
 
-  # The IAAS where the instances are deployed
-  IAAS:
-
-  # A label to identify this environment
-  LABEL:
+  # Number of seconds to wait for all resumed
+  # instances of all deployments specified in
+  # $DEPLOYMENTS to reach a stopped state.
+  TIMEOUT:
