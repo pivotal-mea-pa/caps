@@ -25,8 +25,11 @@ iaas::start_stop_instances_by_ip "$IAAS" "$LABEL" start $instance_ips
 
 # Ensure instances of all deployments to be started have 
 # a "stopped" state before starting the deployment via Bosh
+
+TIMEOUT=${TIMEOUT:-120}
+
 i=0
-while [[ $i -lt 120 ]]; do
+while [[ $i -lt $TIMEOUT ]]; do
 
     j=0
     for d in $DEPLOYMENTS; do
