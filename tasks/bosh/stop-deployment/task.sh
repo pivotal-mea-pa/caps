@@ -13,6 +13,9 @@ if [[ -e job-session/env ]]; then
 fi
 
 bosh::login_client "$CA_CERT" "$BOSH_HOST" "$BOSH_CLIENT" "$BOSH_CLIENT_SECRET"
+
+DEPLOYMENTS=${DEPLOYMENTS:-$(bosh::deployment .*)}
+
 bosh::deployment_action disable_resurrection $DEPLOYMENTS
 bosh::deployment_action stop $DEPLOYMENTS
 instance_ips=""

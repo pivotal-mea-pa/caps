@@ -13,6 +13,9 @@ if [[ -e job-session/env ]]; then
 fi
 
 bosh::login_client "$CA_CERT" "$BOSH_HOST" "$BOSH_CLIENT" "$BOSH_CLIENT_SECRET"
+
+DEPLOYMENTS=${DEPLOYMENTS:-$(bosh::deployment .*)}
+
 instance_ips=""
 for d in $DEPLOYMENTS; do
     ips=$(bosh::get_job_instance_fields "$d" ".*" "4")
