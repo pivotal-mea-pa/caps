@@ -1,0 +1,68 @@
+---
+
+jobs:
+
+#
+# Stop PCF
+#
+
+- name: stop-pcf
+  serial: true
+  serial_groups: [stop-and-start]
+  plan:
+
+  - get: automation-pipelines
+
+  - task: new-job-session
+    file: automation-pipelines/tasks/opsman/new-job-session/task.yml
+    params: 
+      <<: *params
+
+  - task: stop-deployments
+    file: automation-pipelines/tasks/bosh/stop-deployment/task.yml
+    params: 
+      <<: *params
+
+#
+# Start PCF
+#
+
+- name: start-pcf
+  serial: true
+  serial_groups: [stop-and-start]
+  plan:
+
+  - get: automation-pipelines
+
+  - task: new-job-session
+    file: automation-pipelines/tasks/opsman/new-job-session/task.yml
+    params: 
+      <<: *params
+
+  - task: start-deployments
+    file: automation-pipelines/tasks/bosh/start-deployment/task.yml
+    params: 
+      <<: *params
+
+resources:
+
+- name: automation-pipelines
+  type: git
+  source:
+    uri: {{automation_pipelines_url}}
+    branch: {{automation_pipelines_branch}}
+
+shared:
+
+- &params
+  TRACE: {{trace_tasks}}
+  IAAS: {{iaas}}
+  GCP_PROJECT_ID: {{gcp_project_id}}
+  GCP_SERVICE_ACCOUNT_KEY: {{gcp_service_account_key}}
+  LABEL: {{label}}
+  OPSMAN_HOST: {{opsman_host}}
+  OPSMAN_USER: {{opsman_user}}
+  OPSMAN_PASSWD: {{opsman_passwd}}
+  OPSMAN_PASS_PHRASE: {{opsman_pass_phrase}}
+  PCFOPS_CLIENT: {{pcfops_client}}
+  PCFOPS_SECRET: {{pcfops_secret}}

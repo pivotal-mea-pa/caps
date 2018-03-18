@@ -1,0 +1,37 @@
+---
+
+# Set this value to non-empty value 
+# to trace task shell execution
+trace_tasks:
+
+# The underlying IAAS
+iaas: iaas
+
+# GCP project
+gcp_project_id: ${gcp_project}
+
+# GCP service account json
+gcp_service_account_key: |
+  ${gcp_credentials}
+
+# IAAS instance tag to use for when 
+# searching for instances in deployment
+# to start or stop
+label: ${vpc_name}-pcf
+
+# Locale to use for timer resources
+locale: ${locale}
+
+# The automation-pipelines repository
+automation_pipelines_url: ${automation_pipelines_url}
+automation_pipelines_branch: ${automation_pipelines_branch}
+
+# Pivotal Ops Manager host and credentials
+opsman_host: opsman.pas.${vpc_dns_zone}
+opsman_user: admin
+opsman_passwd: '${opsman_admin_password}'
+opsman_ssh_user: ubuntu
+opsman_ssh_passwd:
+opsman_pass_phrase: '${opsman_admin_password}'
+pcfops_client:
+pcfops_secret:
