@@ -5,7 +5,7 @@ set -euo pipefail
 cp -r pcf-pipelines-orig/* pcf-pipelines/
 
 patch=${PATCH:-yes}
-tf_template_path=${TF_TEMPLATE_PATH:-automation-pipelines/pcf/install-and-upgrade/terraform/$IAAS_TYPE/terraform}
+tf_template_path=${TF_TEMPLATE_PATH:-automation-pipelines/pcf/install-and-upgrade/terraform/$IAAS_TYPE}
 
 # Copy terraform templates that patch the pcf-piplines 
 # templates and attaches PCF VPC it to the bootstrap VPC.
