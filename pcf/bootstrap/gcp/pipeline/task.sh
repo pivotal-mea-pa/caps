@@ -7,27 +7,26 @@ export GOOGLE_CREDENTIALS=$(pwd)/.gcp-service-account.json
 gcloud auth activate-service-account --key-file=$GOOGLE_CREDENTIALS
 
 TERRAFORM_PARAMS_PATH=automation/pcf/bootstrap/gcp/params
-INSTALL_PCF_PIPELINE_PATH=automation/pcf/install-and-upgrade/pipeline
-INSTALL_PCF_PATCHES=automation/pcf/install-and-upgrade/patches
-BACKUP_AND_RESTORE_PIPELINE_PATH=automation/pcf/backup-and-restore/pipeline
-BACKUP_AND_RESTORE_PATCHES=automation/pcf/backup-and-restore/patches
-
-terraform init $TERRAFORM_PARAMS_PATH
 
 #
 # Configure install PCF pipeline
 #
 
+INSTALL_AND_UPGRADE_PIPELINE_PATH=automation/pcf/install-and-upgrade/pipeline
+INSTALL_AND_UPGRADE_PATCHES=automation/pcf/install-and-upgrade/patches
+
+terraform init $TERRAFORM_PARAMS_PATH
+
 terraform apply -auto-approve \
   -var "bootstrap_state_bucket=$BOOTSTRAP_STATE_BUCKET" \
-  -var "bootstrap_state_prefix=$BOOTSTRAP_STATE_PREFIX" \
-  -var "params_template_file=$INSTALL_PCF_PIPELINE_PATH/gcp/params.yml" \
+  -var "bootstrap_state_prefix=$BOOTSTRAP_STATE_PREFIX" \ƒ
+  -var "params_template_file=$INSTALL_AND_UPGRADE_PIPELINE_PATH/gcp/params.yml" \
   -var "params_file=install-pcf-params.yml" \
   $TERRAFORM_PARAMS_PATH >/dev/null
 
 set -x
 
-cp $INSTALL_PCF_PIPELINE_PATH/gcp/${PCF_PAS_RUNTIME_TYPE}-pipeline.yml install-pcf-pipeline0.yml
+cp $INSTALL_AND_UPGRADE_PIPELINE_PATH/gcp/${PCF_PAS_RUNTIME_TYPE}-pipeline.yml install-pcf-pipeline0.yml
 i=0 && j=1
 for p in $(echo -e "$PRODUCTS"); do 
   product_name=${p%:*}
@@ -35,7 +34,7 @@ for p in $(echo -e "$PRODUCTS"); do
   product_slug=${slug_and_version%/*}
   product_version=${slug_and_version#*/}
 
-  eval "echo \"$(cat $INSTALL_PCF_PATCHES/install-tile-patch.yml)\"" \
+  eval "echo \"$(cat $INSTALL_AND_UPGRADE_PATCHES/install-tile-patch.yml)\"" \
     > ${product_name}-patch.yml
 
   cat install-pcf-pipeline$i.yml \
@@ -118,7 +117,7 @@ curl -L https://raw.githubusercontent.com/pivotal-cf/pcf-pipelines/master/upgrad
   -o upgrade-buildpacks-pipeline-orig.yml
 
 cat upgrade-buildpacks-pipeline-orig.yml \
-    | yaml_patch -o $BACKUP_AND_RESTORE_PATCHES/upgrade-buildpacks-patch.yml \
+    | yaml_patch -o $INSTALL_AND_UPGRADE_PATCHES/upgrade-buildpacks-patch.yml \
     > upgrade-buildpacks-pipeline.yml
     
 fly -t default set-pipeline -n \
@@ -132,6 +131,8 @@ fly -t default set-pipeline -n \
 fly -t default unpause-pipeline -p PCF_upgrade-buildpacks
 
 # Setup backup and restore pipeline
+
+BACKUP_AND_RESTORE_PIPELINE_PATH=automation/pcf/backup-and-restore/pipeline
 
 rm -fr .terraform/
 rm terraform.tfstate
@@ -154,3 +155,26 @@ fly -t default unpause-pipeline -p PCF_backup-and-restore
 
 # Setup start and stop pipeline
 
+START_AND_STOP_PIPELINE_PATH=automation/pcf/stop-and-start/pipeline
+
+rm -fr .terraform/
+rm terraform.tfstate
+
+terraform init $TERRAFORM_PARAMS_PATH
+
+terraform apply -auto-approve \
+  -var "bootstrap_state_bucket=$BOOTSTRAP_STATE_BUCKET" \
+  -var "bootstrap_state_prefix=$BOOTSTRAP_STATE_PREFIX" \
+  -var "params_template_file=$START_AND_STOP_PIPELINE_PATH/gcp/params.yml" \
+  -var "params_file=start-and-stop-params.yml" \
+  $TERRAFORM_PARAMS_PATH >/dev/null
+
+fly -t default set-pipeline -n \
+  -p PCF_start-and-stop \
+  -c $START_AND_STOP_PIPELINE_PATH/gcp/pipeline.yml \
+  -l start-and-stop-params.yml \
+  -v autos3_url=$AUTOS3_URL \
+  -v autos3_access_key=$AUTOS3_ACCESS_KEY \
+  -v autos3_secret_key=$AUTOS3_SECRET_KEY >/dev/null
+
+fly -t default unpause-pipeline -p PCF_start-and-stop

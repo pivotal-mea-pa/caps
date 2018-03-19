@@ -20,6 +20,9 @@ jobs:
       CONCOURSE_URL: {{concourse_url}}
       CONCOURSE_USER: {{concourse_user}}
       CONCOURSE_PASSWORD: {{concourse_password}}
+      AUTOS3_URL: ((autos3_url))
+      AUTOS3_ACCESS_KEY: ((autos3_access_key))
+      AUTOS3_SECRET_KEY: ((autos3_secret_key))
       GOOGLE_PROJECT: {{google_project}}
       GOOGLE_CREDENTIALS_JSON: {{google_credentials_json}}
       GOOGLE_REGION: {{google_region}}
