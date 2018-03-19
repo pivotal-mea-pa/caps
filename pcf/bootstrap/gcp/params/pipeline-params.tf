@@ -39,9 +39,16 @@ data "template_file" "pcf-pipeline-parameters" {
 
     backup_interval       = "${data.terraform_remote_state.bootstrap.backup_interval}"
     backup_interval_start = "${data.terraform_remote_state.bootstrap.backup_interval_start}"
-    backup_interval_end   = "${data.terraform_remote_state.bootstrap.backup_interval_end}"
+    backup_interval_stop  = "${data.terraform_remote_state.bootstrap.backup_interval_stop}"
     backup_age            = "${data.terraform_remote_state.bootstrap.backup_age}"
     backups_bucket        = "${data.terraform_remote_state.bootstrap.backups_bucket}"
+
+    pcf_stop_trigger_start  = "${data.terraform_remote_state.bootstrap.pcf_stop_trigger_stop}"
+    pcf_stop_trigger_stop   = "${data.terraform_remote_state.bootstrap.pcf_stop_trigger_stop}"
+    pcf_stop_trigger        = "${data.terraform_remote_state.bootstrap.pcf_stop_trigger}"
+    pcf_start_trigger_start = "${data.terraform_remote_state.bootstrap.pcf_start_trigger_start}"
+    pcf_start_trigger_stop  = "${data.terraform_remote_state.bootstrap.pcf_start_trigger_stop}"
+    pcf_start_trigger       = "${data.terraform_remote_state.bootstrap.pcf_start_trigger}"
   }
 }
 

@@ -32,7 +32,7 @@ pcfops_secret:
 # Backup time and interval
 backup_interval: ${backup_interval}
 backup_interval_start: ${backup_interval_start}
-backup_interval_end: ${backup_interval_end}
+backup_interval_stop: ${backup_interval_stop}
 
 # Backups older than this age will be cleaned up
 backup_age: ${backup_age}
