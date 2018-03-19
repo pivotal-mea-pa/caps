@@ -6,6 +6,11 @@ echo "$GOOGLE_CREDENTIALS_JSON" > .gcp-service-account.json
 export GOOGLE_CREDENTIALS=$(pwd)/.gcp-service-account.json
 gcloud auth activate-service-account --key-file=$GOOGLE_CREDENTIALS
 
+# Create a local s3 bucket for pcf automation data
+mc config host add auto $AUTOS3_URL $AUTOS3_ACCESS_KEY $AUTOS3_SECRET_KEY
+[[ "$(mc ls auto/ | awk '/pcf\/$/{ print $5 }')" == "pcf/" ]] || \
+  mc mb auto/pcf
+
 TERRAFORM_PARAMS_PATH=automation/pcf/bootstrap/gcp/params
 
 #
@@ -19,7 +24,7 @@ terraform init $TERRAFORM_PARAMS_PATH
 
 terraform apply -auto-approve \
   -var "bootstrap_state_bucket=$BOOTSTRAP_STATE_BUCKET" \
-  -var "bootstrap_state_prefix=$BOOTSTRAP_STATE_PREFIX" \ƒ
+  -var "bootstrap_state_prefix=$BOOTSTRAP_STATE_PREFIX" \
   -var "params_template_file=$INSTALL_AND_UPGRADE_PIPELINE_PATH/gcp/params.yml" \
   -var "params_file=install-pcf-params.yml" \
   $TERRAFORM_PARAMS_PATH >/dev/null
@@ -177,4 +182,10 @@ fly -t default set-pipeline -n \
   -v autos3_access_key=$AUTOS3_ACCESS_KEY \
   -v autos3_secret_key=$AUTOS3_SECRET_KEY >/dev/null
 
-fly -t default unpause-pipeline -p PCF_start-and-stop
+# fly -t default unpause-pipeline -p PCF_start-and-stop
+
+# Create a file that can be used to trigger a
+# stopped job. This file will be versioned by 
+# a sequential number in its name.
+touch started-0
+mc cp started-0 auto/pcf/started/started-0
