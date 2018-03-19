@@ -123,12 +123,40 @@ variable "backup_interval_start" {
   default = "02:00 AM"
 }
 
-variable "backup_interval_end" {
+variable "backup_interval_stop" {
   default = "02:30 AM"
 }
 
 variable "backup_age" {
   default = "2"
+}
+
+#
+# Stop / Start event pipeline trigger time periods
+#
+
+variable "pcf_stop_trigger_start" {
+  default = "12:00 AM"
+}
+
+variable "pcf_stop_trigger_stop" {
+  default = "11:59 PM"
+}
+
+variable "pcf_stop_trigger" {
+  default = "false"
+}
+
+variable "pcf_start_trigger_start" {
+  default = "12:00 AM"
+}
+
+variable "pcf_start_trigger_stop" {
+  default = "11:59 PM"
+}
+
+variable "pcf_start_trigger" {
+  default = "false"
 }
 
 #

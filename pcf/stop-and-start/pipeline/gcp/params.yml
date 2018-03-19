@@ -19,9 +19,6 @@ gcp_service_account_key: |
 # to start or stop
 label: ${vpc_name}-pcf
 
-# Locale to use for timer resources
-locale: ${locale}
-
 # The automation-pipelines repository
 automation_pipelines_url: ${automation_pipelines_url}
 automation_pipelines_branch: ${automation_pipelines_branch}
@@ -35,3 +32,18 @@ opsman_ssh_passwd:
 opsman_pass_phrase: '${opsman_admin_password}'
 pcfops_client:
 pcfops_secret:
+
+# Locale to use for timer resources
+locale: ${locale}
+
+# Time period during which the stop 
+# schedule will trigger a stop event
+stop_trigger_start: ${pcf_stop_trigger_start}
+stop_trigger_stop: ${pcf_stop_trigger_stop}
+stop_trigger: ${pcf_stop_trigger}
+
+# Time period during which the start 
+# schedule will trigger a stop event
+start_trigger_start: ${pcf_start_trigger_start}
+start_trigger_stop: ${pcf_start_trigger_stop}
+start_trigger: ${pcf_start_trigger}

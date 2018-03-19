@@ -125,12 +125,40 @@ output "backup_interval_start" {
   value = "${var.backup_interval_start}"
 }
 
-output "backup_interval_end" {
-  value = "${var.backup_interval_end}"
+output "backup_interval_stop" {
+  value = "${var.backup_interval_stop}"
 }
 
 output "backup_age" {
   value = "${var.backup_age}"
+}
+
+#
+# Stop / Start pipeline event trigger time periods
+#
+
+output "pcf_stop_trigger_start" {
+  value = "${var.pcf_stop_trigger_start}"
+}
+
+output "pcf_stop_trigger_stop" {
+  value = "${var.pcf_stop_trigger_stop}"
+}
+
+output "pcf_stop_trigger" {
+  value = "${var.pcf_stop_trigger}"
+}
+
+output "pcf_start_trigger_start" {
+  value = "${var.pcf_start_trigger_start}"
+}
+
+output "pcf_start_trigger_stop" {
+  value = "${var.pcf_start_trigger_stop}"
+}
+
+output "pcf_start_trigger" {
+  value = "${var.pcf_start_trigger}"
 }
 
 #

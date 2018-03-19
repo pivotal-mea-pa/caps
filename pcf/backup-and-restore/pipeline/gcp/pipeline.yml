@@ -160,7 +160,7 @@ resources:
     interval: {{backup_interval}}
     location: {{locale}}
     start: {{backup_interval_start}}
-    stop: {{backup_interval_end}}
+    stop: {{backup_interval_stop}}
 
 shared:
 
