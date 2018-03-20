@@ -398,8 +398,8 @@ jobs:
 
   # This task will block if the environment 
   # has been put into stopped state
-  - task: wait_until_started
-    file: pcf-pipelines/tasks/apply-changes/task.yml
+  - task: wait-until-started
+    file: automation/tasks/automation/wait-for-state/task.yml
     params: 
       WAIT_ON_STATE: started
       AUTOS3_URL: ((autos3_url))
@@ -415,3 +415,12 @@ jobs:
       OPSMAN_PASSWORD: ((opsman_admin_password))
       OPSMAN_CLIENT_ID: ""
       OPSMAN_CLIENT_SECRET: ""
+
+  # Toggle the environment state to started
+  - task: set-started-state
+    file: automation/tasks/automation/toggle-state/task.yml
+    params: 
+      ON_STATE: started
+      AUTOS3_URL: ((autos3_url))
+      AUTOS3_ACCESS_KEY: ((autos3_access_key))
+      AUTOS3_SECRET_KEY: ((autos3_secret_key))

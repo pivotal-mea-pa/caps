@@ -119,7 +119,6 @@ cf_user=$($om_cli credentials -p cf -c .uaa.admin_credentials -f identity)
 cf_password=$($om_cli credentials -p cf -c .uaa.admin_credentials -f password)
 
 cf_api_uri=https://api.$cf_sys_domain
-echo -e "\n" | cf login --skip-ssl-validation -a $cf_api_uri -u $cf_user -p $cf_password
 
 curl -L https://raw.githubusercontent.com/pivotal-cf/pcf-pipelines/master/upgrade-buildpacks/pipeline.yml \
   -o upgrade-buildpacks-pipeline-orig.yml
@@ -200,9 +199,3 @@ fly -t default set-pipeline -n \
   -v "autos3_secret_key=$AUTOS3_SECRET_KEY" >/dev/null
 
 fly -t default unpause-pipeline -p PCF_start-and-stop
-
-# Create a file that can be used to trigger a
-# stopped job. This file will be versioned by 
-# a sequential number in its name.
-touch started-0
-mc cp started-0 auto/pcf/started/started-0

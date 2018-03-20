@@ -28,25 +28,14 @@ jobs:
       OPSMAN_CLIENT_SECRET: ((pcfops_secret))
 
   - task: set-stopped-state
-    config:
-      platform: linux
-      image_resource:
-        type: docker-image
-        source: 
-          repository: appbricks/automation-tools
-      inputs:
-      - name: started
-      run:
-        path: /bin/bash
-        args:
-        - -c
-        - |
-          mc config host add auto $AUTOS3_URL $AUTOS3_ACCESS_KEY $AUTOS3_SECRET_KEY
-          mc find auto/pcf/started --name "started-*" --exec "mc rm {}"
-          
-          version=$(cat started/version)
-          touch stopped-$version
-          mc cp stopped-$version auto/pcf/stopped/stopped-$version
+    file: automation/tasks/automation/toggle-state/task.yml
+    params: 
+      OFF_STATE: started
+      ON_STATE: stopped
+      VERSION_INCREMENT: 0
+      AUTOS3_URL: ((autos3_url))
+      AUTOS3_ACCESS_KEY: ((autos3_access_key))
+      AUTOS3_SECRET_KEY: ((autos3_secret_key))
 
   - task: new-job-session
     file: automation/tasks/opsman/new-job-session/task.yml
@@ -87,26 +76,11 @@ jobs:
       <<: *params
 
   - task: set-started-state
-    config:
-      platform: linux
-      image_resource:
-        type: docker-image
-        source: 
-          repository: appbricks/automation-tools
-      inputs:
-      - name: stopped
-      run:
-        path: /bin/bash
-        args:
-        - -c
-        - |
-          mc config host add auto $AUTOS3_URL $AUTOS3_ACCESS_KEY $AUTOS3_SECRET_KEY
-          mc find auto/pcf/stopped --name "stopped-*" --exec "mc rm {}"
-
-          version=$(($(cat stopped/version)+1))
-          touch started-$version
-          mc cp started-$version auto/pcf/started/started-$version
+    file: automation/tasks/automation/toggle-state/task.yml
     params: 
+      OFF_STATE: stopped
+      ON_STATE: started
+      VERSION_INCREMENT: 1
       AUTOS3_URL: ((autos3_url))
       AUTOS3_ACCESS_KEY: ((autos3_access_key))
       AUTOS3_SECRET_KEY: ((autos3_secret_key))
