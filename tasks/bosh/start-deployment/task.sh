@@ -36,7 +36,6 @@ while [[ $i -lt $TIMEOUT ]]; do
     
         no_vms_not_in_stopped_state=$(bosh::vms_json $(bosh::deployment $d) \
             | jq -r '.[] | select(.process_state != "stopped") | .vm_cid' | wc -l)
-        echo $no_vms_not_in_stopped_state
 
         j=$(($j+$no_vms_not_in_stopped_state))
     done
