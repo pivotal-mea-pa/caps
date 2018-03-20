@@ -38,12 +38,12 @@ locale: ${locale}
 
 # Time period during which the stop 
 # schedule will trigger a stop event
-stop_trigger_start: ${pcf_stop_trigger_start}
-stop_trigger_stop: ${pcf_stop_trigger_stop}
+stop_trigger_start: '${pcf_stop_trigger_start}'
+stop_trigger_stop: '${pcf_stop_trigger_stop}'
 stop_trigger_days: ${pcf_stop_trigger_days}
 
 # Time period during which the start 
 # schedule will trigger a stop event
-start_trigger_start: ${pcf_start_trigger_start}
-start_trigger_stop: ${pcf_start_trigger_stop}
+start_trigger_start: '${pcf_start_trigger_start}'
+start_trigger_stop: '${pcf_start_trigger_stop}'
 start_trigger_days: ${pcf_start_trigger_days}
