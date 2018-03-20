@@ -18,7 +18,7 @@ TERRAFORM_PARAMS_PATH=automation/pcf/bootstrap/gcp/params
 #
 
 INSTALL_AND_UPGRADE_PIPELINE_PATH=automation/pcf/install-and-upgrade/pipeline
-INSTALL_AND_UPGRADE_PATCHES=automation/pcf/install-and-upgrade/patches
+INSTALL_AND_UPGRADE_PATCHES_PATH=automation/pcf/install-and-upgrade/patches
 
 terraform init $TERRAFORM_PARAMS_PATH
 
@@ -39,7 +39,7 @@ for p in $(echo -e "$PRODUCTS"); do
   product_slug=${slug_and_version%/*}
   product_version=${slug_and_version#*/}
 
-  eval "echo \"$(cat $INSTALL_AND_UPGRADE_PATCHES/install-tile-patch.yml)\"" \
+  eval "echo \"$(cat $INSTALL_AND_UPGRADE_PATCHES_PATH/install-tile-patch.yml)\"" \
     > ${product_name}-patch.yml
 
   cat install-pcf-pipeline$i.yml \
@@ -122,7 +122,7 @@ curl -L https://raw.githubusercontent.com/pivotal-cf/pcf-pipelines/master/upgrad
   -o upgrade-buildpacks-pipeline-orig.yml
 
 cat upgrade-buildpacks-pipeline-orig.yml \
-    | yaml_patch -o $INSTALL_AND_UPGRADE_PATCHES/upgrade-buildpacks-patch.yml \
+    | yaml_patch -o $INSTALL_AND_UPGRADE_PATCHES_PATH/upgrade-buildpacks-patch.yml \
     > upgrade-buildpacks-pipeline.yml
     
 fly -t default set-pipeline -n \
@@ -161,6 +161,7 @@ fly -t default unpause-pipeline -p PCF_backup-and-restore
 # Setup start and stop pipeline
 
 START_AND_STOP_PIPELINE_PATH=automation/pcf/stop-and-start/pipeline
+START_AND_STOP_PATCHES_PATH=automation/pcf/stop-and-start/patches
 
 rm -fr .terraform/
 rm terraform.tfstate
@@ -174,9 +175,16 @@ terraform apply -auto-approve \
   -var "params_file=start-and-stop-params.yml" \
   $TERRAFORM_PARAMS_PATH >/dev/null
 
+if [[ $SET_START_STOP_SCHEDULE == true ]]; then
+  cat $START_AND_STOP_PIPELINE_PATH/gcp/pipeline.yml \
+    | yaml_patch -o $START_AND_STOP_PATCHES_PATH/start-stop-schedule.yml > .start-and-stop-pipeline.yml
+else
+  cp $START_AND_STOP_PIPELINE_PATH/gcp/pipeline.yml start-and-stop-pipeline.yml
+fi
+
 fly -t default set-pipeline -n \
   -p PCF_start-and-stop \
-  -c $START_AND_STOP_PIPELINE_PATH/gcp/pipeline.yml \
+  -c start-and-stop-pipeline.yml \
   -l start-and-stop-params.yml \
   -v autos3_url=$AUTOS3_URL \
   -v autos3_access_key=$AUTOS3_ACCESS_KEY \

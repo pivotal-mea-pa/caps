@@ -43,12 +43,12 @@ data "template_file" "pcf-pipeline-parameters" {
     backup_age            = "${data.terraform_remote_state.bootstrap.backup_age}"
     backups_bucket        = "${data.terraform_remote_state.bootstrap.backups_bucket}"
 
-    pcf_stop_trigger_start  = "${data.terraform_remote_state.bootstrap.pcf_stop_trigger_stop}"
-    pcf_stop_trigger_stop   = "${data.terraform_remote_state.bootstrap.pcf_stop_trigger_stop}"
-    pcf_stop_trigger        = "${data.terraform_remote_state.bootstrap.pcf_stop_trigger}"
-    pcf_start_trigger_start = "${data.terraform_remote_state.bootstrap.pcf_start_trigger_start}"
-    pcf_start_trigger_stop  = "${data.terraform_remote_state.bootstrap.pcf_start_trigger_stop}"
-    pcf_start_trigger       = "${data.terraform_remote_state.bootstrap.pcf_start_trigger}"
+    pcf_stop_trigger_start  = "${data.terraform_remote_state.bootstrap.pcf_stop_at}"
+    pcf_stop_trigger_stop   = "${replace(data.terraform_remote_state.bootstrap.pcf_stop_at, ":", "")+1}"
+    pcf_stop_trigger_days   = "${data.terraform_remote_state.bootstrap.pcf_stop_trigger_days}"
+    pcf_start_trigger_start = "${data.terraform_remote_state.bootstrap.pcf_start_at}"
+    pcf_start_trigger_stop  = "${replace(data.terraform_remote_state.bootstrap.pcf_start_at, ":", "")+1}"
+    pcf_start_trigger_days  = "${data.terraform_remote_state.bootstrap.pcf_start_trigger_days}"
   }
 }
 

@@ -90,5 +90,7 @@ opsman_admin_password: ${random_string.opsman-admin-password.result}
 
 product: '${var.products}'
 
+set_start_stop_schedule: ${var.pcf_stop_at != "0" ? "true" : "false"}
+
 PIPELINE_VARS
 }

@@ -135,28 +135,24 @@ variable "backup_age" {
 # Stop / Start event pipeline trigger time periods
 #
 
-variable "pcf_stop_trigger_start" {
-  default = "12:00 AM"
+# Time in 24h format (HH:MM) when deployments in the
+# PCF environment should be stopped and VMs shutdown
+variable "pcf_stop_at" {
+  default = "0"
 }
 
-variable "pcf_stop_trigger_stop" {
-  default = "11:59 PM"
+variable "pcf_stop_trigger_days" {
+  default = "[Sunday, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday]"
 }
 
-variable "pcf_stop_trigger" {
-  default = "false"
+# Time in 24h format (HH:MM) when deployments
+# in the PCF environment should be started
+variable "pcf_start_at" {
+  default = "0"
 }
 
-variable "pcf_start_trigger_start" {
-  default = "12:00 AM"
-}
-
-variable "pcf_start_trigger_stop" {
-  default = "11:59 PM"
-}
-
-variable "pcf_start_trigger" {
-  default = "false"
+variable "pcf_start_trigger_days" {
+  default = "[Sunday, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday]"
 }
 
 #

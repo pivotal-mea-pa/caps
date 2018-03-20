@@ -1,0 +1,55 @@
+- op: replace
+  path: /jobs/name=stop-pcf/plan/0/aggregate/get=started
+  value:
+    get: started
+    passed: [stop-check]
+    trigger: false
+
+- op: replace
+  path: /jobs/name=start-pcf/plan/0/aggregate/get=stopped
+  value:
+    get: stopped
+    passed: [start-check]
+    trigger: false
+
+- op: add
+  path: /jobs/-
+  value:
+    name: stop-check
+    plan:  
+    - get: stop-schedule
+      trigger: true
+    - get: started
+
+- op: add
+  path: /jobs/-
+  value:
+    name: start-check
+    plan:
+    - get: start-schedule
+      trigger: true
+    - get: stopped
+
+- op: add
+  path: /resources/-
+  value:
+    name: stop-schedule
+    type: time
+    source:
+      location: {{locale}}
+      interval: 30s
+      start: {{stop_trigger_start}}
+      stop: {{stop_trigger_stop}}
+      days: {{stop_trigger_days}}
+
+- op: add
+  path: /resources/-
+  value:
+    name: start-schedule
+    type: time
+    source:
+      location: {{locale}}
+      interval: 30s
+      start: {{start_trigger_start}}
+      stop: {{start_trigger_stop}}
+      days: {{start_trigger_days}}

@@ -1,14 +1,5 @@
 ---
 
-groups:
-- name: "‣ Backup PCF"
-  jobs:
-  - backup-pcf
-- name: "‣ Restore PCF"
-  jobs:
-  - restore-ops-manager
-  - restore-elastic-runtime
-
 jobs:
 
 #

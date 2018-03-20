@@ -4,8 +4,8 @@ resources:
 - name: automation
   type: git
   source:
-    uri: {{automation_pipelines_url}}
-    branch: {{automation_pipelines_branch}}
+    uri: ((automation_pipelines_url))
+    branch: ((automation_pipelines_branch))
 
 jobs:
 - name: bootstrap
@@ -17,23 +17,24 @@ jobs:
   - task: configure
     file: automation/pcf/bootstrap/gcp/pipeline/task.yml
     params:
-      CONCOURSE_URL: {{concourse_url}}
-      CONCOURSE_USER: {{concourse_user}}
-      CONCOURSE_PASSWORD: {{concourse_password}}
+      CONCOURSE_URL: ((concourse_url))
+      CONCOURSE_USER: ((concourse_user))
+      CONCOURSE_PASSWORD: ((concourse_password))
       AUTOS3_URL: ((autos3_url))
       AUTOS3_ACCESS_KEY: ((autos3_access_key))
       AUTOS3_SECRET_KEY: ((autos3_secret_key))
-      GOOGLE_PROJECT: {{google_project}}
-      GOOGLE_CREDENTIALS_JSON: {{google_credentials_json}}
-      GOOGLE_REGION: {{google_region}}
-      BOOTSTRAP_STATE_BUCKET: {{bootstrap_state_bucket}}
-      BOOTSTRAP_STATE_PREFIX: {{bootstrap_state_prefix}}
-      PCF_PAS_STATE_BUCKET: {{pcf_pas_state_bucket}}
-      PCF_PAS_RUNTIME_TYPE: {{pcf_pas_runtime_type}}
-      PIVNET_API_TOKEN: {{pivnet_token}}
-      OPSMAN_DOMAIN_OR_IP_ADDRESS: {{opsman_domain_or_ip_address}}
-      OPSMAN_CLIENT_ID: {{opsman_client_id}}
-      OPSMAN_CLIENT_SECRET: {{opsman_client_secret}}
-      OPSMAN_USERNAME: {{opsman_admin_username}}
-      OPSMAN_PASSWORD: {{opsman_admin_password}}
-      PRODUCTS: {{product}}
+      GOOGLE_PROJECT: ((google_project))
+      GOOGLE_CREDENTIALS_JSON: ((google_credentials_json))
+      GOOGLE_REGION: ((google_region))
+      BOOTSTRAP_STATE_BUCKET: ((bootstrap_state_bucket))
+      BOOTSTRAP_STATE_PREFIX: ((bootstrap_state_prefix))
+      PCF_PAS_STATE_BUCKET: ((pcf_pas_state_bucket))
+      PCF_PAS_RUNTIME_TYPE: ((pcf_pas_runtime_type))
+      PIVNET_API_TOKEN: ((pivnet_token))
+      OPSMAN_DOMAIN_OR_IP_ADDRESS: ((opsman_domain_or_ip_address))
+      OPSMAN_CLIENT_ID: ((opsman_client_id))
+      OPSMAN_CLIENT_SECRET: ((opsman_client_secret))
+      OPSMAN_USERNAME: ((opsman_admin_username))
+      OPSMAN_PASSWORD: ((opsman_admin_password))
+      PRODUCTS: ((product))
+      SET_START_STOP_SCHEDULE: ((set_start_stop_schedule))

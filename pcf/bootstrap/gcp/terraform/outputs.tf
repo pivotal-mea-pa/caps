@@ -137,28 +137,20 @@ output "backup_age" {
 # Stop / Start pipeline event trigger time periods
 #
 
-output "pcf_stop_trigger_start" {
-  value = "${var.pcf_stop_trigger_start}"
+output "pcf_stop_at" {
+  value = "${var.pcf_stop_at}"
 }
 
-output "pcf_stop_trigger_stop" {
-  value = "${var.pcf_stop_trigger_stop}"
+output "pcf_stop_trigger_days" {
+  value = "${var.pcf_stop_trigger_days}"
 }
 
-output "pcf_stop_trigger" {
-  value = "${var.pcf_stop_trigger}"
+output "pcf_start_at" {
+  value = "${var.pcf_start_at}"
 }
 
-output "pcf_start_trigger_start" {
-  value = "${var.pcf_start_trigger_start}"
-}
-
-output "pcf_start_trigger_stop" {
-  value = "${var.pcf_start_trigger_stop}"
-}
-
-output "pcf_start_trigger" {
-  value = "${var.pcf_start_trigger}"
+output "pcf_start_trigger_days" {
+  value = "${var.pcf_start_trigger_days}"
 }
 
 #

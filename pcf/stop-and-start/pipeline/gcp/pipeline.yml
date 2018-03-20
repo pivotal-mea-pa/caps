@@ -6,13 +6,15 @@ jobs:
 # Stop PCF
 #
 
-- name: stop-check
-  plan:  
+- name: stop-pcf
+  serial: true
+  serial_groups: [stop-and-start]
+  plan:
 
-  - get: stop-schedule
-    trigger: true
-  - get: started
-  - get: pcf-pipelines
+  - aggregate:
+    - get: automation
+    - get: pcf-pipelines
+    - get: started
 
   # If an "apply" is in progress on PCF Ops 
   # Manager then wait until it completes
@@ -24,17 +26,6 @@ jobs:
       OPSMAN_PASSWORD: {{opsman_passwd}}
       OPSMAN_CLIENT_ID: {{pcfops_client}}
       OPSMAN_CLIENT_SECRET: {{pcfops_secret}}
-
-- name: stop-pcf
-  serial: true
-  serial_groups: [stop-and-start]
-  plan:
-
-  - aggregate:
-    - get: automation
-    - get: started
-      passed: [stop-check]
-      trigger: false
 
   - task: new-job-session
     file: automation/tasks/opsman/new-job-session/task.yml
@@ -73,12 +64,6 @@ jobs:
 # Start PCF
 #
 
-- name: start-check
-  plan:
-  - get: start-schedule
-    trigger: true
-  - get: stopped
-
 - name: start-pcf
   serial: true
   serial_groups: [stop-and-start]
@@ -87,8 +72,6 @@ jobs:
   - aggregate:
     - get: automation
     - get: stopped
-      passed: [start-check]
-      trigger: false
 
   - task: new-job-session
     file: automation/tasks/opsman/new-job-session/task.yml
@@ -154,20 +137,6 @@ resources:
     access_key_id: {{autos3_access_key}}
     secret_access_key: {{autos3_secret_key}}
     regexp: stopped/stopped-(.*)
-
-- name: start-schedule
-  type: time
-  source:
-    location: {{locale}}
-    start: {{start_trigger_start}}
-    stop: {{start_trigger_stop}}
-
-- name: stop-schedule
-  type: time
-  source:
-    location: {{locale}}
-    start: {{stop_trigger_start}}
-    stop: {{stop_trigger_stop}}
 
 shared:
 
