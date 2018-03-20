@@ -177,7 +177,7 @@ terraform apply -auto-approve \
 
 if [[ $SET_START_STOP_SCHEDULE == true ]]; then
   cat $START_AND_STOP_PIPELINE_PATH/gcp/pipeline.yml \
-    | yaml_patch -o $START_AND_STOP_PATCHES_PATH/start-stop-schedule.yml > .start-and-stop-pipeline.yml
+    | yaml_patch -o $START_AND_STOP_PATCHES_PATH/start-stop-schedule.yml > start-and-stop-pipeline.yml
 else
   cp $START_AND_STOP_PIPELINE_PATH/gcp/pipeline.yml start-and-stop-pipeline.yml
 fi
