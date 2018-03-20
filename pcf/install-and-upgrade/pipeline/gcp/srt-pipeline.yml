@@ -295,6 +295,8 @@ jobs:
       trigger: true
       params: { globs: [] }
     - get: terraform-state
+
+  # Configure the SRT with an initial configuration and prepare it for deployment
   - task: configure-srt
     file: automation/pcf/install-and-upgrade/tasks/configure-srt/task.yml
     params:
@@ -393,7 +395,19 @@ jobs:
       ERRANDS_TO_DISABLE: ((ert_errands_to_disable))
       OPSMAN_CLIENT_ID: ""
       OPSMAN_CLIENT_SECRET: ""
-  - task: deploy-ert
+
+  # This task will block if the environment 
+  # has been put into stopped state
+  - task: wait_until_started
+    file: pcf-pipelines/tasks/apply-changes/task.yml
+    params: 
+      WAIT_ON_STATE: started
+      AUTOS3_URL: ((autos3_url))
+      AUTOS3_ACCESS_KEY: ((autos3_access_key))
+      AUTOS3_SECRET_KEY: ((autos3_secret_key))
+
+  # Apply the changes to deploy the SRT
+  - task: deploy-srt
     file: pcf-pipelines/tasks/apply-changes/task.yml
     params:
       OPSMAN_DOMAIN_OR_IP_ADDRESS: ((opsman_domain_or_ip_address))
