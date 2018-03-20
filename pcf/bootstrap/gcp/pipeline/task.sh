@@ -190,7 +190,7 @@ fly -t default set-pipeline -n \
   -v autos3_access_key=$AUTOS3_ACCESS_KEY \
   -v autos3_secret_key=$AUTOS3_SECRET_KEY >/dev/null
 
-# fly -t default unpause-pipeline -p PCF_start-and-stop
+fly -t default unpause-pipeline -p PCF_start-and-stop
 
 # Create a file that can be used to trigger a
 # stopped job. This file will be versioned by 
