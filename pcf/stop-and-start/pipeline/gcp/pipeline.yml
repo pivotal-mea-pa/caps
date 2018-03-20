@@ -56,7 +56,7 @@ jobs:
           
           version=$(cat started/version)
           touch stopped-$version
-          mc cp stopped-$version auto/pcf/stopped/started-$version
+          mc cp stopped-$version auto/pcf/stopped/stopped-$version
     params: 
       AUTOS3_URL: ((autos3_url))
       AUTOS3_ACCESS_KEY: ((autos3_access_key))
