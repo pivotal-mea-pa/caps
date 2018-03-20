@@ -1,3 +1,9 @@
+# Pivotal Cloud Foundry Installation and Upgrade Automation
+
+## The Automation Pipeline
+
+![Install and Upgrade Pipeline](../../docs/images/pcf-install-and-upgrade-pipeline.png)
+
 ## Trouble shooting
 
 * Job **PCF_install-and-upgrade/wipe-env** will fail if job **PCF_install-and-upgrade/create-infrastructure** failed before creation of the Ops Manager instance. If this happens then you will need to SSH to the Bastion instance as `vpn_admin` and become root. You will then need to hijack the failed **PCF_install-and-upgrade/create-infrastructure** job by referencing the last build or the build of a left-over container of the same job.
