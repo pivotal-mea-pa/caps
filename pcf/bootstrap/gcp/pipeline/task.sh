@@ -57,9 +57,12 @@ fly -t default sync
 fly -t default set-pipeline -n \
   -p PCF_install-and-upgrade \
   -c install-pcf-pipeline$i.yml \
+  -l install-pcf-params.yml \
   -v "bootstrap_state_bucket=$BOOTSTRAP_STATE_BUCKET" \
   -v "bootstrap_state_prefix=$BOOTSTRAP_STATE_PREFIX" \
-  -l install-pcf-params.yml >/dev/null
+  -v "autos3_url=$AUTOS3_URL" \
+  -v "autos3_access_key=$AUTOS3_ACCESS_KEY" \
+  -v "autos3_secret_key=$AUTOS3_SECRET_KEY" >/dev/null
 
 # Unpause the pipeline. The pipeline jobs will rerun in 
 # an idempotent manner if a prior installation is found.
@@ -131,7 +134,10 @@ fly -t default set-pipeline -n \
   -v "pivnet_token=$PIVNET_API_TOKEN" \
   -v "cf_api_uri=$cf_api_uri" \
   -v "cf_user=$cf_user" \
-  -v "cf_password=$cf_password" >/dev/null
+  -v "cf_password=$cf_password"l \
+  -v "autos3_url=$AUTOS3_URL" \
+  -v "autos3_access_key=$AUTOS3_ACCESS_KEY" \
+  -v "autos3_secret_key=$AUTOS3_SECRET_KEY" >/dev/null
 
 fly -t default unpause-pipeline -p PCF_upgrade-buildpacks
 
@@ -154,7 +160,10 @@ terraform apply -auto-approve \
 fly -t default set-pipeline -n \
   -p PCF_backup-and-restore \
   -c $BACKUP_AND_RESTORE_PIPELINE_PATH/gcp/pipeline.yml \
-  -l backup-and-restore-params.yml >/dev/null
+  -l backup-and-restore-params.yml \
+  -v "autos3_url=$AUTOS3_URL" \
+  -v "autos3_access_key=$AUTOS3_ACCESS_KEY" \
+  -v "autos3_secret_key=$AUTOS3_SECRET_KEY" >/dev/null
 
 fly -t default unpause-pipeline -p PCF_backup-and-restore
 
@@ -186,9 +195,9 @@ fly -t default set-pipeline -n \
   -p PCF_start-and-stop \
   -c start-and-stop-pipeline.yml \
   -l start-and-stop-params.yml \
-  -v autos3_url=$AUTOS3_URL \
-  -v autos3_access_key=$AUTOS3_ACCESS_KEY \
-  -v autos3_secret_key=$AUTOS3_SECRET_KEY >/dev/null
+  -v "autos3_url=$AUTOS3_URL" \
+  -v "autos3_access_key=$AUTOS3_ACCESS_KEY" \
+  -v "autos3_secret_key=$AUTOS3_SECRET_KEY" >/dev/null
 
 fly -t default unpause-pipeline -p PCF_start-and-stop
 
