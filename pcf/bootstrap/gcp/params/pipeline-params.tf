@@ -2,6 +2,18 @@
 # Parameters to be passed along when setting up the PCF pipelines
 #
 
+locals {
+  pcf_stop_at_start = "2000-01-01T${data.terraform_remote_state.bootstrap.pcf_stop_at == "0" 
+    ? "00:00" : data.terraform_remote_state.bootstrap.pcf_stop_at }:00Z"
+
+  pcf_stop_at_stop = "${timeadd(local.pcf_stop_at_start, "1m")}"
+
+  pcf_start_at_start = "2000-01-01T${data.terraform_remote_state.bootstrap.pcf_start_at == "0" 
+    ? "00:00" : data.terraform_remote_state.bootstrap.pcf_start_at }:00Z"
+
+  pcf_start_at_stop = "${timeadd(local.pcf_start_at_start, "1m")}"
+}
+
 data "template_file" "pcf-pipeline-parameters" {
   template = "${file(var.params_template_file)}"
 
@@ -43,11 +55,11 @@ data "template_file" "pcf-pipeline-parameters" {
     backup_age            = "${data.terraform_remote_state.bootstrap.backup_age}"
     backups_bucket        = "${data.terraform_remote_state.bootstrap.backups_bucket}"
 
-    pcf_stop_trigger_start  = "${data.terraform_remote_state.bootstrap.pcf_stop_at}"
-    pcf_stop_trigger_stop   = "${replace(data.terraform_remote_state.bootstrap.pcf_stop_at, ":", "")+1}"
+    pcf_stop_trigger_start  = "${substr(local.pcf_stop_at_start, 11, 5)}"
+    pcf_stop_trigger_stop   = "${substr(local.pcf_stop_at_stop, 11, 5)}"
     pcf_stop_trigger_days   = "${data.terraform_remote_state.bootstrap.pcf_stop_trigger_days}"
-    pcf_start_trigger_start = "${data.terraform_remote_state.bootstrap.pcf_start_at}"
-    pcf_start_trigger_stop  = "${replace(data.terraform_remote_state.bootstrap.pcf_start_at, ":", "")+1}"
+    pcf_start_trigger_start = "${substr(local.pcf_start_at_start, 11, 5)}"
+    pcf_start_trigger_stop  = "${substr(local.pcf_start_at_stop, 11, 5)}"
     pcf_start_trigger_days  = "${data.terraform_remote_state.bootstrap.pcf_start_trigger_days}"
   }
 }
