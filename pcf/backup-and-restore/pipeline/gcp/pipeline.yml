@@ -21,13 +21,13 @@ jobs:
   plan:
 
   - aggregate:
-    - get: automation-pipelines
+    - get: automation
     - get: daily
       trigger: true
 
   - task: prepare-backup
     privileged: true
-    file: automation-pipelines/pcf/backup-and-restore/tasks/prepare-opsman-backup/task.yml
+    file: automation/pcf/backup-and-restore/tasks/prepare-opsman-backup/task.yml
     params: 
       <<: *backup-restore-common-params
       <<: *backup-restore-storage-params
@@ -36,14 +36,14 @@ jobs:
 
     - task: backup-opsman
       privileged: true
-      file: automation-pipelines/pcf/backup-and-restore/tasks/backup-opsman/task.yml
+      file: automation/pcf/backup-and-restore/tasks/backup-opsman/task.yml
       params: 
         <<: *backup-restore-common-params
         <<: *backup-restore-storage-params
 
     - task: backup-director
       privileged: true
-      file: automation-pipelines/tasks/bbr/backup-director/task.yml
+      file: automation/tasks/bbr/backup-director/task.yml
       params: 
         <<: *backup-restore-common-params
         <<: *backup-restore-storage-params
@@ -52,14 +52,14 @@ jobs:
     #    
     # - task: backup-pas-tile
     #   privileged: true
-    #   file: automation-pipelines/tasks/bbr/backup-pas/task.yml
+    #   file: automation/tasks/bbr/backup-pas/task.yml
     #   params: 
     #     <<: *backup-restore-common-params
     #     <<: *backup-restore-storage-params
 
   - task: cleanup
     privileged: true
-    file: automation-pipelines/tasks/bbr/cleanup/task.yml
+    file: automation/tasks/bbr/cleanup/task.yml
     params: 
       <<: *backup-restore-common-params
       <<: *backup-restore-storage-params
@@ -75,11 +75,11 @@ jobs:
   plan:
 
   - aggregate:
-    - get: automation-pipelines
+    - get: automation
 
   - task: import-ops-manager-backup
     privileged: true
-    file: automation-pipelines/pcf/backup-and-restore/tasks/restore-opsman/task.yml
+    file: automation/pcf/backup-and-restore/tasks/restore-opsman/task.yml
     params: 
       <<: *backup-restore-common-params
       <<: *backup-restore-storage-params
@@ -87,14 +87,14 @@ jobs:
 
   - task: restore-director
     privileged: true
-    file: automation-pipelines/tasks/bbr/restore-director/task.yml
+    file: automation/tasks/bbr/restore-director/task.yml
     params: 
       <<: *backup-restore-common-params
       <<: *backup-restore-storage-params
 
   - task: apply-changes
     privileged: true
-    file: automation-pipelines/tasks/opsman/apply-changes/task.yml
+    file: automation/tasks/opsman/apply-changes/task.yml
     params: 
       <<: *backup-restore-common-params
 
@@ -108,49 +108,49 @@ jobs:
   plan:
 
   - aggregate:
-    - get: automation-pipelines
+    - get: automation
 
   - task: prepare-opsman-restore
     privileged: true
-    file: automation-pipelines/pcf/backup-and-restore/tasks/prepare-opsman-restore/task.yml
+    file: automation/pcf/backup-and-restore/tasks/prepare-opsman-restore/task.yml
     params: 
       <<: *backup-restore-common-params
       <<: *backup-restore-storage-params
 
   - task: scale-down-ert-mysql
     privileged: true
-    file: automation-pipelines/tasks/opsman/scale-down-ert-mysql/task.yml
+    file: automation/tasks/opsman/scale-down-ert-mysql/task.yml
     params: 
       <<: *backup-restore-common-params
 
   - task: scale-down-ert-mysql-apply
     privileged: true
-    file: automation-pipelines/tasks/opsman/apply-changes/task.yml
+    file: automation/tasks/opsman/apply-changes/task.yml
     params: 
       <<: *backup-restore-common-params
 
   - task: restore-pas
     privileged: true
-    file: automation-pipelines/tasks/bbr/restore-pas/task.yml
+    file: automation/tasks/bbr/restore-pas/task.yml
     params: 
       <<: *backup-restore-common-params
       <<: *backup-restore-storage-params
 
   - task: scale-up-ert-mysql
     privileged: true
-    file: automation-pipelines/tasks/opsman/scale-up-ert-mysql/task.yml
+    file: automation/tasks/opsman/scale-up-ert-mysql/task.yml
     params: 
       <<: *backup-restore-common-params
 
   - task: scale-up-ert-mysql-apply
     privileged: true
-    file: automation-pipelines/tasks/opsman/apply-changes/task.yml
+    file: automation/tasks/opsman/apply-changes/task.yml
     params: 
       <<: *backup-restore-common-params
 
 resources:
 
-- name: automation-pipelines
+- name: automation
   type: git
   source:
     uri: {{automation_pipelines_url}}

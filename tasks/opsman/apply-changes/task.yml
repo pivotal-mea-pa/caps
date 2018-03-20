@@ -7,11 +7,11 @@ image_resource:
     repository: appbricks/automation-tools
 
 inputs:
-- name: automation-pipelines
+- name: automation
 - name: job-session
 
 run:
-  path: automation-pipelines/tasks/opsman/apply-changes/task.sh
+  path: automation/tasks/opsman/apply-changes/task.sh
   args: [no_errands]
 
 params:

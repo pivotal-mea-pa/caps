@@ -7,7 +7,7 @@ image_resource:
     repository: czero/rootfs
 
 inputs:
-- name: automation-pipelines
+- name: automation
 - name: pcf-pipelines
   path: pcf-pipelines-orig
 
@@ -19,4 +19,4 @@ params:
   GCP_SERVICE_ACCOUNT_KEY:
 
 run:
-  path: automation-pipelines/pcf/install-and-upgrade/tasks/extend-infrastructure/task.sh
+  path: automation/pcf/install-and-upgrade/tasks/extend-infrastructure/task.sh

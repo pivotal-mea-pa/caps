@@ -12,6 +12,7 @@ jobs:
   - get: stop-schedule
     trigger: true
   - get: started
+  - get: pcf-pipelines
 
   # If an "apply" is in progress on PCF Ops 
   # Manager then wait until it completes
@@ -30,18 +31,18 @@ jobs:
   plan:
 
   - aggregate:
-    - get: automation-pipelines
+    - get: automation
     - get: started
       passed: [stop-check]
       trigger: false
 
   - task: new-job-session
-    file: automation-pipelines/tasks/opsman/new-job-session/task.yml
+    file: automation/tasks/opsman/new-job-session/task.yml
     params: 
       <<: *params
 
   - task: stop-deployments
-    file: automation-pipelines/tasks/bosh/stop-deployment/task.yml
+    file: automation/tasks/bosh/stop-deployment/task.yml
     params: 
       <<: *params
 
@@ -84,18 +85,18 @@ jobs:
   plan:
 
   - aggregate:
-    - get: automation-pipelines
+    - get: automation
     - get: stopped
       passed: [start-check]
       trigger: false
 
   - task: new-job-session
-    file: automation-pipelines/tasks/opsman/new-job-session/task.yml
+    file: automation/tasks/opsman/new-job-session/task.yml
     params: 
       <<: *params
 
   - task: start-deployments
-    file: automation-pipelines/tasks/bosh/start-deployment/task.yml
+    file: automation/tasks/bosh/start-deployment/task.yml
     params: 
       <<: *params
 
@@ -130,7 +131,7 @@ resources:
     uri: https://github.com/pivotal-cf/pcf-pipelines.git
     branch: master
 
-- name: automation-pipelines
+- name: automation
   type: git
   source:
     uri: {{automation_pipelines_url}}

@@ -20,7 +20,7 @@ image_resource:
   source: {repository: czero/rootfs}
 
 inputs:
-  - name: automation-pipelines
+  - name: automation
   - name: pcf-pipelines
   - name: pivnet-product
 
@@ -34,4 +34,4 @@ params:
   ENABLE_ERRANDS:
 
 run:
-  path: automation-pipelines/pcf/install-and-upgrade/tasks/stage-product/task.sh
+  path: automation/pcf/install-and-upgrade/tasks/stage-product/task.sh

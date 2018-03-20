@@ -11,7 +11,7 @@ inputs:
 - name: backup-timestamp
 
 run:
-  path: automation-pipelines/tasks/bbr/cleanup/task.sh
+  path: automation/tasks/bbr/cleanup/task.sh
 
 outputs:
 - name: restore-timestamp

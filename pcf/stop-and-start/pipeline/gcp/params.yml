@@ -19,7 +19,7 @@ gcp_service_account_key: |
 # to start or stop
 label: ${vpc_name}-pcf
 
-# The automation-pipelines repository
+# The automation repository
 automation_pipelines_url: ${automation_pipelines_url}
 automation_pipelines_branch: ${automation_pipelines_branch}
 

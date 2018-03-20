@@ -7,12 +7,12 @@ image_resource:
     repository: appbricks/automation-tools
 
 inputs:
-- name: automation-pipelines
+- name: automation
 - name: backup-timestamp
 - name: job-session
 
 run:
-  path: automation-pipelines/tasks/bbr/backup-director/task.sh
+  path: automation/tasks/bbr/backup-director/task.sh
 
 params:
   TRACE: Y

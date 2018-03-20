@@ -7,11 +7,11 @@ image_resource:
     repository: appbricks/automation-tools
 
 inputs:
-- name: automation-pipelines
+- name: automation
 - name: job-session
 
 run:
-  path: automation-pipelines/tasks/bbr/common/restore-deployment.sh
+  path: automation/tasks/bbr/common/restore-deployment.sh
   args: ["cf-.*", "ert"]
 
 params:

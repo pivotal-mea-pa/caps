@@ -7,13 +7,13 @@ image_resource:
     repository: czero/rootfs
 
 inputs:
-- name: automation-pipelines
+- name: automation
 - name: pcf-pipelines
 - name: pivnet-product
 - name: terraform-state
 
 run:
-  path: automation-pipelines/pcf/install-and-upgrade/tasks/configure-srt/task.sh
+  path: automation/pcf/install-and-upgrade/tasks/configure-srt/task.sh
 
 params:
   pcf_iaas:

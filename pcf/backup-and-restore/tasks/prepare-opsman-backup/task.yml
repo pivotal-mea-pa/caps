@@ -7,7 +7,7 @@ image_resource:
     repository: appbricks/automation-tools
 
 inputs:
-- name: automation-pipelines
+- name: automation
 
 # Required only if metadata is not passed between 
 # tasks and uploaded as concourse pool metaddata
@@ -16,7 +16,7 @@ inputs:
 #- name: backup-metadata
 
 run:
-  path: automation-pipelines/pcf/backup-and-restore/tasks/prepare-opsman-backup/task.sh
+  path: automation/pcf/backup-and-restore/tasks/prepare-opsman-backup/task.sh
 
 outputs:
 - name: backup-timestamp

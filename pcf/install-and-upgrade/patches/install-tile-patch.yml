@@ -28,7 +28,7 @@
     name: upload-and-apply-${product_name}-tile
     plan:
     - aggregate:
-      - get: automation-pipelines
+      - get: automation
       - get: pcf-pipelines
       - get: pivnet-opsmgr
         passed: [deploy-director]
@@ -62,7 +62,7 @@
         OPSMAN_PASSWORD: {{opsman_admin_password}}
         OPSMAN_DOMAIN_OR_IP_ADDRESS: {{opsman_domain_or_ip_address}}
     - task: stage-and-apply-tile
-      file: automation-pipelines/pcf/install-and-upgrade/tasks/stage-product/task.yml
+      file: automation/pcf/install-and-upgrade/tasks/stage-product/task.yml
       params:
         OPSMAN_CLIENT_ID: {{opsman_client_id}}
         OPSMAN_CLIENT_SECRET: {{opsman_client_secret}}

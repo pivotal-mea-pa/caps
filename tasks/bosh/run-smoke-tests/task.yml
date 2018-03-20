@@ -7,10 +7,10 @@ image_resource:
     repository: appbricks/automation-tools
 
 inputs:
-- name: automation-pipelines
+- name: automation
 
 run:
-  path: automation-pipelines/tasks/bosh/run-smoke-tests/task.sh
+  path: automation/tasks/bosh/run-smoke-tests/task.sh
 
 params:
   TRACE: Y

@@ -7,11 +7,11 @@ image_resource:
     repository: appbricks/automation-tools
 
 inputs:
-- name: automation-pipelines
+- name: automation
 - name: job-session
 
 run:
-  path: automation-pipelines/tasks/bosh/stop-deployment/task.sh
+  path: automation/tasks/bosh/stop-deployment/task.sh
 
 params:
   TRACE:
