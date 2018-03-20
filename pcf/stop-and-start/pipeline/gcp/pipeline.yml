@@ -33,7 +33,7 @@ jobs:
     - get: automation-pipelines
     - get: started
       passed: [stop-check]
-      trigger: {{stop_trigger}}
+      trigger: false
 
   - task: new-job-session
     file: automation-pipelines/tasks/opsman/new-job-session/task.yml
@@ -87,7 +87,7 @@ jobs:
     - get: automation-pipelines
     - get: stopped
       passed: [start-check]
-      trigger: {{start_trigger}}
+      trigger: false
 
   - task: new-job-session
     file: automation-pipelines/tasks/opsman/new-job-session/task.yml
