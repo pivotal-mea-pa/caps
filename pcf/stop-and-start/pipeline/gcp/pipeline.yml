@@ -21,11 +21,11 @@ jobs:
   - task: wait-opsman-clear
     file: pcf-pipelines/tasks/wait-opsman-clear/task.yml
     params:
-      OPSMAN_DOMAIN_OR_IP_ADDRESS: {{opsman_host}}
-      OPSMAN_USERNAME: {{opsman_user}}
-      OPSMAN_PASSWORD: {{opsman_passwd}}
-      OPSMAN_CLIENT_ID: {{pcfops_client}}
-      OPSMAN_CLIENT_SECRET: {{pcfops_secret}}
+      OPSMAN_DOMAIN_OR_IP_ADDRESS: ((opsman_host))
+      OPSMAN_USERNAME: ((opsman_user))
+      OPSMAN_PASSWORD: ((opsman_passwd))
+      OPSMAN_CLIENT_ID: ((pcfops_client))
+      OPSMAN_CLIENT_SECRET: ((pcfops_secret))
 
   - task: new-job-session
     file: automation/tasks/opsman/new-job-session/task.yml
@@ -56,9 +56,9 @@ jobs:
           mc find auto/pcf/started --name "started-*" --exec "mc rm {}"
           mc cp started-$version auto/pcf/started/started-$version          
     params: 
-      AUTOS3_URL: {{autos3_url}}
-      AUTOS3_ACCESS_KEY: {{autos3_access_key}}
-      AUTOS3_SECRET_KEY: {{autos3_secret_key}}
+      AUTOS3_URL: ((autos3_url))
+      AUTOS3_ACCESS_KEY: ((autos3_access_key))
+      AUTOS3_SECRET_KEY: ((autos3_secret_key))
         
 #
 # Start PCF
@@ -97,14 +97,14 @@ jobs:
         args:
         - -c
         - |
-          version=${{$(cat stopped/version)+1}}
+          version=$(($(cat stopped/version)+1))
           mc config host add auto $AUTOS3_URL $AUTOS3_ACCESS_KEY $AUTOS3_SECRET_KEY
           mc find auto/pcf/stopped --name "stopped-*" --exec "mc rm {}"
           mc cp stopped-$version auto/pcf/stopped/stopped-$version          
     params: 
-      AUTOS3_URL: {{autos3_url}}
-      AUTOS3_ACCESS_KEY: {{autos3_access_key}}
-      AUTOS3_SECRET_KEY: {{autos3_secret_key}}
+      AUTOS3_URL: ((autos3_url))
+      AUTOS3_ACCESS_KEY: ((autos3_access_key))
+      AUTOS3_SECRET_KEY: ((autos3_secret_key))
 
 resources:
 
@@ -117,38 +117,38 @@ resources:
 - name: automation
   type: git
   source:
-    uri: {{automation_pipelines_url}}
-    branch: {{automation_pipelines_branch}}
+    uri: ((automation_pipelines_url))
+    branch: ((automation_pipelines_branch))
 
 - name: started
   type: s3
   source:
     bucket: pcf
-    endpoint: {{autos3_url}}
-    access_key_id: {{autos3_access_key}}
-    secret_access_key: {{autos3_secret_key}}
+    endpoint: ((autos3_url))
+    access_key_id: ((autos3_access_key))
+    secret_access_key: ((autos3_secret_key))
     regexp: started/started-(.*)
 
 - name: stopped
   type: s3
   source:
     bucket: pcf
-    endpoint: {{autos3_url}}
-    access_key_id: {{autos3_access_key}}
-    secret_access_key: {{autos3_secret_key}}
+    endpoint: ((autos3_url))
+    access_key_id: ((autos3_access_key))
+    secret_access_key: ((autos3_secret_key))
     regexp: stopped/stopped-(.*)
 
 shared:
 
 - &params
   TRACE: {{trace_tasks}}
-  IAAS: {{iaas}}
-  GCP_PROJECT_ID: {{gcp_project_id}}
-  GCP_SERVICE_ACCOUNT_KEY: {{gcp_service_account_key}}
-  LABEL: {{label}}
-  OPSMAN_HOST: {{opsman_host}}
-  OPSMAN_USER: {{opsman_user}}
-  OPSMAN_PASSWD: {{opsman_passwd}}
-  OPSMAN_PASS_PHRASE: {{opsman_pass_phrase}}
+  IAAS: ((iaas))
+  GCP_PROJECT_ID: ((gcp_project_id))
+  GCP_SERVICE_ACCOUNT_KEY: ((gcp_service_account_key))
+  LABEL: ((label))
+  OPSMAN_HOST: ((opsman_host))
+  OPSMAN_USER: ((opsman_user))
+  OPSMAN_PASSWD: ((opsman_passwd))
+  OPSMAN_PASS_PHRASE: ((opsman_pass_phrase))
   PCFOPS_CLIENT: {{pcfops_client}}
   PCFOPS_SECRET: {{pcfops_secret}}
