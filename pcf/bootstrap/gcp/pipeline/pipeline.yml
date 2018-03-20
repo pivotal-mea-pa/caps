@@ -10,6 +10,7 @@ resources:
 jobs:
 - name: bootstrap
   public: false
+  serial: true
   plan:
   - aggregate:
     - get: automation
