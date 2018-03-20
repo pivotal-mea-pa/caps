@@ -27,17 +27,7 @@ jobs:
       OPSMAN_CLIENT_ID: ((pcfops_client))
       OPSMAN_CLIENT_SECRET: ((pcfops_secret))
 
-  - task: new-job-session
-    file: automation/tasks/opsman/new-job-session/task.yml
-    params: 
-      <<: *params
-
-  - task: stop-deployments
-    file: automation/tasks/bosh/stop-deployment/task.yml
-    params: 
-      <<: *params
-
-  - task: save-state
+  - task: set-stopped-state
     config:
       platform: linux
       image_resource:
@@ -57,6 +47,17 @@ jobs:
           version=$(cat started/version)
           touch stopped-$version
           mc cp stopped-$version auto/pcf/stopped/stopped-$version
+
+  - task: new-job-session
+    file: automation/tasks/opsman/new-job-session/task.yml
+    params: 
+      <<: *params
+
+  - task: stop-deployments
+    file: automation/tasks/bosh/stop-deployment/task.yml
+    params: 
+      <<: *params
+
     params: 
       AUTOS3_URL: ((autos3_url))
       AUTOS3_ACCESS_KEY: ((autos3_access_key))
@@ -85,7 +86,7 @@ jobs:
     params: 
       <<: *params
 
-  - task: save-state
+  - task: set-started-state
     config:
       platform: linux
       image_resource:
