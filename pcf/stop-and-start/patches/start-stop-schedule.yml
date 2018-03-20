@@ -36,11 +36,11 @@
     name: stop-schedule
     type: time
     source:
-      location: {{locale}}
+      location: ((locale))
       interval: 30s
-      start: {{stop_trigger_start}}
-      stop: {{stop_trigger_stop}}
-      days: {{stop_trigger_days}}
+      start: ((stop_trigger_start))
+      stop: ((stop_trigger_stop))
+      days: ((stop_trigger_days))
 
 - op: add
   path: /resources/-
@@ -48,8 +48,8 @@
     name: start-schedule
     type: time
     source:
-      location: {{locale}}
+      location: ((locale))
       interval: 30s
-      start: {{start_trigger_start}}
-      stop: {{start_trigger_stop}}
-      days: {{start_trigger_days}}
+      start: ((start_trigger_start))
+      stop: ((start_trigger_stop))
+      days: ((start_trigger_days))
