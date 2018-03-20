@@ -51,10 +51,12 @@ jobs:
         args:
         - -c
         - |
-          version=$(cat started/version)
           mc config host add auto $AUTOS3_URL $AUTOS3_ACCESS_KEY $AUTOS3_SECRET_KEY
           mc find auto/pcf/started --name "started-*" --exec "mc rm {}"
-          mc cp started-$version auto/pcf/started/started-$version          
+          
+          version=$(cat started/version)
+          touch stopped-$version
+          mc cp stopped-$version auto/pcf/stopped/started-$version
     params: 
       AUTOS3_URL: ((autos3_url))
       AUTOS3_ACCESS_KEY: ((autos3_access_key))
@@ -97,10 +99,12 @@ jobs:
         args:
         - -c
         - |
-          version=$(($(cat stopped/version)+1))
           mc config host add auto $AUTOS3_URL $AUTOS3_ACCESS_KEY $AUTOS3_SECRET_KEY
           mc find auto/pcf/stopped --name "stopped-*" --exec "mc rm {}"
-          mc cp stopped-$version auto/pcf/stopped/stopped-$version          
+
+          version=$(($(cat stopped/version)+1))
+          touch started-$version
+          mc cp started-$version auto/pcf/started/started-$version
     params: 
       AUTOS3_URL: ((autos3_url))
       AUTOS3_ACCESS_KEY: ((autos3_access_key))
