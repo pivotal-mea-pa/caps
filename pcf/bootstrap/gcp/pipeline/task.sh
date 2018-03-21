@@ -133,7 +133,7 @@ fly -t default set-pipeline -n \
   -l install-pcf-params.yml \
   -v "cf_api_uri=$cf_api_uri" \
   -v "cf_user=$cf_user" \
-  -v "cf_password=$cf_password"l \
+  -v "cf_password=$cf_password" \
   -v "autos3_url=$AUTOS3_URL" \
   -v "autos3_access_key=$AUTOS3_ACCESS_KEY" \
   -v "autos3_secret_key=$AUTOS3_SECRET_KEY" >/dev/null
