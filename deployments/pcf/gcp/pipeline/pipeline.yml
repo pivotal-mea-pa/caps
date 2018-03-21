@@ -16,7 +16,7 @@ jobs:
     - get: automation
       trigger: true
   - task: configure
-    file: automation/deployments/pcf/bootstrap/gcp/pipeline/task.yml
+    file: automation/deployments/pcf/gcp/pipeline/task.yml
     params:
       CONCOURSE_URL: ((concourse_url))
       CONCOURSE_USER: ((concourse_user))

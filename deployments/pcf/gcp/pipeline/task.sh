@@ -11,7 +11,7 @@ mc config host add auto $AUTOS3_URL $AUTOS3_ACCESS_KEY $AUTOS3_SECRET_KEY
 [[ "$(mc ls auto/ | awk '/pcf\/$/{ print $5 }')" == "pcf/" ]] || \
   mc mb auto/pcf
 
-TERRAFORM_PARAMS_PATH=automation/deployments/pcf/bootstrap/gcp/params
+TERRAFORM_PARAMS_PATH=automation/deployments/pcf/gcp/params
 
 #
 # Configure install PCF pipeline

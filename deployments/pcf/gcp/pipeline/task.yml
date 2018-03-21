@@ -32,4 +32,4 @@ params:
   SET_START_STOP_SCHEDULE:
 
 run:
-  path: automation/deployments/pcf/bootstrap/gcp/pipeline/task.sh
+  path: automation/deployments/pcf/gcp/pipeline/task.sh
