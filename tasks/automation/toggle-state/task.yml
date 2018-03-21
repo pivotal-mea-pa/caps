@@ -32,7 +32,7 @@ run:
       version=0
     else
       mc rm $state
-      version=$(($(echo ${state#*-})+$VERSION_INCREMENT))
+      version=$(($(echo ${state#*-})+${VERSION_INCREMENT:-0}))
     fi
 
     touch $ON_STATE-$version
