@@ -7,7 +7,7 @@ image_resource:
     repository: appbricks/automation-tools
 
 inputs:
-- name: automation-pipeline
+- name: automation
 - name: backup-timestamp
 
 run:
