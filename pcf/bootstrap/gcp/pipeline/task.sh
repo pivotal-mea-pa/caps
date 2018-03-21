@@ -130,7 +130,7 @@ cat upgrade-buildpacks-pipeline-orig.yml \
 fly -t default set-pipeline -n \
   -p PCF_upgrade-buildpacks \
   -c upgrade-buildpacks-pipeline.yml \
-  -v "pivnet_token=$PIVNET_API_TOKEN" \
+  -l install-pcf-params.yml \
   -v "cf_api_uri=$cf_api_uri" \
   -v "cf_user=$cf_user" \
   -v "cf_password=$cf_password"l \
