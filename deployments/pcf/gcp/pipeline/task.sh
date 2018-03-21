@@ -180,22 +180,22 @@ terraform apply -auto-approve \
   -var "bootstrap_state_bucket=$BOOTSTRAP_STATE_BUCKET" \
   -var "bootstrap_state_prefix=$BOOTSTRAP_STATE_PREFIX" \
   -var "params_template_file=$START_AND_STOP_PIPELINE_PATH/gcp/params.yml" \
-  -var "params_file=start-and-stop-params.yml" \
+  -var "params_file=stop-and-start-params.yml" \
   $TERRAFORM_PARAMS_PATH >/dev/null
 
 if [[ $SET_START_STOP_SCHEDULE == true ]]; then
   cat $START_AND_STOP_PIPELINE_PATH/gcp/pipeline.yml \
-    | yaml_patch -o $START_AND_STOP_PATCHES_PATH/start-stop-schedule.yml > start-and-stop-pipeline.yml
+    | yaml_patch -o $START_AND_STOP_PATCHES_PATH/start-stop-schedule.yml > stop-and-start-pipeline.yml
 else
-  cp $START_AND_STOP_PIPELINE_PATH/gcp/pipeline.yml start-and-stop-pipeline.yml
+  cp $START_AND_STOP_PIPELINE_PATH/gcp/pipeline.yml stop-and-start-pipeline.yml
 fi
 
 fly -t default set-pipeline -n \
-  -p PCF_start-and-stop \
-  -c start-and-stop-pipeline.yml \
-  -l start-and-stop-params.yml \
+  -p PCF_stop-and-start \
+  -c stop-and-start-pipeline.yml \
+  -l stop-and-start-params.yml \
   -v "autos3_url=$AUTOS3_URL" \
   -v "autos3_access_key=$AUTOS3_ACCESS_KEY" \
   -v "autos3_secret_key=$AUTOS3_SECRET_KEY" >/dev/null
 
-fly -t default unpause-pipeline -p PCF_start-and-stop
+fly -t default unpause-pipeline -p PCF_stop-and-start
