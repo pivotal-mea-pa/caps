@@ -1,0 +1,85 @@
+- op: add
+  path: /resources/-
+  value:
+    name: ${product_name}-tile
+    type: pivnet
+    source:
+      api_token: ((pivnet_token))
+      product_slug: ${product_slug}
+      product_version: ${product_version}
+      sort_by: semver
+
+- op: add
+  path: /jobs/-
+  value:
+    name: ${product_name}-tile-regulator
+    plan:
+    - get: schedule
+      trigger: true
+    - get: ${product_name}-tile
+      params: {globs: []}
+      # params:
+      #   globs:
+      #   - ((product_globs))
+
+- op: add
+  path: /jobs/-
+  value:
+    name: upload-and-apply-${product_name}-tile
+    plan:
+    - aggregate:
+      - get: automation
+      - get: pcf-pipelines
+      - get: pivnet-opsmgr
+        passed: [deploy-director]
+        trigger: true
+        params: {globs: []}
+      - get: pivnet-product
+        resource: ${product_name}-tile
+        passed: [${product_name}-tile-regulator]
+        trigger: true
+        params:
+          globs:
+          - ((product_globs))
+    - task: upload-tile-and-stemcell
+      file: pcf-pipelines/tasks/upload-product-and-stemcell/task.yml
+      params:
+        IAAS: ((iaas_type))
+        OPSMAN_DOMAIN_OR_IP_ADDRESS: ((opsman_domain_or_ip_address))
+        OPSMAN_CLIENT_ID: ((opsman_client_id))
+        OPSMAN_CLIENT_SECRET: ((opsman_client_secret))
+        OPS_MGR_USR: ((opsman_admin_username))
+        OPS_MGR_PWD: ((opsman_admin_password))
+        PIVNET_API_TOKEN: ((pivnet_token))
+        NO_PROXY: ""
+        OM_IP: ""
+    - task: wait-opsman-clear
+      file: pcf-pipelines/tasks/wait-opsman-clear/task.yml
+      params:
+        OPSMAN_CLIENT_ID: ((opsman_client_id))
+        OPSMAN_CLIENT_SECRET: ((opsman_client_secret))
+        OPSMAN_USERNAME: ((opsman_admin_username))
+        OPSMAN_PASSWORD: ((opsman_admin_password))
+        OPSMAN_DOMAIN_OR_IP_ADDRESS: ((opsman_domain_or_ip_address))
+
+    # This task will block if the environment 
+    # has been put into stopped state
+    - task: wait-until-started
+      file: automation/lib/tasks/automation/lib/wait-for-state/task.yml
+      params: 
+        WAIT_FOR_STATE: started
+        AUTOS3_URL: ((autos3_url))
+        AUTOS3_ACCESS_KEY: ((autos3_access_key))
+        AUTOS3_SECRET_KEY: ((autos3_secret_key))
+
+    # Apply changes
+    - task: stage-and-apply-tile
+      file: automation/lib/pcf/install-and-upgrade/tasks/stage-product/task.yml
+      params:
+        OPSMAN_CLIENT_ID: ((opsman_client_id))
+        OPSMAN_CLIENT_SECRET: ((opsman_client_secret))
+        OPSMAN_USERNAME: ((opsman_admin_username))
+        OPSMAN_PASSWORD: ((opsman_admin_password))
+        OPSMAN_DOMAIN_OR_IP_ADDRESS: ((opsman_domain_or_ip_address))
+        STAGE_AND_APPLY: true
+        ENABLE_ERRANDS: ((enable_errands))

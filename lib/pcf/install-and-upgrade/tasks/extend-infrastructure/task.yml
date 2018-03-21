@@ -1,0 +1,22 @@
+---
+platform: linux
+
+image_resource:
+  type: docker-image
+  source:
+    repository: czero/rootfs
+
+inputs:
+- name: automation
+- name: pcf-pipelines
+  path: pcf-pipelines-orig
+
+outputs:
+- name: pcf-pipelines
+
+params:
+  IAAS_TYPE:
+  GCP_SERVICE_ACCOUNT_KEY:
+
+run:
+  path: automation/lib/pcf/install-and-upgrade/tasks/extend-infrastructure/task.sh

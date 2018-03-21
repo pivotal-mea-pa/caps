@@ -1,0 +1,133 @@
+---
+
+jobs:
+
+#
+# Stop PCF
+#
+
+- name: stop-pcf
+  serial: true
+  serial_groups: [stop-and-start]
+  plan:
+
+  - aggregate:
+    - get: automation
+    - get: pcf-pipelines
+    - get: started
+
+  # If an "apply" is in progress on PCF Ops 
+  # Manager then wait until it completes
+  - task: wait-opsman-clear
+    file: pcf-pipelines/tasks/wait-opsman-clear/task.yml
+    params:
+      OPSMAN_DOMAIN_OR_IP_ADDRESS: ((opsman_host))
+      OPSMAN_USERNAME: ((opsman_user))
+      OPSMAN_PASSWORD: ((opsman_passwd))
+      OPSMAN_CLIENT_ID: ((pcfops_client))
+      OPSMAN_CLIENT_SECRET: ((pcfops_secret))
+
+  - task: set-stopped-state
+    file: automation/lib/tasks/automation/lib/toggle-state/task.yml
+    params: 
+      OFF_STATE: started
+      ON_STATE: stopped
+      VERSION_INCREMENT: 0
+      AUTOS3_URL: ((autos3_url))
+      AUTOS3_ACCESS_KEY: ((autos3_access_key))
+      AUTOS3_SECRET_KEY: ((autos3_secret_key))
+
+  - task: new-job-session
+    file: automation/lib/tasks/opsman/new-job-session/task.yml
+    params: 
+      <<: *params
+
+  - task: stop-deployments
+    file: automation/lib/tasks/bosh/stop-deployment/task.yml
+    params: 
+      <<: *params
+
+    params: 
+      AUTOS3_URL: ((autos3_url))
+      AUTOS3_ACCESS_KEY: ((autos3_access_key))
+      AUTOS3_SECRET_KEY: ((autos3_secret_key))
+        
+#
+# Start PCF
+#
+
+- name: start-pcf
+  serial: true
+  serial_groups: [stop-and-start]
+  plan:
+
+  - aggregate:
+    - get: automation
+    - get: stopped
+
+  - task: new-job-session
+    file: automation/lib/tasks/opsman/new-job-session/task.yml
+    params: 
+      <<: *params
+
+  - task: start-deployments
+    file: automation/lib/tasks/bosh/start-deployment/task.yml
+    params: 
+      <<: *params
+
+  - task: set-started-state
+    file: automation/lib/tasks/automation/lib/toggle-state/task.yml
+    params: 
+      OFF_STATE: stopped
+      ON_STATE: started
+      VERSION_INCREMENT: 1
+      AUTOS3_URL: ((autos3_url))
+      AUTOS3_ACCESS_KEY: ((autos3_access_key))
+      AUTOS3_SECRET_KEY: ((autos3_secret_key))
+
+resources:
+
+- name: pcf-pipelines
+  type: git
+  source:
+    uri: https://github.com/pivotal-cf/pcf-pipelines.git
+    branch: master
+
+- name: automation
+  type: git
+  source:
+    uri: ((automation_pipelines_url))
+    branch: ((automation_pipelines_branch))
+
+- name: started
+  type: s3
+  source:
+    bucket: pcf
+    endpoint: ((autos3_url))
+    access_key_id: ((autos3_access_key))
+    secret_access_key: ((autos3_secret_key))
+    regexp: started/started-(.*)
+
+- name: stopped
+  type: s3
+  source:
+    bucket: pcf
+    endpoint: ((autos3_url))
+    access_key_id: ((autos3_access_key))
+    secret_access_key: ((autos3_secret_key))
+    regexp: stopped/stopped-(.*)
+
+shared:
+
+- &params
+  TRACE: ((trace_tasks))
+  IAAS: ((iaas))
+  GCP_PROJECT_ID: ((gcp_project_id))
+  GCP_SERVICE_ACCOUNT_KEY: ((gcp_service_account_key))
+  LABEL: ((label))
+  OPSMAN_HOST: ((opsman_host))
+  OPSMAN_USER: ((opsman_user))
+  OPSMAN_PASSWD: ((opsman_passwd))
+  OPSMAN_PASS_PHRASE: ((opsman_pass_phrase))
+  PCFOPS_CLIENT: ((pcfops_client))
+  PCFOPS_SECRET: ((pcfops_secret))

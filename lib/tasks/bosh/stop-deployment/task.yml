@@ -1,0 +1,39 @@
+---
+platform: linux
+
+image_resource:
+  type: docker-image
+  source: 
+    repository: appbricks/automation-tools
+
+inputs:
+- name: automation
+- name: job-session
+
+run:
+  path: automation/lib/tasks/bosh/stop-deployment/task.sh
+
+params:
+  TRACE:
+
+  # The IAAS where the instances are deployed
+  IAAS:
+
+  # GCP Credentials
+  GCP_SERVICE_ACCOUNT_KEY:
+  GCP_PROJECT_ID:
+
+  # A label to identify this environments instanes
+  LABEL:
+
+  # Bosh login credentials
+  BOSH_HOST:
+  BOSH_CLIENT:
+  BOSH_CLIENT_SECRET:
+  CA_CERT:
+
+  # Space separated regex patterns to match with 
+  # deployment names of deployments to stop. If
+  # this variable is not provided then all 
+  # deployments Bosh manages will be stopped.
+  DEPLOYMENTS:
