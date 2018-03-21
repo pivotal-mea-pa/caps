@@ -1,0 +1,100 @@
+#!/bin/bash
+
+usage () {
+    echo -e "\nUSAGE: ci_login logout | [ login -d|--deployment <DEPLOYMENT_NAME> -i|--iaas <IAAS_PROVIDER> ]\n"
+    echo -e "    <DEPLOYMENT_NAME>  The name of one of the deployment recipes."
+    echo -e "    <IAAS_PROVIDER>    The iaas provider that the deployment has been deployed to.\n"
+
+    exit 1
+}
+
+root_dir=$(cd $(dirname $BASH_SOURCE)/.. && pwd)
+
+case "$1" in
+    help)
+        usage
+        exit 0
+        ;;
+    login)
+        shift
+        while [[ $# -gt 0 ]]; do
+            case "$1" in
+                -d|--deployment)
+                    deployment_name=$2
+                    shift
+                    ;;
+                -i|--iaas)
+                    iaas_provider=$2
+                    shift
+                    ;;
+                *)
+                    echo -e "ERROR! Unknown option or argument value $1.\n"
+                    usage
+                    exit 1
+                    ;;
+            esac
+            shift
+        done
+        if [[ -z $deployment_name || -z $iaas_provider ]]; then
+            usage
+            exit 1
+        fi
+        if [[ ! -e $root_dir/deployments/$deployment_name ]]; then
+            echo -e "\nERROR! Deployment recipe does not exist at:" 
+            echo -e "\n$root_dir/deployments/$deployment_name\n"
+            exit 1
+        fi
+        if [[ ! -e $root_dir/deployments/$deployment_name/$iaas_provider ]]; then
+            echo -e "\nERROR! IAAS specific deployment recipe does not exist at:"
+            echo -e "\n$root_dir/deployments/$deployment_name/$iaas_provider\n"
+            exit 1
+        fi
+        if [[ ! -e $root_dir/deployments/$deployment_name/$iaas_provider/terraform/.terraform ]]; then
+            echo -e "\nERROR! The deployment recipe needs to initialized to the current context.\n"
+            exit 1
+        fi
+        ;;
+    logout)
+        shift
+        [[ $# -eq 0 ]] || echo -e "\nLogging out of tunnel. Additional arguments '$@' will be ignored.\n"
+
+        ps -ef | awk '/8080\:127\.0\.0\.1\:8080/{ print $2 }' | sudo xargs kill -15
+        exit 0
+        ;;
+    *)
+        usage
+        exit 1
+        ;;
+esac
+
+terraform_path=$root_dir/deployments/$deployment_name/$iaas_provider/terraform
+cd $terraform_path
+tf_output=$(terraform output) || exit 1
+cd - >/dev/null 2>&1
+
+host=$(echo -e "$tf_output" | awk '/bastion_admin_fqdn/{ print $3 }')
+password=$(echo -e "$tf_output" | awk '/concourse_admin_password/{ print $3 }')
+
+echo -e "\nChecking connectivity to $host...\n  * This will hang if you are not logged on to the VPN."
+nc -v -z -w 1 $host 22 >/dev/null 2>&1
+if [[ $? -ne 0 ]]; then
+    echo "ERROR! Unable to reach SSH port of $host."
+    exit 1
+fi
+
+echo -e "\nCreating SSH tunnel in order to access Concourse."
+ps -ef | awk '/8080\:127\.0\.0\.1\:8080/{ print $2 }' | sudo xargs kill -15
+ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no \
+    -i $terraform_path/vpn-admin-ssh-key.pem vpn_admin@$host \
+    -L 8080:127.0.0.1:8080 -N >/dev/null 2>&1 &
+
+sleep 2
+fly -t local login -k -c http://localhost:8080 -u admin -p $password  >/dev/null 2>&1
+if [[ $? -ne 0 ]]; then
+    echo "ERROR! Unable to login to Concourse using the fly CLI."
+    exit 1
+fi
+
+fly -t local sync >/dev/null 2>&1
+
+echo -e "\nThe Concourse UI is available via the following URL: http://localhost:8080\n"
