@@ -3,7 +3,7 @@
 #
 
 module "bootstrap" {
-  source = "github.com/appbricks/cloud-inceptor//modules/bootstrap/gcp"
+  source = "../../../../../lib/inceptor/modules/bootstrap/gcp"
 
   #
   # Company information used in certificate creation
