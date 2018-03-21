@@ -1,5 +1,14 @@
 ---
 
+- op: add
+  path: /resources/-
+  value:
+    name: automation
+    type: git
+    source:
+      uri: ((automation_pipelines_url))
+      branch: ((automation_pipelines_branch))
+
 - op: replace
   path: /resources/name=pcf-pipelines/source
   value:
