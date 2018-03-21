@@ -1,17 +1,15 @@
 #!/bin/bash
 
 usage () {
-    echo -e "\nUSAGE: ci_login logout | [ login -d|--deployment <DEPLOYMENT_NAME> -i|--iaas <IAAS_PROVIDER> ]\n"
+    echo -e "\nUSAGE: auto-ci logout | login -d|--deployment <DEPLOYMENT_NAME> -i|--iaas <IAAS_PROVIDER>\n"
     echo -e "    <DEPLOYMENT_NAME>  The name of one of the deployment recipes."
     echo -e "    <IAAS_PROVIDER>    The iaas provider that the deployment has been deployed to.\n"
-
-    exit 1
 }
 
 root_dir=$(cd $(dirname $BASH_SOURCE)/.. && pwd)
 
 case "$1" in
-    help)
+    -?|--help|help)
         usage
         exit 0
         ;;
@@ -98,3 +96,5 @@ fi
 fly -t local sync >/dev/null 2>&1
 
 echo -e "\nThe Concourse UI is available via the following URL: http://localhost:8080\n"
+echo -e "user: admin"
+echo -e "password: $password\n"
