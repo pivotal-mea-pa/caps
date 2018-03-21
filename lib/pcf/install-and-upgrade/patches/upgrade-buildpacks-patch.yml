@@ -24,7 +24,7 @@
   path: /jobs/name=stage-binary-buildpack/plan/1
   value:
     task: wait_until_started
-    file: automation/lib/tasks/automation/lib/wait-for-state/task.yml
+    file: automation/lib/tasks/automation/wait-for-state/task.yml
     params: 
       WAIT_FOR_STATE: started
       AUTOS3_URL: ((autos3_url))
@@ -40,7 +40,7 @@
   path: /jobs/name=stage-dotnet-buildpack/plan/1
   value:
     task: wait_until_started
-    file: automation/lib/tasks/automation/lib/wait-for-state/task.yml
+    file: automation/lib/tasks/automation/wait-for-state/task.yml
     params: 
       WAIT_FOR_STATE: started
       AUTOS3_URL: ((autos3_url))
@@ -56,7 +56,7 @@
   path: /jobs/name=stage-go-buildpack/plan/1
   value:
     task: wait_until_started
-    file: automation/lib/tasks/automation/lib/wait-for-state/task.yml
+    file: automation/lib/tasks/automation/wait-for-state/task.yml
     params: 
       WAIT_FOR_STATE: started
       AUTOS3_URL: ((autos3_url))
@@ -72,7 +72,7 @@
   path: /jobs/name=stage-java-buildpack/plan/1
   value:
     task: wait_until_started
-    file: automation/lib/tasks/automation/lib/wait-for-state/task.yml
+    file: automation/lib/tasks/automation/wait-for-state/task.yml
     params: 
       WAIT_FOR_STATE: started
       AUTOS3_URL: ((autos3_url))
@@ -88,7 +88,7 @@
   path: /jobs/name=stage-nodejs-buildpack/plan/1
   value:
     task: wait_until_started
-    file: automation/lib/tasks/automation/lib/wait-for-state/task.yml
+    file: automation/lib/tasks/automation/wait-for-state/task.yml
     params: 
       WAIT_FOR_STATE: started
       AUTOS3_URL: ((autos3_url))
@@ -104,7 +104,7 @@
   path: /jobs/name=stage-php-buildpack/plan/1
   value:
     task: wait_until_started
-    file: automation/lib/tasks/automation/lib/wait-for-state/task.yml
+    file: automation/lib/tasks/automation/wait-for-state/task.yml
     params: 
       WAIT_FOR_STATE: started
       AUTOS3_URL: ((autos3_url))
@@ -120,7 +120,7 @@
   path: /jobs/name=stage-python-buildpack/plan/1
   value:
     task: wait_until_started
-    file: automation/lib/tasks/automation/lib/wait-for-state/task.yml
+    file: automation/lib/tasks/automation/wait-for-state/task.yml
     params: 
       WAIT_FOR_STATE: started
       AUTOS3_URL: ((autos3_url))
@@ -136,7 +136,7 @@
   path: /jobs/name=stage-ruby-buildpack/plan/1
   value:
     task: wait_until_started
-    file: automation/lib/tasks/automation/lib/wait-for-state/task.yml
+    file: automation/lib/tasks/automation/wait-for-state/task.yml
     params: 
       WAIT_FOR_STATE: started
       AUTOS3_URL: ((autos3_url))
@@ -152,7 +152,7 @@
   path: /jobs/name=stage-staticfile-buildpack/plan/1
   value:
     task: wait_until_started
-    file: automation/lib/tasks/automation/lib/wait-for-state/task.yml
+    file: automation/lib/tasks/automation/wait-for-state/task.yml
     params: 
       WAIT_FOR_STATE: started
       AUTOS3_URL: ((autos3_url))
@@ -168,7 +168,7 @@
   path: /jobs/name=stage-tcserver-buildpack/plan/1
   value:
     task: wait_until_started
-    file: automation/lib/tasks/automation/lib/wait-for-state/task.yml
+    file: automation/lib/tasks/automation/wait-for-state/task.yml
     params: 
       WAIT_FOR_STATE: started
       AUTOS3_URL: ((autos3_url))

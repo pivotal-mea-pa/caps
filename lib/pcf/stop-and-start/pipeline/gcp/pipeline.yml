@@ -28,7 +28,7 @@ jobs:
       OPSMAN_CLIENT_SECRET: ((pcfops_secret))
 
   - task: set-stopped-state
-    file: automation/lib/tasks/automation/lib/toggle-state/task.yml
+    file: automation/lib/tasks/automation/toggle-state/task.yml
     params: 
       OFF_STATE: started
       ON_STATE: stopped
@@ -71,7 +71,7 @@ jobs:
       <<: *params
 
   - task: set-started-state
-    file: automation/lib/tasks/automation/lib/toggle-state/task.yml
+    file: automation/lib/tasks/automation/toggle-state/task.yml
     params: 
       OFF_STATE: stopped
       ON_STATE: started
