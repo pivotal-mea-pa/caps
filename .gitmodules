@@ -1,3 +1,4 @@
 [submodule "lib/inceptor"]
 	path = lib/inceptor
 	url = https://github.com/appbricks/cloud-inceptor
+	branch = master
