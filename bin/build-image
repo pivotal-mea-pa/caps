@@ -55,5 +55,5 @@ export build_log_dir=$root_dir/log
 mkdir -p $build_log_dir
 
 cd $root_dir/lib/inceptor/images/
-$root_dir/lib/inceptor/images/build-${iaas_provider}-image.sh
+$root_dir/lib/inceptor/images/build-${iaas_provider}-image.sh $region_list
 cd - >/dev/null 2>&1
