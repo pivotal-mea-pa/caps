@@ -33,24 +33,6 @@ case "$1" in
             esac
             shift
         done
-        if [[ -z $deployment_name || -z $iaas_provider ]]; then
-            usage
-            exit 1
-        fi
-        if [[ ! -e $root_dir/deployments/$deployment_name ]]; then
-            echo -e "\nERROR! Deployment recipe does not exist at:" 
-            echo -e "\n$root_dir/deployments/$deployment_name\n"
-            exit 1
-        fi
-        if [[ ! -e $root_dir/deployments/$deployment_name/$iaas_provider ]]; then
-            echo -e "\nERROR! IAAS specific deployment recipe does not exist at:"
-            echo -e "\n$root_dir/deployments/$deployment_name/$iaas_provider\n"
-            exit 1
-        fi
-        if [[ ! -e $root_dir/deployments/$deployment_name/$iaas_provider/terraform/.terraform ]]; then
-            echo -e "\nERROR! The deployment recipe needs to initialized to the current context.\n"
-            exit 1
-        fi
         ;;
     logout)
         shift
@@ -65,13 +47,47 @@ case "$1" in
         ;;
 esac
 
+if [[ -z $deployment_name || -z $iaas_provider ]]; then
+    usage
+    exit 1
+fi
+if [[ ! -e $root_dir/deployments/$deployment_name ]]; then
+    echo -e "\nERROR! Deployment recipe does not exist at:" 
+    echo -e "\n$root_dir/deployments/$deployment_name\n"
+    exit 1
+fi
+
+if [[ ! -e $root_dir/deployments/$deployment_name/$iaas_provider ]]; then
+    echo -e "\nERROR! IAAS specific deployment recipe does not exist at:"
+    echo -e "\n$root_dir/deployments/$deployment_name/$iaas_provider\n"
+    exit 1
+fi
+if [[ ! -e $root_dir/deployments/$deployment_name/$iaas_provider/terraform ]]; then
+    echo -e "\nERROR! The deployment recipe does not seem to have a terraform template.\n"
+    exit 1
+fi
+if [[ ! -e $root_dir/deployments/$deployment_name/$iaas_provider/terraform/.terraform ]]; then
+    echo -e "\nERROR! The deployment recipe's terraform context has not been initialized.\n"
+    exit 1
+fi
+
 terraform_path=$root_dir/deployments/$deployment_name/$iaas_provider/terraform
+if [[ ! -e $terraform_path/vpn-admin-ssh-key.pem ]]; then
+    echo -e "\nERROR! The deployment recipe needs to applied or refreshed to retrieve the SSH keys for the bastion instance.\n"
+    exit 1
+fi
+
 cd $terraform_path
 tf_output=$(terraform output) || exit 1
 cd - >/dev/null 2>&1
 
 host=$(echo -e "$tf_output" | awk '/bastion_admin_fqdn/{ print $3 }')
 password=$(echo -e "$tf_output" | awk '/concourse_admin_password/{ print $3 }')
+
+if [[ -z $host || -z $password ]]; then
+    echo -e "\nERROR! Failed to retrieve required deployment attributes.\n"
+    exit 1
+fi
 
 echo -e "\nChecking connectivity to $host...\n  * This will hang if you are not logged on to the VPN."
 nc -v -z -w 1 $host 22 >/dev/null 2>&1
