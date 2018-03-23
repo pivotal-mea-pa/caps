@@ -35,6 +35,10 @@ module "bootstrap" {
 
   bastion_host_name = "vpn"
 
+  deploy_jumpbox = "${var.deploy_jumpbox}"
+
+  jumpbox_data_disk_size = "${var.jumpbox_data_disk_size}"
+
   # DNS Name for VPC will be 'cf.tfacc.pcfs.io'
   vpc_dns_zone = "${var.vpc_dns_zone}"
 

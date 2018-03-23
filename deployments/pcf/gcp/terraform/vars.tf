@@ -47,6 +47,18 @@ variable "vpc_parent_dns_zone_name" {
 }
 
 #
+# Jumpbox
+#
+
+variable "deploy_jumpbox" {
+  default = "false"
+}
+
+variable "jumpbox_data_disk_size" {
+  default = "160"
+}
+
+#
 # Concourse Automation common attributes
 #
 
