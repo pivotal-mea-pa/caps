@@ -8,22 +8,16 @@ image_resource:
 
 inputs:
 - name: automation
-
-# Required only if metadata is not passed between 
-# tasks and uploaded as concourse pool metaddata
-# when the pool lock is released.
-#
-#- name: backup-metadata
+- name: restore-timestamp
 
 run:
-  path: automation/lib/pcf/backup-and-restore/tasks/prepare-opsman-backup/task.sh
+  path: automation/lib/pipelines/pcf/backup-and-restore/tasks/prepare-opsman-restore/task.sh
 
 outputs:
-- name: backup-timestamp
 - name: job-session
 
 params:
-  TRACE:
+  TRACE: Y
 
   ## Ops Manager credentials
   OPSMAN_HOST:

@@ -34,4 +34,4 @@ params:
   ENABLE_ERRANDS:
 
 run:
-  path: automation/lib/pcf/install-and-upgrade/tasks/stage-product/task.sh
+  path: automation/lib/pipelines/pcf/install-and-upgrade/tasks/stage-product/task.sh

@@ -18,7 +18,7 @@ jobs:
 
   - task: prepare-backup
     privileged: true
-    file: automation/lib/pcf/backup-and-restore/tasks/prepare-opsman-backup/task.yml
+    file: automation/lib/pipelines/pcf/backup-and-restore/tasks/prepare-opsman-backup/task.yml
     params: 
       <<: *backup-restore-common-params
       <<: *backup-restore-storage-params
@@ -27,7 +27,7 @@ jobs:
 
     - task: backup-opsman
       privileged: true
-      file: automation/lib/pcf/backup-and-restore/tasks/backup-opsman/task.yml
+      file: automation/lib/pipelines/pcf/backup-and-restore/tasks/backup-opsman/task.yml
       params: 
         <<: *backup-restore-common-params
         <<: *backup-restore-storage-params
@@ -70,7 +70,7 @@ jobs:
 
   - task: import-ops-manager-backup
     privileged: true
-    file: automation/lib/pcf/backup-and-restore/tasks/restore-opsman/task.yml
+    file: automation/lib/pipelines/pcf/backup-and-restore/tasks/restore-opsman/task.yml
     params: 
       <<: *backup-restore-common-params
       <<: *backup-restore-storage-params
@@ -103,7 +103,7 @@ jobs:
 
   - task: prepare-opsman-restore
     privileged: true
-    file: automation/lib/pcf/backup-and-restore/tasks/prepare-opsman-restore/task.yml
+    file: automation/lib/pipelines/pcf/backup-and-restore/tasks/prepare-opsman-restore/task.yml
     params: 
       <<: *backup-restore-common-params
       <<: *backup-restore-storage-params

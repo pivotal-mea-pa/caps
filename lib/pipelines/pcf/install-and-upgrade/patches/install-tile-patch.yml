@@ -74,7 +74,7 @@
 
     # Apply changes
     - task: stage-and-apply-tile
-      file: automation/lib/pcf/install-and-upgrade/tasks/stage-product/task.yml
+      file: automation/lib/pipelines/pcf/install-and-upgrade/tasks/stage-product/task.yml
       params:
         OPSMAN_CLIENT_ID: ((opsman_client_id))
         OPSMAN_CLIENT_SECRET: ((opsman_client_secret))

@@ -124,7 +124,7 @@ jobs:
   # Override default terraform template 
   # files with a more customized configuration
   - task: extend-infrastructure
-    file: automation/lib/pcf/install-and-upgrade/tasks/extend-infrastructure/task.yml
+    file: automation/lib/pipelines/pcf/install-and-upgrade/tasks/extend-infrastructure/task.yml
     params:
       IAAS_TYPE: gcp
       GCP_SERVICE_ACCOUNT_KEY: ((gcp_service_account_key))
@@ -274,7 +274,7 @@ jobs:
       OPSMAN_PASSWORD: ((opsman_admin_password))
       OPSMAN_DOMAIN_OR_IP_ADDRESS: ((opsman_domain_or_ip_address))
   - task: stage-tile
-    file: automation/lib/pcf/install-and-upgrade/tasks/stage-product/task.yml
+    file: automation/lib/pipelines/pcf/install-and-upgrade/tasks/stage-product/task.yml
     params:
       OPSMAN_DOMAIN_OR_IP_ADDRESS: ((opsman_domain_or_ip_address))
       OPSMAN_USERNAME: ((opsman_admin_username))
@@ -298,7 +298,7 @@ jobs:
 
   # Configure the SRT with an initial configuration and prepare it for deployment
   - task: configure-srt
-    file: automation/lib/pcf/install-and-upgrade/tasks/configure-srt/task.yml
+    file: automation/lib/pipelines/pcf/install-and-upgrade/tasks/configure-srt/task.yml
     params:
       pcf_iaas: gcp
       pcf_az_1: ((gcp_zone_1))

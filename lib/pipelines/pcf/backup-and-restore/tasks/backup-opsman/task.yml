@@ -12,7 +12,7 @@ inputs:
 - name: job-session
 
 run:
-  path: automation/lib/pcf/backup-and-restore/tasks/backup-opsman/task.sh
+  path: automation/lib/pipelines/pcf/backup-and-restore/tasks/backup-opsman/task.sh
 
 params:
   TRACE: Y

@@ -17,8 +17,8 @@ TERRAFORM_PARAMS_PATH=automation/deployments/pcf/gcp/params
 # Configure install PCF pipeline
 #
 
-INSTALL_AND_UPGRADE_PIPELINE_PATH=automation/lib/pcf/install-and-upgrade/pipeline
-INSTALL_AND_UPGRADE_PATCHES_PATH=automation/lib/pcf/install-and-upgrade/patches
+INSTALL_AND_UPGRADE_PIPELINE_PATH=automation/lib/pipelines/pcf/install-and-upgrade/pipeline
+INSTALL_AND_UPGRADE_PATCHES_PATH=automation/lib/pipelines/pcf/install-and-upgrade/patches
 
 terraform init $TERRAFORM_PARAMS_PATH
 
@@ -142,7 +142,7 @@ fly -t default unpause-pipeline -p PCF_upgrade-buildpacks
 
 # Setup backup and restore pipeline
 
-BACKUP_AND_RESTORE_PIPELINE_PATH=automation/lib/pcf/backup-and-restore/pipeline
+BACKUP_AND_RESTORE_PIPELINE_PATH=automation/lib/pipelines/pcf/backup-and-restore/pipeline
 
 rm -fr .terraform/
 rm terraform.tfstate
@@ -168,8 +168,8 @@ fly -t default unpause-pipeline -p PCF_backup-and-restore
 
 # Setup start and stop pipeline
 
-START_AND_STOP_PIPELINE_PATH=automation/lib/pcf/stop-and-start/pipeline
-START_AND_STOP_PATCHES_PATH=automation/lib/pcf/stop-and-start/patches
+START_AND_STOP_PIPELINE_PATH=automation/lib/pipelines/pcf/stop-and-start/pipeline
+START_AND_STOP_PATCHES_PATH=automation/lib/pipelines/pcf/stop-and-start/patches
 
 rm -fr .terraform/
 rm terraform.tfstate

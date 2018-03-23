@@ -11,7 +11,7 @@ inputs:
 - name: restore-timestamp
 
 run:
-  path: automation/lib/pcf/backup-and-restore/tasks/restore-opsman/task.sh
+  path: automation/lib/pipelines/pcf/backup-and-restore/tasks/restore-opsman/task.sh
 
 outputs:
 - name: job-session
