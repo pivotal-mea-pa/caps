@@ -1,0 +1,119 @@
+#!/bin/bash
+
+root_dir=$(cd $(dirname $BASH_SOURCE)/.. && pwd)
+
+usage () {
+    echo -e "\nUSAGE: auto-ssh <NAME> -d|--deployment <DEPLOYMENT_NAME> -i|--iaas <IAAS_PROVIDER> [ -u|user <SSH_USER> ]\n"
+    echo -e "    This utility will create launch an SSH session to an instance within the deployed 
+    echo -e :    environment.\n"
+    echo -e "    <NAME>             The name of the instance to SSH to. If th name is 'bastion' then"
+    echo -e "                       an SSH session will be created to the bastion instance. Otherwise"
+    echo -e "                       it should be of the host prefix of the instance name. For example"
+    echo -e "                       <host prefix>.<vpc domain>."
+    echo -e "    <DEPLOYMENT_NAME>  The name of one of the deployment recipes."
+    echo -e "    <IAAS_PROVIDER>    The iaas provider that the deployment has been deployed to."
+    echo -e "    <SSH_USER>         The SSH user to login as. This will be ignored when you SSH to the"
+    echo -e "                       bastion instance. For any other instance if this argument is not"
+    echo -e "                       provided the default SSH user will be 'ubuntu'.\n"
+}
+
+case "$1" in
+    -?|--help|help)
+        usage
+        exit 0
+        ;;
+    bastion)
+        name=bastion
+        ;;
+    *)
+        name=$1
+        if [[ $(echo $name | cut -c1) == - ]]; then
+            usage
+            exit 1
+        fi
+        ;;
+esac
+
+shift
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        -d|--deployment)
+            deployment_name=$2
+            shift
+            ;;
+        -i|--iaas)
+            iaas_provider=$2
+            shift
+            ;;
+        -u|user)
+            ssh_user=$2
+            shift
+            ;;
+        *)
+            usage
+            exit 1
+            ;;
+    esac
+    shift
+done
+
+if [[ -z $deployment_name || -z $iaas_provider ]]; then
+    usage
+    exit 1
+fi
+if [[ ! -e $root_dir/deployments/$deployment_name ]]; then
+    echo -e "\nERROR! Deployment recipe does not exist at:" 
+    echo -e "\n$root_dir/deployments/$deployment_name\n"
+    exit 1
+fi
+
+if [[ ! -e $root_dir/deployments/$deployment_name/$iaas_provider ]]; then
+    echo -e "\nERROR! IAAS specific deployment recipe does not exist at:"
+    echo -e "\n$root_dir/deployments/$deployment_name/$iaas_provider\n"
+    exit 1
+fi
+if [[ ! -e $root_dir/deployments/$deployment_name/$iaas_provider/terraform ]]; then
+    echo -e "\nERROR! The deployment recipe does not seem to have a terraform template.\n"
+    exit 1
+fi
+if [[ ! -e $root_dir/deployments/$deployment_name/$iaas_provider/terraform/.terraform ]]; then
+    echo -e "\nERROR! The deployment recipe's terraform context has not been initialized.\n"
+    exit 1
+fi
+
+terraform_path=$root_dir/deployments/$deployment_name/$iaas_provider/terraform
+if [[ ! -e $terraform_path/vpn-admin-ssh-key.pem ]]; then
+    echo -e "\nERROR! The deployment recipe needs to applied or refreshed to retrieve the SSH keys for the bastion instance.\n"
+    exit 1
+fi
+
+terraform_path=$root_dir/deployments/$deployment_name/$iaas_provider/terraform
+cd $terraform_path
+tf_output=$(terraform output) || exit 1
+cd - >/dev/null 2>&1
+
+if [[ "$name" == "bastion" ]]; then
+
+    ssh_host=$(echo -e "$tf_output" | awk '/bastion_admin_fqdn =/{ print $3 }')
+    ssh_key=$terraform_path/vpn-admin-ssh-key.pem
+    ssh_user=vpn_admin
+    
+    su_password=$(echo -e "$tf_output" | awk '/vpn_admin_password =/{ print $3 }')
+else
+    vpc_domain_name=$(echo -e "$tf_output" | awk '/vpc_dns_zone =/{ print $3 }')
+
+    ssh_host=$name.$vpc_domain_name
+    ssh_key=$terraform_path/default-ssh-key.pem
+    [[ -n $ssh_user ]] || ssh_user=ubuntu
+fi
+
+echo -e "\nChecking connectivity to $host...\n  * This will hang if you are not logged on to the VPN.\n"
+nc -v -z -w 1 $ssh_host 22 >/dev/null 2>&1
+if [[ $? -ne 0 ]]; then
+    echo "ERROR! Unable to reach SSH port of $ssh_host."
+    exit 1
+fi
+
+[[ -n $su_password ]] && echo -e "The SU password is: $su_password\n"
+
+ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i $ssh_key $ssh_user@$ssh_host

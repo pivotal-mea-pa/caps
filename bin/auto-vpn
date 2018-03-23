@@ -1,0 +1,106 @@
+#!/bin/bash
+
+root_dir=$(cd $(dirname $BASH_SOURCE)/.. && pwd)
+
+set -e
+
+usage () {
+    echo -e "\nUSAGE: auto-vpn -d|--deployment <DEPLOYMENT_NAME> -i|--iaas <IAAS_PROVIDER>\n"
+    echo -e "    This utility will download the VPN credentials required to access"
+    echo -e "    the environment's internal resources. The credentials will be"
+    echo -e "    download to the following folder.\n"
+    echo -e "       * $root_dir/tmp \n"
+    echo -e "    <DEPLOYMENT_NAME>  The name of one of the deployment recipes."
+    echo -e "    <IAAS_PROVIDER>    The iaas provider that the deployment has been deployed to.\n"
+}
+
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        -d|--deployment)
+            deployment_name=$2
+            shift
+            ;;
+        -i|--iaas)
+            iaas_provider=$2
+            shift
+            ;;
+        *)
+            usage
+            exit 1
+            ;;
+    esac
+    shift
+done
+
+if [[ -z $deployment_name || -z $iaas_provider ]]; then
+    usage
+    exit 1
+fi
+if [[ ! -e $root_dir/deployments/$deployment_name ]]; then
+    echo -e "\nERROR! Deployment recipe does not exist at:" 
+    echo -e "\n$root_dir/deployments/$deployment_name\n"
+    exit 1
+fi
+
+if [[ ! -e $root_dir/deployments/$deployment_name/$iaas_provider ]]; then
+    echo -e "\nERROR! IAAS specific deployment recipe does not exist at:"
+    echo -e "\n$root_dir/deployments/$deployment_name/$iaas_provider\n"
+    exit 1
+fi
+if [[ ! -e $root_dir/deployments/$deployment_name/$iaas_provider/terraform ]]; then
+    echo -e "\nERROR! The deployment recipe does not seem to have a terraform template.\n"
+    exit 1
+fi
+if [[ ! -e $root_dir/deployments/$deployment_name/$iaas_provider/terraform/.terraform ]]; then
+    echo -e "\nERROR! The deployment recipe's terraform context has not been initialized.\n"
+    exit 1
+fi
+
+terraform_path=$root_dir/deployments/$deployment_name/$iaas_provider/terraform
+if [[ ! -e $terraform_path/vpn-admin-ssh-key.pem ]]; then
+    echo -e "\nERROR! The deployment recipe needs to applied or refreshed to retrieve the SSH keys for the bastion instance.\n"
+    exit 1
+fi
+
+terraform_path=$root_dir/deployments/$deployment_name/$iaas_provider/terraform
+cd $terraform_path
+tf_output=$(terraform output) || exit 1
+cd - >/dev/null 2>&1
+
+vpn_host=$(echo -e "$tf_output" | awk '/bastion_fqdn =/{ print $3 }')
+vpn_admin_password=$(echo -e "$tf_output" | awk '/vpn_admin_password =/{ print $3 }')
+
+os_type="$(uname -s)"
+if [[ $os_type == Darwin ]]; then
+
+    curl -k -s -f -u "vpn_admin:$vpn_admin_password" \
+        https://$vpn_host/~vpn_admin/openvpn-config.tunnelblick.zip	 \
+        -o $root_dir/tmp/ovpn_config.zip
+
+    rm -fr $root_dir/tmp/*.tblk
+    unzip -q -o $root_dir/tmp/ovpn_config.zip -d $root_dir/tmp/
+
+    tunnelblick_config=$(ls -l $root_dir/tmp/ | grep ".tblk" | cut  -d' ' -f13)
+    open $root_dir/tmp/$tunnelblick_config
+
+elif [[ $os_type == Linux ]]; then
+
+    wget --no-check-certificate \
+        --http-user="vpn_admin" --http-password="$vpn_admin_password" \    
+        https://$vpn_host/~vpn_admin/openvpn-config.client.zip \
+        -O $root_dir/tmp/ovpn_config.zip
+
+    echo "\nVPN credentials downloaded to $root_dir/tmp/ovpn_config.zip.\n"
+else
+    echo -e "\nERROR: Unable to determine OS type for which the VPN configurations should be"
+    echo -e "       downloaded. Please download manually from:\n"
+    echo -e "       url: https://$vpn_host/~vpn_admin"
+    echo -e "       user: vpn_admin"
+    echo -e "       password: $vpn_admin_password\n"
+    exit 1
+fi
+
+echo -e "\nThe VPN configuration downloaded successfully. Use"
+echo -e "the following credentials to login to the VPN.\n"
+echo -e "  user: vpn_admin"
+echo -e "  password: $vpn_admin_password\n"
