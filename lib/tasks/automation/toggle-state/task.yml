@@ -31,8 +31,8 @@ run:
     if [[ -z $state ]]; then
       version=0
     else
-      mc rm $state
       version=$(($(echo ${state#*-})+${VERSION_INCREMENT:-0}))
+      mc find auto/pcf/stopped --name "$ON_STATE-$(($version-2))" --exec "mc rm {}"
     fi
 
     touch $ON_STATE-$version
