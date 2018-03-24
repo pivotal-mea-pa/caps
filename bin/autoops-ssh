@@ -4,8 +4,8 @@ root_dir=$(cd $(dirname $BASH_SOURCE)/.. && pwd)
 
 usage () {
     echo -e "\nUSAGE: autoops-ssh <NAME> -d|--deployment <DEPLOYMENT_NAME> -i|--iaas <IAAS_PROVIDER> [ -u|user <SSH_USER> ]\n"
-    echo -e "    This utility will create launch an SSH session to an instance within the deployed 
-    echo -e :    environment.\n"
+    echo -e "    This utility will create launch an SSH session to an instance within the deployed"
+    echo -e "    environment.\n"
     echo -e "    <NAME>             The name of the instance to SSH to. If th name is 'bastion' then"
     echo -e "                       an SSH session will be created to the bastion instance. Otherwise"
     echo -e "                       it should be of the host prefix of the instance name. For example"
