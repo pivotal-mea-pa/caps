@@ -1,0 +1,146 @@
+#!/bin/bash
+
+root_dir=$(cd $(dirname $BASH_SOURCE)/.. && pwd)
+
+usage () {
+    echo -e "\nUSAGE: create-env <NAME> -d|--deployment <DEPLOYMENT_NAME> -i|--iaas <IAAS_PROVIDER>\n"
+    echo -e "    This utility will create a control file for a new environment in the repository root."
+    echo -e "    This file will be named '.envrc-<NAME>'. Its format is compatible with the 'direnv'"
+    echo -e "    (https://github.com/direnv/direnv) utility which is recommend for managing profiles"
+    echo -e "    for multiple deployment environments.\n"
+    echo -e "    <NAME>             The name of the environment. This will also be the name of your primary VPC."
+    echo -e "    <DEPLOYMENT_NAME>  The name of one of the deployment recipes."
+    echo -e "    <IAAS_PROVIDER>    The iaas provider that the deployment has been deployed to.\n"
+}
+
+case "$1" in
+    -?|--help|help)
+        usage
+        exit 0
+        ;;
+    *)
+        name=$1
+        if [[ $(echo $name | cut -c1) == - ]]; then
+            usage
+            exit 1
+        fi
+        ;;
+esac
+
+shift
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        -v|--debug)
+            set -x
+            ;;
+        -d|--deployment)
+            deployment_name=$2
+            shift
+            ;;
+        -i|--iaas)
+            iaas_provider=$2
+            shift
+            ;;
+        *)
+            usage
+            exit 1
+            ;;
+    esac
+    shift
+done
+
+if [[ -z $name || -z $deployment_name || -z $iaas_provider ]]; then
+    usage
+    exit 1
+fi
+
+if [[ ! -e $root_dir/deployments/$deployment_name ]]; then
+    echo -e "\nERROR! Deployment recipe does not exist at:" 
+    echo -e "\n$root_dir/deployments/$deployment_name\n"
+    exit 1
+fi
+if [[ ! -e $root_dir/deployments/$deployment_name/$iaas_provider ]]; then
+    echo -e "\nERROR! IAAS specific deployment recipe does not exist at:"
+    echo -e "\n$root_dir/deployments/$deployment_name/$iaas_provider\n"
+    exit 1
+fi
+if [[ ! -e $root_dir/deployments/$deployment_name/$iaas_provider/terraform ]]; then
+    echo -e "\nERROR! The deployment recipe does not seem to have a terraform template.\n"
+    exit 1
+fi
+
+workspace_path=$root_dir/.workspace/$TF_VAR_vpc_name
+terraform_path=$root_dir/deployments/$deployment_name/$iaas_provider/terraform
+
+vars_file=$terraform_path/vars.tf
+if [[ ! -e $vars_file ]]; then
+    echo -e "\nA 'var.tf' was not found at the bootstrap template path.\n"
+    echo -e "* $terraform_path\n" 
+    echo -e "This file is required to determine the inputs for building"
+    echo -e "the environment.\n"
+    exit 1
+fi
+
+
+tf_vars=$(cat $vars_file | awk '/^variable /{ print substr($2,2,length($2)-2) }')
+
+cat << ---EOF >$root_dir/.envrc-$name
+#!/bin/bash
+
+#
+# Environment variables required by Terraform 
+# to bootstrap and install the PCF environment
+#
+---EOF
+
+cnl=true
+vnl=true
+curr_var=""
+def_val=""
+
+while IFS='' read -r line || [[ -n "$line" ]]; do
+
+    first_char=$(echo $line | cut -c1)
+    if [[ "$first_char" == "#" ]]; then
+
+        vnl=true
+        [[ $cnl == true ]] && echo >>$root_dir/.envrc-$name
+        cnl=false
+
+        echo "$line" >>$root_dir/.envrc-$name
+        continue
+    fi
+
+    var=$(echo $line | awk '/^variable /{ print substr($2,2,length($2)-2) }')
+    [[ -n $var ]] && curr_var=$var
+    
+    val=$(echo $line | awk -F'"' '/default/{ print $2 }')
+    [[ -n $val ]] && def_val=$val
+
+    if [[ "$first_char" == "}" ]]; then
+
+        cnl=true
+        [[ $vnl == true ]] && echo >>$root_dir/.envrc-$name
+        vnl=false
+
+        case $curr_var in
+            vpc_name)
+                echo "export TF_VAR_$curr_var=$name" >>$root_dir/.envrc-$name
+                ;;
+            ssh_key_file_path)
+                echo "#export TF_VAR_$curr_var=$workspace_path" >>$root_dir/.envrc-$name
+                ;;
+            *)
+                if [[ -n $curr_var && -n $def_val ]]; then
+                    echo "#export TF_VAR_$curr_var=$def_val" >>$root_dir/.envrc-$name
+                else
+                    echo "export TF_VAR_$curr_var=" >>$root_dir/.envrc-$name
+                fi
+                ;;
+        esac
+
+        unset curr_var
+        unset def_val
+    fi
+    
+done < "$vars_file"
