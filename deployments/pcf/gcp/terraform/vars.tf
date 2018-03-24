@@ -47,6 +47,13 @@ variable "vpc_parent_dns_zone_name" {
 }
 
 #
+# Local file path to write SSH private key for bastion instance
+#
+variable "ssh_key_file_path" {
+  default = ""
+}
+
+#
 # Jumpbox
 #
 

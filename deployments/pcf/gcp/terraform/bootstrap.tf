@@ -3,7 +3,7 @@
 #
 
 module "bootstrap" {
-  source = "../../../../../lib/inceptor/modules/bootstrap/gcp"
+  source = "../../../../lib/inceptor/modules/bootstrap/gcp"
 
   #
   # Company information used in certificate creation
@@ -46,6 +46,9 @@ module "bootstrap" {
   # name server records of the 'vpc_dns_zone' will be added.
   dns_managed_zone_name = "${var.vpc_parent_dns_zone_name}"
 
+  # Path to save all ssh key files
+  ssh_key_file_path = "${var.ssh_key_file_path == "" ? path.module : var.ssh_key_file_path}"
+
   #
   # VPN Settings
   #
@@ -63,7 +66,7 @@ module "bootstrap" {
   #
   # Bootstrap pipeline
   #
-  bootstrap_pipeline_file = "../pipeline/pipeline.yml"
+  bootstrap_pipeline_file = "${path.module}/../pipeline/pipeline.yml"
 
   # This is a YML file snippet. It is important not to include
   # the '---' header as that is created via the bastion module 
