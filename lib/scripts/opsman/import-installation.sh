@@ -14,7 +14,7 @@ if [[ ! -e /home/ubuntu/.import_checked ]] &&
   echo "Importing configuration found at '$installation_zip' to new appliance."
   
   set -e
-  echo curl -k "$OPSMAN_URL/api/v0/installation_asset_collection" \
+  curl -k "$OPSMAN_URL/api/v0/installation_asset_collection" \
     -X POST \
     -F "installation[file]=@$installation_zip" \
     -F "passphrase=$OPSMAN_ADMIN_PASSWORD"
