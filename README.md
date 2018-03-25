@@ -14,6 +14,6 @@ For each environment at a minimum the following Day-1 and Day-2 Operations pipel
 
 ## Bootstrap
 
-Every environment needs to be bootstraped. The bootstrap step paves the IaaS with the necessary services required for secured access to a logical Virtual Data Center (VDC) created for the environment. Bootstrapping is achieved via Terraform templates. This initial template contains all the required parameters that setup the rest of the automation workflows.
+Every environment needs to be bootstraped. The bootstrap step paves the IaaS with the necessary services required for secured access to a logical Virtual Data Center (VDC) created for the environment. Bootstrapping is achieved via Terraform templates. This initial template contains all the required parameters that setup the rest of the automation workflows. Bootstrapping is done by applying a  Terraform template that launches an inception Virtual Private Cloud which also acts as the DMZ layer for the rest of the deployed infrastructure.
 
 Before you can bootstrap you need to build the bastion image which also acts as the engine that execute the initial environment setup automation workflows. These workflows may configure downstream automation infrastructure or for simpler non-production use cases may implement all the necessary automation for the environment.
