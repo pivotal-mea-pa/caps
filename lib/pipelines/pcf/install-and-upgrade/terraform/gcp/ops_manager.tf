@@ -33,6 +33,11 @@ resource "null_resource" "ops-manager" {
   }
 
   provisioner "file" {
+    content     = "${data.template_file.import-installation.rendered}"
+    destination = "/home/ubuntu/import-installation.sh"
+  }
+
+  provisioner "file" {
     content     = "${data.template_file.mount-opsman-data-volume.rendered}"
     destination = "/home/ubuntu/mount-opsman-data-volume.sh"
   }
@@ -40,8 +45,10 @@ resource "null_resource" "ops-manager" {
   provisioner "remote-exec" {
     inline = [
       "chmod 0744 /home/ubuntu/export-installation.sh",
+      "chmod 0744 /home/ubuntu/import-installation.sh",
       "chmod 0744 /home/ubuntu/mount-opsman-data-volume.sh",
       "/home/ubuntu/mount-opsman-data-volume.sh",
+      "/home/ubuntu/import-installation.sh",
     ]
   }
 
@@ -55,6 +62,7 @@ resource "null_resource" "ops-manager" {
 
   triggers {
     export-installation      = "${md5(data.template_file.export-installation.rendered)}"
+    import-installation      = "${md5(data.template_file.import-installation.rendered)}"
     mount-opsman-data-volume = "${md5(data.template_file.mount-opsman-data-volume.rendered)}"
   }
 
@@ -70,6 +78,17 @@ resource "null_resource" "ops-manager" {
 
 data "template_file" "export-installation" {
   template = "${file("${path.module}/export-installation.sh")}"
+
+  vars {
+    opsman_dns_name = "${substr(
+      google_dns_record_set.ops-manager-dns.name, 0, length(google_dns_record_set.ops-manager-dns.name)-1)}"
+
+    opsman_admin_password = "${data.terraform_remote_state.bootstrap.opsman_admin_password}"
+  }
+}
+
+data "template_file" "import-installation" {
+  template = "${file("${path.module}/import-installation.sh")}"
 
   vars {
     opsman_dns_name = "${substr(
