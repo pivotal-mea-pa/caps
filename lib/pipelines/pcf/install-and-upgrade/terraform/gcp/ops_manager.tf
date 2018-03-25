@@ -53,6 +53,11 @@ resource "null_resource" "ops-manager" {
     when = "destroy"
   }
 
+  triggers {
+    export-installation      = "${md5(data.template_file.export-installation.rendered)}"
+    mount-opsman-data-volume = "${md5(data.template_file.mount-opsman-data-volume.rendered)}"
+  }
+
   connection {
     type        = "ssh"
     host        = "${google_dns_record_set.ops-manager-dns.name}"
@@ -67,7 +72,9 @@ data "template_file" "export-installation" {
   template = "${file("${path.module}/export-installation.sh")}"
 
   vars {
-    opsman_dns_name       = "${google_dns_record_set.ops-manager-dns.name}"
+    opsman_dns_name = "${substr(
+      google_dns_record_set.ops-manager-dns.name, 0, length(google_dns_record_set.ops-manager-dns.name)-1)}"
+
     opsman_admin_password = "${data.terraform_remote_state.bootstrap.opsman_admin_password}"
   }
 }
