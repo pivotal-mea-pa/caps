@@ -35,6 +35,8 @@ module "bootstrap" {
 
   bastion_host_name = "vpn"
 
+  bastion_instance_type = "n1-standard-2"
+
   deploy_jumpbox = "${var.deploy_jumpbox}"
 
   jumpbox_data_disk_size = "${var.jumpbox_data_disk_size}"
