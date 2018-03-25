@@ -45,6 +45,14 @@ resource "null_resource" "ops-manager" {
     ]
   }
 
+  provisioner "remote-exec" {
+    inline = [
+      "/home/ubuntu/export-installation.sh",
+    ]
+
+    when = "destroy"
+  }
+
   connection {
     type        = "ssh"
     host        = "${google_dns_record_set.ops-manager-dns.name}"
@@ -75,7 +83,7 @@ data "template_file" "mount-opsman-data-volume" {
 }
 
 resource "google_compute_disk" "opsman-data-disk" {
-  name = "${var.vpc_name}-opsman-data-disk"
+  name = "${var.prefix}-opsman-data-disk"
   type = "pd-standard"
   zone = "${var.gcp_zone_1}"
   size = "100"
