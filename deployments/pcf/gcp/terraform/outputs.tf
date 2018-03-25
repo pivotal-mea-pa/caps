@@ -187,10 +187,17 @@ output "vpn_admin_password" {
   value = "${module.bootstrap.vpn_admin_password}"
 }
 
+output "concourse_admin_password" {
+  value = "${random_string.concourse-admin-password.result}"
+}
+
+#
+# Default SSH key to use within VPC
+#
 output "default_openssh_public_key" {
   value = "${module.bootstrap.default_openssh_public_key}"
 }
 
-output "concourse_admin_password" {
-  value = "${random_string.concourse-admin-password.result}"
+output "default_openssh_private_key" {
+  value = "${module.bootstrap.default_openssh_private_key}"
 }
