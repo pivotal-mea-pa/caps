@@ -1,7 +1,7 @@
 #!/bin/bash
 
-OPSMAN_URL="https://${google_dns_record_set.ops-manager-dns.name}/uaa"
-OPSMAN_ADMIN_PASSWORD="${data.terraform_remote_state.bootstrap.opsman_admin_password}"
+OPSMAN_URL="https://${opsman_dns_name}/uaa"
+OPSMAN_ADMIN_PASSWORD="${opsman_admin_password}"
 
 set -e
 
