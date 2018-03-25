@@ -28,12 +28,12 @@ resource "google_compute_instance" "ops-manager" {
 
 resource "null_resource" "ops-manager" {
   provisioner "file" {
-    content     = "${data.template_file.export-installation}"
+    content     = "${data.template_file.export-installation.rendered}"
     destination = "/home/ubuntu/export-installation.sh"
   }
 
   provisioner "file" {
-    content     = "${data.template_file.mount-opsman-data-volume}"
+    content     = "${data.template_file.mount-opsman-data-volume.rendered}"
     destination = "/home/ubuntu/mount-opsman-data-volume.sh"
   }
 
