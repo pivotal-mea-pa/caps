@@ -84,6 +84,7 @@ jobs:
   plan:
   - get: pcf-pipelines
   - get: pivnet-opsmgr
+    trigger: true
     params:
       globs:
       - "*GCP.yml"
