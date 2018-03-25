@@ -1,6 +1,6 @@
 #!/bin/bash
 
-OPSMAN_URL="https://${opsman_dns_name}/uaa"
+OPSMAN_URL="https://${opsman_dns_name}"
 OPSMAN_ADMIN_PASSWORD="${opsman_admin_password}"
 
 set -e
