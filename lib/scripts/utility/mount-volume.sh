@@ -25,7 +25,7 @@ if [[ -n $device ]]; then
   sudo tune2fs -l $device > /dev/null 2>&1
   if [[ $? -eq 1 ]]; then
     # Format new volume
-    sudo mkfs.ext4 $device
+    sudo mkfs.ext4 -F $device
   fi
 
   # Mount data volume
