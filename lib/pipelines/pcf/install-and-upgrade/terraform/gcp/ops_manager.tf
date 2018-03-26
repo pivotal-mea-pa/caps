@@ -1,5 +1,7 @@
 locals {
-  opsman_dns_name = "opsman.${google_dns_managed_zone.env_dns_zone.dns_name}"
+  opsman_dns_name = "opsman.${
+    substr(google_dns_managed_zone.env_dns_zone.dns_name, 0, 
+      length(google_dns_managed_zone.env_dns_zone.dns_name)-1)}"
 }
 
 resource "google_compute_instance" "ops-manager" {
