@@ -5,7 +5,7 @@ OPSMAN_ADMIN_PASSWORD="${opsman_admin_password}"
 
 # Import installaton if one was found
 
-set +e -x
+set +e
 
 if [[ -e /data/exports ]]; then
   installation_zip=$(ls -ltr /data/exports/installation*.zip | tail -1 | awk '{ print $9 }')
