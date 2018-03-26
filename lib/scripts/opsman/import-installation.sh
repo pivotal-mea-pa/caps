@@ -11,8 +11,7 @@ if [[ -e /data/exports ]]; then
   installation_zip=$(ls -ltr /data/exports/installation*.zip | tail -1 | awk '{ print $9 }')
 fi
 
-if [[ ! -e /home/ubuntu/.import_checked ]] &&
-  [[ -n $installation_zip ]]; then
+if [[ ! -e /home/ubuntu/.import_checked && -n $installation_zip ]]; then
   echo "Importing configuration found at '$installation_zip' to new appliance."
   
   i=12
