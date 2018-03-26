@@ -1,3 +1,7 @@
+locals {
+  opsman_dns_name = "opsman.${google_dns_managed_zone.env_dns_zone.dns_name}"
+}
+
 resource "google_compute_instance" "ops-manager" {
   name         = "${var.prefix}-ops-manager"
   depends_on   = ["google_compute_subnetwork.subnet-ops-manager"]
@@ -70,9 +74,7 @@ data "template_file" "export-installation" {
   template = "${file("${path.module}/export-installation.sh")}"
 
   vars {
-    opsman_dns_name = "${substr(
-      google_dns_record_set.ops-manager-dns.name, 0, length(google_dns_record_set.ops-manager-dns.name)-1)}"
-
+    opsman_dns_name       = "${local.opsman_dns_name}"
     opsman_admin_password = "${data.terraform_remote_state.bootstrap.opsman_admin_password}"
   }
 }
@@ -81,9 +83,7 @@ data "template_file" "import-installation" {
   template = "${file("${path.module}/import-installation.sh")}"
 
   vars {
-    opsman_dns_name = "${substr(
-      google_dns_record_set.ops-manager-dns.name, 0, length(google_dns_record_set.ops-manager-dns.name)-1)}"
-
+    opsman_dns_name       = "${local.opsman_dns_name}"
     opsman_admin_password = "${data.terraform_remote_state.bootstrap.opsman_admin_password}"
   }
 }
@@ -110,3 +110,5 @@ resource "google_storage_bucket" "director" {
   location      = "${var.gcp_storage_bucket_location}"
   force_destroy = true
 }
+
+resource "null_resource" "ops-manager" {}
