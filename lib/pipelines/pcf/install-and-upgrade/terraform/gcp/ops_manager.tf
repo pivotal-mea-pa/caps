@@ -52,7 +52,6 @@ resource "google_compute_instance" "ops-manager" {
       "chmod 0744 /home/ubuntu/import-installation.sh",
       "chmod 0744 /home/ubuntu/export-installation.sh",
       "/home/ubuntu/mount-opsman-data-volume.sh",
-      "/home/ubuntu/import-installation.sh",
     ]
   }
 
@@ -69,6 +68,21 @@ resource "google_compute_instance" "ops-manager" {
     user        = "ubuntu"
     private_key = "${data.terraform_remote_state.bootstrap.default_openssh_private_key}"
     host        = "${self.network_interface.0.address}"
+  }
+}
+
+resource "null_resource" "ops-manager" {
+  provisioner "remote-exec" {
+    inline = [
+      "/home/ubuntu/import-installation.sh",
+    ]
+  }
+
+  connection {
+    type        = "ssh"
+    user        = "ubuntu"
+    private_key = "${data.terraform_remote_state.bootstrap.default_openssh_private_key}"
+    host        = "${google_dns_record_set.ops-manager-dns.name}"
   }
 }
 
