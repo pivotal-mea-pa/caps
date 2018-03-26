@@ -18,9 +18,9 @@ if [[ ! -e /home/ubuntu/.import_checked ]] &&
   i=12
   while [[ $i -gt 0 ]]; do
     resp=$(curl -s -k $OPSMAN_URL)
-    echo "$resp" | grep '502 Bad Gateway' >/dev/null 2>&1
-    if [ $? -ne 0 ]; then
-      break
+    if [[ $? -eq 0 ]]; then
+      echo "$resp" | grep '502 Bad Gateway' >/dev/null 2>&1
+      [[ $? -eq 0 ]] || break
     fi
     echo "Waiting for Ops Manager to become available."
     sleep 5
