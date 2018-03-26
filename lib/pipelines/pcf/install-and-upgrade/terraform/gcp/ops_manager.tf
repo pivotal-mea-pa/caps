@@ -126,5 +126,3 @@ resource "google_storage_bucket" "director" {
   location      = "${var.gcp_storage_bucket_location}"
   force_destroy = true
 }
-
-resource "null_resource" "ops-manager" {}
