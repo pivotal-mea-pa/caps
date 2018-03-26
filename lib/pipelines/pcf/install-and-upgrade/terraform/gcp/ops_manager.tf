@@ -24,12 +24,10 @@ resource "google_compute_instance" "ops-manager" {
   metadata {
     ssh-keys = "ubuntu:${data.terraform_remote_state.bootstrap.default_openssh_public_key}"
   }
-}
 
-resource "null_resource" "ops-manager" {
   provisioner "file" {
-    content     = "${data.template_file.export-installation.rendered}"
-    destination = "/home/ubuntu/export-installation.sh"
+    content     = "${data.template_file.mount-opsman-data-volume.rendered}"
+    destination = "/home/ubuntu/mount-opsman-data-volume.sh"
   }
 
   provisioner "file" {
@@ -38,15 +36,15 @@ resource "null_resource" "ops-manager" {
   }
 
   provisioner "file" {
-    content     = "${data.template_file.mount-opsman-data-volume.rendered}"
-    destination = "/home/ubuntu/mount-opsman-data-volume.sh"
+    content     = "${data.template_file.export-installation.rendered}"
+    destination = "/home/ubuntu/export-installation.sh"
   }
 
   provisioner "remote-exec" {
     inline = [
-      "chmod 0744 /home/ubuntu/export-installation.sh",
-      "chmod 0744 /home/ubuntu/import-installation.sh",
       "chmod 0744 /home/ubuntu/mount-opsman-data-volume.sh",
+      "chmod 0744 /home/ubuntu/import-installation.sh",
+      "chmod 0744 /home/ubuntu/export-installation.sh",
       "/home/ubuntu/mount-opsman-data-volume.sh",
       "/home/ubuntu/import-installation.sh",
     ]
@@ -60,20 +58,12 @@ resource "null_resource" "ops-manager" {
     when = "destroy"
   }
 
-  triggers {
-    export-installation      = "${md5(data.template_file.export-installation.rendered)}"
-    import-installation      = "${md5(data.template_file.import-installation.rendered)}"
-    mount-opsman-data-volume = "${md5(data.template_file.mount-opsman-data-volume.rendered)}"
-  }
-
   connection {
     type        = "ssh"
-    host        = "${google_dns_record_set.ops-manager-dns.name}"
     user        = "ubuntu"
     private_key = "${data.terraform_remote_state.bootstrap.default_openssh_private_key}"
+    host        = "${self.network_interface.0.address}"
   }
-
-  depends_on = ["google_compute_instance.ops-manager"]
 }
 
 data "template_file" "export-installation" {
