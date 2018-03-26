@@ -13,8 +13,20 @@ if [[ ! -e /home/ubuntu/.import_checked ]] &&
   [[ -n $installation_zip ]]; then
   echo "Importing configuration found at '$installation_zip' to new appliance."
   
+  i=12
+  while [[ $i -gt 0 ]]; do
+    resp=$(curl -s -k $OPSMAN_URL/api/v0/diagnostic_report)
+    echo "$resp" | grep '502 Bad Gateway' >/dev/null 2>&1
+    if [ $? -ne 0 ]; then
+      break
+    fi
+    echo "Waiting for Ops Manager to become available."
+    sleep 5
+    i=$(($i-1))
+  done
+
   set -e
-  curl -k "$OPSMAN_URL/api/v0/installation_asset_collection" \
+  curl -f -k "$OPSMAN_URL/api/v0/installation_asset_collection" \
     -X POST \
     -F "installation[file]=@$installation_zip" \
     -F "passphrase=$OPSMAN_ADMIN_PASSWORD"
