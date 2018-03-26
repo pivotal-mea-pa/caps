@@ -84,7 +84,7 @@ workspace_path=$root_dir/.workspace/$TF_VAR_vpc_name
 
 if [[ ! -e $workspace_path/vpn-admin-ssh-key.pem || ! -e $workspace_path/terraform.output ]]; then
     echo -e "\nERROR! The deployment recipe needs to initialized and refreshed via"
-    echo -e "       'auto-tf apply' to retrieve the SSH keys for the bastion"
+    echo -e "       'autoops-tf apply' to retrieve the SSH keys for the bastion"
     echo -e "       instance.\n"
     exit 1
 fi
