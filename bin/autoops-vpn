@@ -72,11 +72,20 @@ if [[ $os_type == Darwin ]]; then
     curl -k -s -f -u "vpn_admin:$vpn_admin_password" \
         https://$vpn_host/~vpn_admin/openvpn-config.tunnelblick.zip	 \
         -o $root_dir/tmp/ovpn_config.zip
+    
+    while [[ $? -ne 0 ]]; do
+        echo "Waiting for bastion services to become available..."
+        sleep 5
+
+        curl -k -s -f -u "vpn_admin:$vpn_admin_password" \
+            https://$vpn_host/~vpn_admin/openvpn-config.tunnelblick.zip	 \
+            -o $root_dir/tmp/ovpn_config.zip
+    done
 
     rm -fr $root_dir/tmp/*.tblk
     unzip -q -o $root_dir/tmp/ovpn_config.zip -d $root_dir/tmp/
 
-    tunnelblick_config=$(ls -l $root_dir/tmp/ | grep ".tblk" | cut  -d' ' -f13)
+    tunnelblick_config=$(ls -l $root_dir/tmp/ | grep ".tblk" | awk '{ print $9 }')
     open $root_dir/tmp/$tunnelblick_config
 
 elif [[ $os_type == Linux ]]; then
