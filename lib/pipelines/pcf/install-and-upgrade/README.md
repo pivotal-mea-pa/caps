@@ -14,7 +14,18 @@ Once in the hijacked container invoke the `terraform destroy` command as follows
     export GOOGLE_CREDENTIALS=${GCP_SERVICE_ACCOUNT_KEY}
     export GOOGLE_PROJECT=${GCP_PROJECT_ID}
     export GOOGLE_REGION=${GCP_REGION}
+    
+    pcf_opsman_bucket_path=$(grep -i 'us:.*.tar.gz' pivnet-opsmgr/*GCP.yml | cut -d' ' -f2)
+    pcf_opsman_image_name=$(echo $pcf_opsman_bucket_path | sed 's%.*/\(.*\).tar.gz%opsman-\1%' | sed 's/\./-/g')
 
+    if [[ ${POE_SSL_NAME1} == "" || ${POE_SSL_NAME1} == "null" ]]; then
+        pcf_ert_ssl_cert=$(cat ${SYSTEM_DOMAIN}.crt)
+        pcf_ert_ssl_key=$(cat ${SYSTEM_DOMAIN}.key)
+    else
+        pcf_ert_ssl_cert="$POE_SSL_CERT1"
+        pcf_ert_ssl_key="$POE_SSL_KEY1"
+    fi
+    
     terraform destroy -force \
         -var "gcp_proj_id=${GCP_PROJECT_ID}" \
         -var "gcp_region=${GCP_REGION}" \
