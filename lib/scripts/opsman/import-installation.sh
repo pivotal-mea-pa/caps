@@ -5,7 +5,7 @@ OPSMAN_ADMIN_PASSWORD="${opsman_admin_password}"
 
 # Import installaton if one was found
 
-set -x
+set +e -x
 
 if [[ -e /data/exports ]]; then
   installation_zip=$(ls -ltr /data/exports/installation*.zip | tail -1 | awk '{ print $9 }')
@@ -17,7 +17,7 @@ if [[ ! -e /home/ubuntu/.import_checked ]] &&
   
   i=12
   while [[ $i -gt 0 ]]; do
-    resp=$(curl -s -k $OPSMAN_URL/api/v0/diagnostic_report)
+    resp=$(curl -s -k $OPSMAN_URL)
     echo "$resp" | grep '502 Bad Gateway' >/dev/null 2>&1
     if [ $? -ne 0 ]; then
       break
