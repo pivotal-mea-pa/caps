@@ -78,6 +78,10 @@ resource "null_resource" "ops-manager" {
     ]
   }
 
+  triggers {
+    ops_manager_id = "${google_compute_instance.ops-manager.id}"
+  }
+
   connection {
     type        = "ssh"
     user        = "ubuntu"
