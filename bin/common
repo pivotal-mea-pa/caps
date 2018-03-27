@@ -40,14 +40,14 @@ function common::initialize() {
 
     [[ -e $root_dir/.workspace/context ]] && source $root_dir/.workspace/context
     if [[ -z $name || -z $deployment_name || -z $iaas_provider ]]; then
-        echo -e "${RED}\nCurrent environment context has not be set. Please run 'cops-init'.${NC}"
-        cops-init --help
+        echo -e "${RED}\nCurrent environment context has not be set. Please run 'caps-init'.${NC}"
+        caps-init --help
         exit 1
     fi
 
     common::validate
 
-    source .cops-env_$name
+    source .caps-env_$name
     if [[ -z $TF_VAR_vpc_name || $TF_VAR_vpc_name != $name ]]; then 
         echo -e "${RED}\nThe 'TF_VAR_vpc_name' environment variable must be set with a"
         echo -e "unique name to identify this environment within you cloud account."

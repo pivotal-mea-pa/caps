@@ -4,7 +4,7 @@ root_dir=$(cd $(dirname $BASH_SOURCE)/.. && pwd)
 source $root_dir/bin/common
 
 usage () {
-    echo -e "${BLUE}\nUSAGE: cops-init <NAME> -d|--deployment <DEPLOYMENT_NAME> -i|--iaas <IAAS_PROVIDER>\n"
+    echo -e "${BLUE}\nUSAGE: caps-init <NAME> -d|--deployment <DEPLOYMENT_NAME> -i|--iaas <IAAS_PROVIDER>\n"
     echo -e "    This utility will create a control file for a new environment in the repository root."
     echo -e "    This file will be named '.envrc-<NAME>'. Its format is compatible with the 'direnv'"
     echo -e "    (https://github.com/direnv/direnv) utility which is recommend for managing profiles"
@@ -62,8 +62,8 @@ deployment_name=$deployment_name
 iaas_provider=$iaas_provider
 ---EOF
 
-if [[ -e $root_dir/.cops-env_$name ]]; then
-    echo -e "${GREEN}COps context initialized to $name."
+if [[ -e $root_dir/.caps-env_$name ]]; then
+    echo -e "${GREEN}CAPs context initialized to $name."
     exit 0
 fi
 
@@ -87,7 +87,7 @@ if [[ ! -e $vars_file ]]; then
 fi
 tf_vars=$(cat $vars_file | awk '/^variable /{ print substr($2,2,length($2)-2) }')
 
-cat << ---EOF >$root_dir/.cops-env_$name
+cat << ---EOF >$root_dir/.caps-env_$name
 #!/bin/bash
 
 #
@@ -107,10 +107,10 @@ while IFS='' read -r line || [[ -n "$line" ]]; do
     if [[ "$first_char" == "#" ]]; then
 
         vnl=true
-        [[ $cnl == true ]] && echo >>$root_dir/.cops-env_$name
+        [[ $cnl == true ]] && echo >>$root_dir/.caps-env_$name
         cnl=false
 
-        echo "$line" >>$root_dir/.cops-env_$name
+        echo "$line" >>$root_dir/.caps-env_$name
         continue
     fi
 
@@ -123,21 +123,21 @@ while IFS='' read -r line || [[ -n "$line" ]]; do
     if [[ "$first_char" == "}" ]]; then
 
         cnl=true
-        [[ $vnl == true ]] && echo >>$root_dir/.cops-env_$name
+        [[ $vnl == true ]] && echo >>$root_dir/.caps-env_$name
         vnl=false
 
         case $curr_var in
             vpc_name)
-                echo "export TF_VAR_$curr_var=$name" >>$root_dir/.cops-env_$name
+                echo "export TF_VAR_$curr_var=$name" >>$root_dir/.caps-env_$name
                 ;;
             ssh_key_file_path)
-                echo "#export TF_VAR_$curr_var=$workspace_path" >>$root_dir/.cops-env_$name
+                echo "#export TF_VAR_$curr_var=$workspace_path" >>$root_dir/.caps-env_$name
                 ;;
             *)
                 if [[ -n $curr_var && -n $def_val ]]; then
-                    echo "#export TF_VAR_$curr_var=$def_val" >>$root_dir/.cops-env_$name
+                    echo "#export TF_VAR_$curr_var=$def_val" >>$root_dir/.caps-env_$name
                 else
-                    echo "export TF_VAR_$curr_var=" >>$root_dir/.cops-env_$name
+                    echo "export TF_VAR_$curr_var=" >>$root_dir/.caps-env_$name
                 fi
                 ;;
         esac
@@ -148,4 +148,4 @@ while IFS='' read -r line || [[ -n "$line" ]]; do
     
 done < "$vars_file"
 
-echo -e "${GREEN}COps context initialized to $name."
+echo -e "${GREEN}CAPs context initialized to $name."

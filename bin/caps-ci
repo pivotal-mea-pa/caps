@@ -7,7 +7,7 @@ common::initialize
 set -e
 
 usage () {
-    echo -e "\n${BLUE}USAGE: cops-ci logout | login\n"
+    echo -e "\n${BLUE}USAGE: caps-ci logout | login\n"
     echo -e "    This utility will create an SSH tunnel to the Concourse environment that"
     echo -e "    runs the automation pipelines. It will also initialize the 'fly' CLI and"
     echo -e "    create a target to this concourse environment.\n"
@@ -50,7 +50,7 @@ esac
 workspace_path=$root_dir/.workspace/$TF_VAR_vpc_name
 if [[ ! -e $workspace_path/vpn-admin-ssh-key.pem || ! -e $workspace_path/terraform.output ]]; then
     echo -e "\nERROR! The deployment recipe needs to initialized and refreshed via"
-    echo -e "       'cops-tf apply' to retrieve the SSH keys for the bastion"
+    echo -e "       'caps-tf apply' to retrieve the SSH keys for the bastion"
     echo -e "       instance.\n"
     exit 1
 fi

@@ -7,7 +7,7 @@ common::initialize
 set -e
 
 usage () {
-    echo -e "${BLUE}\nUSAGE: cops-tf [ init | plan | apply | taint-bastion | destroy ] -o|-options <TERRAFORM_OPTIONS>\n"
+    echo -e "${BLUE}\nUSAGE: caps-tf [ init | plan | apply | taint-bastion | destroy ] -o|-options <TERRAFORM_OPTIONS>\n"
     echo -e "    This utility will perform the given Terraform action on the deployment's bootstrap template.\n"
     echo -e "    <TERRAFORM_OPTIONS>  Additional options to pass to terraform.\n"
 }
