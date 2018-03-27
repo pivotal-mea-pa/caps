@@ -67,6 +67,7 @@ jobs:
   plan:
   - aggregate:
     - get: pcf-pipelines
+    - get: automation
     - get: terraform-state
   # Override default terraform template 
   # files with a more customized configuration
