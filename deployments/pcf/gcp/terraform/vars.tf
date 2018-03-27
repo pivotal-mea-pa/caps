@@ -75,7 +75,7 @@ variable "locale" {
 }
 
 variable "automation_pipelines_url" {
-  default = "https://github.com/mevansam/automation-pipelines.git"
+  default = "https://github.com/mevansam/caps.git"
 }
 
 variable "automation_pipelines_branch" {
