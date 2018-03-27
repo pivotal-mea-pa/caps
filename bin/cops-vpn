@@ -5,7 +5,7 @@ root_dir=$(cd $(dirname $BASH_SOURCE)/.. && pwd)
 set -e
 
 usage () {
-    echo -e "\nUSAGE: autoops-vpn -d|--deployment <DEPLOYMENT_NAME> -i|--iaas <IAAS_PROVIDER>\n"
+    echo -e "\nUSAGE: cops-vpn -d|--deployment <DEPLOYMENT_NAME> -i|--iaas <IAAS_PROVIDER>\n"
     echo -e "    This utility will download the VPN credentials required to access"
     echo -e "    the environment's internal resources. The credentials will be"
     echo -e "    download to the following folder.\n"
@@ -56,7 +56,7 @@ workspace_path=$root_dir/.workspace/$TF_VAR_vpc_name
 
 if [[ ! -e $workspace_path/terraform.output ]]; then
     echo -e "\nERROR! The deployment recipe needs to initialized and refreshed via"
-    echo -e "       'autoops-tf apply' to retrieve the SSH keys for the bastion"
+    echo -e "       'cops-tf apply' to retrieve the SSH keys for the bastion"
     echo -e "       instance.\n"
     exit 1
 fi
@@ -68,6 +68,8 @@ vpn_admin_password=$(echo -e "$tf_output" | awk '/vpn_admin_password =/{ print $
 
 os_type="$(uname -s)"
 if [[ $os_type == Darwin ]]; then
+
+    set +e
 
     curl -k -s -f -u "vpn_admin:$vpn_admin_password" \
         https://$vpn_host/~vpn_admin/openvpn-config.tunnelblick.zip	 \
@@ -81,6 +83,8 @@ if [[ $os_type == Darwin ]]; then
             https://$vpn_host/~vpn_admin/openvpn-config.tunnelblick.zip	 \
             -o $root_dir/tmp/ovpn_config.zip
     done
+
+    set -e
 
     rm -fr $root_dir/tmp/*.tblk
     unzip -q -o $root_dir/tmp/ovpn_config.zip -d $root_dir/tmp/

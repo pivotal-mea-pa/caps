@@ -5,7 +5,7 @@ root_dir=$(cd $(dirname $BASH_SOURCE)/.. && pwd)
 set -e
 
 usage () {
-    echo -e "\nUSAGE: autoops-tf [ init | plan | apply | taint ] -d|--deployment <DEPLOYMENT_NAME> -i|--iaas <IAAS_PROVIDER> -o|-options <TERRAFORM_OPTIONS>\n"
+    echo -e "\nUSAGE: cops-tf [ init | plan | apply | taint ] -d|--deployment <DEPLOYMENT_NAME> -i|--iaas <IAAS_PROVIDER> -o|-options <TERRAFORM_OPTIONS>\n"
     echo -e "    This utility will initialize the deployment's Terraform bootstrap template.\n"
     echo -e "    <DEPLOYMENT_NAME>    The name of one of the deployment recipes."
     echo -e "    <IAAS_PROVIDER>      The iaas provider that the deployment has been deployed to.\n"
@@ -99,8 +99,6 @@ case $tf_action in
         echo -e "state that may already exist in the following location.\n"
         echo -e "    TF_VAR_bootstrap_state_bucket = $TF_VAR_bootstrap_state_bucket"
         echo -e "    TF_VAR_bootstrap_state_prefix = $TF_VAR_bootstrap_state_prefix\n"
-
-        rm -fr $workspace_path/.terraform
 
         terraform init \
             -backend-config="bucket=$TF_VAR_bootstrap_state_bucket" \
