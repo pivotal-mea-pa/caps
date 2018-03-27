@@ -1,17 +1,19 @@
 #!/bin/bash
 
 root_dir=$(cd $(dirname $BASH_SOURCE)/.. && pwd)
+source $root_dir/bin/common
+common::initialize
+
+set -e
 
 usage () {
-    echo -e "\nUSAGE: cops-ssh <NAME> -d|--deployment <DEPLOYMENT_NAME> -i|--iaas <IAAS_PROVIDER> [ -u|user <SSH_USER> ]\n"
+    echo -e "\n${BLUE}USAGE: cops-ssh <NAME> [ -u|user <SSH_USER> ]\n"
     echo -e "    This utility will create launch an SSH session to an instance within the deployed"
     echo -e "    environment.\n"
     echo -e "    <NAME>             The name of the instance to SSH to. If th name is 'bastion' then"
     echo -e "                       an SSH session will be created to the bastion instance. Otherwise"
     echo -e "                       it should be of the host prefix of the instance name. For example"
     echo -e "                       <host prefix>.<vpc domain>."
-    echo -e "    <DEPLOYMENT_NAME>  The name of one of the deployment recipes."
-    echo -e "    <IAAS_PROVIDER>    The iaas provider that the deployment has been deployed to."
     echo -e "    <SSH_USER>         The SSH user to login as. This will be ignored when you SSH to the"
     echo -e "                       bastion instance. For any other instance if this argument is not"
     echo -e "                       provided the default SSH user will be 'ubuntu'.\n"
@@ -40,14 +42,6 @@ while [[ $# -gt 0 ]]; do
         -v|--debug)
             set -x
             ;;
-        -d|--deployment)
-            deployment_name=$2
-            shift
-            ;;
-        -i|--iaas)
-            iaas_provider=$2
-            shift
-            ;;
         -u|user)
             ssh_user=$2
             shift
@@ -60,28 +54,7 @@ while [[ $# -gt 0 ]]; do
     shift
 done
 
-if [[ -z $deployment_name || -z $iaas_provider ]]; then
-    usage
-    exit 1
-fi
-if [[ ! -e $root_dir/deployments/$deployment_name ]]; then
-    echo -e "\nERROR! Deployment recipe does not exist at:" 
-    echo -e "\n$root_dir/deployments/$deployment_name\n"
-    exit 1
-fi
-
-if [[ ! -e $root_dir/deployments/$deployment_name/$iaas_provider ]]; then
-    echo -e "\nERROR! IAAS specific deployment recipe does not exist at:"
-    echo -e "\n$root_dir/deployments/$deployment_name/$iaas_provider\n"
-    exit 1
-fi
-if [[ ! -e $root_dir/deployments/$deployment_name/$iaas_provider/terraform ]]; then
-    echo -e "\nERROR! The deployment recipe does not seem to have a terraform template.\n"
-    exit 1
-fi
-
 workspace_path=$root_dir/.workspace/$TF_VAR_vpc_name
-
 if [[ ! -e $workspace_path/vpn-admin-ssh-key.pem || ! -e $workspace_path/terraform.output ]]; then
     echo -e "\nERROR! The deployment recipe needs to initialized and refreshed via"
     echo -e "       'cops-tf apply' to retrieve the SSH keys for the bastion"

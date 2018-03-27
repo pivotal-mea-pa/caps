@@ -1,0 +1,10 @@
+#!/bin/bash
+
+
+
+echo -e "Ops Manager"
+echo -e "-----------\n"
+echo -e "URL:       https://opsman.pas.$(echo -e "$tf_output" | awk '/vpc_dns_zone =/{ print $3 }')"
+echo -e "User:      admin"
+echo -e "Password:  $(echo -e "$tf_output" | awk '/opsman_admin_password =/{ print $3 }')\n"
+

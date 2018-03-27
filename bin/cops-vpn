@@ -1,28 +1,23 @@
 #!/bin/bash
 
 root_dir=$(cd $(dirname $BASH_SOURCE)/.. && pwd)
+source $root_dir/bin/common
+common::initialize
 
 set -e
 
 usage () {
-    echo -e "\nUSAGE: cops-vpn -d|--deployment <DEPLOYMENT_NAME> -i|--iaas <IAAS_PROVIDER>\n"
+    echo -e "\n${BLUE}USAGE: cops-vpn -d|--deployment <DEPLOYMENT_NAME> -i|--iaas <IAAS_PROVIDER>\n"
     echo -e "    This utility will download the VPN credentials required to access"
     echo -e "    the environment's internal resources. The credentials will be"
     echo -e "    download to the following folder.\n"
     echo -e "       * $root_dir/tmp \n"
-    echo -e "    <DEPLOYMENT_NAME>  The name of one of the deployment recipes."
-    echo -e "    <IAAS_PROVIDER>    The iaas provider that the deployment has been deployed to.\n"
 }
 
 while [[ $# -gt 0 ]]; do
     case "$1" in
-        -d|--deployment)
-            deployment_name=$2
-            shift
-            ;;
-        -i|--iaas)
-            iaas_provider=$2
-            shift
+        -v|--debug)
+            set -x
             ;;
         *)
             usage
@@ -32,28 +27,7 @@ while [[ $# -gt 0 ]]; do
     shift
 done
 
-if [[ -z $deployment_name || -z $iaas_provider ]]; then
-    usage
-    exit 1
-fi
-if [[ ! -e $root_dir/deployments/$deployment_name ]]; then
-    echo -e "\nERROR! Deployment recipe does not exist at:" 
-    echo -e "\n$root_dir/deployments/$deployment_name\n"
-    exit 1
-fi
-
-if [[ ! -e $root_dir/deployments/$deployment_name/$iaas_provider ]]; then
-    echo -e "\nERROR! IAAS specific deployment recipe does not exist at:"
-    echo -e "\n$root_dir/deployments/$deployment_name/$iaas_provider\n"
-    exit 1
-fi
-if [[ ! -e $root_dir/deployments/$deployment_name/$iaas_provider/terraform ]]; then
-    echo -e "\nERROR! The deployment recipe does not seem to have a terraform template.\n"
-    exit 1
-fi
-
 workspace_path=$root_dir/.workspace/$TF_VAR_vpc_name
-
 if [[ ! -e $workspace_path/terraform.output ]]; then
     echo -e "\nERROR! The deployment recipe needs to initialized and refreshed via"
     echo -e "       'cops-tf apply' to retrieve the SSH keys for the bastion"
