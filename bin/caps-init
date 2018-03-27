@@ -56,6 +56,9 @@ if [[ -z $name || -z $deployment_name || -z $iaas_provider ]]; then
 fi
 common::validate
 
+workspace_path=$root_dir/.workspace/$name
+mkdir -p $workspace_path
+
 cat << ---EOF >$root_dir/.workspace/context
 name=$name
 deployment_name=$deployment_name
@@ -71,9 +74,6 @@ fi
 # Create a control file for the new environment.
 #
 echo "Creating a control file for a new environment named: $name"
-
-workspace_path=$root_dir/.workspace/$name
-mkdir -p $workspace_path
 
 terraform_path=$root_dir/deployments/$deployment_name/$iaas_provider/terraform
 

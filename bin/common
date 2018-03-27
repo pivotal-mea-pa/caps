@@ -38,19 +38,48 @@ common::validate() {
 
 function common::initialize() {
 
+    # Read the current context
     [[ -e $root_dir/.workspace/context ]] && source $root_dir/.workspace/context
     if [[ -z $name || -z $deployment_name || -z $iaas_provider ]]; then
         echo -e "${RED}\nCurrent environment context has not be set. Please run 'caps-init'.${NC}"
         caps-init --help
         exit 1
     fi
-
     common::validate
 
+    # Read the context control file
     source .caps-env_$name
     if [[ -z $TF_VAR_vpc_name || $TF_VAR_vpc_name != $name ]]; then 
         echo -e "${RED}\nThe 'TF_VAR_vpc_name' environment variable must be set with a"
         echo -e "unique name to identify this environment within you cloud account."
         exit 1
     fi
+
+    # Ensure context has been refreshed with remote state
+    workspace_path=$root_dir/.workspace/$TF_VAR_vpc_name
 }
+
+function common::show_env() {
+
+    echo -e "\n${LIGHT_GREEN}***********************"
+    echo -e "${LIGHT_GREEN}* Environment Details *"
+    echo -e "${LIGHT_GREEN}***********************\n"
+
+    echo -e "${LIGHT_BLUE}Name: $name"
+    echo -e "${LIGHT_BLUE}Type: $deployment_name"
+    echo -e "${LIGHT_BLUE}IaaS: $iaas_provider${NC}\n"
+}
+
+function common::read_terraform_output() {
+    
+    if [[ ! -e $workspace_path/terraform.output ]]; then
+        common::show_env
+
+        echo -e "ERROR! The deployment recipe needs to initialized and refreshed via"
+        echo -e "       'caps-tf apply' to retrieve the SSH keys for the bastion"
+        echo -e "       instance.\n"
+        exit 1
+    fi
+    tf_output=$(cat $workspace_path/terraform.output)
+}
+

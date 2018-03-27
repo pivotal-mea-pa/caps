@@ -7,7 +7,7 @@ common::initialize
 set -e
 
 usage () {
-    echo -e "\n${BLUE}USAGE: caps-vpn -d|--deployment <DEPLOYMENT_NAME> -i|--iaas <IAAS_PROVIDER>\n"
+    echo -e "\n${BLUE}USAGE: caps-vpn\n"
     echo -e "    This utility will download the VPN credentials required to access"
     echo -e "    the environment's internal resources. The credentials will be"
     echo -e "    download to the following folder.\n"
@@ -27,16 +27,7 @@ while [[ $# -gt 0 ]]; do
     shift
 done
 
-workspace_path=$root_dir/.workspace/$TF_VAR_vpc_name
-if [[ ! -e $workspace_path/terraform.output ]]; then
-    echo -e "\nERROR! The deployment recipe needs to initialized and refreshed via"
-    echo -e "       'caps-tf apply' to retrieve the SSH keys for the bastion"
-    echo -e "       instance.\n"
-    exit 1
-fi
-
-tf_output=$(cat $workspace_path/terraform.output)
-
+common::read_terraform_output
 vpn_host=$(echo -e "$tf_output" | awk '/bastion_fqdn =/{ print $3 }')
 vpn_admin_password=$(echo -e "$tf_output" | awk '/vpn_admin_password =/{ print $3 }')
 

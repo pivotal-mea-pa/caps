@@ -44,11 +44,8 @@ while [[ $# -gt 0 ]]; do
     shift
 done
 
-workspace_path=$root_dir/.workspace/$TF_VAR_vpc_name
 cd $workspace_path
-
 terraform_path=$root_dir/deployments/$deployment_name/$iaas_provider/terraform
-
 export TF_VAR_ssh_key_file_path=$workspace_path
 
 case $tf_action in
@@ -87,11 +84,11 @@ terraform {
     apply)
         if [[ -e terraform.plan ]]; then
             terraform apply $terraform_options terraform.plan 2>&1 \
-                | tee terraform.output | sed -e '/Outputs:/,+999d'
+                | tee terraform.output | awk '/Outputs:/ {l=999}; (l-- > 0) { $0="" } 1' | awk 'length'
         else
             terraform apply $terraform_options $terraform_path 2>&1 \
-                | tee terraform.output | sed -e '/Outputs:/,+999d'
-        fi 
+                | tee terraform.output | awk '/Outputs:/ {l=999}; (l-- > 0) { $0="" } 1' | awk 'length'
+        fi
         ;;
     taint-bastion)
         terraform taint \
@@ -103,6 +100,8 @@ terraform {
             -state=$workspace_path/.terraform/terraform.tfstate \
             -module=bootstrap.network.inception \
             google_compute_disk.bastion-data-volume
+
+        terraform plan -out=terraform.plan $terraform_path
         ;;
     destroy)
         terraform destroy $terraform_options \
