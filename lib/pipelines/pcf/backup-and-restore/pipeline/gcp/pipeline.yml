@@ -108,17 +108,17 @@ jobs:
       <<: *backup-restore-common-params
       <<: *backup-restore-storage-params
 
-  - task: scale-down-ert-mysql
-    privileged: true
-    file: automation/lib/tasks/opsman/scale-down-ert-mysql/task.yml
-    params: 
-      <<: *backup-restore-common-params
+  # - task: scale-down-ert-mysql
+  #   privileged: true
+  #   file: automation/lib/tasks/opsman/scale-down-ert-mysql/task.yml
+  #   params: 
+  #     <<: *backup-restore-common-params
 
-  - task: scale-down-ert-mysql-apply
-    privileged: true
-    file: automation/lib/tasks/opsman/apply-changes/task.yml
-    params: 
-      <<: *backup-restore-common-params
+  # - task: scale-down-ert-mysql-apply
+  #   privileged: true
+  #   file: automation/lib/tasks/opsman/apply-changes/task.yml
+  #   params: 
+  #     <<: *backup-restore-common-params
 
   - task: restore-pas
     privileged: true
@@ -127,17 +127,17 @@ jobs:
       <<: *backup-restore-common-params
       <<: *backup-restore-storage-params
 
-  - task: scale-up-ert-mysql
-    privileged: true
-    file: automation/lib/tasks/opsman/scale-up-ert-mysql/task.yml
-    params: 
-      <<: *backup-restore-common-params
+  # - task: scale-up-ert-mysql
+  #   privileged: true
+  #   file: automation/lib/tasks/opsman/scale-up-ert-mysql/task.yml
+  #   params: 
+  #     <<: *backup-restore-common-params
 
-  - task: scale-up-ert-mysql-apply
-    privileged: true
-    file: automation/lib/tasks/opsman/apply-changes/task.yml
-    params: 
-      <<: *backup-restore-common-params
+  # - task: scale-up-ert-mysql-apply
+  #   privileged: true
+  #   file: automation/lib/tasks/opsman/apply-changes/task.yml
+  #   params: 
+  #     <<: *backup-restore-common-params
 
 resources:
 
