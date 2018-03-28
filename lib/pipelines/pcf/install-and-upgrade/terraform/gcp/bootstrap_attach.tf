@@ -44,32 +44,32 @@ resource "google_dns_record_set" "vpc" {
 }
 
 #
-# Peer perimeter engineering network to PCF virtual network
+# Peer perimeter mgmt network to PCF virtual network
 #
 
-resource "google_compute_network_peering" "pcf-engineering" {
-  name         = "${var.prefix}-pcf-engineering"
+resource "google_compute_network_peering" "pcf-mgmt" {
+  name         = "${var.prefix}-pcf-mgmt"
   network      = "${google_compute_network.pcf-virt-net.self_link}"
-  peer_network = "${data.terraform_remote_state.bootstrap.engineering_network}"
+  peer_network = "${data.terraform_remote_state.bootstrap.mgmt_network}"
 }
 
-resource "google_compute_network_peering" "engineering-pcf" {
-  name         = "${var.prefix}-engineering-pcf"
-  network      = "${data.terraform_remote_state.bootstrap.engineering_network}"
+resource "google_compute_network_peering" "mgmt-pcf" {
+  name         = "${var.prefix}-mgmt-pcf"
+  network      = "${data.terraform_remote_state.bootstrap.mgmt_network}"
   peer_network = "${google_compute_network.pcf-virt-net.self_link}"
 }
 
 #
-# Allow access to internal resources in PCF virtual network from engineering network
+# Allow access to internal resources in PCF virtual network from mgmt network
 #
 
-data "google_compute_subnetwork" "engineering" {
-  name   = "${basename(data.terraform_remote_state.bootstrap.engineering_subnetwork)}"
+data "google_compute_subnetwork" "mgmt" {
+  name   = "${basename(data.terraform_remote_state.bootstrap.mgmt_subnetwork)}"
   region = "${var.gcp_region}"
 }
 
-resource "google_compute_firewall" "engineering-to-pcf-allow-all" {
-  name = "${var.prefix}-engineering-to-pcf-allow-all"
+resource "google_compute_firewall" "mgmt-to-pcf-allow-all" {
+  name = "${var.prefix}-mgmt-to-pcf-allow-all"
 
   network = "${google_compute_network.pcf-virt-net.name}"
 
@@ -79,6 +79,6 @@ resource "google_compute_firewall" "engineering-to-pcf-allow-all" {
 
   direction = "INGRESS"
 
-  source_ranges = ["${data.google_compute_subnetwork.engineering.ip_cidr_range}"]
+  source_ranges = ["${data.google_compute_subnetwork.mgmt.ip_cidr_range}"]
   target_tags   = ["${var.prefix}", "${var.prefix}-opsman"]
 }
