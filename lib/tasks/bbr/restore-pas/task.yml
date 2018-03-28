@@ -36,6 +36,9 @@ params:
   S3_SECRET_ACCESS_KEY:
   S3_REGION:
 
+  ## Credentials for GCS access
+  GCP_SERVICE_ACCOUNT_KEY:
+
   # Params to upload backups to OpenStack Swift Storage
   OS_AUTH_URL:
   OS_IDENTITY_API_VERSION:
@@ -57,6 +60,10 @@ params:
   S3FS_MOUNT:
   S3FS_USE_PATH_REQUEST_STYLE:
 
+  ## GCS mount bucker and path
+  GCS_BUCKET_NAME:
+  GCS_MOUNT:
+  
   ## Cloudfuse mount path
   CLOUDFUSE_MOUNT:
 

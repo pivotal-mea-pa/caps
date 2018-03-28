@@ -7,18 +7,32 @@ iaas::initialize
 [[ -n "$TRACE" ]] && set -x
 set -e
 
-source restore-timestamp/metadata
+if [[ -d restore-metadata ]]; then
+    source restore-metadata/metadata
+elif [[ $backup_mounted == yes ]]; then
+    if [[ -e $backup_path/metadata ]]; then
+        source $backup_path/metadata
+    else
+        echo "ERROR! Unable to locate backup metadata."
+        exit 1
+    fi
+else
+    echo "ERROR! Unable to locate backup metadata."
+    exit 1
+fi
 
 # Wait for any current apply jobs to finish
 
 if [[ -n "$OPSMAN_USER" ]]; then
-    opsman::login $OPSMAN_HOST $OPSMAN_USER $OPSMAN_PASSWD $OPSMAN_PASS_PHRASE
-    opsman::wait_for_last_apply_to_finish
-    opsman::kill_active_sessions
+    opsman::login "$OPSMAN_HOST" "$OPSMAN_USER" "$OPSMAN_PASSWD" "$OPSMAN_PASS_PHRASE"
+elif [[ -n "$PCFOPS_CLIENT" ]]; then
+    opsman::login_client "$OPSMAN_HOST" "$PCFOPS_CLIENT" "$PCFOPS_SECRET" "$OPSMAN_PASS_PHRASE"
+else
+    echo "ERROR! Pivotal Operations Manager credentials were not provided."
+    exit 1
 fi
-
-opsman::login_client $OPSMAN_HOST $PCFOPS_CLIENT $PCFOPS_SECRET $OPSMAN_PASS_PHRASE
-opsman::download_bosh_ca_cert $OPSMAN_HOST $OPSMAN_SSH_USER $OPSMAN_SSH_PASSWD
+opsman::wait_for_last_apply_to_finish
+opsman::kill_active_sessions
 
 cat <<EOF > job-session/env
 #!/bin/bash
@@ -40,7 +54,7 @@ if [[ -z "\$BOSH_HOST" ]]; then
     exit 1
 fi
 
-export CA_CERT='$(cat root_ca_certificate)'
+export CA_CERT='$(opsman::download_bosh_ca_cert)'
 export BBR_SSH_KEY=''\$(opsman::get_bbr_ssh_key)''
 
 function bosh_user_creds() { 

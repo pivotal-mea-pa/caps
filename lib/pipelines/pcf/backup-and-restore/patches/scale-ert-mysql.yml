@@ -1,0 +1,72 @@
+
+- op: add
+  path: /jobs/name=restore-elastic-runtime/plan/2
+  value:
+    task: scale-down-ert-mysql-apply
+    privileged: true
+    file: automation/lib/tasks/opsman/apply-changes/task.yml
+    params: 
+      TRACE: {{trace_tasks}}
+      SSH_KEY: {{ssh_key}}
+      OPSMAN_HOST: {{opsman_host}}
+      OPSMAN_USER: {{opsman_user}}
+      OPSMAN_PASSWD: {{opsman_passwd}}
+      OPSMAN_SSH_USER: {{opsman_ssh_user}}
+      OPSMAN_SSH_PASSWD: {{opsman_ssh_passwd}}
+      OPSMAN_PASS_PHRASE: {{opsman_pass_phrase}}
+      PCFOPS_CLIENT: {{pcfops_client}}
+      PCFOPS_SECRET: {{pcfops_secret}}
+      
+- op: add
+  path: /jobs/name=restore-elastic-runtime/plan/2
+  value:
+    task: scale-down-ert-mysql
+    privileged: true
+    file: automation/lib/tasks/opsman/scale-down-ert-mysql/task.yml
+    params: 
+      TRACE: {{trace_tasks}}
+      SSH_KEY: {{ssh_key}}
+      OPSMAN_HOST: {{opsman_host}}
+      OPSMAN_USER: {{opsman_user}}
+      OPSMAN_PASSWD: {{opsman_passwd}}
+      OPSMAN_SSH_USER: {{opsman_ssh_user}}
+      OPSMAN_SSH_PASSWD: {{opsman_ssh_passwd}}
+      OPSMAN_PASS_PHRASE: {{opsman_pass_phrase}}
+      PCFOPS_CLIENT: {{pcfops_client}}
+      PCFOPS_SECRET: {{pcfops_secret}}
+
+- op: add
+  path: /jobs/name=restore-elastic-runtime/plan/-
+  value:
+    task: scale-up-ert-mysql
+    privileged: true
+    file: automation/lib/tasks/opsman/scale-up-ert-mysql/task.yml
+    params: 
+      TRACE: {{trace_tasks}}
+      SSH_KEY: {{ssh_key}}
+      OPSMAN_HOST: {{opsman_host}}
+      OPSMAN_USER: {{opsman_user}}
+      OPSMAN_PASSWD: {{opsman_passwd}}
+      OPSMAN_SSH_USER: {{opsman_ssh_user}}
+      OPSMAN_SSH_PASSWD: {{opsman_ssh_passwd}}
+      OPSMAN_PASS_PHRASE: {{opsman_pass_phrase}}
+      PCFOPS_CLIENT: {{pcfops_client}}
+      PCFOPS_SECRET: {{pcfops_secret}}
+
+- op: add
+  path: /jobs/name=restore-elastic-runtime/plan/-
+  value:
+    task: scale-up-ert-mysql-apply
+    privileged: true
+    file: automation/lib/tasks/opsman/apply-changes/task.yml
+    params: 
+      TRACE: {{trace_tasks}}
+      SSH_KEY: {{ssh_key}}
+      OPSMAN_HOST: {{opsman_host}}
+      OPSMAN_USER: {{opsman_user}}
+      OPSMAN_PASSWD: {{opsman_passwd}}
+      OPSMAN_SSH_USER: {{opsman_ssh_user}}
+      OPSMAN_SSH_PASSWD: {{opsman_ssh_passwd}}
+      OPSMAN_PASS_PHRASE: {{opsman_pass_phrase}}
+      PCFOPS_CLIENT: {{pcfops_client}}
+      PCFOPS_SECRET: {{pcfops_secret}}

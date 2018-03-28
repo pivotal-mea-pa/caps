@@ -9,10 +9,11 @@ image_resource:
 inputs:
 - name: automation
 - name: job-session
+- name: current-scale
 
 run:
   path: automation/lib/tasks/opsman/common/scale-deployment.sh
-  args: ["cf-", "mysql", 3]
+  args: ["cf-", "mysql"]
 
 params:
   TRACE: Y

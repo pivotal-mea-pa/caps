@@ -10,6 +10,9 @@ inputs:
 - name: automation
 - name: job-session
 
+outputs:
+- name: current-scale
+
 run:
   path: automation/lib/tasks/opsman/common/scale-deployment.sh
   args: ["cf-", "mysql", 1]

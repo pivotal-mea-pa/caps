@@ -28,9 +28,9 @@ grep -q "^BACKUP_TIMESTAMP=" backup-timestamp/metadata && \
 # Wait for any current apply jobs to finish
 
 if [[ -n "$OPSMAN_USER" ]]; then
-    opsman::login $OPSMAN_HOST $OPSMAN_USER $OPSMAN_PASSWD $OPSMAN_PASS_PHRASE
+    opsman::login "$OPSMAN_HOST" "$OPSMAN_USER" "$OPSMAN_PASSWD" "$OPSMAN_PASS_PHRASE"
 elif [[ -n "$PCFOPS_CLIENT" ]]; then
-    opsman::login_client $OPSMAN_HOST $PCFOPS_CLIENT $PCFOPS_SECRET $OPSMAN_PASS_PHRASE
+    opsman::login_client "$OPSMAN_HOST" "$PCFOPS_CLIENT" "$PCFOPS_SECRET" "$OPSMAN_PASS_PHRASE"
 else
     echo "ERROR! Pivotal Operations Manager credentials were not provided."
     exit 1
@@ -48,9 +48,9 @@ if [[ -n "$CLEAN_UP_OPSMAN" ]]; then
 fi
 
 if [[ -n "$OPSMAN_USER" ]]; then
-    opsman::login $OPSMAN_HOST $OPSMAN_USER $OPSMAN_PASSWD $OPSMAN_PASS_PHRASE
+    opsman::login "$OPSMAN_HOST" "$OPSMAN_USER" "$OPSMAN_PASSWD" "$OPSMAN_PASS_PHRASE"
 elif [[ -n "$PCFOPS_CLIENT" ]]; then
-    opsman::login_client $OPSMAN_HOST $PCFOPS_CLIENT $PCFOPS_SECRET $OPSMAN_PASS_PHRASE
+    opsman::login_client "$OPSMAN_HOST" "$PCFOPS_CLIENT" "$PCFOPS_SECRET" "$OPSMAN_PASS_PHRASE"
 fi
 
 # Create script to source environment for downstream jobs/tasks

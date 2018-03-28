@@ -7,9 +7,8 @@ OPSMAN_ADMIN_PASSWORD="${opsman_admin_password}"
 
 set +e
 
-if [[ -e /data/exports ]]; then
-  installation_zip=$(ls -ltr /data/exports/installation*.zip | tail -1 | awk '{ print $9 }')
-fi
+[[ -e /data/exports ]] && \
+  installation_zip=$(ls -ltr /data/exports/installation*.zip | tail -1 | awk '{ print $9 }') 2>/dev/null
 
 if [[ ! -e /home/ubuntu/.import_checked && -n $installation_zip ]]; then
   echo "Importing configuration found at '$installation_zip' to new appliance."
