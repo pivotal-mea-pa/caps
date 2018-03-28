@@ -66,7 +66,8 @@ fly -t default set-pipeline -n \
 
 # Unpause the pipeline. The pipeline jobs will rerun in 
 # an idempotent manner if a prior installation is found.
-fly -t default unpause-pipeline -p PCF_install-and-upgrade
+[[ $UNPAUSE_INSTALL_PIPELINE == "true" ]] && \
+  fly -t default unpause-pipeline -p PCF_install-and-upgrade
 
 set +e
 
