@@ -71,7 +71,12 @@ else
     [[ -n $ssh_user ]] || ssh_user=ubuntu
 fi
 
-echo -e "\nChecking connectivity to $host...\n  * This will hang if you are not logged on to the VPN."
+if [[ -z $ssh_host ]]; then
+    echo "ERROR! Unable to validate host. The environment may not be initialized."
+    exit 1
+fi
+
+echo -e "\nChecking connectivity to $ssh_host...\n  * This will hang if you are not logged on to the VPN."
 nc -v -z -w 1 $ssh_host 22 >/dev/null 2>&1
 if [[ $? -ne 0 ]]; then
     echo "ERROR! Unable to reach SSH port of $ssh_host."

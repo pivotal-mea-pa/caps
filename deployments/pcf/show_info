@@ -7,18 +7,17 @@ opsman_admin_password=$(echo -e "$tf_output" | awk '/opsman_admin_password =/{ p
 
 [[ -z $vpc_dns_zone ]] && exit
 
-echo -e "Primary domain:      $vpc_dns_zone"
+echo -e "${GREEN}Primary domain:      $vpc_dns_zone"
 echo -e "VPN server URL:      https://$bastion_fqdn"
 echo -e "VPN admin password:  $vpn_admin_password\n"
 
-echo -e "Cloud Foundry"
+echo -e "${LIGHT_GREEN}Cloud Foundry"
 echo -e "-------------\n"
-
-echo -e "  Apps Manager URL:    https://apps.sys.pas.$vpc_dns_zone"
+echo -e "${GREEN}  Apps Manager URL:    https://apps.sys.pas.$vpc_dns_zone"
 echo -e "  CF API URL:          https://api.sys.pas.$vpc_dns_zone\n"
 
-echo -e "Ops Manager"
+echo -e "${LIGHT_GREEN}Ops Manager"
 echo -e "-----------\n"
-echo -e "  URL:                 https://opsman.pas.$vpc_dns_zone"
+echo -e "${GREEN}  URL:                 https://opsman.pas.$vpc_dns_zone"
 echo -e "  User:                admin"
 echo -e "  Password:            $opsman_admin_password\n"
