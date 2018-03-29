@@ -97,7 +97,7 @@ opsman_client_secret:
 opsman_admin_username: admin
 opsman_admin_password: ${random_string.opsman-admin-password.result}
 
-unpause_install_pipeline: true
+unpause_install_pipeline: false
 
 product: '${var.products}'
 

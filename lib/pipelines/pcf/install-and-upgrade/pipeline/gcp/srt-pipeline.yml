@@ -83,7 +83,7 @@ jobs:
       TF_VAR_bootstrap_state_prefix: ((bootstrap_state_prefix))
       GCP_PROJECT_ID: ((gcp_project_id))
       GCP_REGION: ((gcp_region))
-      GCP_SERVICE_ACCOUNT_KEY: ((gcp_service_account_key))
+      GCP_SERVICE_ACCOUNT_KEY: ./pcf-pipelines/install-pcf/gcp/terraform/gcp_service_account_key.json
       GCP_RESOURCE_PREFIX: ((gcp_resource_prefix))
       OPSMAN_DOMAIN_OR_IP_ADDRESS: ((opsman_domain_or_ip_address))
       OPSMAN_USERNAME: ((opsman_admin_username))

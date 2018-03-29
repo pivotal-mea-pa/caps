@@ -14,7 +14,7 @@ locals {
   pcf_start_at_stop = "${timeadd(local.pcf_start_at_start, "1m")}"
 }
 
-data "template_file" "pcf-pipeline-parameters" {
+data "template_file" "params" {
   template = "${file(var.params_template_file)}"
 
   vars {
@@ -64,7 +64,7 @@ data "template_file" "pcf-pipeline-parameters" {
   }
 }
 
-resource "local_file" "params-yml" {
-  content  = "${data.template_file.pcf-pipeline-parameters.rendered}"
+resource "local_file" "params" {
+  content  = "${data.template_file.params.rendered}"
   filename = "${var.params_file}"
 }
