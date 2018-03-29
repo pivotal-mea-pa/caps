@@ -16,7 +16,12 @@ else
     cp -r $tf_template_path pcf-pipelines/install-pcf/$IAAS_TYPE/terraform
 fi
 
-# Save service key to a json file as Terraform GCS 
-# backend only accepts the credential from a file.
-echo "$GCP_SERVICE_ACCOUNT_KEY" \
-    > pcf-pipelines/install-pcf/$IAAS_TYPE/terraform/gcp_service_account_key.json
+if [[ $WIPE == true ]]; then
+
+    rm pcf-pipelines/install-pcf/$IAAS_TYPE/terraform/bootstrap_attach.tf
+else
+    # Save service key to a json file as Terraform GCS 
+    # backend only accepts the credential from a file.
+    echo "$GCP_SERVICE_ACCOUNT_KEY" \
+        > pcf-pipelines/install-pcf/$IAAS_TYPE/terraform/gcp_service_account_key.json
+fi
