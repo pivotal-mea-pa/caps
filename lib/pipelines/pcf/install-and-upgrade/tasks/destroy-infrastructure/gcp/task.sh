@@ -19,17 +19,6 @@ if [[ $opsman_available == "available" ]]; then
     delete-installation
 fi
 
-# Create cliaas config
-
-echo "$GCP_SERVICE_ACCOUNT_KEY" > gcpcreds.json
-cat > cliaas_config.yml <<EOF
-gcp:
-  credfile: gcpcreds.json
-  zone: ${OPSMAN_ZONE}
-  project: ${GCP_PROJECT_ID}
-  disk_image_url: dontmatter
-EOF
-
 terraform init \
   -backend-config="bucket=${TERRAFORM_STATE_BUCKET}" \
   -backend-config="prefix=${GCP_RESOURCE_PREFIX}" \
