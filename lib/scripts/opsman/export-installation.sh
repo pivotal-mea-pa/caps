@@ -3,10 +3,14 @@
 OPSMAN_URL="https://${opsman_dns_name}"
 OPSMAN_ADMIN_PASSWORD="${opsman_admin_password}"
 
-set -e
-
 export BUNDLE_GEMFILE=/home/tempest-web/tempest/web/vendor/uaac/Gemfile
 bundle exec uaac target $OPSMAN_URL/uaa --skip-ssl-validation
+if [[ $? -ne 0 ]]; then
+  echo "Ops Manager has not been initialized."
+  exit 0
+fi
+
+set -e
 bundle exec uaac token owner get opsman admin -s "" -p "$OPSMAN_ADMIN_PASSWORD"
 
 TOKEN=$(bundle exec uaac context | awk '/access_token:/{ print $2 }')

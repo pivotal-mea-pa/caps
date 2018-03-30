@@ -22,8 +22,14 @@ resources:
 - name: automation
   type: git
   source:
-    uri: ((automation_pipelines_url))
+    uri: ((automation_pipelines_repo))
     branch: ((automation_pipelines_branch))
+
+- name: automation-extensions
+  type: git
+  source:
+    uri: ((automation_extensions_repo))
+    branch: ((automation_extensions_branch))
 
 - name: terraform-state
   type: gcs
@@ -58,7 +64,7 @@ resources:
     days: [Sunday, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday]
 
 jobs:
-- name: wipe-env
+- name: destroy-env
   serial_groups: [terraform]
   ensure:
     put: terraform-state
@@ -69,13 +75,6 @@ jobs:
     - get: pcf-pipelines
     - get: automation
     - get: terraform-state
-  # Override default terraform template 
-  # files with a more customized configuration
-  - task: extend-infrastructure
-    file: automation/lib/pipelines/pcf/install-and-upgrade/tasks/extend-infrastructure/task.yml
-    params:
-      IAAS_TYPE: gcp
-      WIPE: true
   - task: wipe
     file: pcf-pipelines/install-pcf/gcp/tasks/wipe-env/task.yml
     params:
@@ -105,83 +104,65 @@ jobs:
       GCP_REGION: ((gcp_region))
       GCP_SERVICE_ACCOUNT_KEY: ((gcp_service_account_key))
 
-- name: bootstrap-terraform-state
-  serial: true
-  plan:
-  - get: pcf-pipelines
-  - task: create-terraform-state
-    params:
-      TERRAFORM_STATEFILE_BUCKET: ((terraform_statefile_bucket))
-      GCP_SERVICE_ACCOUNT_KEY: ((gcp_service_account_key))
-    file: pcf-pipelines/install-pcf/gcp/tasks/create-initial-terraform-state/task.yml
-
 - name: create-infrastructure
   serial_groups: [terraform]
-  ensure:
-    put: terraform-state
-    params:
-      file: create-infrastructure-output/*.tfstate
   plan:
   - aggregate:
-    - get: terraform-state
     - get: automation
-    - get: pcf-pipelines
+    - get: automation-extensions
     - get: pivnet-opsmgr
       passed: [upload-opsman-image]
       trigger: true
       params:
         globs:
         - "*GCP.yml"
-  # Override default terraform template 
-  # files with a more customized configuration
-  - task: extend-infrastructure
-    file: automation/lib/pipelines/pcf/install-and-upgrade/tasks/extend-infrastructure/task.yml
-    params:
-      IAAS_TYPE: gcp
-      GCP_SERVICE_ACCOUNT_KEY: ((gcp_service_account_key))
   - task: create-infrastructure
-    file: pcf-pipelines/install-pcf/gcp/tasks/create-infrastructure/task.yml
+    file: automation/lib/pipelines/pcf/install-and-upgrade/tasks/create-infrastructure/gcp/task.yml
     params:
+      GCP_RESOURCE_PREFIX: ((gcp_resource_prefix))
+      GCP_SERVICE_ACCOUNT_KEY: ((gcp_service_account_key))
+      GOOGLE_PROJECT: ((gcp_project))
+      GOOGLE_REGION: ((gcp_region))
+      TERRAFORM_STATE_BUCKET: ((gcp_terraform_state_bucket))
+      TERRAFORM_TEMPLATES_PATH: automation-extensions/((pcf_pas_terraform_templates_path))
+      # Inputs to PCF PAS infrastructure Terraform templates
+      TF_VAR_gcp_region: ((gcp_region))
+      TF_VAR_gcp_zone_1: ((gcp_zone_1))
+      TF_VAR_gcp_zone_2: ((gcp_zone_2))
+      TF_VAR_gcp_zone_3: ((gcp_zone_3))
+      TF_VAR_prefix: ((gcp_resource_prefix))
+      TF_VAR_gcp_storage_bucket_location: ((gcp_storage_bucket_location))
       TF_VAR_bootstrap_state_bucket: ((bootstrap_state_bucket))
       TF_VAR_bootstrap_state_prefix: ((bootstrap_state_prefix))
-      GCP_PROJECT_ID: ((gcp_project_id))
-      GCP_REGION: ((gcp_region))
-      GCP_SERVICE_ACCOUNT_KEY: ./pcf-pipelines/install-pcf/gcp/terraform/gcp_service_account_key.json
-      GCP_ZONE_1: ((gcp_zone_1))
-      GCP_ZONE_2: ((gcp_zone_2))
-      GCP_ZONE_3: ((gcp_zone_3))
-      GCP_RESOURCE_PREFIX: ((gcp_resource_prefix))
-      GCP_STORAGE_BUCKET_LOCATION: ((gcp_storage_bucket_location))
-      PCF_ERT_DOMAIN: ((pcf_ert_domain))
-      SYSTEM_DOMAIN: ((system_domain))
-      APPS_DOMAIN: ((apps_domain))
-      POE_SSL_NAME1: ((poe_ssl_name1))
-      POE_SSL_CERT1: ((poe_ssl_cert1))
-      POE_SSL_KEY1: ((poe_ssl_key1))
-      DB_APP_USAGE_SERVICE_USERNAME: ((db_app_usage_service_username))
-      DB_APP_USAGE_SERVICE_PASSWORD: ((db_app_usage_service_password))
-      DB_AUTOSCALE_USERNAME: ((db_autoscale_username))
-      DB_AUTOSCALE_PASSWORD: ((db_autoscale_password))
-      DB_DIEGO_USERNAME: ((db_diego_username))
-      DB_DIEGO_PASSWORD: ((db_diego_password))
-      DB_NOTIFICATIONS_USERNAME: ((db_notifications_username))
-      DB_NOTIFICATIONS_PASSWORD: ((db_notifications_password))
-      DB_ROUTING_USERNAME: ((db_routing_username))
-      DB_ROUTING_PASSWORD: ((db_routing_password))
-      DB_UAA_USERNAME: ((db_uaa_username))
-      DB_UAA_PASSWORD: ((db_uaa_password))
-      DB_CCDB_USERNAME: ((db_ccdb_username))
-      DB_CCDB_PASSWORD: ((db_ccdb_password))
-      DB_ACCOUNTDB_USERNAME: ((db_accountdb_username))
-      DB_ACCOUNTDB_PASSWORD: ((db_accountdb_password))
-      DB_NETWORKPOLICYSERVERDB_USERNAME: ((db_networkpolicyserverdb_username))
-      DB_NETWORKPOLICYSERVERDB_PASSWORD: ((db_networkpolicyserverdb_password))
-      DB_NFSVOLUMEDB_USERNAME: ((db_nfsvolumedb_username))
-      DB_NFSVOLUMEDB_PASSWORD: ((db_nfsvolumedb_password))
-      DB_LOCKET_USERNAME: ((db_locket_username))
-      DB_LOCKET_PASSWORD: ((db_locket_password))
-      DB_SILK_USERNAME: ((db_silk_username))
-      DB_SILK_PASSWORD: ((db_silk_password))
+      TF_VAR_pas_env_domain_prefix: ((pas_env_domain_prefix))
+      TF_VAR_system_domain_prefix: ((system_domain_prefix))
+      TF_VAR_apps_domain_prefix: ((apps_domain_prefix))
+      TF_VAR_pcf_ert_ssl_cert: ((poe_ssl_cert1))
+      TF_VAR_pcf_ert_ssl_key: ((poe_ssl_key1))
+      TF_VAR_db_app_usage_service_username: ((db_app_usage_service_username))
+      TF_VAR_db_app_usage_service_password: ((db_app_usage_service_password))
+      TF_VAR_db_autoscale_username: ((db_autoscale_username))
+      TF_VAR_db_autoscale_password: ((db_autoscale_password))
+      TF_VAR_db_diego_username: ((db_diego_username))
+      TF_VAR_db_diego_password: ((db_diego_password))
+      TF_VAR_db_notifications_username: ((db_notifications_username))
+      TF_VAR_db_notifications_password: ((db_notifications_password))
+      TF_VAR_db_routing_username: ((db_routing_username))
+      TF_VAR_db_routing_password: ((db_routing_password))
+      TF_VAR_db_uaa_username: ((db_uaa_username))
+      TF_VAR_db_uaa_password: ((db_uaa_password))
+      TF_VAR_db_ccdb_username: ((db_ccdb_username))
+      TF_VAR_db_ccdb_password: ((db_ccdb_password))
+      TF_VAR_db_accountdb_username: ((db_accountdb_username))
+      TF_VAR_db_accountdb_password: ((db_accountdb_password))
+      TF_VAR_db_networkpolicyserverdb_username: ((db_networkpolicyserverdb_username))
+      TF_VAR_db_networkpolicyserverdb_password: ((db_networkpolicyserverdb_password))
+      TF_VAR_db_nfsvolumedb_username: ((db_nfsvolumedb_username))
+      TF_VAR_db_nfsvolumedb_password: ((db_nfsvolumedb_password))
+      TF_VAR_db_locket_username: ((db_locket_username))
+      TF_VAR_db_locket_password: ((db_locket_password))
+      TF_VAR_db_silk_username: ((db_silk_username))
+      TF_VAR_db_silk_password: ((db_silk_password))
 
 - name: configure-director
   serial_groups: [opsman]

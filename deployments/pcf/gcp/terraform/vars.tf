@@ -27,6 +27,29 @@ variable "gcp_storage_secret_key" {
 }
 
 #
+# Certificate Subject data for certificate creation
+#
+variable "company_name" {
+  default = "Pivotal Services"
+}
+
+variable "organization_name" {
+  default = "PSO EMEA"
+}
+
+variable "locality" {
+  default = "Dubai"
+}
+
+variable "province" {
+  default = "Dubayy"
+}
+
+variable "country" {
+  default = "AE"
+}
+
+#
 # VPC configuration
 #
 
@@ -74,12 +97,29 @@ variable "locale" {
   type = "string"
 }
 
-variable "automation_pipelines_url" {
+variable "automation_pipelines_repo" {
   default = "https://github.com/mevansam/caps.git"
 }
 
 variable "automation_pipelines_branch" {
   default = "master"
+}
+
+#
+# Automation extensions git repository
+#
+
+variable "automation_extensions_repo" {
+  default = "https://github.com/mevansam/caps.git"
+}
+
+variable "automation_extensions_repo_branch" {
+  default = "master"
+}
+
+# Path to terraform templates for creating PCF PAS infrastructure
+variable "pcf_pas_terraform_templates_path" {
+  default = "lib/pipelines/pcf/install-and-upgrade/terraform/gcp"
 }
 
 #

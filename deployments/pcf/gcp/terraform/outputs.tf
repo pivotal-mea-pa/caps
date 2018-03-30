@@ -4,6 +4,17 @@
 #
 
 #
+# Root CA for signing self-signed cert
+#
+output "root_ca_key" {
+  value = "${module.bootstrap.root_ca_key}"
+}
+
+output "root_ca_cert" {
+  value = "${module.bootstrap.root_ca_cert}"
+}
+
+#
 # GCP credentials
 #
 
@@ -28,6 +39,29 @@ output "gcp_storage_access_key" {
 output "gcp_storage_secret_key" {
   value     = "${var.gcp_storage_secret_key}"
   sensitive = true
+}
+
+#
+# Certificate Subject data for certificate creation
+#
+output "company_name" {
+  value = "string"
+}
+
+output "organization_name" {
+  value = "string"
+}
+
+output "locality" {
+  value = "string"
+}
+
+output "province" {
+  value = "string"
+}
+
+output "country" {
+  value = "string"
 }
 
 #
@@ -58,12 +92,29 @@ output "locale" {
   value = "${var.locale}"
 }
 
-output "automation_pipelines_url" {
-  value = "${var.automation_pipelines_url}"
+output "automation_pipelines_repo" {
+  value = "${var.automation_pipelines_repo}"
 }
 
 output "automation_pipelines_branch" {
   value = "${var.automation_pipelines_branch}"
+}
+
+#
+# Automation extensions git repository
+#
+
+output "automation_extensions_repo" {
+  value = "${var.automation_extensions_repo}"
+}
+
+output "automation_extensions_branch" {
+  value = "${var.automation_extensions_repo_branch}"
+}
+
+# Path to terraform templates for creating PCF PAS infrastructure
+output "pcf_pas_terraform_templates_path" {
+  value = "${var.pcf_pas_terraform_templates_path}"
 }
 
 #

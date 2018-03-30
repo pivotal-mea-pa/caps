@@ -8,15 +8,15 @@ module "bootstrap" {
   #
   # Company information used in certificate creation
   #
-  company_name = "Pivotal Services"
+  company_name = "${var.company_name}"
 
-  organization_name = "PSO EMEA"
+  organization_name = "${var.organization_name}"
 
-  locality = "Dubai"
+  locality = "${var.locality}"
 
-  province = "Dubayy"
+  province = "${var.province}"
 
-  country = "AE"
+  country = "${var.country}"
 
   #
   # VPC details
@@ -83,7 +83,7 @@ google_credentials_json: |
 bootstrap_state_bucket: ${var.bootstrap_state_bucket}
 bootstrap_state_prefix: ${var.bootstrap_state_prefix}
 
-automation_pipelines_url: ${var.automation_pipelines_url}
+automation_pipelines_repo: ${var.automation_pipelines_repo}
 automation_pipelines_branch: ${var.automation_pipelines_branch}
 
 pcf_pas_state_bucket: ${google_storage_bucket.pas-terraform-state.name}

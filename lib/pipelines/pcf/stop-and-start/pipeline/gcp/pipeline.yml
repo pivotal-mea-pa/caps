@@ -91,7 +91,7 @@ resources:
 - name: automation
   type: git
   source:
-    uri: ((automation_pipelines_url))
+    uri: ((automation_pipelines_repo))
     branch: ((automation_pipelines_branch))
 
 - name: started

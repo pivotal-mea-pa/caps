@@ -1,0 +1,50 @@
+#
+# Certificates for PCF end-points
+#
+
+resource "tls_private_key" "ert-san" {
+  algorithm = "RSA"
+  rsa_bits  = "2048"
+}
+
+resource "tls_cert_request" "ert-san" {
+  key_algorithm   = "RSA"
+  private_key_pem = "${tls_private_key.ert-san.private_key_pem}"
+
+  dns_names = [
+    "*.${local.apps_domain}",
+    "*.${local.system_domain}",
+    "*.uaa.${local.system_domain}",
+    "*.login.${local.system_domain}",
+  ]
+
+  subject {
+    common_name         = "${local.pas_domain}"
+    organization        = "${data.terraform_remote_state.bootstrap.company_name}"
+    organizational_unit = "${data.terraform_remote_state.bootstrap.organization_name}"
+    locality            = "${data.terraform_remote_state.bootstrap.locality}"
+    province            = "${data.terraform_remote_state.bootstrap.province}"
+    country             = "${data.terraform_remote_state.bootstrap.country}"
+  }
+}
+
+#
+# Sign certificate with Root CA from bootstrap state.
+#
+
+resource "tls_locally_signed_cert" "ert-san" {
+  cert_request_pem = "${tls_cert_request.ert-san.cert_request_pem}"
+
+  ca_key_algorithm   = "RSA"
+  ca_private_key_pem = "${data.terraform_remote_state.bootstrap.root_ca_key}"
+  ca_cert_pem        = "${data.terraform_remote_state.bootstrap.root_ca_cert}"
+
+  validity_period_hours = 87600
+
+  allowed_uses = [
+    "key_encipherment",
+    "digital_signature",
+    "data_encipherment",
+    "server_auth",
+  ]
+}

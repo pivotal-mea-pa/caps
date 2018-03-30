@@ -32,10 +32,15 @@ data "template_file" "params" {
 
     locale = "${data.terraform_remote_state.bootstrap.locale}"
 
-    automation_pipelines_url    = "${data.terraform_remote_state.bootstrap.automation_pipelines_url}"
+    automation_pipelines_repo   = "${data.terraform_remote_state.bootstrap.automation_pipelines_repo}"
     automation_pipelines_branch = "${data.terraform_remote_state.bootstrap.automation_pipelines_branch}"
 
-    pas_terraform_state_bucket = "${data.terraform_remote_state.bootstrap.pas_terraform_state_bucket}"
+    automation_extensions_repo   = "${data.terraform_remote_state.bootstrap.automation_extensions_repo}"
+    automation_extensions_branch = "${data.terraform_remote_state.bootstrap.automation_extensions_branch}"
+
+    terraform_state_bucket = "${data.terraform_remote_state.bootstrap.pas_terraform_state_bucket}"
+
+    pcf_pas_terraform_templates_path = "${data.terraform_remote_state.bootstrap.pcf_pas_terraform_templates_path}"
 
     pivnet_token           = "${data.terraform_remote_state.bootstrap.pivnet_token}"
     opsman_admin_password  = "${data.terraform_remote_state.bootstrap.opsman_admin_password}"

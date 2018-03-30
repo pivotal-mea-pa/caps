@@ -1,9 +1,5 @@
 // Core Project Output
 
-output "project" {
-  value = "${var.gcp_proj_id}"
-}
-
 output "region" {
   value = "${var.gcp_region}"
 }
@@ -23,15 +19,15 @@ output "ops_manager_dns" {
 }
 
 output "sys_domain" {
-  value = "${var.system_domain}"
+  value = "${local.system_domain}"
 }
 
 output "apps_domain" {
-  value = "${var.apps_domain}"
+  value = "${local.apps_domain}"
 }
 
 output "tcp_domain" {
-  value = "tcp.${var.pcf_ert_domain}"
+  value = "tcp.${local.pas_domain}"
 }
 
 output "env_dns_zone_name_servers" {
@@ -141,9 +137,9 @@ output "sql_instance_ip" {
 }
 
 output "ert_certificate" {
-  value = "${google_compute_ssl_certificate.ssl-cert.certificate}"
+  value = "${google_compute_ssl_certificate.lb-cert.certificate}"
 }
 
 output "ert_certificate_key" {
-  value = "${google_compute_ssl_certificate.ssl-cert.private_key}"
+  value = "${google_compute_ssl_certificate.lb-cert.private_key}"
 }

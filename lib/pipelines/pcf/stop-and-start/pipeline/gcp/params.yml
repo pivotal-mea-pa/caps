@@ -20,7 +20,7 @@ gcp_service_account_key: |
 label: '${vpc_name}-pcf'
 
 # The automation repository
-automation_pipelines_url: '${automation_pipelines_url}'
+automation_pipelines_repo: '${automation_pipelines_repo}'
 automation_pipelines_branch: '${automation_pipelines_branch}'
 
 # Pivotal Ops Manager host and credentials

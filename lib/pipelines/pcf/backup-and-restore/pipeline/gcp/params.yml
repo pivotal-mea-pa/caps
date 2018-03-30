@@ -16,7 +16,7 @@ ssh_key: ''
 pivnet_api_token: '${pivnet_token}'
 
 # The automation repository
-automation_pipelines_url: '${automation_pipelines_url}'
+automation_pipelines_repo: '${automation_pipelines_repo}'
 automation_pipelines_branch: '${automation_pipelines_branch}'
 
 # Pivotal Ops Manager host and credentials

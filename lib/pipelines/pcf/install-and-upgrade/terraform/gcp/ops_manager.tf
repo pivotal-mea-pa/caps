@@ -1,8 +1,6 @@
-locals {
-  opsman_dns_name = "opsman.${
-    substr(google_dns_managed_zone.env_dns_zone.dns_name, 0, 
-      length(google_dns_managed_zone.env_dns_zone.dns_name)-1)}"
-}
+#
+# Deploy Pivotal Operations Manager appliance
+#
 
 resource "google_compute_instance" "ops-manager" {
   name         = "${var.prefix}-ops-manager"
@@ -93,7 +91,7 @@ resource "null_resource" "ops-manager" {
 }
 
 data "template_file" "export-installation" {
-  template = "${file("${path.module}/export-installation.sh")}"
+  template = "${file("${path.module}/../../../../../scripts/opsman/export-installation.sh")}"
 
   vars {
     opsman_dns_name       = "${local.opsman_dns_name}"
@@ -102,7 +100,7 @@ data "template_file" "export-installation" {
 }
 
 data "template_file" "import-installation" {
-  template = "${file("${path.module}/import-installation.sh")}"
+  template = "${file("${path.module}/../../../../../scripts/opsman/import-installation.sh")}"
 
   vars {
     opsman_dns_name       = "${local.opsman_dns_name}"
@@ -111,7 +109,7 @@ data "template_file" "import-installation" {
 }
 
 data "template_file" "mount-opsman-data-volume" {
-  template = "${file("${path.module}/mount-volume.sh")}"
+  template = "${file("${path.module}/../../../../../scripts/utility/mount-volume.sh")}"
 
   vars {
     attached_device_name = "/dev/sdb"

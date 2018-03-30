@@ -1,20 +1,23 @@
 ---
 #
-# Automation repo detauls
+# Automation repo details
 #
-automation_pipelines_url: '${automation_pipelines_url}'
+automation_pipelines_repo: '${automation_pipelines_repo}'
 automation_pipelines_branch: '${automation_pipelines_branch}'
+
+automation_extensions_repo: '${automation_extensions_repo}'
+automation_extensions_branch: '${automation_extensions_branch}'
 
 #
 # GCP Credentials
 #
 
-# Project to create the infrastructure in
-gcp_project_id: '${gcp_project}'
-
 # GCP credentials JSON. The service account must have the Editor role.
 gcp_service_account_key: |
   ${gcp_credentials}
+
+# Project to create the infrastructure in
+gcp_project: '${gcp_project}'
 
 # Region to create the infrastructure in
 gcp_region: '${gcp_region}'
@@ -34,8 +37,11 @@ gcp_storage_secret_key: '${gcp_storage_secret_key}'
 # Storage Location
 gcp_storage_bucket_location: '${gcp_region}'
 
+# Terraform templates path
+pcf_pas_terraform_templates_path: '${pcf_pas_terraform_templates_path}'
+
 # Bucket where state file will be persisted
-terraform_statefile_bucket: '${pas_terraform_state_bucket}'
+gcp_terraform_state_bucket: '${terraform_state_bucket}'
 
 #
 # Pivnet download and Ops Manager configuration
@@ -119,9 +125,9 @@ db_uaa_username: 'pas_system'
 db_uaa_password: '${pas_system_dbpassword}'
 
 # Domain Names for ERT
-pcf_ert_domain: 'pas.${vpc_dns_zone}'
-system_domain: 'sys.pas.${vpc_dns_zone}'
-apps_domain: 'apps.pas.${vpc_dns_zone}'
+pas_env_domain_prefix: 'pas'
+system_domain_prefix: 'sys'
+apps_domain_prefix: 'apps'
 
 # Errands to disable prior to deploying ERT
 # Valid values:
@@ -181,7 +187,6 @@ mysql_backups_scp_user: ''
 mysql_monitor_recipient_email: '${mysql_monitor_recipient_email}'
 
 # Optional. If blank the cert(s) will be generated:
-poe_ssl_name1: ''
 poe_ssl_cert1: ''
 poe_ssl_key1: ''
 

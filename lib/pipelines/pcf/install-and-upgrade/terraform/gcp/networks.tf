@@ -1,46 +1,37 @@
 #
-# This config file attaches the PCF reference 
-# GCP configuration to the Bootstrap VCP.
+# Virtual Network for PCF environment
 #
 
-variable "bootstrap_state_bucket" {
-  type = "string"
+resource "google_compute_network" "pcf-virt-net" {
+  name = "${var.prefix}-virt-net"
 }
 
-variable "bootstrap_state_prefix" {
-  type = "string"
+// Ops Manager and Bosh Directory
+resource "google_compute_subnetwork" "subnet-ops-manager" {
+  name          = "${var.prefix}-subnet-infrastructure-${var.gcp_region}"
+  ip_cidr_range = "192.168.101.0/26"
+  network       = "${google_compute_network.pcf-virt-net.self_link}"
 }
 
-# Import Bootstrap state
-data "terraform_remote_state" "bootstrap" {
-  backend = "gcs"
-
-  config {
-    bucket = "${var.bootstrap_state_bucket}"
-    prefix = "${var.bootstrap_state_prefix}"
-  }
+// ERT
+resource "google_compute_subnetwork" "subnet-ert" {
+  name          = "${var.prefix}-subnet-ert-${var.gcp_region}"
+  ip_cidr_range = "192.168.16.0/22"
+  network       = "${google_compute_network.pcf-virt-net.self_link}"
 }
 
-#
-# Add Name Servers for ERT zone to bootstrap VPC zone.
-#
-data "google_dns_managed_zone" "vpc" {
-  name = "${data.terraform_remote_state.bootstrap.vpc_dns_zone_name}"
+// Services Tile
+resource "google_compute_subnetwork" "subnet-services-1" {
+  name          = "${var.prefix}-subnet-services-1-${var.gcp_region}"
+  ip_cidr_range = "192.168.20.0/22"
+  network       = "${google_compute_network.pcf-virt-net.self_link}"
 }
 
-resource "google_dns_record_set" "vpc" {
-  name         = "${google_dns_managed_zone.env_dns_zone.dns_name}"
-  managed_zone = "${data.google_dns_managed_zone.vpc.name}"
-
-  type = "NS"
-  ttl  = 300
-
-  rrdatas = [
-    "${google_dns_managed_zone.env_dns_zone.name_servers.0}",
-    "${google_dns_managed_zone.env_dns_zone.name_servers.1}",
-    "${google_dns_managed_zone.env_dns_zone.name_servers.2}",
-    "${google_dns_managed_zone.env_dns_zone.name_servers.3}",
-  ]
+// Dynamic Services Tile
+resource "google_compute_subnetwork" "subnet-dynamic-services-1" {
+  name          = "${var.prefix}-subnet-dynamic-services-1-${var.gcp_region}"
+  ip_cidr_range = "192.168.24.0/22"
+  network       = "${google_compute_network.pcf-virt-net.self_link}"
 }
 
 #
