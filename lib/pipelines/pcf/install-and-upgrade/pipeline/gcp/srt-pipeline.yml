@@ -80,7 +80,7 @@ jobs:
     params:
       TF_VAR_bootstrap_state_bucket: ((bootstrap_state_bucket))
       TF_VAR_bootstrap_state_prefix: ((bootstrap_state_prefix))
-      GCP_PROJECT_ID: ((gcp_project_id))
+      GCP_PROJECT_ID: ((gcp_project))
       GCP_REGION: ((gcp_region))
       GCP_SERVICE_ACCOUNT_KEY: ((gcp_service_account_key))
       GCP_RESOURCE_PREFIX: ((gcp_resource_prefix))
@@ -100,7 +100,7 @@ jobs:
   - task: upload
     file: pcf-pipelines/install-pcf/gcp/tasks/upload-opsman/task.yml
     params:
-      GCP_PROJECT_ID: ((gcp_project_id))
+      GCP_PROJECT_ID: ((gcp_project))
       GCP_REGION: ((gcp_region))
       GCP_SERVICE_ACCOUNT_KEY: ((gcp_service_account_key))
 
@@ -192,7 +192,7 @@ jobs:
       OPS_MGR_USR: ((opsman_admin_username))
       OPS_MGR_PWD: ((opsman_admin_password))
       OPS_MGR_TRUSTED_CERTS: ((opsman_trusted_certs))
-      GCP_PROJECT_ID: ((gcp_project_id))
+      GCP_PROJECT_ID: ((gcp_project))
       GCP_REGION: ((gcp_region))
       GCP_ZONE_1: ((gcp_zone_1))
       GCP_ZONE_2: ((gcp_zone_2))
