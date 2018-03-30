@@ -28,8 +28,8 @@ data "template_file" "params" {
     gcp_storage_access_key = "${data.terraform_remote_state.bootstrap.gcp_storage_access_key}"
     gcp_storage_secret_key = "${data.terraform_remote_state.bootstrap.gcp_storage_secret_key}"
 
-    terraform_state_bucket = "${var.terraform_state_bucket}"
-    bootstrap_state_prefix = "${var.bootstrap_state_prefix}"
+    terraform_state_bucket = "${data.terraform_remote_state.bootstrap.terraform_state_bucket}"
+    bootstrap_state_prefix = "${data.terraform_remote_state.bootstrap.bootstrap_state_prefix}"
 
     vpc_name = "${data.terraform_remote_state.bootstrap.vpc_name}"
 
