@@ -80,7 +80,7 @@ google_region: ${var.gcp_region}
 google_credentials_json: |
   ${indent(2, file(var.gcp_credentials))}
 
-bootstrap_state_bucket: ${var.bootstrap_state_bucket}
+bootstrap_state_bucket: ${var.terraform_state_bucket}
 bootstrap_state_prefix: ${var.bootstrap_state_prefix}
 
 automation_pipelines_repo: ${var.automation_pipelines_repo}

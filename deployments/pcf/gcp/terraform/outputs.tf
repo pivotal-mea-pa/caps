@@ -42,6 +42,18 @@ output "gcp_storage_secret_key" {
 }
 
 #
+# Terraform state attributes
+#
+
+variable "terraform_state_bucket" {
+  value = "${var.terraform_state_bucket}"
+}
+
+variable "bootstrap_state_prefix" {
+  value = "${var.bootstrap_state_prefix}"
+}
+
+#
 # Certificate Subject data for certificate creation
 #
 output "company_name" {

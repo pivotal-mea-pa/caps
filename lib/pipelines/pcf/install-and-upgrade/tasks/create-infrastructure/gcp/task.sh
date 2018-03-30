@@ -16,12 +16,18 @@ pcf_opsman_input_path=$(grep -i 'us:.*.tar.gz' pivnet-opsmgr/*GCP.yml | cut -d' 
 # ops-manager-us/pcf-gcp-1.9.2.tar.gz -> opsman-pcf-gcp-1-9-2
 export TF_VAR_pcf_opsman_image_name=$(echo $pcf_opsman_input_path | sed 's%.*/\(.*\).tar.gz%opsman-\1%' | sed 's/\./-/g')
 
-echo terraform init \
+terraform init \
   -backend-config="bucket=${TERRAFORM_STATE_BUCKET}" \
   -backend-config="prefix=${GCP_RESOURCE_PREFIX}" \
   ${TERRAFORM_TEMPLATES_PATH}
 
-echo terraform apply -auto-approve -parallelism=5
+terraform plan \
+  ${TERRAFORM_TEMPLATES_PATH}
+
+echo terraform apply \
+  -auto-approve \
+  -parallelism=5 \
+  ${TERRAFORM_TEMPLATES_PATH}
 
 output_json=$(terraform output -json -state=.terraform/terraform.tfstate)
 pub_ip_global_pcf=$(echo $output_json | jq --raw-output '.pub_ip_global_pcf.value')

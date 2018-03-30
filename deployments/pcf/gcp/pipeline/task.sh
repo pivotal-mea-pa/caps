@@ -58,8 +58,6 @@ fly -t default set-pipeline -n \
   -p PCF_install-and-upgrade \
   -c install-pcf-pipeline$i.yml \
   -l install-pcf-params.yml \
-  -v "bootstrap_state_bucket=$BOOTSTRAP_STATE_BUCKET" \
-  -v "bootstrap_state_prefix=$BOOTSTRAP_STATE_PREFIX" \
   -v "autos3_url=$AUTOS3_URL" \
   -v "autos3_access_key=$AUTOS3_ACCESS_KEY" \
   -v "autos3_secret_key=$AUTOS3_SECRET_KEY" >/dev/null

@@ -27,6 +27,18 @@ variable "gcp_storage_secret_key" {
 }
 
 #
+# Terraform state attributes
+#
+
+variable "terraform_state_bucket" {
+  type = "string"
+}
+
+variable "bootstrap_state_prefix" {
+  type = "string"
+}
+
+#
 # Certificate Subject data for certificate creation
 #
 variable "company_name" {
@@ -212,16 +224,4 @@ variable "pcf_start_at" {
 
 variable "pcf_start_trigger_days" {
   default = "[Sunday, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday]"
-}
-
-#
-# Bootstrap state attributes
-#
-
-variable "bootstrap_state_bucket" {
-  type = "string"
-}
-
-variable "bootstrap_state_prefix" {
-  type = "string"
 }
