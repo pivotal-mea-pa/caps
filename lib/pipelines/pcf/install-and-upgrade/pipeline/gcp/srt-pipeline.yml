@@ -72,12 +72,12 @@ jobs:
   - task: wipe
     file: automation/lib/pipelines/pcf/install-and-upgrade/tasks/destroy-infrastructure/gcp/task.yml
     params:
-      TF_VAR_bootstrap_state_bucket: ((bootstrap_state_bucket))
-      TF_VAR_bootstrap_state_prefix: ((bootstrap_state_prefix))
+      GCP_RESOURCE_PREFIX: ((gcp_resource_prefix))
+      GCP_SERVICE_ACCOUNT_KEY: ((gcp_service_account_key))
       GCP_PROJECT_ID: ((gcp_project))
       GCP_REGION: ((gcp_region))
-      GCP_SERVICE_ACCOUNT_KEY: ((gcp_service_account_key))
-      GCP_RESOURCE_PREFIX: ((gcp_resource_prefix))
+      TERRAFORM_STATE_BUCKET: ((terraform_state_bucket))
+      TERRAFORM_TEMPLATES_PATH: automation-extensions/((pcf_pas_terraform_templates_path))
       OPSMAN_DOMAIN_OR_IP_ADDRESS: ((opsman_domain_or_ip_address))
       OPSMAN_USERNAME: ((opsman_admin_username))
       OPSMAN_PASSWORD: ((opsman_admin_password))
