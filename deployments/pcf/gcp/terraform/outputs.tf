@@ -45,11 +45,11 @@ output "gcp_storage_secret_key" {
 # Terraform state attributes
 #
 
-variable "terraform_state_bucket" {
+output "terraform_state_bucket" {
   value = "${var.terraform_state_bucket}"
 }
 
-variable "bootstrap_state_prefix" {
+output "bootstrap_state_prefix" {
   value = "${var.bootstrap_state_prefix}"
 }
 
@@ -132,10 +132,6 @@ output "pcf_pas_terraform_templates_path" {
 #
 # PCF Install params
 #
-
-output "pas_terraform_state_bucket" {
-  value = "${google_storage_bucket.pas-terraform-state.name}"
-}
 
 output "pivnet_token" {
   value     = "${var.pivnet_token}"

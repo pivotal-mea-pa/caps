@@ -86,7 +86,6 @@ bootstrap_state_prefix: ${var.bootstrap_state_prefix}
 automation_pipelines_repo: ${var.automation_pipelines_repo}
 automation_pipelines_branch: ${var.automation_pipelines_branch}
 
-pcf_pas_state_bucket: ${google_storage_bucket.pas-terraform-state.name}
 pcf_pas_runtime_type: srt
 
 pivnet_token: "${var.pivnet_token}"

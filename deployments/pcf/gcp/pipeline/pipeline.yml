@@ -29,7 +29,6 @@ jobs:
       GOOGLE_REGION: ((google_region))
       BOOTSTRAP_STATE_BUCKET: ((bootstrap_state_bucket))
       BOOTSTRAP_STATE_PREFIX: ((bootstrap_state_prefix))
-      PCF_PAS_STATE_BUCKET: ((pcf_pas_state_bucket))
       PCF_PAS_RUNTIME_TYPE: ((pcf_pas_runtime_type))
       PIVNET_API_TOKEN: ((pivnet_token))
       OPSMAN_DOMAIN_OR_IP_ADDRESS: ((opsman_domain_or_ip_address))
