@@ -35,8 +35,8 @@ gcp_storage_access_key: '${gcp_storage_access_key}'
 gcp_storage_secret_key: '${gcp_storage_secret_key}'
 
 # Terraform state location
-terraform_state_bucket: "${var.terraform_state_bucket}"
-bootstrap_state_prefix: "${var.bootstrap_state_prefix}"
+terraform_state_bucket: "${terraform_state_bucket}"
+bootstrap_state_prefix: "${bootstrap_state_prefix}"
 
 # Storage Location
 gcp_storage_bucket_location: '${gcp_region}'
