@@ -21,9 +21,7 @@ echo terraform init \
   -backend-config="prefix=${GCP_RESOURCE_PREFIX}" \
   ${TERRAFORM_TEMPLATES_PATH}
 
-echo terraform apply -auto-approve \
-  -parallelism=5 \
-  terraform.tfplan
+echo terraform apply -auto-approve -parallelism=5
 
 output_json=$(terraform output -json -state=.terraform/terraform.tfstate)
 pub_ip_global_pcf=$(echo $output_json | jq --raw-output '.pub_ip_global_pcf.value')
