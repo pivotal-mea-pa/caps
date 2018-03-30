@@ -25,7 +25,7 @@ terraform plan \
   -out=terraform.plan \
   ${TERRAFORM_TEMPLATES_PATH}
 
-echo terraform apply \
+terraform apply \
   -auto-approve \
   -parallelism=5 \
   terraform.plan

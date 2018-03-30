@@ -68,9 +68,10 @@ jobs:
   serial_groups: [terraform]
   plan:
   - aggregate:
+    - get: pcf-pipelines
     - get: automation
     - get: automation-extensions
-  - task: wipe
+  - task: destroy
     file: automation/lib/pipelines/pcf/install-and-upgrade/tasks/destroy-infrastructure/gcp/task.yml
     params:
       GCP_RESOURCE_PREFIX: ((gcp_resource_prefix))
