@@ -17,7 +17,7 @@ case "$1" in
         usage
         exit 0
         ;;
-    init|plan|apply|taint-bastion|destroy)
+    init|plan|apply|output|taint-bastion|destroy)
         tf_action=$1
         ;;
     *)
@@ -89,6 +89,9 @@ terraform {
             terraform apply $terraform_options $terraform_path 2>&1 \
                 | tee terraform.output | awk '/Outputs:/ {l=999}; (l-- > 0) { $0="" } 1' | awk 'length'
         fi
+        ;;
+    output)
+        terraform output
         ;;
     taint-bastion)
         terraform taint \
