@@ -8,10 +8,8 @@ image_resource:
 
 inputs:
 - name: pcf-pipelines
-- name: terraform-state
-
-outputs:
-- name: wipe-output
+- name: automation
+- name: automation-extensions
 
 params:
   GCP_PROJECT_ID:
