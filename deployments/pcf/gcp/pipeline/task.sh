@@ -71,20 +71,6 @@ fly -t default set-pipeline -n \
 
 set +e
 
-bootstrap_state_job_status=$(fly -t default watch \
-  -j PCF_install-and-upgrade/bootstrap-terraform-state 2>&1)
-
-if [[ "$bootstrap_state_job_status" == "error: job has no builds" ]]; then
-
-  # Bootstrap the Terraform state if it is 
-  # empty and wait until the job finishes
-  fly -t default trigger-job -j PCF_install-and-upgrade/bootstrap-terraform-state
-  fly -t default watch -j PCF_install-and-upgrade/bootstrap-terraform-state
-
-  # Start the install by starting the upload-opsman-image job 
-  fly -t default trigger-job -j PCF_install-and-upgrade/upload-opsman-image
-fi
-
 # Wait until the Pivotal Application Service
 # tile has been successfully deployed.
 b=1
