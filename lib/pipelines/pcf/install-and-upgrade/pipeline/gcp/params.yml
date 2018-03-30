@@ -41,7 +41,7 @@ gcp_storage_bucket_location: '${gcp_region}'
 pcf_pas_terraform_templates_path: '${pcf_pas_terraform_templates_path}'
 
 # Bucket where state file will be persisted
-gcp_terraform_state_bucket: '${terraform_state_bucket}'
+terraform_state_bucket: '${terraform_state_bucket}'
 
 #
 # Pivnet download and Ops Manager configuration

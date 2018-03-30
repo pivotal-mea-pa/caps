@@ -34,9 +34,9 @@ resources:
 - name: terraform-state
   type: gcs
   source:
-    bucket: ((terraform_statefile_bucket))
+    bucket: ((terraform_state_bucket))
     json_key: ((gcp_service_account_key))
-    versioned_file: terraform.tfstate
+    versioned_file: ((gcp_resource_prefix))/default.tfstate
 
 - name: pivnet-opsmgr
   type: pivnet
@@ -66,17 +66,11 @@ resources:
 jobs:
 - name: destroy-env
   serial_groups: [terraform]
-  ensure:
-    put: terraform-state
-    params:
-      file: wipe-output/*.tfstate
   plan:
   - aggregate:
-    - get: pcf-pipelines
     - get: automation
-    - get: terraform-state
   - task: wipe
-    file: pcf-pipelines/install-pcf/gcp/tasks/wipe-env/task.yml
+    file: automation/lib/pipelines/pcf/install-and-upgrade/tasks/destroy-infrastructure/gcp/task.yml
     params:
       TF_VAR_bootstrap_state_bucket: ((bootstrap_state_bucket))
       TF_VAR_bootstrap_state_prefix: ((bootstrap_state_prefix))
@@ -121,9 +115,9 @@ jobs:
     params:
       GCP_RESOURCE_PREFIX: ((gcp_resource_prefix))
       GCP_SERVICE_ACCOUNT_KEY: ((gcp_service_account_key))
-      GOOGLE_PROJECT: ((gcp_project))
-      GOOGLE_REGION: ((gcp_region))
-      TERRAFORM_STATE_BUCKET: ((gcp_terraform_state_bucket))
+      GCP_PROJECT_ID: ((gcp_project))
+      GCP_REGION: ((gcp_region))
+      TERRAFORM_STATE_BUCKET: ((terraform_state_bucket))
       TERRAFORM_TEMPLATES_PATH: automation-extensions/((pcf_pas_terraform_templates_path))
       # Inputs to PCF PAS infrastructure Terraform templates
       TF_VAR_gcp_region: ((gcp_region))
