@@ -22,12 +22,23 @@ terraform init \
   ${TERRAFORM_TEMPLATES_PATH}
 
 terraform plan \
+  -out=terraform.plan \
   ${TERRAFORM_TEMPLATES_PATH}
 
 echo terraform apply \
   -auto-approve \
   -parallelism=5 \
-  ${TERRAFORM_TEMPLATES_PATH}
+  terraform.plan
+
+# Seems to be a bug in terraform where 'output' command is unable
+# to load the backend state when the working directory does not 
+# have the backend resource template file.
+backend_type=$(cat .terraform/terraform.tfstate | jq -r .backend.type)
+cat << ---EOF > backend.tf
+terraform {
+  backend "$backend_type" {}
+}
+---EOF
 
 output_json=$(terraform output -json -state=.terraform/terraform.tfstate)
 pub_ip_global_pcf=$(echo $output_json | jq --raw-output '.pub_ip_global_pcf.value')
