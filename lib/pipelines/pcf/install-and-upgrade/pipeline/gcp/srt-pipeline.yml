@@ -69,6 +69,7 @@ jobs:
   plan:
   - aggregate:
     - get: automation
+    - get: automation-extensions
   - task: wipe
     file: automation/lib/pipelines/pcf/install-and-upgrade/tasks/destroy-infrastructure/gcp/task.yml
     params:
