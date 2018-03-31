@@ -31,7 +31,7 @@ terraform init \
   ${TERRAFORM_TEMPLATES_PATH}
 
 backend_type=$(cat .terraform/terraform.tfstate | jq -r .backend.type)
-cat << ---EOF > $backend.tf
+cat << ---EOF > backend.tf
 terraform {
   backend "$backend_type" {}
 }
