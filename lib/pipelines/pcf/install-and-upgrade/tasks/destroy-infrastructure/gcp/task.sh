@@ -38,4 +38,4 @@ terraform {
 ---EOF
 
 terraform destroy -force \
-  ${TERRAFORM_TEMPLATES_PATH}
+  -state .terraform/terraform.tfstate
