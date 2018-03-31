@@ -1,7 +1,9 @@
 #!/bin/bash
-set -eu
 
+source ~/scripts/opsman-func.sh
 root=$PWD
+
+set -eu
 
 # Save service key to a json file as Terraform GCS 
 # backend only accepts the credential from a file.
