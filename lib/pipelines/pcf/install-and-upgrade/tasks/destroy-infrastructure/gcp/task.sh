@@ -37,5 +37,13 @@ terraform {
 }
 ---EOF
 
-terraform destroy -force \
-  -state .terraform/terraform.tfstate
+set +e
+
+i=0
+terraform destroy -force -state .terraform/terraform.tfstate
+while [[ $? -ne 0 && $i -lt 2 ]]; do
+  # Retry destroy as sometimes destroy may fail due to IaaS timeouts
+  i=$(($i+1))
+  terraform destroy -force -state .terraform/terraform.tfstate
+done
+exit $?
