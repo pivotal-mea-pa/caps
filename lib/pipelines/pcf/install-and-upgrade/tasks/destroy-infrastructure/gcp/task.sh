@@ -3,7 +3,11 @@ set -eu
 
 root=$PWD
 
-export GOOGLE_CREDENTIALS=${GCP_SERVICE_ACCOUNT_KEY}
+# Save service key to a json file as Terraform GCS 
+# backend only accepts the credential from a file.
+echo "$GCP_SERVICE_ACCOUNT_KEY" > $root/gcp_service_account_key.json
+
+export GOOGLE_CREDENTIALS=$root/gcp_service_account_key.json
 export GOOGLE_PROJECT=${GCP_PROJECT_ID}
 export GOOGLE_REGION=${GCP_REGION}
 
@@ -19,11 +23,12 @@ if [[ $opsman_available == "available" ]]; then
     delete-installation
 fi
 
+echo "Deleting provisioned infrastructure..."
+
 terraform init \
   -backend-config="bucket=${TERRAFORM_STATE_BUCKET}" \
   -backend-config="prefix=${GCP_RESOURCE_PREFIX}" \
   ${TERRAFORM_TEMPLATES_PATH}
 
-echo "Deleting provisioned infrastructure..."
 terraform destroy -force \
   ${TERRAFORM_TEMPLATES_PATH}
