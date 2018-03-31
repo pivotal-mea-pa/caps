@@ -82,16 +82,14 @@ terraform {
         terraform plan -out=terraform.plan $terraform_options $terraform_path
         ;;
     apply)
-        if [[ -e terraform.plan ]]; then
-            terraform apply $terraform_options terraform.plan 2>&1 \
-                | tee terraform.output | awk '/Outputs:/ {l=999}; (l-- > 0) { $0="" } 1' | awk 'length'
-        else
-            terraform apply $terraform_options $terraform_path 2>&1 \
-                | tee terraform.output | awk '/Outputs:/ {l=999}; (l-- > 0) { $0="" } 1' | awk 'length'
-        fi
+        [[ -e terraform.plan ]] || \
+            terraform plan -out=terraform.plan $terraform_options $terraform_path
+
+        terraform apply $terraform_options terraform.plan 2>&1 \
+            | tee terraform.output | awk '/Outputs:/ {l=999}; (l-- > 0) { $0="" } 1' | awk 'length'
         ;;
     output)
-        terraform output
+        terraform output 2>&1 | tee terraform.output
         ;;
     taint-bastion)
         terraform taint \
