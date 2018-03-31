@@ -22,4 +22,4 @@ params:
   OPSMAN_ZONE:
 
 run:
-  path: pcf-pipelines/install-pcf/gcp/tasks/wipe-env/task.sh
+  path: automation/lib/pipelines/pcf/install-and-upgrade/tasks/destroy-infrastructure/gcp/task.sh
