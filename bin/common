@@ -48,7 +48,7 @@ function common::initialize() {
     common::validate
 
     # Read the context control file
-    source .caps-env_$name
+    source $root_dir/.caps-env_$name
     if [[ -z $TF_VAR_vpc_name || $TF_VAR_vpc_name != $name ]]; then 
         echo -e "${RED}\nThe 'TF_VAR_vpc_name' environment variable must be set with a"
         echo -e "unique name to identify this environment within you cloud account."
