@@ -31,3 +31,18 @@ terraform apply \
   -auto-approve \
   -parallelism=5 \
   terraform.plan
+
+# Seems to be a bug in terraform where 'output' and 'taint' command are 
+# unable to load the backend state when the working directory does not 
+# have the backend resource template file.
+backend_type=$(cat .terraform/terraform.tfstate | jq -r .backend.type)
+cat << ---EOF > backend.tf
+terraform {
+  backend "$backend_type" {}
+}
+---EOF
+
+mkdir -p terraform-output
+terraform output -json \
+  -state .terraform/terraform.tfstate \
+  > terraform-output/terraform-output.json

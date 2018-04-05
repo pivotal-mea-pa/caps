@@ -11,6 +11,9 @@ inputs:
 - name: automation-extensions
 - name: pivnet-opsmgr
 
+outputs:
+- name: terraform-output
+
 run:
   path: automation/lib/pipelines/pcf/install-and-upgrade/tasks/create-infrastructure/gcp/task.sh
 
