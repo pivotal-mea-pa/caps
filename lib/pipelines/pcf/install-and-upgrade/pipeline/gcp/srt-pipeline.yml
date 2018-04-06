@@ -164,7 +164,8 @@ jobs:
   - task: save-terraform-output
     file: automation/lib/tasks/automation/upload-object/task.yml
     params: 
-      UPLOAD_PATH: pcf/terraform-output
+      BUCKET: pcf
+      UPLOAD_PATH: terraform-output
       OBJECT_NAME: terraform-output.json
       AUTOS3_URL: ((autos3_url))
       AUTOS3_ACCESS_KEY: ((autos3_access_key))

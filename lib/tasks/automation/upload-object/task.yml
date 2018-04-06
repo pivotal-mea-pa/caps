@@ -24,7 +24,7 @@ run:
     name=${OBJECT_NAME%.*}
     ext=${OBJECT_NAME#*.}
 
-    current_version=$(mc find auto/$UPLOAD_PATH --name "$name-*.$ext" --exec "echo {}" 2>/dev/null)
+    current_version=$(mc find auto/$BUCKET/$UPLOAD_PATH --name "$name-*.$ext" --exec "echo {}" 2>/dev/null)
     if [[ -z $current_version ]]; then
       version=0
     else
@@ -35,9 +35,10 @@ run:
       mc rm $current_version
     fi
 
-    mc cp upload_path/$OBJECT_NAME auto/$UPLOAD_PATH/$name-$version.$ext
+    mc cp upload_path/$OBJECT_NAME auto/$BUCKET/$UPLOAD_PATH/$name-$version.$ext
 
 params:
+  BUCKET:
   UPLOAD_PATH:
   OBJECT_NAME:
   VERSION_INCREMENT:
