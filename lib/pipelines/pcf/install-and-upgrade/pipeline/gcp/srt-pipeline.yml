@@ -34,11 +34,11 @@ resources:
 - name: terraform-output
   type: s3
   source:
-    bucket: auto
+    bucket: pcf
     endpoint: ((autos3_url))
     access_key_id: ((autos3_access_key))
     secret_access_key: ((autos3_secret_key))
-    regexp: pcf/terraform-output/terraform-output-(.*).json
+    regexp: terraform-output/terraform-output-(.*).json
 
 - name: pivnet-opsmgr
   type: pivnet

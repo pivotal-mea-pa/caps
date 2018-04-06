@@ -119,19 +119,16 @@ if [[ "${pcf_iaas}" == "aws" ]]; then
     }]"
   fi
 
-  cd terraform-state
-    output_json=$(terraform output --json -state *.tfstate)
-    db_host=$(echo $output_json | jq --raw-output '.db_host.value')
-    aws_region=$(echo $output_json | jq --raw-output '.region.value')
-    aws_access_key=`terraform state show aws_iam_access_key.pcf_iam_user_access_key | grep ^id | awk '{print $3}'`
-    aws_secret_key=`terraform state show aws_iam_access_key.pcf_iam_user_access_key | grep ^secret | awk '{print $3}'`
-  cd -
+  output_json=$(cat terraform-output/terraform-output-*.json)
+  db_host=$(echo "$output_json" | jq --raw-output '.db_host.value')
+  aws_region=$(echo "$output_json" | jq --raw-output '.region.value')
+  aws_access_key=`terraform state show aws_iam_access_key.pcf_iam_user_access_key | grep ^id | awk '{print $3}'`
+  aws_secret_key=`terraform state show aws_iam_access_key.pcf_iam_user_access_key | grep ^secret | awk '{print $3}'`
 elif [[ "${pcf_iaas}" == "gcp" ]]; then
-  cd terraform-state
-    db_host=$(terraform output --json -state *.tfstate | jq --raw-output '.sql_instance_ip.value')
-    pcf_ert_ssl_cert="$(terraform output -json ert_certificate | jq .value)"
-    pcf_ert_ssl_key="$(terraform output -json ert_certificate_key | jq .value)"
-  cd -
+  output_json=$(cat terraform-output/terraform-output-*.json)
+  db_host=$(echo "$output_json" | jq --raw-output '.sql_instance_ip.value')
+  pcf_ert_ssl_cert="$(terraform output -json ert_certificate | jq .value)"
+  pcf_ert_ssl_key="$(terraform output -json ert_certificate_key | jq .value)"
 
   if [ -z "$db_host" ]; then
     echo Failed to get SQL instance IP from Terraform state file
@@ -147,6 +144,8 @@ elif [[ "${pcf_iaas}" == "gcp" ]]; then
     }
   ]"
 fi
+
+exit 0
 
 cf_network=$(
   jq -n \
