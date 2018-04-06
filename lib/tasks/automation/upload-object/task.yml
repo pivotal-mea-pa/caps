@@ -11,7 +11,7 @@ image_resource:
   source:
     repository: appbricks/automation-tools
 
-input:
+inputs:
 - name: upload_path
 
 run:
