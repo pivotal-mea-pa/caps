@@ -31,12 +31,14 @@ resources:
     uri: ((automation_extensions_repo))
     branch: ((automation_extensions_branch))
 
-- name: terraform-state
-  type: gcs
+- name: terraform-output
+  type: s3
   source:
-    bucket: ((terraform_state_bucket))
-    json_key: ((gcp_service_account_key))
-    versioned_file: ((gcp_resource_prefix))/default.tfstate
+    bucket: auto
+    endpoint: ((autos3_url))
+    access_key_id: ((autos3_access_key))
+    secret_access_key: ((autos3_secret_key))
+    regexp: pcf/terraform-output/terraform-output-(.*).json
 
 - name: pivnet-opsmgr
   type: pivnet
@@ -162,7 +164,7 @@ jobs:
   - task: save-terraform-output
     file: automation/lib/tasks/automation/upload-object/task.yml
     params: 
-      UPLOAD_PATH: pcf-terraform-output
+      UPLOAD_PATH: pcf/terraform-output
       OBJECT_NAME: terraform-output.json
       AUTOS3_URL: ((autos3_url))
       AUTOS3_ACCESS_KEY: ((autos3_access_key))
@@ -290,7 +292,7 @@ jobs:
       passed: [upload-srt]
       trigger: true
       params: { globs: [] }
-    - get: terraform-state
+    - get: terraform-output
 
   # Configure the SRT with an initial configuration and prepare it for deployment
   - task: configure-srt
