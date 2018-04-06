@@ -42,7 +42,6 @@ terraform {
 }
 ---EOF
 
-mkdir -p terraform-output
 terraform output -json \
   -state .terraform/terraform.tfstate \
-  > terraform-output/terraform-output.json
+  > upload_path/terraform-output.json
