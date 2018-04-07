@@ -38,7 +38,7 @@ resources:
     endpoint: ((autos3_url))
     access_key_id: ((autos3_access_key))
     secret_access_key: ((autos3_secret_key))
-    regexp: terraform-output/terraform-output-(.*).json
+    regexp: terraform-output/pcf-env-(.*).sh
 
 - name: pivnet-opsmgr
   type: pivnet
@@ -166,7 +166,7 @@ jobs:
     params: 
       BUCKET: pcf
       UPLOAD_PATH: terraform-output
-      OBJECT_NAME: terraform-output.json
+      OBJECT_NAME: pcf-env.sh
       AUTOS3_URL: ((autos3_url))
       AUTOS3_ACCESS_KEY: ((autos3_access_key))
       AUTOS3_SECRET_KEY: ((autos3_secret_key))

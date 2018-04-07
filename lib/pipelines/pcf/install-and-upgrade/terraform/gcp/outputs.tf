@@ -8,7 +8,7 @@ output "azs" {
   value = "${var.gcp_zone_1},${var.gcp_zone_2},${var.gcp_zone_3}"
 }
 
-output "deployment-prefix" {
+output "deployment_prefix" {
   value = "${var.prefix}-vms"
 }
 
