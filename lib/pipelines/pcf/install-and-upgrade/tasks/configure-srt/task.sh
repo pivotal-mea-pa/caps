@@ -30,7 +30,7 @@ export OPS_MGR_PWD=$OPSMAN_PASSWORD
 # Configure and install SRT when a installed version is not found
 #
 
-source pcf-pipelines/functions/generate_cert.sh
+# source pcf-pipelines/functions/generate_cert.sh
 
 declare networking_poe_ssl_certs_json
 
@@ -85,6 +85,8 @@ if isPopulated "${CREDUB_ENCRYPTION_KEY_NAME3}"; then
     credhub_encryption_keys_json="$credhub_encryption_keys_json,$credhub_encryption_keys_json3"
 fi
 credhub_encryption_keys_json="[$credhub_encryption_keys_json]"
+
+exit 1
 
 if [[ "${pcf_iaas}" == "aws" ]]; then
   if [[ ${POE_SSL_NAME1} == "" || ${POE_SSL_NAME1} == "null" ]]; then
