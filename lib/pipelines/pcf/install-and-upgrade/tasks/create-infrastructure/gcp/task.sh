@@ -42,7 +42,6 @@ terraform {
 }
 ---EOF
 
-echo -e "#!/bin/bash\n" > upload_path/terraform-output.sh
 terraform output -json \
   -state .terraform/terraform.tfstate \
   | jq -r --arg q "'" '. | to_entries[] | "\(.key)=\($q)\(.value.value)\($q)"' \
