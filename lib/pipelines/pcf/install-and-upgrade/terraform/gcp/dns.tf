@@ -69,7 +69,7 @@ resource "google_dns_record_set" "doppler-dns" {
 resource "google_dns_record_set" "loggregator-dns" {
   managed_zone = "${google_dns_managed_zone.env_dns_zone.name}"
 
-  name = "loggregator.${local.system_domain}}."
+  name = "loggregator.${local.system_domain}."
   type = "A"
   ttl  = 300
 
