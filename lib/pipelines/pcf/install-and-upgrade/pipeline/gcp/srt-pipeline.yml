@@ -129,7 +129,7 @@ jobs:
       TF_VAR_gcp_zone_3: ((gcp_zone_3))
       TF_VAR_prefix: ((gcp_resource_prefix))
       TF_VAR_gcp_storage_bucket_location: ((gcp_storage_bucket_location))
-      TF_VAR_bootstrap_state_bucket: ((terraform_state_bucket))
+      TF_VAR_terraform_state_bucket: ((terraform_state_bucket))
       TF_VAR_bootstrap_state_prefix: ((bootstrap_state_prefix))
       TF_VAR_pas_env_domain_prefix: ((pas_env_domain_prefix))
       TF_VAR_system_domain_prefix: ((system_domain_prefix))

@@ -8,7 +8,8 @@ terraform {
 #
 # Retrieve the bootstrap state.
 #
-variable "bootstrap_state_bucket" {
+
+variable "terraform_state_bucket" {
   type = "string"
 }
 
@@ -20,7 +21,7 @@ data "terraform_remote_state" "bootstrap" {
   backend = "gcs"
 
   config {
-    bucket = "${var.bootstrap_state_bucket}"
+    bucket = "${var.terraform_state_bucket}"
     prefix = "${var.bootstrap_state_prefix}"
   }
 }
