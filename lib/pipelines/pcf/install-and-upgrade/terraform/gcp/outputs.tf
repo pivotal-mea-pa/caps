@@ -18,7 +18,11 @@ output "ops_manager_dns" {
   value = "${google_dns_record_set.ops-manager-dns.name}"
 }
 
-output "sys_domain" {
+output "pcf_ert_domain" {
+  value = "${local.pas_domain}"
+}
+
+output "system_domain" {
   value = "${local.system_domain}"
 }
 
@@ -132,7 +136,7 @@ output "pub_ip_ssh_tcp_lb" {
   value = "${google_compute_address.cf-tcp.address}"
 }
 
-output "sql_instance_ip" {
+output "db_host" {
   value = "${google_sql_database_instance.master.ip_address.0.ip_address}"
 }
 
