@@ -301,18 +301,18 @@ jobs:
   - task: configure-srt
     file: automation/lib/pipelines/pcf/install-and-upgrade/tasks/configure-srt/task.yml
     params:
+      # PCF_ERT_DOMAIN: ((pcf_ert_domain))
+      # SYSTEM_DOMAIN: ((system_domain))
+      # APPS_DOMAIN: ((apps_domain))
+      # POE_SSL_NAME1: ((poe_ssl_name1))
+      # POE_SSL_CERT1: ((poe_ssl_cert1))
+      # POE_SSL_KEY1: ((poe_ssl_key1))
       pcf_iaas: gcp
       pcf_az_1: ((gcp_zone_1))
       pcf_az_2: ((gcp_zone_2))
       pcf_az_3: ((gcp_zone_3))
-      POE_SSL_NAME1: ((poe_ssl_name1))
-      POE_SSL_CERT1: ((poe_ssl_cert1))
-      POE_SSL_KEY1: ((poe_ssl_key1))
       gcp_storage_access_key: ((gcp_storage_access_key))
       gcp_storage_secret_key: ((gcp_storage_secret_key))
-      PCF_ERT_DOMAIN: ((pcf_ert_domain))
-      SYSTEM_DOMAIN: ((system_domain))
-      APPS_DOMAIN: ((apps_domain))
       OPSMAN_DOMAIN_OR_IP_ADDRESS: ((opsman_domain_or_ip_address))
       OPSMAN_USERNAME: ((opsman_admin_username))
       OPSMAN_PASSWORD: ((opsman_admin_password))
