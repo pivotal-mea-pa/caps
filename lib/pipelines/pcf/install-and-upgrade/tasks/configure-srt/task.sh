@@ -30,19 +30,8 @@ export OPS_MGR_PWD=$OPSMAN_PASSWORD
 # Configure and install SRT when a installed version is not found
 #
 
-# source pcf-pipelines/functions/generate_cert.sh
-
-declare networking_poe_ssl_certs_json
-
-saml_domains=(
-  "*.${SYSTEM_DOMAIN}"
-  "*.login.${SYSTEM_DOMAIN}"
-  "*.uaa.${SYSTEM_DOMAIN}"
-)
-
-saml_certificates=$(generate_cert "${saml_domains[*]}")
-saml_cert_pem=`echo $saml_certificates | jq --raw-output '.certificate'`
-saml_key_pem=`echo $saml_certificates | jq --raw-output '.key'`
+# Source terraform output to environment
+source terraform-output/pcf-env-*.sh
 
 function isPopulated() {
     local true=0
@@ -86,68 +75,16 @@ if isPopulated "${CREDUB_ENCRYPTION_KEY_NAME3}"; then
 fi
 credhub_encryption_keys_json="[$credhub_encryption_keys_json]"
 
-exit 1
-
-if [[ "${pcf_iaas}" == "aws" ]]; then
-  if [[ ${POE_SSL_NAME1} == "" || ${POE_SSL_NAME1} == "null" ]]; then
-    domains=(
-        "*.${SYSTEM_DOMAIN}"
-        "*.${APPS_DOMAIN}"
-        "*.login.${SYSTEM_DOMAIN}"
-        "*.uaa.${SYSTEM_DOMAIN}"
-    )
-
-    certificate=$(generate_cert "${domains[*]}")
-    pcf_ert_ssl_cert=`echo $certificate | jq '.certificate'`
-    pcf_ert_ssl_key=`echo $certificate | jq '.key'`
-    networking_poe_ssl_certs_json="[
-      {
-        \"name\": \"Certificate 1\",
-        \"certificate\": {
-          \"cert_pem\": $pcf_ert_ssl_cert,
-          \"private_key_pem\": $pcf_ert_ssl_key
-        }
-      }
-    ]"
-  else
-    cert=${POE_SSL_CERT1//$'\n'/'\n'}
-    key=${POE_SSL_KEY1//$'\n'/'\n'}
-    networking_poe_ssl_certs_json="[{
-      \"name\": \"$POE_SSL_NAME1\",
-      \"certificate\": {
-        \"cert_pem\": \"$cert\",
-        \"private_key_pem\": \"$key\"
-      }
-    }]"
-  fi
-
-  output_json=$(cat terraform-output/terraform-output-*.json)
-  db_host=$(echo "$output_json" | jq --raw-output '.db_host.value')
-  aws_region=$(echo "$output_json" | jq --raw-output '.region.value')
-  aws_access_key=`terraform state show aws_iam_access_key.pcf_iam_user_access_key | grep ^id | awk '{print $3}'`
-  aws_secret_key=`terraform state show aws_iam_access_key.pcf_iam_user_access_key | grep ^secret | awk '{print $3}'`
-elif [[ "${pcf_iaas}" == "gcp" ]]; then
-  output_json=$(cat terraform-output/terraform-output-*.json)
-  db_host=$(echo "$output_json" | jq --raw-output '.sql_instance_ip.value')
-  pcf_ert_ssl_cert="$(terraform output -json ert_certificate | jq .value)"
-  pcf_ert_ssl_key="$(terraform output -json ert_certificate_key | jq .value)"
-
-  if [ -z "$db_host" ]; then
-    echo Failed to get SQL instance IP from Terraform state file
-    exit 1
-  fi
-  networking_poe_ssl_certs_json="[
-    {
-      \"name\": \"Certificate 1\",
-      \"certificate\": {
-        \"cert_pem\": $pcf_ert_ssl_cert,
-        \"private_key_pem\": $pcf_ert_ssl_key
-      }
-    }
-  ]"
+if [ -z "$db_host" ]; then
+  echo Failed to get My SQL host name/IP from Terraform state file
+  exit 1
 fi
 
-exit 0
+if [[ "${pcf_iaas}" == "aws" ]]; then
+  aws_region=$region
+  aws_access_key=`terraform state show aws_iam_access_key.pcf_iam_user_access_key | grep ^id | awk '{print $3}'`
+  aws_secret_key=`terraform state show aws_iam_access_key.pcf_iam_user_access_key | grep ^secret | awk '{print $3}'`
+fi
 
 cf_network=$(
   jq -n \
@@ -216,9 +153,9 @@ cf_properties=$(
     --arg routing_tls_termination $ROUTING_TLS_TERMINATION \
     --arg security_acknowledgement "$SECURITY_ACKNOWLEDGEMENT" \
     --arg iaas $pcf_iaas \
-    --arg pcf_ert_domain "$PCF_ERT_DOMAIN" \
-    --arg system_domain "$SYSTEM_DOMAIN"\
-    --arg apps_domain "$APPS_DOMAIN" \
+    --arg pcf_ert_domain "$pcf_ert_domain" \
+    --arg system_domain "$system_domain"\
+    --arg apps_domain "$apps_domain" \
     --arg mysql_monitor_recipient_email "$mysql_monitor_recipient_email" \
     --arg db_host "$db_host" \
     --arg db_locket_username "$db_locket_username" \
@@ -264,15 +201,18 @@ cf_properties=$(
     --arg mysql_backups_s3_access_key_id "$MYSQL_BACKUPS_S3_ACCESS_KEY_ID" \
     --arg mysql_backups_s3_secret_access_key "$MYSQL_BACKUPS_S3_SECRET_ACCESS_KEY" \
     --arg mysql_backups_s3_cron_schedule "$MYSQL_BACKUPS_S3_CRON_SCHEDULE" \
+    --arg container_networking_nw_cidr "$CONTAINER_NETWORKING_NW_CIDR" \    
+    --arg saml_certificate "$saml_certificate" \
+    --arg saml_certificate_key "$saml_certificate_key" \
+    --arg ert_certificate "$ert_certificate" \
+    --arg ert_certificate_key "$ert_certificate_key" \
     --argjson credhub_encryption_keys "$credhub_encryption_keys_json" \
-    --argjson networking_poe_ssl_certs "$networking_poe_ssl_certs_json" \
-    --arg container_networking_nw_cidr "$CONTAINER_NETWORKING_NW_CIDR" \
     '
     {
       ".uaa.service_provider_key_credentials": {
         "value": {
-          "cert_pem": $saml_cert_pem,
-          "private_key_pem": $saml_key_pem
+          "cert_pem": $saml_certificate,
+          "private_key_pem": $saml_certificate_key
         }
       },
       ".properties.tcp_routing": { "value": "disable" },
@@ -406,6 +346,15 @@ cf_properties=$(
     # SSL Termination
     {
       ".properties.networking_poe_ssl_certs": {
+        "value": [ 
+          {
+            "name": "Certificate 1",
+            "certificate": {
+              "cert_pem": $ert_certificate,
+              "private_key_pem": $ert_certificate_key
+            }
+          }
+        ],
         "value": $networking_poe_ssl_certs
       }
     }
