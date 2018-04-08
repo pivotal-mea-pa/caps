@@ -14,7 +14,7 @@ export GOOGLE_PROJECT=${GCP_PROJECT_ID}
 export GOOGLE_REGION=${GCP_REGION}
 
 if [[ "$(opsman::check_available "https://$OPSMAN_DOMAIN_OR_IP_ADDRESS")" == "available" ]]; then
-  om-linux \
+  om \
     --target https://$OPSMAN_DOMAIN_OR_IP_ADDRESS \
     --skip-ssl-validation \
     --username "$OPSMAN_USERNAME" \
