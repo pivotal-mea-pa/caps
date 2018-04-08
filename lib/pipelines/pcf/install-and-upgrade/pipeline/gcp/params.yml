@@ -188,8 +188,10 @@ mysql_backups_scp_user: ''
 mysql_monitor_recipient_email: '${mysql_monitor_recipient_email}'
 
 # Optional. If blank the cert(s) will be generated:
-poe_ssl_cert1: ''
-poe_ssl_key1: ''
+ert_ssl_cert1: ''
+ert_ssl_key1: ''
+saml_ssl_cert1: ''
+saml_ssl_key1: ''
 
 # Setting appropriate Application Security Groups is critical for a secure
 # deployment. Change the value of the param below to "X" to acknowledge that

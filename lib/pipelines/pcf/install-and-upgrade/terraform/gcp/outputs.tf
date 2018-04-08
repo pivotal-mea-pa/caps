@@ -136,10 +136,20 @@ output "sql_instance_ip" {
   value = "${google_sql_database_instance.master.ip_address.0.ip_address}"
 }
 
+// Certificates
+
 output "ert_certificate" {
   value = "${google_compute_ssl_certificate.lb-cert.certificate}"
 }
 
 output "ert_certificate_key" {
   value = "${google_compute_ssl_certificate.lb-cert.private_key}"
+}
+
+output "saml_certificate" {
+  value = "${length(var.pcf_saml_ssl_cert) > 0 ? var.pcf_saml_ssl_cert : tls_locally_signed_cert.saml-san.cert_pem}"
+}
+
+output "saml_certificate_key" {
+  value = "${length(var.pcf_saml_ssl_key) > 0 ? var.pcf_saml_ssl_key : tls_private_key.saml-san.private_key_pem}"
 }

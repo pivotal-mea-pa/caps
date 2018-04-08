@@ -16,9 +16,6 @@ variable "pas_env_domain_prefix" {}
 variable "system_domain_prefix" {}
 variable "apps_domain_prefix" {}
 
-variable "pcf_ert_ssl_cert" {}
-variable "pcf_ert_ssl_key" {}
-
 variable "db_diego_username" {}
 variable "db_diego_password" {}
 variable "db_notifications_username" {}
@@ -43,3 +40,21 @@ variable "db_locket_username" {}
 variable "db_locket_password" {}
 variable "db_silk_username" {}
 variable "db_silk_password" {}
+
+# Certificates
+
+variable "pcf_ert_ssl_cert" {
+  default = ""
+}
+
+variable "pcf_ert_ssl_key" {
+  default = ""
+}
+
+variable "pcf_saml_ssl_cert" {
+  default = ""
+}
+
+variable "pcf_saml_ssl_key" {
+  default = ""
+}
