@@ -352,8 +352,7 @@ cf_properties=$(
               "private_key_pem": $ert_certificate_key
             }
           }
-        ],
-        "value": $networking_poe_ssl_certs
+        ]
       }
     }
 
