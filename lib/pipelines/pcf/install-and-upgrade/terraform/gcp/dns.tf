@@ -26,36 +26,6 @@ resource "google_dns_record_set" "ops-manager-dns" {
   rrdatas = ["${google_compute_instance.ops-manager.network_interface.0.address}"]
 }
 
-resource "google_dns_record_set" "wildcard-sys-dns" {
-  managed_zone = "${google_dns_managed_zone.env_dns_zone.name}"
-
-  name = "*.${local.system_domain}."
-  type = "A"
-  ttl  = 300
-
-  rrdatas = ["${google_compute_global_address.pcf.address}"]
-}
-
-resource "google_dns_record_set" "wildcard-uaa-sys-dns" {
-  managed_zone = "${google_dns_managed_zone.env_dns_zone.name}"
-
-  name = "*.uaa.${local.system_domain}."
-  type = "A"
-  ttl  = 300
-
-  rrdatas = ["${google_compute_global_address.pcf.address}"]
-}
-
-resource "google_dns_record_set" "wildcard-login-sys-dns" {
-  managed_zone = "${google_dns_managed_zone.env_dns_zone.name}"
-
-  name = "*.login.${local.system_domain}."
-  type = "A"
-  ttl  = 300
-
-  rrdatas = ["${google_compute_global_address.pcf.address}"]
-}
-
 resource "google_dns_record_set" "wildcard-apps-dns" {
   managed_zone = "${google_dns_managed_zone.env_dns_zone.name}"
 
@@ -66,10 +36,40 @@ resource "google_dns_record_set" "wildcard-apps-dns" {
   rrdatas = ["${google_compute_global_address.pcf.address}"]
 }
 
+resource "google_dns_record_set" "wildcard-sys-dns" {
+  managed_zone = "${google_dns_managed_zone.env_dns_zone.name}"
+
+  name = "*.${local.system_domain}."
+  type = "A"
+  ttl  = 300
+
+  rrdatas = ["${google_compute_global_address.pcf.address}"]
+}
+
 resource "google_dns_record_set" "app-ssh-dns" {
   managed_zone = "${google_dns_managed_zone.env_dns_zone.name}"
 
   name = "ssh.${local.system_domain}."
+  type = "A"
+  ttl  = 300
+
+  rrdatas = ["${google_compute_address.ssh-and-doppler.address}"]
+}
+
+resource "google_dns_record_set" "doppler-dns" {
+  managed_zone = "${google_dns_managed_zone.env_dns_zone.name}"
+
+  name = "doppler.${local.system_domain}."
+  type = "A"
+  ttl  = 300
+
+  rrdatas = ["${google_compute_address.ssh-and-doppler.address}"]
+}
+
+resource "google_dns_record_set" "loggregator-dns" {
+  managed_zone = "${google_dns_managed_zone.env_dns_zone.name}"
+
+  name = "loggregator.${local.system_domain}}."
   type = "A"
   ttl  = 300
 
