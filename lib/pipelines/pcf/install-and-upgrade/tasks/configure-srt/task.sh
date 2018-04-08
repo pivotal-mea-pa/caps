@@ -199,7 +199,7 @@ cf_properties=$(
     --arg mysql_backups_s3_access_key_id "$MYSQL_BACKUPS_S3_ACCESS_KEY_ID" \
     --arg mysql_backups_s3_secret_access_key "$MYSQL_BACKUPS_S3_SECRET_ACCESS_KEY" \
     --arg mysql_backups_s3_cron_schedule "$MYSQL_BACKUPS_S3_CRON_SCHEDULE" \
-    --arg container_networking_nw_cidr "$CONTAINER_NETWORKING_NW_CIDR" \    
+    --arg container_networking_nw_cidr "$CONTAINER_NETWORKING_NW_CIDR" \
     --arg saml_certificate "$saml_certificate" \
     --arg saml_certificate_key "$saml_certificate_key" \
     --arg ert_certificate "$ert_certificate" \
