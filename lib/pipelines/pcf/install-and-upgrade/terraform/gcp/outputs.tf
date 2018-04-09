@@ -129,7 +129,7 @@ output "pub_ip_global_pcf" {
 }
 
 output "pub_ip_ssh_and_doppler" {
-  value = "${google_compute_address.ssh-and-doppler.address}"
+  value = "${google_compute_address.cf-ssh.address}"
 }
 
 output "pub_ip_ssh_tcp_lb" {

@@ -53,7 +53,7 @@ resource "google_dns_record_set" "app-ssh-dns" {
   type = "A"
   ttl  = 300
 
-  rrdatas = ["${google_compute_address.ssh-and-doppler.address}"]
+  rrdatas = ["${google_compute_address.cf-ssh.address}"]
 }
 
 resource "google_dns_record_set" "doppler-dns" {
@@ -63,7 +63,7 @@ resource "google_dns_record_set" "doppler-dns" {
   type = "A"
   ttl  = 300
 
-  rrdatas = ["${google_compute_address.ssh-and-doppler.address}"]
+  rrdatas = ["${google_compute_address.cf-gorouter-wss.address}"]
 }
 
 resource "google_dns_record_set" "loggregator-dns" {
@@ -73,7 +73,7 @@ resource "google_dns_record_set" "loggregator-dns" {
   type = "A"
   ttl  = 300
 
-  rrdatas = ["${google_compute_address.ssh-and-doppler.address}"]
+  rrdatas = ["${google_compute_address.cf-gorouter-wss.address}"]
 }
 
 resource "google_dns_record_set" "tcp-dns" {
