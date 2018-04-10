@@ -142,6 +142,6 @@
   path: /jobs/name=apply/plan/0/aggregate/-
   value:
     get: ${product_name}-tile
-    passed: [deploy-${product_name}-tile]
+    passed: [configure-${product_name}-tile]
     trigger: true
     params: { globs: [] } 
