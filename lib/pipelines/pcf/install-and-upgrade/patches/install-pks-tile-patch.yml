@@ -149,3 +149,11 @@
     #     OPSMAN_PASSWORD: ((opsman_admin_password))
     #     STAGE_AND_APPLY: false
     #     ENABLE_ERRANDS: ((enable_errands))
+
+- op: add
+  path: /jobs/name=apply/plan/0/aggregate/-
+  value:
+    get: ${product_name}-tile
+    passed: [deploy-${product_name}-tile]
+    trigger: true
+    params: { globs: [] } 

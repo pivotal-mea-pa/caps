@@ -408,8 +408,7 @@ jobs:
   - aggregate:
     - get: automation
     - get: pcf-pipelines
-    - get: pivnet-product
-      resource: pas-tile
+    - get: pas-tile
       passed: [configure-srt]
       trigger: true
       params: { globs: [] }
