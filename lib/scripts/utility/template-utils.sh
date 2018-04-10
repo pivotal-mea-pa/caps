@@ -1,5 +1,14 @@
 #!/bin/bash
 
+function source_variables() {
+
+    local var_file_glob=$1
+    local var_file_path=$(dirname $var_file_glob)
+
+    [[ -e $var_file_path ]] && \
+        eval "$(cat $var_file_path/pcf-env-*.sh | awk -F '=' '{ if ($2 != "") print toupper($1)"="$2; else print $0 }')"
+}
+
 function eval_jq_templates() {
 
   local tpl_name=$1

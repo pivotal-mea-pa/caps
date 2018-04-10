@@ -6,7 +6,7 @@ source automation/lib/scripts/utility/template-utils.sh
 set -eo pipefail
 
 # Source terraform output variables if available
-[[ -e terraform-output/ ]] && eval "$(cat terraform-output/pcf-env-*.sh)"
+source_variables 'terraform-output/pcf-env-*.sh'
 
 PRODUCT_NAME=pivotal-container-service
 TEMPLATE_PATH=lib/pipelines/pcf/install-and-upgrade/templates/pks
