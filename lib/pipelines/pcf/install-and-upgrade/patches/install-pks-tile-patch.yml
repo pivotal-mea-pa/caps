@@ -76,6 +76,7 @@
     plan:
     - aggregate:
       - get: automation
+      - get: automation-extensions
       - get: pcf-pipelines
       - get: terraform-output
       - get: pivnet-product
