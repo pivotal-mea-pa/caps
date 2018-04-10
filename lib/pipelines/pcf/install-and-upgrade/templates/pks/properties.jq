@@ -24,7 +24,7 @@
 #    --arg cloud_provider "gcp" \
 #    --arg gcp_service_key "$(cat $GOOGLE_CREDENTIALS)" \
 #    --arg gcp_project_id "$GOOGLE_PROJECT" \
-#    --arg gcp_vpc_network_name "${TF_VAR_prefix}-virt-net" \
+#    --arg vpc_network_name "${TF_VAR_prefix}-virt-net" \
 #    --argjson plan1_worker_instances 3 \
 #    --argjson plan1_allow_privileged_containers false \
 #    --arg plan1_az_placement "europe-west1-b" \
@@ -116,7 +116,7 @@ if $cloud_provider == "gcp" then
     ".properties.cloud_provider": { "value": "GCP" },
     ".properties.cloud_provider.gcp.service_key": { "value": $gcp_service_key },
     ".properties.cloud_provider.gcp.project_id": { "value": $gcp_project_id },
-    ".properties.cloud_provider.gcp.network": { "value": $gcp_vpc_network_name },
+    ".properties.cloud_provider.gcp.network": { "value": $vpc_network_name },
   }
 elif $cloud_provider == "vsphere" then
   . |= . + {

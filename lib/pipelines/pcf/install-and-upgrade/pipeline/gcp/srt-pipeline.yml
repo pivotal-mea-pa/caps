@@ -401,15 +401,26 @@ jobs:
       AUTOS3_ACCESS_KEY: ((autos3_access_key))
       AUTOS3_SECRET_KEY: ((autos3_secret_key))
 
+- name: deploy
+  serial_groups: [opsman]
+  plan:
+  - aggregate:
+    - get: automation
+    - get: pivnet-product
+      resource: pas-tile
+      passed: [upload-srt]
+      trigger: true
+      params: { globs: [] }
+
   # Apply the changes to deploy the SRT
-  - task: deploy-srt
+  - task: apply-changes
     file: pcf-pipelines/tasks/apply-changes/task.yml
     params:
       OPSMAN_DOMAIN_OR_IP_ADDRESS: ((opsman_domain_or_ip_address))
       OPSMAN_USERNAME: ((opsman_admin_username))
       OPSMAN_PASSWORD: ((opsman_admin_password))
-      OPSMAN_CLIENT_ID: ""
-      OPSMAN_CLIENT_SECRET: ""
+      OPSMAN_CLIENT_ID: ((opsman_client_id))
+      OPSMAN_CLIENT_SECRET: ((opsman_client_secret))
 
   # Toggle the environment state to started
   - task: set-started-state

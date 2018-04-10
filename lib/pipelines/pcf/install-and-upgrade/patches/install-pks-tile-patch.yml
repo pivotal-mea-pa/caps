@@ -123,31 +123,29 @@
         OTHER_AVAILABILITY_ZONES: ((gcp_zone_1)),((gcp_zone_2)),((gcp_zone_3))
         # pks resources
         INTERNET_CONNECTED: false
-        PKS_API_LB_NAME: tcp:((gcp_resource_prefix))-pks-api
         # pks properties
         PKS_API_URL: pks.((system_domain_prefix))
         CLOUD_PROVIDER: gcp
         GCP_SERVICE_KEY: ((gcp_service_account_key))
         GCP_PROJECT_ID: ((gcp_project))
-        GCP_VPC_NETWORK_NAME:
-        PLAN1_WORKER_INSTANCES:
-        PLAN1_ALLOW_PRIVILEGED_CONTAINERS:
-        PLAN1_AZ_PLACEMENT:
-        PLAN2_WORKER_INSTANCES:
-        PLAN2_ALLOW_PRIVILEGED_CONTAINERS:
-        PLAN2_AZ_PLACEMENT:
-        PLAN3_WORKER_INSTANCES:
-        PLAN3_ALLOW_PRIVILEGED_CONTAINERS:
-        PLAN3_AZ_PLACEMENT:
+        PLAN1_WORKER_INSTANCES: 3
+        PLAN1_ALLOW_PRIVILEGED_CONTAINERS: true
+        PLAN1_AZ_PLACEMENT: ((gcp_zone_1))
+        PLAN2_WORKER_INSTANCES: 5
+        PLAN2_ALLOW_PRIVILEGED_CONTAINERS: true
+        PLAN2_AZ_PLACEMENT: ((gcp_zone_2))
+        PLAN3_WORKER_INSTANCES: 0
+        PLAN3_ALLOW_PRIVILEGED_CONTAINERS: true
+        PLAN3_AZ_PLACEMENT: ((gcp_zone_3))
 
-    # Apply changes
-    - task: apply
-      file: automation/lib/pipelines/pcf/install-and-upgrade/tasks/stage-product/task.yml
-      params:
-        OPSMAN_DOMAIN_OR_IP_ADDRESS: ((opsman_domain_or_ip_address))
-        OPSMAN_CLIENT_ID: ((opsman_client_id))
-        OPSMAN_CLIENT_SECRET: ((opsman_client_secret))
-        OPSMAN_USERNAME: ((opsman_admin_username))
-        OPSMAN_PASSWORD: ((opsman_admin_password))
-        STAGE_AND_APPLY: false
-        ENABLE_ERRANDS: ((enable_errands))
+    # # Apply changes
+    # - task: apply
+    #   file: automation/lib/pipelines/pcf/install-and-upgrade/tasks/stage-product/task.yml
+    #   params:
+    #     OPSMAN_DOMAIN_OR_IP_ADDRESS: ((opsman_domain_or_ip_address))
+    #     OPSMAN_CLIENT_ID: ((opsman_client_id))
+    #     OPSMAN_CLIENT_SECRET: ((opsman_client_secret))
+    #     OPSMAN_USERNAME: ((opsman_admin_username))
+    #     OPSMAN_PASSWORD: ((opsman_admin_password))
+    #     STAGE_AND_APPLY: false
+    #     ENABLE_ERRANDS: ((enable_errands))

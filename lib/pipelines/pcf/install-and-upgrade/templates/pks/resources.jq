@@ -16,6 +16,6 @@
   "pivotal-container-service": {
     # i.e. TCP load balancer for applications
     "internet_connected": $internet_connected,
-    "elb_names": ($pks_api_lb_names | split(","))
+    "elb_names": ($pks_api_lb_name | split(","))
   }
 }

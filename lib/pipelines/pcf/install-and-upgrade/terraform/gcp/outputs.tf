@@ -40,7 +40,7 @@ output "env_dns_zone_name_servers" {
 
 // Network Output
 
-output "network_name" {
+output "vpc_network_name" {
   value = "${google_compute_network.pcf-virt-net.name}"
 }
 
