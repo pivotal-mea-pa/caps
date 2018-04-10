@@ -39,8 +39,13 @@ for p in $(echo -e "$PRODUCTS"); do
   product_slug=${slug_and_version%/*}
   product_version=${slug_and_version#*/}
 
-  eval "echo \"$(cat $INSTALL_AND_UPGRADE_PATCHES_PATH/install-tile-patch.yml)\"" \
-    > ${product_name}-patch.yml
+  if [[ -e $INSTALL_AND_UPGRADE_PATCHES_PATH/install-${product_name}-tile-patch.yml ]]; then
+    eval "echo \"$(cat $INSTALL_AND_UPGRADE_PATCHES_PATH/install-${product_name}-tile-patch.yml)\"" \
+      > ${product_name}-patch.yml
+  else
+    eval "echo \"$(cat $INSTALL_AND_UPGRADE_PATCHES_PATH/install-tile-patch.yml)\"" \
+      > ${product_name}-patch.yml
+  fi
 
   cat install-pcf-pipeline$i.yml \
     | yaml_patch -o ${product_name}-patch.yml \
