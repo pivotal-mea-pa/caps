@@ -140,6 +140,10 @@ output "db_host" {
   value = "${google_sql_database_instance.master.ip_address.0.ip_address}"
 }
 
+output "pks_api_lb_name" {
+  value = "tcp:${google_compute_target_pool.pks-api.name}"
+}
+
 // Certificates
 
 output "saml_certificate" {
