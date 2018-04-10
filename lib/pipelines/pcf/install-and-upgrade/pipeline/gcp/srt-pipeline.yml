@@ -294,6 +294,7 @@ jobs:
       ENABLE_ERRANDS: ((enable_errands))
 
 - name: configure-srt
+  serial_groups: [opsman]
   plan:
   - aggregate:
     - get: automation

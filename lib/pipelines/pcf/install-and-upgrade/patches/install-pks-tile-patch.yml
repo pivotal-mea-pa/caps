@@ -26,6 +26,7 @@
   path: /jobs/-
   value:
     name: upload-${product_name}-tile
+    serial_groups: [opsman]
     plan:
     - aggregate:
       - get: automation
