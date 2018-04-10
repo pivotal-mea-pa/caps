@@ -139,7 +139,7 @@
         PLAN3_AZ_PLACEMENT: ((gcp_zone_3))
 
 - op: add
-  path: /jobs/name=apply/plan/0/aggregate/-
+  path: /jobs/name=deploy/plan/0/aggregate/-
   value:
     get: ${product_name}-tile
     passed: [configure-${product_name}-tile]
