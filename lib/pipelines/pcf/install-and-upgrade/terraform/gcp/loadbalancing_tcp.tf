@@ -44,6 +44,11 @@ resource "google_compute_target_pool" "cf-tcp" {
   ]
 }
 
+// PKS target pool
+resource "google_compute_target_pool" "pks-api" {
+  name = "${var.prefix}-pks-api"
+}
+
 // Doppler forwarding rule
 resource "google_compute_forwarding_rule" "cf-gorouter-wss" {
   name        = "${var.prefix}-gorouter-wss-lb"
@@ -69,4 +74,22 @@ resource "google_compute_forwarding_rule" "cf-tcp" {
   port_range  = "1024-65535"
   ip_protocol = "TCP"
   ip_address  = "${google_compute_address.cf-tcp.address}"
+}
+
+// PKS API tcp forwarding rule
+resource "google_compute_forwarding_rule" "pks-api" {
+  name        = "${var.prefix}-pks-api-lb"
+  target      = "${google_compute_target_pool.pks-api.self_link}"
+  port_range  = "9021"
+  ip_protocol = "TCP"
+  ip_address  = "${google_compute_address.pks-api.address}"
+}
+
+// PKS UAA tcp forwarding rule
+resource "google_compute_forwarding_rule" "pks-uaa" {
+  name        = "${var.prefix}-pks-uaa-lb"
+  target      = "${google_compute_target_pool.pks-api.self_link}"
+  port_range  = "8443"
+  ip_protocol = "TCP"
+  ip_address  = "${google_compute_address.pks-api.address}"
 }

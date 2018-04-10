@@ -86,6 +86,16 @@ resource "google_dns_record_set" "tcp-dns" {
   rrdatas = ["${google_compute_address.cf-tcp.address}"]
 }
 
+resource "google_dns_record_set" "pks-api" {
+  name         = "pks.${local.system_domain}."
+  managed_zone = "${data.terraform_remote_state.bootstrap.vpc_dns_zone_name}"
+
+  type = "A"
+  ttl  = 300
+
+  rrdatas = ["${google_compute_address.pks-api.address}"]
+}
+
 #
 # Add Name Servers for ERT zone to bootstrap VPC zone.
 #
