@@ -281,17 +281,17 @@ jobs:
       OPSMAN_USERNAME: ((opsman_admin_username))
       OPSMAN_PASSWORD: ((opsman_admin_password))
 
-    # Stage product tile
-    - task: stage-tile
-      file: automation/lib/pipelines/pcf/install-and-upgrade/tasks/stage-product/task.yml
-      params:
-        OPSMAN_DOMAIN_OR_IP_ADDRESS: ((opsman_domain_or_ip_address))
-        OPSMAN_CLIENT_ID: ((opsman_client_id))
-        OPSMAN_CLIENT_SECRET: ((opsman_client_secret))
-        OPSMAN_USERNAME: ((opsman_admin_username))
-        OPSMAN_PASSWORD: ((opsman_admin_password))
-        STAGE_AND_APPLY: false
-        ENABLE_ERRANDS: ((enable_errands))
+  # Stage product tile
+  - task: stage-tile
+    file: automation/lib/pipelines/pcf/install-and-upgrade/tasks/stage-product/task.yml
+    params:
+      OPSMAN_DOMAIN_OR_IP_ADDRESS: ((opsman_domain_or_ip_address))
+      OPSMAN_CLIENT_ID: ((opsman_client_id))
+      OPSMAN_CLIENT_SECRET: ((opsman_client_secret))
+      OPSMAN_USERNAME: ((opsman_admin_username))
+      OPSMAN_PASSWORD: ((opsman_admin_password))
+      STAGE_AND_APPLY: false
+      ENABLE_ERRANDS: ((enable_errands))
 
 - name: configure-srt
   plan:
