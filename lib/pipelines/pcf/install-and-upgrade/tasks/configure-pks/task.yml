@@ -1,0 +1,51 @@
+---
+platform: linux
+
+image_resource:
+  type: docker-image
+  source:
+    repository: appbricks/automation-tools
+
+inputs:
+- name: automation
+- name: automation-extensions
+
+run:
+  path: automation/lib/pipelines/pcf/install-and-upgrade/tasks/configure-pks/task.sh
+
+params:
+  TRACE:
+  OPSMAN_HOST:
+  OPSMAN_CLIENT_ID:
+  OPSMAN_CLIENT_SECRET:
+  OPSMAN_USER:
+  OPSMAN_PASSWD:
+  PCFOPS_CLIENT:
+  PCFOPS_CLIENT:
+  # pks product and configuration
+  TEMPLATE_OVERRIDE_PATH:
+  # pks networking
+  NETWORK_NAME:
+  SERVICE_NETWORK_NAME:
+  SINGLETON_AVAILABILITY_ZONE:
+  OTHER_AVAILABILITY_ZONES:
+  # pks resources
+  INTERNET_CONNECTED:
+  PKS_API_LB_NAMES:
+  # pks properties
+  PKS_API_URL:
+  PKS_CERTIFICATE:
+  PKS_CERTIFICATE_KEY:
+  CLOUD_PROVIDER:
+  GCP_SERVICE_KEY:
+  GCP_PROJECT_ID:
+  GCP_VPC_NETWORK_NAME:
+  PLAN1_WORKER_INSTANCES:
+  PLAN1_ALLOW_PRIVILEGED_CONTAINERS:
+  PLAN1_AZ_PLACEMENT:
+  PLAN2_WORKER_INSTANCES:
+  PLAN2_ALLOW_PRIVILEGED_CONTAINERS:
+  PLAN2_AZ_PLACEMENT:
+  PLAN3_WORKER_INSTANCES:
+  PLAN3_ALLOW_PRIVILEGED_CONTAINERS:
+  PLAN3_AZ_PLACEMENT:
