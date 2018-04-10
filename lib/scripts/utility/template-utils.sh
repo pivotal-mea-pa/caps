@@ -5,8 +5,9 @@ function source_variables() {
     local var_file_glob=$1
     local var_file_path=$(dirname $var_file_glob)
 
-    [[ -e $var_file_path ]] && \
+    if [[ -e $var_file_path ]]; then
         eval "$(cat $var_file_path/pcf-env-*.sh | awk -F '=' '{ if ($2 != "") print toupper($1)"="$2; else print $0 }')"
+    fi
 }
 
 function eval_jq_templates() {
