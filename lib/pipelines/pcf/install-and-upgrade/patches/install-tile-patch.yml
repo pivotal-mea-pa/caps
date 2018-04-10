@@ -26,7 +26,6 @@
   path: /jobs/-
   value:
     name: upload-and-upgrade-${product_name}-tile
-    serial_groups: [opsman]
     plan:
     - aggregate:
       - get: automation
