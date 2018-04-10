@@ -56,15 +56,17 @@
         NO_PROXY: ""
         OM_IP: ""
 
-    # This task will block if the environment 
-    # has been put into stopped state
-    - task: wait-until-started
-      file: automation/lib/tasks/automation/wait-for-state/task.yml
-      params: 
-        WAIT_FOR_STATE: started
-        AUTOS3_URL: ((autos3_url))
-        AUTOS3_ACCESS_KEY: ((autos3_access_key))
-        AUTOS3_SECRET_KEY: ((autos3_secret_key))
+    # Stage product tile
+    - task: stage
+      file: automation/lib/pipelines/pcf/install-and-upgrade/tasks/stage-product/task.yml
+      params:
+        OPSMAN_DOMAIN_OR_IP_ADDRESS: ((opsman_domain_or_ip_address))
+        OPSMAN_CLIENT_ID: ((opsman_client_id))
+        OPSMAN_CLIENT_SECRET: ((opsman_client_secret))
+        OPSMAN_USERNAME: ((opsman_admin_username))
+        OPSMAN_PASSWORD: ((opsman_admin_password))
+        STAGE_AND_APPLY: false
+        ENABLE_ERRANDS: ((enable_errands))
 
 - op: add
   path: /jobs/-
@@ -81,29 +83,6 @@
         passed: [upload-${product_name}-tile]
         trigger: true
         params: { globs: [] }
-
-    # This task will block if Ops Manager
-    # is in the process of applying changes.
-    - task: wait-opsman-clear
-      file: pcf-pipelines/tasks/wait-opsman-clear/task.yml
-      params:
-        OPSMAN_DOMAIN_OR_IP_ADDRESS: ((opsman_domain_or_ip_address))
-        OPSMAN_CLIENT_ID: ((opsman_client_id))
-        OPSMAN_CLIENT_SECRET: ((opsman_client_secret))
-        OPSMAN_USERNAME: ((opsman_admin_username))
-        OPSMAN_PASSWORD: ((opsman_admin_password))
-
-    # Stage product tile
-    - task: stage
-      file: automation/lib/pipelines/pcf/install-and-upgrade/tasks/stage-product/task.yml
-      params:
-        OPSMAN_DOMAIN_OR_IP_ADDRESS: ((opsman_domain_or_ip_address))
-        OPSMAN_CLIENT_ID: ((opsman_client_id))
-        OPSMAN_CLIENT_SECRET: ((opsman_client_secret))
-        OPSMAN_USERNAME: ((opsman_admin_username))
-        OPSMAN_PASSWORD: ((opsman_admin_password))
-        STAGE_AND_APPLY: false
-        ENABLE_ERRANDS: ((enable_errands))
 
     # Configure product tile
     - task: configure
