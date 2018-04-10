@@ -25,7 +25,8 @@
 - op: add
   path: /jobs/-
   value:
-    name: upload-${product_name}-tile
+    name: upload-and-upgrade-${product_name}-tile
+    serial_groups: [opsman]
     plan:
     - aggregate:
       - get: automation
@@ -65,22 +66,6 @@
         AUTOS3_URL: ((autos3_url))
         AUTOS3_ACCESS_KEY: ((autos3_access_key))
         AUTOS3_SECRET_KEY: ((autos3_secret_key))
-
-- op: add
-  path: /jobs/-
-  value:
-    name: upgrade-${product_name}-tile
-    serial_groups: [opsman]
-    plan:
-    - aggregate:
-      - get: automation
-      - get: pcf-pipelines
-      - get: terraform-output
-      - get: pivnet-product
-        resource: ${product_name}-tile
-        passed: [upload-${product_name}-tile]
-        trigger: true
-        params: { globs: [] }
 
     # This task will block if Ops Manager
     # is in the process of applying changes.
