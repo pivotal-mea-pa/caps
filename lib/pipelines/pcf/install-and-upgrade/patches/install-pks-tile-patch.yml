@@ -25,7 +25,7 @@
 - op: add
   path: /jobs/-
   value:
-    name: upload-and-apply-${product_name}-tile
+    name: upload-${product_name}-tile
     plan:
     - aggregate:
       - get: automation
@@ -41,7 +41,9 @@
         params:
           globs:
           - ((product_globs))
-    - task: upload-tile-and-stemcell
+
+    # Upload product tile and its stemcell
+    - task: upload-tile
       file: pcf-pipelines/tasks/upload-product-and-stemcell/task.yml
       params:
         IAAS: ((iaas_type))
@@ -53,14 +55,6 @@
         PIVNET_API_TOKEN: ((pivnet_token))
         NO_PROXY: ""
         OM_IP: ""
-    - task: wait-opsman-clear
-      file: pcf-pipelines/tasks/wait-opsman-clear/task.yml
-      params:
-        OPSMAN_CLIENT_ID: ((opsman_client_id))
-        OPSMAN_CLIENT_SECRET: ((opsman_client_secret))
-        OPSMAN_USERNAME: ((opsman_admin_username))
-        OPSMAN_PASSWORD: ((opsman_admin_password))
-        OPSMAN_DOMAIN_OR_IP_ADDRESS: ((opsman_domain_or_ip_address))
 
     # This task will block if the environment 
     # has been put into stopped state
@@ -72,14 +66,88 @@
         AUTOS3_ACCESS_KEY: ((autos3_access_key))
         AUTOS3_SECRET_KEY: ((autos3_secret_key))
 
-    # Apply changes
-    - task: stage-and-apply-tile
-      file: automation/lib/pipelines/pcf/install-and-upgrade/tasks/stage-product/task.yml
+- op: add
+  path: /jobs/-
+  value:
+    name: deploy-${product_name}-tile
+    serial_groups: [opsman]
+    plan:
+    - aggregate:
+      - get: automation
+      - get: pcf-pipelines
+      - get: terraform-output
+      - get: pivnet-product
+        resource: ${product_name}-tile
+        passed: [upload-${product_name}-tile]
+        trigger: true
+        params: { globs: [] }
+
+    # This task will block if Ops Manager
+    # is in the process of applying changes.
+    - task: wait-opsman-clear
+      file: pcf-pipelines/tasks/wait-opsman-clear/task.yml
       params:
+        OPSMAN_DOMAIN_OR_IP_ADDRESS: ((opsman_domain_or_ip_address))
         OPSMAN_CLIENT_ID: ((opsman_client_id))
         OPSMAN_CLIENT_SECRET: ((opsman_client_secret))
         OPSMAN_USERNAME: ((opsman_admin_username))
         OPSMAN_PASSWORD: ((opsman_admin_password))
+
+    # Stage product tile
+    - task: stage
+      file: automation/lib/pipelines/pcf/install-and-upgrade/tasks/stage-product/task.yml
+      params:
         OPSMAN_DOMAIN_OR_IP_ADDRESS: ((opsman_domain_or_ip_address))
-        STAGE_AND_APPLY: true
+        OPSMAN_CLIENT_ID: ((opsman_client_id))
+        OPSMAN_CLIENT_SECRET: ((opsman_client_secret))
+        OPSMAN_USERNAME: ((opsman_admin_username))
+        OPSMAN_PASSWORD: ((opsman_admin_password))
+        STAGE_AND_APPLY: false
+        ENABLE_ERRANDS: ((enable_errands))
+
+    # Configure product tile
+    - task: configure
+      file: automation/lib/pipelines/pcf/install-and-upgrade/tasks/configure-pks/task.yml
+      params:
+        OPSMAN_DOMAIN_OR_IP_ADDRESS: ((opsman_domain_or_ip_address))
+        OPSMAN_CLIENT_ID: ((opsman_client_id))
+        OPSMAN_CLIENT_SECRET: ((opsman_client_secret))
+        OPSMAN_USERNAME: ((opsman_admin_username))
+        OPSMAN_PASSWORD: ((opsman_admin_password))
+        # pks product and configuration
+        TEMPLATE_OVERRIDE_PATH:
+        # pks networking
+        NETWORK_NAME: services-1
+        SERVICE_NETWORK_NAME: dynamic-services-1
+        SINGLETON_AVAILABILITY_ZONE: ((gcp_zone_1))
+        OTHER_AVAILABILITY_ZONES: ((gcp_zone_1)),((gcp_zone_2)),((gcp_zone_3))
+        # pks resources
+        INTERNET_CONNECTED: false
+        PKS_API_LB_NAME: tcp:((gcp_resource_prefix))-pks-api
+        # pks properties
+        PKS_API_URL: pks.((system_domain_prefix))
+        CLOUD_PROVIDER: gcp
+        GCP_SERVICE_KEY: ((gcp_service_account_key))
+        GCP_PROJECT_ID: ((gcp_project))
+        GCP_VPC_NETWORK_NAME:
+        PLAN1_WORKER_INSTANCES:
+        PLAN1_ALLOW_PRIVILEGED_CONTAINERS:
+        PLAN1_AZ_PLACEMENT:
+        PLAN2_WORKER_INSTANCES:
+        PLAN2_ALLOW_PRIVILEGED_CONTAINERS:
+        PLAN2_AZ_PLACEMENT:
+        PLAN3_WORKER_INSTANCES:
+        PLAN3_ALLOW_PRIVILEGED_CONTAINERS:
+        PLAN3_AZ_PLACEMENT:
+
+    # Apply changes
+    - task: apply
+      file: automation/lib/pipelines/pcf/install-and-upgrade/tasks/stage-product/task.yml
+      params:
+        OPSMAN_DOMAIN_OR_IP_ADDRESS: ((opsman_domain_or_ip_address))
+        OPSMAN_CLIENT_ID: ((opsman_client_id))
+        OPSMAN_CLIENT_SECRET: ((opsman_client_secret))
+        OPSMAN_USERNAME: ((opsman_admin_username))
+        OPSMAN_PASSWORD: ((opsman_admin_password))
+        STAGE_AND_APPLY: false
         ENABLE_ERRANDS: ((enable_errands))

@@ -8,7 +8,7 @@
 #
 # jq -n \
 #   --argjson internet_connected false \
-#   --arg pks_api_lb_names "tcp:pcf-poc1-pcf-pks-api" \
+#   --arg pks_api_lb_name "tcp:pcf-poc1-pcf-pks-api" \
 #   "$(cat resources.jq)"
 #
 
