@@ -26,14 +26,14 @@ run:
 
     state=$(mc find auto/pcf/$OFF_STATE --name "$OFF_STATE-*" --exec "echo {}" 2>/dev/null)
 
-    set -e
-
     if [[ -z $state ]]; then
       version=0
     else
       version=$(($(echo ${state#*-})+${VERSION_INCREMENT:-0}))
-      mc find auto/pcf/stopped --name "$ON_STATE-$(($version-2))" --exec "mc rm {}"
+      mc find auto/pcf/stopped --name "$ON_STATE-$(($version-2))" --exec "mc rm {}" 2>/dev/null
     fi
+
+    set -e
 
     touch $ON_STATE-$version
     mc cp $ON_STATE-$version auto/pcf/$ON_STATE/$ON_STATE-$version

@@ -66,6 +66,7 @@ resources:
     days: [Sunday, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday]
 
 jobs:
+
 - name: destroy-env
   serial_groups: [terraform]
   plan:
@@ -284,8 +285,7 @@ jobs:
       OPSMAN_CLIENT_SECRET: ""
       STAGE_AND_APPLY: false
 
-- name: deploy-srt
-  serial_groups: [opsman]
+- name: configure-srt
   plan:
   - aggregate:
     - get: automation
@@ -380,6 +380,7 @@ jobs:
       azure_droplets_container:
       azure_packages_container:
       azure_resources_container:
+
   - task: disable-errands
     file: pcf-pipelines/tasks/disable-errands/task.yml
     params:
@@ -393,7 +394,7 @@ jobs:
 
   # This task will block if the environment 
   # has been put into stopped state
-  - task: wait-until-started
+  - task: wait-if-stopped
     file: automation/lib/tasks/automation/wait-on-state/task.yml
     params: 
       WAIT_ON_STATE: stopped
@@ -406,9 +407,10 @@ jobs:
   plan:
   - aggregate:
     - get: automation
+    - get: pcf-pipelines
     - get: pivnet-product
       resource: pas-tile
-      passed: [upload-srt]
+      passed: [configure-srt]
       trigger: true
       params: { globs: [] }
 
