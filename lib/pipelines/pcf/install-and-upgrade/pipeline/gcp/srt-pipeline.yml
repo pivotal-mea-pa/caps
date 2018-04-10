@@ -402,7 +402,7 @@ jobs:
       AUTOS3_ACCESS_KEY: ((autos3_access_key))
       AUTOS3_SECRET_KEY: ((autos3_secret_key))
 
-- name: deploy
+- name: apply
   serial_groups: [opsman]
   plan:
   - aggregate:
