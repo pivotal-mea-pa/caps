@@ -9,6 +9,7 @@ image_resource:
 inputs:
 - name: automation
 - name: automation-extensions
+- name: terraform-output
 
 run:
   path: automation/lib/pipelines/pcf/install-and-upgrade/tasks/configure-pks/task.sh
