@@ -78,16 +78,16 @@ set +e
 # tile has been successfully deployed.
 b=1
 while true; do
-  r=$(fly -t default watch -j PCF_install-and-upgrade/deploy-${PCF_PAS_RUNTIME_TYPE} -b $b 2>&1)
+  r=$(fly -t default watch -j PCF_install-and-upgrade/deploy -b $b 2>&1)
   [[ $? -eq 0 ]] && break
 
   s=$(echo "$r" | tail -1)
   if [[ "$s" == "failed" ]]; then
-    echo -e "\n*** Job PCF_install-and-upgrade/deploy-${PCF_PAS_RUNTIME_TYPE} FAILED! ***\n"
+    echo -e "\n*** Job PCF_install-and-upgrade/deploy FAILED! ***\n"
     echo -e "$r\n"
     b=$(($b+1))
   fi
-  echo "Waiting for job PCF_install-and-upgrade/deploy-${PCF_PAS_RUNTIME_TYPE} build $b to complete..."
+  echo "Waiting for job PCF_install-and-upgrade/deploy build $b to complete..."
   sleep 5
 done
 
