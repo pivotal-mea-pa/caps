@@ -13,11 +13,11 @@ TEMPLATE_PATH=lib/pipelines/pcf/install-and-upgrade/templates/pks
 
 INSTALLED_VERSION=$(om \
   --skip-ssl-validation \
-  --target "https://${OPSMAN_HOST}" \
-  --client-id "${PCFOPS_CLIENT}" \
-  --client-secret "${PCFOPS_SECRET}" \
-  --username "${OPSMAN_USER}" \
-  --password "${OPSMAN_PASSWD}" \
+  --target "https://${OPSMAN_DOMAIN_OR_IP_ADDRESS}" \
+  --client-id "${OPSMAN_CLIENT_ID}" \
+  --client-secret "${OPSMAN_CLIENT_SECRET}" \
+  --username "${OPSMAN_USERNAME}" \
+  --password "${OPSMAN_PASSWORD}" \
   curl -path /api/v0/deployed/products \
   | jq -r --arg product_name $PRODUCT_NAME '.[] | select(.type==$product_name) | .product_version')
 
@@ -30,11 +30,11 @@ fi
 
 om \
   --skip-ssl-validation \
-  --target "https://${OPSMAN_HOST}" \
-  --client-id "${PCFOPS_CLIENT}" \
-  --client-secret "${PCFOPS_SECRET}" \
-  --username "${OPSMAN_USER}" \
-  --password "${OPSMAN_PASSWD}" \
+  --target "https://${OPSMAN_DOMAIN_OR_IP_ADDRESS}" \
+  --client-id "${OPSMAN_CLIENT_ID}" \
+  --client-secret "${OPSMAN_CLIENT_SECRET}" \
+  --username "${OPSMAN_USERNAME}" \
+  --password "${OPSMAN_PASSWORD}" \
   configure-product \
   --product-name $PRODUCT_NAME \
   --product-network "$(eval_jq_templates "network" "$TEMPLATE_PATH" "$TEMPLATE_OVERRIDE_PATH")" \
