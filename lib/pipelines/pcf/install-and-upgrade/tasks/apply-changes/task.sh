@@ -34,7 +34,7 @@ while [[ true ]]; do
     m=$(($ss/60-$h*60))
     s=$(($ss-$m*60-$h*3600))
     time_elapsed=$(printf "%02d" $h):$(printf "%02d" $m):$(printf "%02d" $s)
-    
+
     echo -e -n "Waiting $time_elapsed hours for running installs to complete.\r"
 done
 
@@ -42,7 +42,7 @@ set -e
 
 echo "Applying changes on Ops Manager @ ${OPSMAN_DOMAIN_OR_IP_ADDRESS}"
 
-om-linux \
+om \
   --target "https://${OPSMAN_DOMAIN_OR_IP_ADDRESS}" \
   --skip-ssl-validation \
   --client-id "${OPSMAN_CLIENT_ID}" \
