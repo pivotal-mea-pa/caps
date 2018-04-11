@@ -1,11 +1,4 @@
 #
-# JSON Arguments:
-#
-#   network_name:                 name of service network defined in Director
-#   service_network_name:         name of on-demand service network defined in Director
-#   singleton_availability_zone:  availability zone to place singleton services in
-#   other_availability_zones:     comma separated list of availability zones defined in Director
-#
 # jq -n \
 #   --arg network_name "services-1" \
 #   --arg service_network_name "dynamic-services-1" \

@@ -1,11 +1,4 @@
 #
-# JSON Arguments:
-#
-#   internet_connected:   true | false
-#   control_lb_names:     [ array of strings ]
-#   router_lb_names:      [ array of strings ]
-#   tcp_router_lb_names:  [ array of strings ]
-#
 # jq -n \
 #   --argjson internet_connected false \
 #   --arg pks_api_lb_name "tcp:pcf-poc1-pcf-pks-api" \

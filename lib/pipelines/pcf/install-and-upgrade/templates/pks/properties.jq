@@ -1,22 +1,4 @@
 #
-# JSON Arguments:
-#
-#   pks_certificate:      PEM encoded certificate
-#   pks_certificate_key:  PEM encoded certificate key
-#
-#   cloud_provider: The cloud provider - gcp | vsphere
-#
-#   gcp_service_key;       Service key to access the google cloud platform APIs
-#   gcp_project_id:        The project within which resource should be provisioned
-#   gcp_vpc_network_name:  The name of the network where network resources will be created
-#
-# Pass the following arguments for each of the 3 plans. 
-# Only argument keys for 3 plans will be accepted. 
-#
-#   plan#_worker_instances:            If this value is 0 then this plan will be inactive
-#   plan#_allow_privileged_containers  All running containers in privelege mode
-#   plan#_az_placement                 AZ where cluster will be created
-#
 # jq -n \
 #    --arg pks_api_url "pks.sys.pas.pcfenv1.pocs.pcfs.io" \
 #    --arg pks_certificate "$pks_certificate" \
