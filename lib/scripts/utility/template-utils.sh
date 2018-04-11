@@ -22,8 +22,8 @@ function eval_jq_templates() {
     tpl_override_path=$tpl_override_path/$4
   fi
 
-  tpls="\$(cat automation/$tpl_path/$tpl_name.jq)"
-  args=$(cat automation/$tpl_path/$tpl_name.jq \
+  tpls="\$(cat $tpl_path/$tpl_name.jq)"
+  args=$(cat $tpl_path/$tpl_name.jq \
     | awk '/#/&& ($2 == "--arg" || $2== "--argjson") { 
         if ($2=="--arg") 
             print $2" "$3" \"$"toupper($3)"\""; 
@@ -32,7 +32,7 @@ function eval_jq_templates() {
     }')
 
   if [[ -n $tpl_override_path ]]; then
-    for f in ./automation-extensions/$tpl_override_path/$tpl_name-*.jq; do
+    for f in ./$tpl_override_path/$tpl_name-*.jq; do
       [[ ! -e $f ]] && break
 
       tpls="$tpls | . |= . + \$(cat $f)"
