@@ -50,20 +50,20 @@ export TF_VAR_ssh_key_file_path=$workspace_path
 
 case $tf_action in
     init)
-        if [[ -z $TF_VAR_bootstrap_state_bucket || -z $TF_VAR_bootstrap_state_prefix ]]; then
+        if [[ -z $TF_VAR_terraform_state_bucket || -z $TF_VAR_bootstrap_state_prefix ]]; then
             echo -e "\nThe following environment variables must be set in order to initialize the context.\n"
-            echo -e "    TF_VAR_bootstrap_state_bucket  The backend state bucket to save the bootstrap state."
+            echo -e "    TF_VAR_terraform_state_bucket  The backend state bucket to save the bootstrap state."
             echo -e "    TF_VAR_bootstrap_state_prefix  The backend state path within which the state will be saved.\n"
             exit 1
         fi
             
         echo -e "\nInitializing Terraform bootstrap state using"
         echo -e "state that may already exist in the following location.\n"
-        echo -e "    TF_VAR_bootstrap_state_bucket = $TF_VAR_bootstrap_state_bucket"
+        echo -e "    TF_VAR_terraform_state_bucket = $TF_VAR_terraform_state_bucket"
         echo -e "    TF_VAR_bootstrap_state_prefix = $TF_VAR_bootstrap_state_prefix\n"
 
         terraform init \
-            -backend-config="bucket=$TF_VAR_bootstrap_state_bucket" \
+            -backend-config="bucket=$TF_VAR_terraform_state_bucket" \
             -backend-config="prefix=$TF_VAR_bootstrap_state_prefix" \
             $terraform_path
 
@@ -108,5 +108,7 @@ terraform {
         terraform destroy $terraform_options \
             -state=$workspace_path/.terraform/terraform.tfstate 2>&1 \
             | tee terraform.output
+
+        rm terraform.plan
         ;; 
 esac

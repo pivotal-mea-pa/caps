@@ -76,8 +76,8 @@ function common::read_terraform_output() {
         common::show_env
 
         echo -e "ERROR! The deployment recipe needs to initialized and refreshed via"
-        echo -e "       'caps-tf apply' to retrieve the SSH keys for the bastion"
-        echo -e "       instance.\n"
+        echo -e "       'caps-tf init' followed by 'caps-tf apply' to retrieve the SSH"
+        echo -e "       keys for the bastion instance.\n"
         exit 1
     fi
     tf_output=$(cat $workspace_path/terraform.output)
