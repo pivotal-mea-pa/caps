@@ -16,6 +16,12 @@ function eval_jq_templates() {
   local tpl_path=$2
   local tpl_override_path=$3
 
+  if [[ -n $4 ]]; then
+    # Append IAAS directory to template path
+    tpl_path=$tpl_path/$4
+    tpl_override_path=$tpl_override_path/$4
+  fi
+
   tpls="\$(cat automation/$tpl_path/$tpl_name.jq)"
   args=$(cat automation/$tpl_path/$tpl_name.jq \
     | awk '/#/&& ($2 == "--arg" || $2== "--argjson") { 
