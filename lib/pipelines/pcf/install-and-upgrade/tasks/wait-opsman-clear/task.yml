@@ -20,9 +20,8 @@ image_resource:
   source:
     repository: pcfnorm/rootfs
 
-
 inputs:
-  - name: pcf-pipelines
+  - name: automation
 
 params:
   OPSMAN_CLIENT_ID:
