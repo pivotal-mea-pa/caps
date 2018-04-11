@@ -273,7 +273,7 @@ jobs:
   # This task will block if Ops Manager
   # is in the process of applying changes.
   - task: wait-opsman-clear
-    file: pcf-pipelines/tasks/wait-opsman-clear/task.yml
+    file: automation/lib/pipelines/pcf/install-and-upgrade/tasks/wait-opsman-clear/task.yml
     params:
       OPSMAN_DOMAIN_OR_IP_ADDRESS: ((opsman_domain_or_ip_address))
       OPSMAN_CLIENT_ID: ((opsman_client_id))
