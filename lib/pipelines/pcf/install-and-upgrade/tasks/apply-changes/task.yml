@@ -4,10 +4,10 @@ platform: linux
 image_resource:
   type: docker-image
   source:
-    repository: repository: appbricks/automation-tools
+    repository: appbricks/automation-tools
 
 inputs:
-  - name: automation
+- name: automation
 
 params:
   OPSMAN_CLIENT_ID:
