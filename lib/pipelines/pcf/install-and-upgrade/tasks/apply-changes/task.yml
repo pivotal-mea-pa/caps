@@ -1,0 +1,20 @@
+---
+platform: linux
+
+image_resource:
+  type: docker-image
+  source:
+    repository: repository: appbricks/automation-tools
+
+inputs:
+  - name: automation
+
+params:
+  OPSMAN_CLIENT_ID:
+  OPSMAN_CLIENT_SECRET:
+  OPSMAN_USERNAME:
+  OPSMAN_PASSWORD:
+  OPSMAN_DOMAIN_OR_IP_ADDRESS:
+
+run:
+  path: automation/lib/pipelines/pcf/install-and-upgrade/tasks/apply-changes/task.sh
