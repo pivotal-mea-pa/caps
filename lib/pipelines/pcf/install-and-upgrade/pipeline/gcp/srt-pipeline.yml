@@ -103,7 +103,7 @@ jobs:
       GCP_SERVICE_ACCOUNT_KEY: ((gcp_service_account_key))
 
 - name: create-infrastructure
-  serial_groups: [terraform]
+  serial_groups: [terraform,opsman]
   plan:
   - aggregate:
     - get: automation
