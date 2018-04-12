@@ -1,7 +1,10 @@
-  jq -n \
-    --arg trusted_certificates "$OPS_MGR_TRUSTED_CERTS" \
-    '
-    {
-      "trusted_certificates": $trusted_certificates,
-      "vm_password_type": "generate"
-    }'
+#
+# jq -n \
+#   --arg trusted_certificates "$OPS_MGR_TRUSTED_CERTS" \
+#   "$(cat security_configuration.jq)"
+#
+
+{
+  "trusted_certificates": $trusted_certificates,
+  "vm_password_type": "generate"
+}

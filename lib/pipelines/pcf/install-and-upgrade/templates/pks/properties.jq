@@ -4,8 +4,8 @@
 #    --arg pks_certificate "$pks_certificate" \
 #    --arg pks_certificate_key "$pks_certificate_key" \
 #    --arg cloud_provider "gcp" \
-#    --arg gcp_service_key "$(cat $GOOGLE_CREDENTIALS)" \
-#    --arg gcp_project_id "$GOOGLE_PROJECT" \
+#    --arg gcp_service_key "$GCP_SERVICE_ACCOUNT_KEY" \
+#    --arg gcp_project_id "$GCP_PROJECT_ID" \
 #    --arg vpc_network_name "${TF_VAR_prefix}-virt-net" \
 #    --argjson plan1_worker_instances 3 \
 #    --argjson plan1_allow_privileged_containers false \

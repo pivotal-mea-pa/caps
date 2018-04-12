@@ -7,20 +7,68 @@ image_resource:
     repository: pcfnorm/rootfs
 
 inputs:
-- name: pcf-pipelines
+- name: automation
+- name: automation-extensions
+- name: terraform-output
 
 params:
+  TRACE:
   OPSMAN_DOMAIN_OR_IP_ADDRESS:
-  OPS_MGR_USR:
-  OPS_MGR_PWD:
-  OPS_MGR_TRUSTED_CERTS:
-  GCP_PROJECT_ID:
-  GCP_REGION:
-  GCP_ZONE_1:
-  GCP_ZONE_2:
-  GCP_ZONE_3:
-  GCP_RESOURCE_PREFIX:
-  GCP_SERVICE_ACCOUNT_KEY:
+  OPSMAN_CLIENT_ID:
+  OPSMAN_CLIENT_SECRET:
+  OPSMAN_USERNAME:
+  OPSMAN_PASSWORD:
+  # The IAAS specific templates to configure
+  IAAS:
+  # JQ configuration template overrides 
+  TEMPLATE_OVERRIDE_PATH:
+  # IAAS properties
+  GCP_PROJECT:
+  DEFAULT_DEPLOYMENT_TAG:
+  AUTH_JSON:
+  # Director properties
+  NTP_SERVERS:
+  RESURRECTOR_ENABLED:
+  POST_DEPLOY_ENABLED:
+  RETRY_BOSH_DEPLOYS:
+  # Availability Zone properties
+  AVAILABILITY_ZONES:
+  # Network properties
+  INFRA_NETWORK_NAME:
+  INFRA_IAAS_NETWORK:
+  INFRA_NETWORK_CIDR:
+  INFRA_RESERVED_IP_RANGES:
+  INFRA_DNS:
+  INFRA_GATEWAY:
+  INFRA_AVAILABILITY_ZONES:
+  DEPLOYMENT_NETWORK_NAME:
+  DEPLOYMENT_IAAS_NETWORK:
+  DEPLOYMENT_NETWORK_CIDR:
+  DEPLOYMENT_RESERVED_IP_RANGES:
+  DEPLOYMENT_DNS:
+  DEPLOYMENT_GATEWAY:
+  DEPLOYMENT_AVAILABILITY_ZONES:
+  SERVICES_NETWORK_NAME:
+  SERVICES_IAAS_NETWORK:
+  SERVICES_NETWORK_CIDR:
+  SERVICES_RESERVED_IP_RANGES:
+  SERVICES_DNS:
+  SERVICES_GATEWAY:
+  SERVICES_AVAILABILITY_ZONES:
+  DYNAMIC_SERVICES_NETWORK_NAME:
+  DYNAMIC_SERVICES_IAAS_NETWORK:
+  DYNAMIC_SERVICES_NETWORK_CIDR:
+  DYNAMIC_SERVICES_RESERVED_IP_RANGES:
+  DYNAMIC_SERVICES_DNS:
+  DYNAMIC_SERVICES_GATEWAY:
+  DYNAMIC_SERVICES_AVAILABILITY_ZONES:
+  # AZ and Network assignement properties
+  AVAILABILITY_ZONES:
+  NETWORK:
+  # Security properties
+  TRUSTED_CERTIFICATES:
+  # Resource properties
+  INTERNET_CONNECTED:
 
 run:
-  path: pcf-pipelines/install-pcf/gcp/tasks/config-director/task.sh
+  path: automation/lib/pipelines/pcf/install-and-upgrade/tasks/config-director/task.sh
