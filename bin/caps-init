@@ -56,6 +56,12 @@ if [[ -z $name || -z $deployment_name || -z $iaas_provider ]]; then
 fi
 common::validate
 
+# Disconnect all VPN connections (MacOS only)
+os_type="$(uname -s)"
+if [[ $os_type == Darwin ]]; then
+    osascript -e 'tell application "Tunnelblick.app" to disconnect all' >/dev/null 2>&1
+fi
+
 workspace_path=$root_dir/.workspace/$name
 mkdir -p $workspace_path
 

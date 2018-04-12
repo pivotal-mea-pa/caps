@@ -26,23 +26,25 @@ function eval_jq_templates() {
   args=$(cat $tpl_path/$tpl_name.jq \
     | awk '/#/&& ($2 == "--arg" || $2== "--argjson") { 
         if ($2=="--arg") 
-            print $2" "$3" \"$"toupper($3)"\""; 
+            print $2" "$3" \"${"toupper($3)":-"$4"}\" "; 
         else 
-            print $2" "$3" ${"toupper($3)":-null}";
-    }')
+            print $2" "$3" ${"toupper($3)":-"$4"} ";
+    }' \
+    | tr -d '\n')
 
-  if [[ -n $tpl_override_path ]]; then
-    for f in ./$tpl_override_path/$tpl_name-*.jq; do
+  if [[ -n $tpl_override_path && -e $tpl_override_path ]]; then
+    for f in $tpl_override_path/$tpl_name-*.jq; do
       [[ ! -e $f ]] && break
 
       tpls="$tpls | . |= . + \$(cat $f)"
-      args="$args $(cat $f \
-        | awk '/#/&& ($2 == "--arg" || $2== "--argjson") {
+      args="$args "$(cat $f \
+        | awk '/#/&& ($2 == "--arg" || $2== "--argjson") { 
             if ($2=="--arg") 
-                print $2" "$3" \"$"toupper($3)"\""; 
+                print $2" "$3" \"${"toupper($3)":-"$4"}\" "; 
             else 
-                print $2" "$3" ${"toupper($3)":-null}";
-        }')"
+                print $2" "$3" ${"toupper($3)":-"$4"} ";
+        }' \
+        | tr -d '\n')
     done
   fi
 

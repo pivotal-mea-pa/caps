@@ -1,0 +1,26 @@
+---
+platform: linux
+
+image_resource:
+  type: docker-image
+  source:
+    repository: pcfnorm/rootfs
+
+inputs:
+- name: pcf-pipelines
+
+params:
+  OPSMAN_DOMAIN_OR_IP_ADDRESS:
+  OPS_MGR_USR:
+  OPS_MGR_PWD:
+  OPS_MGR_TRUSTED_CERTS:
+  GCP_PROJECT_ID:
+  GCP_REGION:
+  GCP_ZONE_1:
+  GCP_ZONE_2:
+  GCP_ZONE_3:
+  GCP_RESOURCE_PREFIX:
+  GCP_SERVICE_ACCOUNT_KEY:
+
+run:
+  path: pcf-pipelines/install-pcf/gcp/tasks/config-director/task.sh
