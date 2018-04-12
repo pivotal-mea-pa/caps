@@ -106,13 +106,13 @@ case $tf_action in
         terraform apply $terraform_options terraform.plan 2>&1 \
             | tee terraform.output | awk '/Outputs:/ {l=999}; (l-- > 0) { $0="" } 1' | awk 'length'
 
-        rm terraform.plan
+        rm -f terraform.plan
         ;;
     destroy)
         terraform destroy $terraform_options \
             -state=$workspace_path/.terraform/terraform.tfstate 2>&1 \
             | tee terraform.output
 
-        rm terraform.plan
+        rm -f terraform.plan
         ;; 
 esac
