@@ -4,7 +4,7 @@ platform: linux
 image_resource:
   type: docker-image
   source:
-    repository: pcfnorm/rootfs
+    repository: appbricks/automation-tools
 
 inputs:
 - name: automation
@@ -23,9 +23,10 @@ params:
   # JQ configuration template overrides 
   TEMPLATE_OVERRIDE_PATH:
   # IAAS properties
-  GCP_PROJECT:
-  DEFAULT_DEPLOYMENT_TAG:
-  AUTH_JSON:
+  GCP_SERVICE_ACCOUNT_KEY:
+  GCP_PROJECT_ID:
+  GCP_REGION:
+  GCP_RESOURCE_PREFIX:
   # Director properties
   NTP_SERVERS:
   RESURRECTOR_ENABLED:
@@ -63,7 +64,6 @@ params:
   DYNAMIC_SERVICES_GATEWAY:
   DYNAMIC_SERVICES_AVAILABILITY_ZONES:
   # AZ and Network assignement properties
-  AVAILABILITY_ZONES:
   NETWORK:
   # Security properties
   TRUSTED_CERTIFICATES:
@@ -71,4 +71,4 @@ params:
   INTERNET_CONNECTED:
 
 run:
-  path: automation/lib/pipelines/pcf/install-and-upgrade/tasks/config-director/task.sh
+  path: automation/lib/pipelines/pcf/install-and-upgrade/tasks/configure-director/task.sh

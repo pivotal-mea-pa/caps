@@ -163,7 +163,6 @@ jobs:
       TF_VAR_db_locket_password: ((db_locket_password))
       TF_VAR_db_silk_username: ((db_silk_username))
       TF_VAR_db_silk_password: ((db_silk_password))
-
   - task: save-terraform-output
     file: automation/lib/tasks/automation/upload-object/task.yml
     params: 
@@ -178,49 +177,48 @@ jobs:
   serial_groups: [opsman]
   plan:
   - aggregate:
-    - get: pcf-pipelines
+    - get: automation
+    - get: automation-extensions
     - get: pivnet-opsmgr
       passed: [create-infrastructure]
       trigger: true
       params: {globs: []}
-  - task: check-opsman-dns
-    attempts: 3
-    file: pcf-pipelines/install-pcf/gcp/tasks/check-opsman-dns/task.yml
+  - task: configure-opsman-authentication
+    file: automation/lib/pipelines/pcf/install-and-upgrade/tasks/configure-opsman/task.yml
     params:
       OPSMAN_DOMAIN_OR_IP_ADDRESS: ((opsman_domain_or_ip_address))
-  - task: config-opsman-auth
-    file: pcf-pipelines/tasks/config-opsman/task.yml
-    params:
-      OPSMAN_DOMAIN_OR_IP_ADDRESS: ((opsman_domain_or_ip_address))
-      OPS_MGR_USR: ((opsman_admin_username))
-      OPS_MGR_PWD: ((opsman_admin_password))
-      OM_DECRYPTION_PWD: ((opsman_admin_password))
+      OPSMAN_USERNAME: ((opsman_admin_username))
+      OPSMAN_PASSWORD: ((opsman_admin_password))
+      OPSMAN_CLIENT_ID: ((opsman_client_id))
+      OPSMAN_CLIENT_SECRET: ((opsman_client_secret))
+      OPSMAN_DECRYPTION_KEY: ((opsman_admin_password))
   - task: configure-director
-    file: pcf-pipelines/install-pcf/gcp/tasks/config-director/task.yml
+    file: automation/lib/pipelines/pcf/install-and-upgrade/tasks/configure-director/task.yml
     params:
       OPSMAN_DOMAIN_OR_IP_ADDRESS: ((opsman_domain_or_ip_address))
-      OPS_MGR_USR: ((opsman_admin_username))
-      OPS_MGR_PWD: ((opsman_admin_password))
-      OPS_MGR_TRUSTED_CERTS: ((opsman_trusted_certs))
+      OPSMAN_USERNAME: ((opsman_admin_username))
+      OPSMAN_PASSWORD: ((opsman_admin_password))
+      OPSMAN_CLIENT_ID: ((opsman_client_id))
+      OPSMAN_CLIENT_SECRET: ((opsman_client_secret))
+      IAAS: gcp
+      GCP_SERVICE_ACCOUNT_KEY: ((gcp_service_account_key))
       GCP_PROJECT_ID: ((gcp_project))
       GCP_REGION: ((gcp_region))
-      GCP_ZONE_1: ((gcp_zone_1))
-      GCP_ZONE_2: ((gcp_zone_2))
-      GCP_ZONE_3: ((gcp_zone_3))
       GCP_RESOURCE_PREFIX: ((gcp_resource_prefix))
-      GCP_SERVICE_ACCOUNT_KEY: ((gcp_service_account_key))
+      OPS_MGR_TRUSTED_CERTS: ((opsman_trusted_certs))
+      AVAILABILITY_ZONES: ((gcp_zone_1)),((gcp_zone_2)),((gcp_zone_3))
 
 - name: deploy-director
   serial_groups: [opsman]
   plan:
   - aggregate:
-    - get: pcf-pipelines
+    - get: automation
     - get: pivnet-opsmgr
       passed: [configure-director]
       trigger: true
       params: {globs: []}
   - task: deploy-director
-    file: pcf-pipelines/tasks/apply-changes/task.yml
+    file: automation/lib/pipelines/pcf/install-and-upgrade/tasks/apply-changes/task.yml
     params:
       OPSMAN_DOMAIN_OR_IP_ADDRESS: ((opsman_domain_or_ip_address))
       OPSMAN_CLIENT_ID: ""

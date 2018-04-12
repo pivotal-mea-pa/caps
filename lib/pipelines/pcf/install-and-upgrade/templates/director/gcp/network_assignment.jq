@@ -5,6 +5,10 @@
 #   "$(cat network_assignment.jq)"
 #
 {
-  "singleton_availability_zone": ($availability_zones | split(",") | .[0]),
-  "network": $network
+  "network": {
+    "name": $network
+  },
+  "singleton_availability_zone": {
+    "name": ($availability_zones | split(",") | .[0])
+  }
 }
