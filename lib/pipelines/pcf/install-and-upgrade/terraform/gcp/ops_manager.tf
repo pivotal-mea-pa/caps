@@ -53,20 +53,20 @@ resource "google_compute_instance" "ops-manager" {
     ]
   }
 
-  # provisioner "remote-exec" {
-  #   inline = [
-  #     "/home/ubuntu/export-installation.sh",
-  #   ]
+  provisioner "remote-exec" {
+    inline = [
+      "/home/ubuntu/export-installation.sh",
+    ]
 
-  #   when = "destroy"
-  # }
+    when = "destroy"
+  }
 
-  # connection {
-  #   type        = "ssh"
-  #   user        = "ubuntu"
-  #   private_key = "${data.terraform_remote_state.bootstrap.default_openssh_private_key}"
-  #   host        = "${self.network_interface.0.address}"
-  # }
+  connection {
+    type        = "ssh"
+    user        = "ubuntu"
+    private_key = "${data.terraform_remote_state.bootstrap.default_openssh_private_key}"
+    host        = "${self.network_interface.0.address}"
+  }
 }
 
 resource "null_resource" "ops-manager" {

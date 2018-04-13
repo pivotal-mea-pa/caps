@@ -1,16 +1,26 @@
-# Infrastructure Automation Pipelines
+# Cloud Automation Pipelines (CAPs)
 
 ## Overview
 
 This repository contains deployment automation pipelines that can help launch scaled out production ready environments in the cloud. The automation tooling consist of [Terraform](https://www.terraform.io/) as the orchestrator and control plane for infrastructure services and [Concourse](http://concourse-ci.org/) for implementing operational workflows. Pipeline jobs may use a combination of configuration management tools to achieve their objective, but the primary configuration management tool used by the automation pipelines is [Bosh](http://bosh.io/).
 
-For each environment at a minimum the following Day-1 and Day-2 Operations pipelines would be implemented.
+A collection of utility scripts is provided in the `bin` folder to help manage multiple environments. Along with these scripts this repository is organized as follows.
 
-* Bootstrap
-* Install and Upgrade
-* Backup and Restore
-* Start and Stop
-* Monitoring
+```
+.
+├── bin           # Utility scripts for managing environments
+├── deployments   # Deployments used to bootstrap environments
+├── docs          # Additional documentation
+├── lib           # Operations pipelines, scripts and templates
+├── LICENSE      
+└── README.md
+```
+
+Each environment is bootstrapped by an inception Virtual Private Cloud (VPC), which sets up optional infrastructure that will secure access to internal resources built via automation pipelines. 
+
+## Usage
+
+
 
 ## Bootstrap
 
