@@ -8,7 +8,7 @@ INSTALLED_VERSION=$(om-linux \
   --client-secret "${OPSMAN_CLIENT_SECRET}" \
   --username "${OPSMAN_USERNAME}" \
   --password "${OPSMAN_PASSWORD}" \
-  --target "https://${OPSMAN_DOMAIN_OR_IP_ADDRESS}" \
+  --target "https://${OPSMAN_HOST}" \
   curl -path /api/installation_settings \
   | jq -r '.products[] | select(.identifier=="'cf'") | select(.prepared==true) | .product_version')
 
@@ -419,7 +419,7 @@ cf_properties=$(
 )
 
 om-linux \
-  --target https://$OPSMAN_DOMAIN_OR_IP_ADDRESS \
+  --target https://$OPSMAN_HOST \
   --client-id "${OPSMAN_CLIENT_ID}" \
   --client-secret "${OPSMAN_CLIENT_SECRET}" \
   --username "${OPSMAN_USERNAME}" \

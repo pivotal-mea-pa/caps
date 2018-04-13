@@ -8,7 +8,7 @@ set -eo pipefail
 start_time=$(date +%s)
 while [[ true ]]; do
 
-  status=$(opsman::check_available "https://$OPSMAN_DOMAIN_OR_IP_ADDRESS")
+  status=$(opsman::check_available "https://$OPSMAN_HOST")
   if [[ $status == "available" ]]; then
     exit
   elif [[ $status == "The application has not yet been set up."* ]]; then
@@ -24,11 +24,11 @@ while [[ true ]]; do
   s=$(($ss-$m*60-$h*3600))
   time_elapsed=$(printf "%02d" $h):$(printf "%02d" $m):$(printf "%02d" $s)
 
-  echo -e -n "Waiting $time_elapsed hours for Operations Manager instance $OPSMAN_DOMAIN_OR_IP_ADDRESS to become available.\r"
+  echo -e -n "Waiting $time_elapsed hours for Operations Manager instance $OPSMAN_HOST to become available.\r"
 done
 
 om \
-  --target https://$OPSMAN_DOMAIN_OR_IP_ADDRESS \
+  --target https://$OPSMAN_HOST \
   --skip-ssl-validation \
   configure-authentication \
   --username "$OPSMAN_USERNAME" \

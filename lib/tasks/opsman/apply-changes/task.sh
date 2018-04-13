@@ -1,14 +1,16 @@
 #!/bin/bash
 
-source ~/scripts/opsman-func.sh
-
 [[ -n "$TRACE" ]] && set -x
-set -e
+set -eo pipefail
 
-source job-session/env
+echo "Applying changes on Ops Manager @ ${OPSMAN_HOST}"
 
-if [[ "$1" == "no_errands" ]]; then
-    opsman::apply_changes
-else
-    om -k -t https://$OPSMAN_HOST -c $PCFOPS_CLIENT -s $PCFOPS_SECRET apply-changes -i
-fi
+om \
+  --target "https://${OPSMAN_HOST}" \
+  --skip-ssl-validation \
+  --client-id "${OPSMAN_CLIENT_ID}" \
+  --client-secret "${OPSMAN_CLIENT_SECRET}" \
+  --username "${OPSMAN_USERNAME}" \
+  --password "${OPSMAN_PASSWORD}" \
+  apply-changes \
+  --ignore-warnings

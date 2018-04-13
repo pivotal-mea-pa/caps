@@ -13,12 +13,6 @@ resource_types:
     repository: frodenas/gcs-resource
 
 resources:
-- name: pcf-pipelines
-  type: git
-  source:
-    uri: https://github.com/pivotal-cf/pcf-pipelines.git
-    branch: master
-
 - name: automation
   type: git
   source:
@@ -82,21 +76,20 @@ jobs:
       GCP_REGION: ((gcp_region))
       TERRAFORM_STATE_BUCKET: ((terraform_state_bucket))
       TERRAFORM_TEMPLATES_PATH: automation-extensions/((pcf_pas_terraform_templates_path))
-      OPSMAN_DOMAIN_OR_IP_ADDRESS: ((opsman_domain_or_ip_address))
+      OPSMAN_HOST: ((opsman_domain_or_ip_address))
       OPSMAN_USERNAME: ((opsman_admin_username))
       OPSMAN_PASSWORD: ((opsman_admin_password))
       OPSMAN_ZONE: ((gcp_zone_1))
 
 - name: upload-opsman-image
   plan:
-  - get: pcf-pipelines
   - get: pivnet-opsmgr
     trigger: true
     params:
       globs:
       - "*GCP.yml"
   - task: upload
-    file: pcf-pipelines/install-pcf/gcp/tasks/upload-opsman/task.yml
+    file: automation/lib/pipelines/pcf/install-and-upgrade/tasks/upload-opsman/gcp/task.yml
     params:
       GCP_PROJECT_ID: ((gcp_project))
       GCP_REGION: ((gcp_region))
@@ -186,7 +179,7 @@ jobs:
   - task: configure-opsman-authentication
     file: automation/lib/pipelines/pcf/install-and-upgrade/tasks/configure-opsman/task.yml
     params:
-      OPSMAN_DOMAIN_OR_IP_ADDRESS: ((opsman_domain_or_ip_address))
+      OPSMAN_HOST: ((opsman_domain_or_ip_address))
       OPSMAN_USERNAME: ((opsman_admin_username))
       OPSMAN_PASSWORD: ((opsman_admin_password))
       OPSMAN_CLIENT_ID: ((opsman_client_id))
@@ -195,7 +188,7 @@ jobs:
   - task: configure-director
     file: automation/lib/pipelines/pcf/install-and-upgrade/tasks/configure-director/task.yml
     params:
-      OPSMAN_DOMAIN_OR_IP_ADDRESS: ((opsman_domain_or_ip_address))
+      OPSMAN_HOST: ((opsman_domain_or_ip_address))
       OPSMAN_USERNAME: ((opsman_admin_username))
       OPSMAN_PASSWORD: ((opsman_admin_password))
       OPSMAN_CLIENT_ID: ((opsman_client_id))
@@ -220,7 +213,7 @@ jobs:
   - task: deploy-director
     file: automation/lib/pipelines/pcf/install-and-upgrade/tasks/apply-changes/task.yml
     params:
-      OPSMAN_DOMAIN_OR_IP_ADDRESS: ((opsman_domain_or_ip_address))
+      OPSMAN_HOST: ((opsman_domain_or_ip_address))
       OPSMAN_CLIENT_ID: ""
       OPSMAN_CLIENT_SECRET: ""
       OPSMAN_USERNAME: ((opsman_admin_username))
@@ -241,7 +234,6 @@ jobs:
   plan:
   - aggregate:
     - get: automation
-    - get: pcf-pipelines
     - get: pivnet-opsmgr
       passed: [deploy-director]
       trigger: true
@@ -256,10 +248,10 @@ jobs:
 
   # Upload product tile and its stemcell
   - task: upload-tile
-    file: pcf-pipelines/tasks/upload-product-and-stemcell/task.yml
+    file: automation/lib/pipelines/pcf/install-and-upgrade/tasks/upload-product-and-stemcell/task.yml
     params:
       IAAS: ((iaas_type))
-      OPSMAN_DOMAIN_OR_IP_ADDRESS: ((opsman_domain_or_ip_address))
+      OPSMAN_HOST: ((opsman_domain_or_ip_address))
       OPSMAN_CLIENT_ID: ((opsman_client_id))
       OPSMAN_CLIENT_SECRET: ((opsman_client_secret))
       OPS_MGR_USR: ((opsman_admin_username))
@@ -272,7 +264,7 @@ jobs:
   - task: stage-tile
     file: automation/lib/pipelines/pcf/install-and-upgrade/tasks/stage-product/task.yml
     params:
-      OPSMAN_DOMAIN_OR_IP_ADDRESS: ((opsman_domain_or_ip_address))
+      OPSMAN_HOST: ((opsman_domain_or_ip_address))
       OPSMAN_CLIENT_ID: ((opsman_client_id))
       OPSMAN_CLIENT_SECRET: ((opsman_client_secret))
       OPSMAN_USERNAME: ((opsman_admin_username))
@@ -285,7 +277,6 @@ jobs:
   plan:
   - aggregate:
     - get: automation
-    - get: pcf-pipelines
     - get: pivnet-product
       resource: pas-tile
       passed: [upload-srt]
@@ -303,7 +294,7 @@ jobs:
       pcf_az_3: ((gcp_zone_3))
       gcp_storage_access_key: ((gcp_storage_access_key))
       gcp_storage_secret_key: ((gcp_storage_secret_key))
-      OPSMAN_DOMAIN_OR_IP_ADDRESS: ((opsman_domain_or_ip_address))
+      OPSMAN_HOST: ((opsman_domain_or_ip_address))
       OPSMAN_USERNAME: ((opsman_admin_username))
       OPSMAN_PASSWORD: ((opsman_admin_password))
       OPSMAN_CLIENT_ID: ""
@@ -378,10 +369,10 @@ jobs:
       azure_resources_container:
 
   - task: disable-errands
-    file: pcf-pipelines/tasks/disable-errands/task.yml
+    file: automation/lib/pipelines/pcf/install-and-upgrade/tasks/disable-errands/task.yml
     params:
       PRODUCT_NAME: cf
-      OPSMAN_DOMAIN_OR_IP_ADDRESS: ((opsman_domain_or_ip_address))
+      OPSMAN_HOST: ((opsman_domain_or_ip_address))
       OPSMAN_USERNAME: ((opsman_admin_username))
       OPSMAN_PASSWORD: ((opsman_admin_password))
       ERRANDS_TO_DISABLE: ((ert_errands_to_disable))
@@ -403,17 +394,26 @@ jobs:
   plan:
   - aggregate:
     - get: automation
-    - get: pcf-pipelines
     - get: pas-tile
       passed: [configure-srt]
       trigger: true
       params: { globs: [] }
 
+  # Wait if an opsman is currently in the process of apply a change
+  - task: wait-if-apply-in-progress
+    file: automation/lib/tasks/opsman/wait-opsman/task.yml
+    params:
+      OPSMAN_HOST: ((opsman_host))
+      OPSMAN_USERNAME: ((opsman_user))
+      OPSMAN_PASSWORD: ((opsman_passwd))
+      OPSMAN_CLIENT_ID: ((pcfops_client))
+      OPSMAN_CLIENT_SECRET: ((pcfops_secret))
+
   # Apply the changes to deploy the SRT
   - task: apply-changes
-    file: automation/lib/pipelines/pcf/install-and-upgrade/tasks/apply-changes/task.yml
+    file: automation/lib/tasks/opsman/apply-changes/task.yml
     params:
-      OPSMAN_DOMAIN_OR_IP_ADDRESS: ((opsman_domain_or_ip_address))
+      OPSMAN_HOST: ((opsman_domain_or_ip_address))
       OPSMAN_USERNAME: ((opsman_admin_username))
       OPSMAN_PASSWORD: ((opsman_admin_password))
       OPSMAN_CLIENT_ID: ((opsman_client_id))

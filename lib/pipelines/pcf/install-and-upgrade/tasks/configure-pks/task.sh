@@ -14,7 +14,7 @@ TEMPLATE_OVERRIDE_PATH=automation-extensions/$TEMPLATE_OVERRIDE_PATH
 
 INSTALLED_VERSION=$(om \
   --skip-ssl-validation \
-  --target "https://${OPSMAN_DOMAIN_OR_IP_ADDRESS}" \
+  --target "https://${OPSMAN_HOST}" \
   --client-id "${OPSMAN_CLIENT_ID}" \
   --client-secret "${OPSMAN_CLIENT_SECRET}" \
   --username "${OPSMAN_USERNAME}" \
@@ -31,7 +31,7 @@ fi
 
 om \
   --skip-ssl-validation \
-  --target "https://${OPSMAN_DOMAIN_OR_IP_ADDRESS}" \
+  --target "https://${OPSMAN_HOST}" \
   --client-id "${OPSMAN_CLIENT_ID}" \
   --client-secret "${OPSMAN_CLIENT_SECRET}" \
   --username "${OPSMAN_USERNAME}" \

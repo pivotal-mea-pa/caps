@@ -64,9 +64,12 @@ if [[ "$name" == "bastion" ]]; then
     
     su_password=$(echo -e "$tf_output" | awk '/vpn_admin_password =/{ print $3 }')
 else
-    vpc_domain_name=$(echo -e "$tf_output" | awk '/vpc_dns_zone =/{ print $3 }')
-
-    ssh_host=$name.$vpc_domain_name
+    if [ $(echo "$name" | sed 's|[0-9]*\.[0-9]*\.[0-9]*\.[0-9]*|ip|') == ip ]; then
+        ssh_host=$name
+    else
+        vpc_domain_name=$(echo -e "$tf_output" | awk '/vpc_dns_zone =/{ print $3 }')
+        ssh_host=$name.$vpc_domain_name
+    fi
     ssh_key=$workspace_path/default-ssh-key.pem
     [[ -n $ssh_user ]] || ssh_user=ubuntu
 fi

@@ -13,9 +13,9 @@ export GOOGLE_CREDENTIALS=$root/gcp_service_account_key.json
 export GOOGLE_PROJECT=${GCP_PROJECT_ID}
 export GOOGLE_REGION=${GCP_REGION}
 
-if [[ "$(opsman::check_available "https://$OPSMAN_DOMAIN_OR_IP_ADDRESS")" == "available" ]]; then
+if [[ "$(opsman::check_available "https://$OPSMAN_HOST")" == "available" ]]; then
   om \
-    --target https://$OPSMAN_DOMAIN_OR_IP_ADDRESS \
+    --target https://$OPSMAN_HOST \
     --skip-ssl-validation \
     --username "$OPSMAN_USERNAME" \
     --password "$OPSMAN_PASSWORD" \

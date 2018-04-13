@@ -27,13 +27,13 @@ params:
 
   ## Ops Manager credentials
   OPSMAN_HOST:
-  OPSMAN_USER:
-  OPSMAN_PASSWD:
+  OPSMAN_USERNAME:
+  OPSMAN_PASSWORD:
   OPSMAN_SSH_USER:
   OPSMAN_SSH_PASSWD:
-  OPSMAN_PASS_PHRASE:
-  PCFOPS_CLIENT:
-  PCFOPS_SECRET:
+  OPSMAN_DECRYPTION_KEY:
+  OPSMAN_CLIENT_ID:
+  OPSMAN_CLIENT_SECRET:
 
   ## Backup storage backend type should be one of 'scp', 's3', 'swift'
   BACKUP_TYPE:

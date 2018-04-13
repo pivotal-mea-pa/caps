@@ -21,7 +21,7 @@ resource_configuration=$(eval_jq_templates "resource_configuration" "$TEMPLATE_P
 
 om \
   --skip-ssl-validation \
-  --target "https://${OPSMAN_DOMAIN_OR_IP_ADDRESS}" \
+  --target "https://${OPSMAN_HOST}" \
   --client-id "${OPSMAN_CLIENT_ID}" \
   --client-secret "${OPSMAN_CLIENT_SECRET}" \
   --username "${OPSMAN_USERNAME}" \

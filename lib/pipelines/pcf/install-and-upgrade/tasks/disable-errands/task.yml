@@ -9,12 +9,14 @@ image_resource:
 inputs:
 - name: automation
 
+run:
+  path: automation/lib/pipelines/pcf/install-and-upgrade/tasks/disable-errands/task.sh
+
 params:
+  PRODUCT_NAME:
+  OPSMAN_HOST:
   OPSMAN_CLIENT_ID:
   OPSMAN_CLIENT_SECRET:
   OPSMAN_USERNAME:
   OPSMAN_PASSWORD:
-  OPSMAN_DOMAIN_OR_IP_ADDRESS:
-
-run:
-  path: automation/lib/pipelines/pcf/install-and-upgrade/tasks/apply-changes/task.sh
+  ERRANDS_TO_DISABLE:

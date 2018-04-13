@@ -8,7 +8,6 @@ image_resource:
 
 inputs:
 - name: automation
-- name: pcf-pipelines
 - name: pivnet-product
 - name: terraform-output
 

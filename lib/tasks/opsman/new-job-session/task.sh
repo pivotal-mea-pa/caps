@@ -9,10 +9,10 @@ set -e
 
 # Authenticate with Ops Manager API
 
-if [[ -n "$OPSMAN_USER" ]]; then
-    opsman::login $OPSMAN_HOST $OPSMAN_USER $OPSMAN_PASSWD $OPSMAN_PASS_PHRASE
-elif [[ -n "$PCFOPS_CLIENT" ]]; then
-    opsman::login_client $OPSMAN_HOST $PCFOPS_CLIENT $PCFOPS_SECRET $OPSMAN_PASS_PHRASE
+if [[ -n "$OPSMAN_USERNAME" ]]; then
+    opsman::login $OPSMAN_HOST $OPSMAN_USERNAME $OPSMAN_PASSWORD $OPSMAN_DECRYPTION_KEY
+elif [[ -n "$OPSMAN_CLIENT_ID" ]]; then
+    opsman::login_client $OPSMAN_HOST $OPSMAN_CLIENT_ID $OPSMAN_CLIENT_SECRET $OPSMAN_DECRYPTION_KEY
 else
     echo "ERROR! Pivotal Operations Manager credentials were not provided."
     exit 1

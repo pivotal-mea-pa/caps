@@ -3,26 +3,18 @@ platform: linux
 
 image_resource:
   type: docker-image
-  source: 
+  source:
     repository: appbricks/automation-tools
 
 inputs:
 - name: automation
-- name: job-session
 
 run:
   path: automation/lib/tasks/opsman/apply-changes/task.sh
-  args: [no_errands]
 
 params:
-  TRACE: Y
-
-  ## Ops Manager credentials
   OPSMAN_HOST:
-  OPSMAN_USER:
-  OPSMAN_PASSWD:
-  OPSMAN_SSH_USER:
-  OPSMAN_SSH_PASSWD:
-  OPSMAN_PASS_PHRASE:
-  PCFOPS_CLIENT:
-  PCFOPS_SECRET:
+  OPSMAN_USERNAME:
+  OPSMAN_PASSWORD:
+  OPSMAN_CLIENT_ID:
+  OPSMAN_CLIENT_SECRET:

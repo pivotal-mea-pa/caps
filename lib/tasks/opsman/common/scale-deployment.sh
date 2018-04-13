@@ -11,5 +11,5 @@ tile=$1
 service=$2
 scale=$3
 
-om -k -t https://$OPSMAN_HOST -c $PCFOPS_CLIENT -s $PCFOPS_SECRET \
+om -k -t https://$OPSMAN_HOST -c $OPSMAN_CLIENT_ID -s $OPSMAN_CLIENT_SECRET \
     configure-product -n ${tile%-*} -pr '{"'$service'": {"instances": '$scale'}}'

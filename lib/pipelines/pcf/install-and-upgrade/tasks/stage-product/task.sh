@@ -24,7 +24,7 @@ AVAILABLE=$(om-linux \
   --client-secret "${OPSMAN_CLIENT_SECRET}" \
   --username "${OPSMAN_USERNAME}" \
   --password "${OPSMAN_PASSWORD}" \
-  --target "https://${OPSMAN_DOMAIN_OR_IP_ADDRESS}" \
+  --target "https://${OPSMAN_HOST}" \
   curl -path /api/v0/available_products)
 STAGED=$(om-linux \
   --skip-ssl-validation \
@@ -32,7 +32,7 @@ STAGED=$(om-linux \
   --client-secret "${OPSMAN_CLIENT_SECRET}" \
   --username "${OPSMAN_USERNAME}" \
   --password "${OPSMAN_PASSWORD}" \
-  --target "https://${OPSMAN_DOMAIN_OR_IP_ADDRESS}" \
+  --target "https://${OPSMAN_HOST}" \
   curl -path /api/v0/staged/products)
 
 # Should the slug contain more than one product, pick only the first.
@@ -70,12 +70,12 @@ if [ "$(echo $UNSTAGED_PRODUCT | jq '. | length')" -gt 0 ]; then
       --client-secret "${OPSMAN_CLIENT_SECRET}" \
       --username "${OPSMAN_USERNAME}" \
       --password "${OPSMAN_PASSWORD}" \
-      --target "https://${OPSMAN_DOMAIN_OR_IP_ADDRESS}" \
+      --target "https://${OPSMAN_HOST}" \
       curl -path /api/installation_settings \
       | jq -r '.products[] | select(.identifier=="'$PRODUCT_NAME'") | select(.prepared==true) | .product_version')
   
     if [[ -n "$INSTALLED_VERSION" && "$INSTALLED_VERSION" !=  "$full_version" ]]; then
-      om-linux --target "https://${OPSMAN_DOMAIN_OR_IP_ADDRESS}" \
+      om-linux --target "https://${OPSMAN_HOST}" \
         --skip-ssl-validation \
         --client-id "${OPSMAN_CLIENT_ID}" \
         --client-secret "${OPSMAN_CLIENT_SECRET}" \
@@ -85,15 +85,15 @@ if [ "$(echo $UNSTAGED_PRODUCT | jq '. | length')" -gt 0 ]; then
         --product-name "${PRODUCT_NAME}" \
         --product-version "${full_version}"
 
-      ./pcf-pipelines/tasks/toggle-errands/task.sh
-      ./pcf-pipelines/tasks/apply-changes/task.sh
+      ./automation/lib/pipelines/pcf/install-and-upgrade/tasks/toggle-errands/task.sh
+      ./automation/lib/tasks/opsman/apply-changes/task.sh
     else
       echo "Skipping staging and upgrade of $PRODUCT_NAME version $desired_version as a prior installed version was not found."
     fi
 
   else
 
-    om-linux --target "https://${OPSMAN_DOMAIN_OR_IP_ADDRESS}" \
+    om-linux --target "https://${OPSMAN_HOST}" \
       --skip-ssl-validation \
       --client-id "${OPSMAN_CLIENT_ID}" \
       --client-secret "${OPSMAN_CLIENT_SECRET}" \

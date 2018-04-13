@@ -25,12 +25,12 @@ fi
 set -e
 
 echo "Importing backed up export of installation..."
-om -k -t https://$OPSMAN_HOST import-installation -dp $OPSMAN_PASS_PHRASE -i $backup_path/opsman/installation.zip
+om -k -t https://$OPSMAN_HOST import-installation -dp $OPSMAN_DECRYPTION_KEY -i $backup_path/opsman/installation.zip
 
 if [[ -d $backup_path/opsman/stemcells ]]; then
     for s in $(find $backup_path/opsman/stemcells -type f -print); do
         echo "Uploading stemcell '$s'..."
-        om -k -t https://$OPSMAN_HOST -c $PCFOPS_CLIENT -s $PCFOPS_SECRET upload-stemcell -s $s
+        om -k -t https://$OPSMAN_HOST -c $OPSMAN_CLIENT_ID -s $OPSMAN_CLIENT_SECRET upload-stemcell -s $s
     done
 fi
 
@@ -64,7 +64,7 @@ set -e
 #
 
 opsman::kill_active_sessions
-opsman::login_client $OPSMAN_HOST $PCFOPS_CLIENT $PCFOPS_SECRET $OPSMAN_PASS_PHRASE
+opsman::login_client $OPSMAN_HOST $OPSMAN_CLIENT_ID $OPSMAN_CLIENT_SECRET $OPSMAN_DECRYPTION_KEY
 pivnet-cli login --api-token=$PIVNET_API_TOKEN
 
 PRODUCTS_TO_FIX=$(opsman::get_installation | jq '.products[] | select(.stemcell==null) | .installation_name' | sed 's|"||g')
@@ -87,11 +87,11 @@ for s in $(echo -e "$STEMCELL_VERSIONS_TO_GET"); do
     wget --post-data '' --header "Authorization: Token $PIVNET_API_TOKEN" -O $OUTPUT_FILE $URL
 
     echo "Uploading stemcell '$s'..."
-    om -k -t https://$OPSMAN_HOST -c $PCFOPS_CLIENT -s $PCFOPS_SECRET upload-stemcell -s $OUTPUT_FILE
+    om -k -t https://$OPSMAN_HOST -c $OPSMAN_CLIENT_ID -s $OPSMAN_CLIENT_SECRET upload-stemcell -s $OUTPUT_FILE
 done
 
 # Apply Pending Changes to Ops Manager Director only
-om -k -t https://$OPSMAN_HOST -c $PCFOPS_CLIENT -s $PCFOPS_SECRET apply-changes -i -sdp
+om -k -t https://$OPSMAN_HOST -c $OPSMAN_CLIENT_ID -s $OPSMAN_CLIENT_SECRET apply-changes -i -sdp
 
 # Source restore job environment for ops manager
 source pipeline-src/scripts/prepare-opsman-restore.sh

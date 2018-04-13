@@ -27,10 +27,10 @@ grep -q "^BACKUP_TIMESTAMP=" backup-timestamp/metadata && \
 
 # Wait for any current apply jobs to finish
 
-if [[ -n "$OPSMAN_USER" ]]; then
-    opsman::login "$OPSMAN_HOST" "$OPSMAN_USER" "$OPSMAN_PASSWD" "$OPSMAN_PASS_PHRASE"
-elif [[ -n "$PCFOPS_CLIENT" ]]; then
-    opsman::login_client "$OPSMAN_HOST" "$PCFOPS_CLIENT" "$PCFOPS_SECRET" "$OPSMAN_PASS_PHRASE"
+if [[ -n "$OPSMAN_USERNAME" ]]; then
+    opsman::login "$OPSMAN_HOST" "$OPSMAN_USERNAME" "$OPSMAN_PASSWORD" "$OPSMAN_DECRYPTION_KEY"
+elif [[ -n "$OPSMAN_CLIENT_ID" ]]; then
+    opsman::login_client "$OPSMAN_HOST" "$OPSMAN_CLIENT_ID" "$OPSMAN_CLIENT_SECRET" "$OPSMAN_DECRYPTION_KEY"
 else
     echo "ERROR! Pivotal Operations Manager credentials were not provided."
     exit 1
@@ -47,10 +47,10 @@ if [[ -n "$CLEAN_UP_OPSMAN" ]]; then
         "echo $OPSMAN_SSH_PASSWD | sudo -S sh -c 'service tempest-web stop; rm -fr /tmp/*; service tempest-web start'"
 fi
 
-if [[ -n "$OPSMAN_USER" ]]; then
-    opsman::login "$OPSMAN_HOST" "$OPSMAN_USER" "$OPSMAN_PASSWD" "$OPSMAN_PASS_PHRASE"
-elif [[ -n "$PCFOPS_CLIENT" ]]; then
-    opsman::login_client "$OPSMAN_HOST" "$PCFOPS_CLIENT" "$PCFOPS_SECRET" "$OPSMAN_PASS_PHRASE"
+if [[ -n "$OPSMAN_USERNAME" ]]; then
+    opsman::login "$OPSMAN_HOST" "$OPSMAN_USERNAME" "$OPSMAN_PASSWORD" "$OPSMAN_DECRYPTION_KEY"
+elif [[ -n "$OPSMAN_CLIENT_ID" ]]; then
+    opsman::login_client "$OPSMAN_HOST" "$OPSMAN_CLIENT_ID" "$OPSMAN_CLIENT_SECRET" "$OPSMAN_DECRYPTION_KEY"
 fi
 
 # Create script to source environment for downstream jobs/tasks
