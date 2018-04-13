@@ -83,11 +83,13 @@ jobs:
 
 - name: upload-opsman-image
   plan:
-  - get: pivnet-opsmgr
-    trigger: true
-    params:
-      globs:
-      - "*GCP.yml"
+  - aggregate:
+    - get: automation
+    - get: pivnet-opsmgr
+      trigger: true
+      params:
+        globs:
+        - "*GCP.yml"
   - task: upload
     file: automation/lib/pipelines/pcf/install-and-upgrade/tasks/upload-opsman/gcp/task.yml
     params:
