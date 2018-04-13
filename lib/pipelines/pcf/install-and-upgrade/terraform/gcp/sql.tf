@@ -7,6 +7,12 @@ resource "google_sql_database_instance" "master" {
   database_version = "MYSQL_5_6"
   name             = "${var.prefix}-${random_pet.sql_db.id}"
 
+  timeouts {
+    # GCP Takes a long time to create SQL instances.
+    create = "30m"
+    delete = "30m"
+  }
+
   settings {
     tier = "db-f1-micro"
 
