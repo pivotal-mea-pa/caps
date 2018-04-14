@@ -8,7 +8,7 @@ if [[ -z "$ERRANDS_TO_DISABLE" ]] || [[ "$ERRANDS_TO_DISABLE" == "none" ]]; then
 fi
 
 enabled_errands=$(
-  om-linux \
+  om \
     --target "https://${OPSMAN_HOST}" \
     --skip-ssl-validation \
     --client-id "${OPSMAN_CLIENT_ID}" \
@@ -49,7 +49,7 @@ fi
 
 while read errand; do
   echo -n Disabling $errand...
-  om-linux \
+  om \
     --target "https://${OPSMAN_HOST}" \
     --skip-ssl-validation \
     --client-id "${OPSMAN_CLIENT_ID}" \

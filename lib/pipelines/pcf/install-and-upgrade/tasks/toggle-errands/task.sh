@@ -23,7 +23,7 @@ unzip $FILE_PATH metadata/*
 PRODUCT_NAME="$(cat metadata/*.yml | grep '^name' | cut -d' ' -f 2)"
 
 product_errands=$(
-  om-linux \
+  om \
     --target "https://${OPSMAN_HOST}" \
     --skip-ssl-validation \
     --client-id "${OPSMAN_CLIENT_ID}" \
@@ -36,7 +36,7 @@ product_errands=$(
 
 while read errand; do
   echo "toggling errands..."
-  om-linux \
+  om \
     --target "https://${OPSMAN_HOST}" \
     --skip-ssl-validation \
     --client-id "${OPSMAN_CLIENT_ID}" \

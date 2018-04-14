@@ -18,7 +18,7 @@ set -eu
 
 desired_version=$(jq --raw-output '.Release.Version' < ./pivnet-product/metadata.json)
 
-AVAILABLE=$(om-linux \
+AVAILABLE=$(om \
   --skip-ssl-validation \
   --client-id "${OPSMAN_CLIENT_ID}" \
   --client-secret "${OPSMAN_CLIENT_SECRET}" \
@@ -26,7 +26,7 @@ AVAILABLE=$(om-linux \
   --password "${OPSMAN_PASSWORD}" \
   --target "https://${OPSMAN_HOST}" \
   curl -path /api/v0/available_products)
-STAGED=$(om-linux \
+STAGED=$(om \
   --skip-ssl-validation \
   --client-id "${OPSMAN_CLIENT_ID}" \
   --client-secret "${OPSMAN_CLIENT_SECRET}" \
@@ -64,7 +64,7 @@ if [ "$(echo $UNSTAGED_PRODUCT | jq '. | length')" -gt 0 ]; then
 
   if [[ $STAGE_AND_APPLY == true ]]; then
 
-    INSTALLED_VERSION=$(om-linux \
+    INSTALLED_VERSION=$(om \
       --skip-ssl-validation \
       --client-id "${OPSMAN_CLIENT_ID}" \
       --client-secret "${OPSMAN_CLIENT_SECRET}" \
@@ -75,7 +75,7 @@ if [ "$(echo $UNSTAGED_PRODUCT | jq '. | length')" -gt 0 ]; then
       | jq -r '.products[] | select(.identifier=="'$PRODUCT_NAME'") | select(.prepared==true) | .product_version')
   
     if [[ -n "$INSTALLED_VERSION" && "$INSTALLED_VERSION" !=  "$full_version" ]]; then
-      om-linux --target "https://${OPSMAN_HOST}" \
+      om --target "https://${OPSMAN_HOST}" \
         --skip-ssl-validation \
         --client-id "${OPSMAN_CLIENT_ID}" \
         --client-secret "${OPSMAN_CLIENT_SECRET}" \
@@ -93,7 +93,7 @@ if [ "$(echo $UNSTAGED_PRODUCT | jq '. | length')" -gt 0 ]; then
 
   else
 
-    om-linux --target "https://${OPSMAN_HOST}" \
+    om --target "https://${OPSMAN_HOST}" \
       --skip-ssl-validation \
       --client-id "${OPSMAN_CLIENT_ID}" \
       --client-secret "${OPSMAN_CLIENT_SECRET}" \

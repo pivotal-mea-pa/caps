@@ -2,7 +2,7 @@
 
 set -euo pipefail
 
-INSTALLED_VERSION=$(om-linux \
+INSTALLED_VERSION=$(om \
   --skip-ssl-validation \
   --client-id "${OPSMAN_CLIENT_ID}" \
   --client-secret "${OPSMAN_CLIENT_SECRET}" \
@@ -418,7 +418,7 @@ cf_properties=$(
     '
 )
 
-om-linux \
+om \
   --target https://$OPSMAN_HOST \
   --client-id "${OPSMAN_CLIENT_ID}" \
   --client-secret "${OPSMAN_CLIENT_SECRET}" \
