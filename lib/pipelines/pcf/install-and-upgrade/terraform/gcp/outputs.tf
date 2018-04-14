@@ -12,6 +12,10 @@ output "deployment_prefix" {
   value = "${var.prefix}-vms"
 }
 
+output "company_name" {
+  value = "${data.terraform_remote_state.bootstrap.company_name}"
+}
+
 // DNS Output
 
 output "ops_manager_dns" {

@@ -57,23 +57,23 @@ output "bootstrap_state_prefix" {
 # Certificate Subject data for certificate creation
 #
 output "company_name" {
-  value = "string"
+  value = "${var.company_name}"
 }
 
 output "organization_name" {
-  value = "string"
+  value = "${var.organization_name}"
 }
 
 output "locality" {
-  value = "string"
+  value = "${var.locality}"
 }
 
 output "province" {
-  value = "string"
+  value = "${var.province}"
 }
 
 output "country" {
-  value = "string"
+  value = "${var.country}"
 }
 
 #
