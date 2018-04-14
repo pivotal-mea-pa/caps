@@ -92,14 +92,44 @@ output "dynamic_svc_net_1_subnet" {
   value = "${google_compute_subnetwork.subnet-dynamic-services-1.name}"
 }
 
-// Http Load Balancer Output
+// Public IPs
 
-output "http_lb_backend_name" {
-  value = "${google_compute_backend_service.ert_http_lb_backend_service.name}"
+output "pub_ip_global_pcf" {
+  value = "${google_compute_global_address.pcf.address}"
 }
 
-output "tcp_router_pool" {
-  value = "${google_compute_target_pool.cf-tcp.name}"
+output "pub_ip_ssh_and_doppler" {
+  value = "${google_compute_address.cf-ssh.address}"
+}
+
+output "pub_ip_ssh_tcp_lb" {
+  value = "${google_compute_address.cf-tcp.address}"
+}
+
+// Load balancer pools
+
+output "pas_http_lb_name" {
+  value = "http:${google_compute_backend_service.ert_http_lb_backend_service.name}"
+}
+
+output "pas_tcp_lb_name" {
+  value = "tcp:${google_compute_target_pool.cf-tcp.name}"
+}
+
+output "pas_ssh_lb_name" {
+  value = "tcp:${google_compute_target_pool.cf-ssh.name}"
+}
+
+output "pas_doppler_lb_name" {
+  value = "tcp:${google_compute_target_pool.cf-gorouter.name}"
+}
+
+output "pks_api_lb_name" {
+  value = "tcp:${google_compute_target_pool.pks-api.name}"
+}
+
+output "tcp_routing_reservable_ports" {
+  value = "${google_compute_forwarding_rule.cf-tcp.port_range}"
 }
 
 // Cloud Storage Bucket Output
@@ -124,27 +154,15 @@ output "director_blobstore_bucket" {
   value = "${google_storage_bucket.director.name}"
 }
 
-output "pub_ip_global_pcf" {
-  value = "${google_compute_global_address.pcf.address}"
-}
-
-output "pub_ip_ssh_and_doppler" {
-  value = "${google_compute_address.cf-ssh.address}"
-}
-
-output "pub_ip_ssh_tcp_lb" {
-  value = "${google_compute_address.cf-tcp.address}"
-}
-
 output "db_host" {
   value = "${google_sql_database_instance.master.ip_address.0.ip_address}"
 }
 
-output "pks_api_lb_name" {
-  value = "tcp:${google_compute_target_pool.pks-api.name}"
-}
-
 // Certificates
+
+output "root_ca" {
+  value = "${data.terraform_remote_state.bootstrap.root_ca_cert}"
+}
 
 output "saml_certificate" {
   value = "${length(var.pcf_saml_ssl_cert) > 0 ? var.pcf_saml_ssl_cert : tls_locally_signed_cert.saml-san.cert_pem}"
