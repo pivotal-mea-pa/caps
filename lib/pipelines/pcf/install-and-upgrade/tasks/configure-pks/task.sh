@@ -29,15 +29,28 @@ if [[ -n "$INSTALLED_VERSION" ]]; then
   exit 0
 fi
 
-om \
-  --skip-ssl-validation \
-  --target "https://${OPSMAN_HOST}" \
-  --client-id "${OPSMAN_CLIENT_ID}" \
-  --client-secret "${OPSMAN_CLIENT_SECRET}" \
-  --username "${OPSMAN_USERNAME}" \
-  --password "${OPSMAN_PASSWORD}" \
-  configure-product \
-  --product-name $PRODUCT_NAME \
-  --product-network "$(eval_jq_templates "network" "$TEMPLATE_PATH" "$TEMPLATE_OVERRIDE_PATH")" \
-  --product-resources "$(eval_jq_templates "resources" "$TEMPLATE_PATH" "$TEMPLATE_OVERRIDE_PATH")" \
-  --product-properties "$(eval_jq_templates "properties" "$TEMPLATE_PATH" "$TEMPLATE_OVERRIDE_PATH")"
+if [[ "$TRACE" == "render-templates-only" ]]; then
+  network=$(eval_jq_templates "network" "$TEMPLATE_PATH" "$TEMPLATE_OVERRIDE_PATH")
+  resources=$(eval_jq_templates "resources" "$TEMPLATE_PATH" "$TEMPLATE_OVERRIDE_PATH")
+  properties=$(eval_jq_templates "properties" "$TEMPLATE_PATH" "$TEMPLATE_OVERRIDE_PATH")
+
+  set +x
+
+  echo -e "\n**** Network Request Body ****\n$network"
+  echo -e "\n**** Resources Request Body ****\n$resources"
+  echo -e "\n**** Properties Request Body ****\n$properties"
+else
+
+  om \
+    --skip-ssl-validation \
+    --target "https://${OPSMAN_HOST}" \
+    --client-id "${OPSMAN_CLIENT_ID}" \
+    --client-secret "${OPSMAN_CLIENT_SECRET}" \
+    --username "${OPSMAN_USERNAME}" \
+    --password "${OPSMAN_PASSWORD}" \
+    configure-product \
+    --product-name $PRODUCT_NAME \
+    --product-network "$(eval_jq_templates "network" "$TEMPLATE_PATH" "$TEMPLATE_OVERRIDE_PATH")" \
+    --product-resources "$(eval_jq_templates "resources" "$TEMPLATE_PATH" "$TEMPLATE_OVERRIDE_PATH")" \
+    --product-properties "$(eval_jq_templates "properties" "$TEMPLATE_PATH" "$TEMPLATE_OVERRIDE_PATH")"
+fi
