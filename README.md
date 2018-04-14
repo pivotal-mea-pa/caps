@@ -143,7 +143,7 @@ The framework depends on a pre-configured cloud image that bootstraps the enviro
 
   Once the initial IaaS infrastructure has been bootrstapped this service will be configured with a bootstrap pipeline that is responsible for setting up the required automation to complete the build of the environment. To ensure that the configurations which these pipelines orchestrate are idempotant this pipelines use Terraform as the control plane and Bosh as the runtime state. The state for both Terraform and Bosh is saved to an IaaS provided object store. This ensures that if the instance hosting this service is rebuilt it will rediscover the current state.
 
-  > An S3 store which is backed by a persistent volume is provided as a backup mechanism natively. This can be used for environments that do not have access to an IaaS provided object store.
+  > An S3 store which is backed by a persistent volume is provided as a alternate storage capability natively. This can be used for environments that do not have access to an IaaS provided object store.
 
 * VPN Service
 * HTTP Proxy Service
