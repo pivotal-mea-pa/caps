@@ -20,7 +20,13 @@ Each environment is bootstrapped by an inception Virtual Private Cloud (VPC), wh
 
 ## Usage
 
+### Quick Start
 
+To use this framework effectively a collection of shell scripts are provided. It is recommended to use a tool like [direnv](https://direnv.net/) to manage your local settings. 
+
+### Advance Users
+
+Advance users can extend the framework to override the default reference network as well as service configurations to create production ready environments.
 
 ## Bootstrap
 

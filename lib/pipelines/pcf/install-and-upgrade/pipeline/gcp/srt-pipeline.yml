@@ -178,6 +178,7 @@ jobs:
       passed: [create-infrastructure]
       trigger: true
       params: {globs: []}
+  - get: terraform-output
   - task: configure-opsman-authentication
     file: automation/lib/pipelines/pcf/install-and-upgrade/tasks/configure-opsman/task.yml
     params:
