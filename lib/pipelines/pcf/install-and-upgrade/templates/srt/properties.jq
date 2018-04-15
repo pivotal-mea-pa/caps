@@ -71,6 +71,8 @@
 #   --arg mysql_proxy_static_ips "" \
 #   --arg mysql_monitor_recipient_email "admin@caps.cloud" \
 #   --arg company_name "Pivotal" \
+#   "$(cat properties.jq)"
+#
 
 #
 # Domains
