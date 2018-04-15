@@ -10,7 +10,7 @@ inputs:
 - name: automation
 
 run:
-  path: automation/lib/pipelines/pcf/install-and-upgrade/tasks/apply-changes/task.sh
+  path: automation/lib/tasks/opsman/wait-opsman/task.sh
 
 params:
   OPSMAN_HOST:
