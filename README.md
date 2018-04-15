@@ -89,43 +89,97 @@ USAGE: build-image -i|--iaas <IAAS_PROVIDER> [ -r|--regions <REGIONS> ]
     <IAAS_PROVIDER>  The iaas provider for which images will be built.
 
     <REGIONS>        Command separated list of the iaas provider's regions for which
-                     images will be built. This does not apply to all providers.
+                     images will be built. This does not apply to all providers and
+                     will be ignored where appropriate.
 ```
 
 All build logs will be written to the `<repository home>/log` folder.
 
-* GCP
-
-  GCP images are global and not region specific so the `-r|--regions` argument will be ignored.
-
-  ```
-  build-image -i gcp
-  ```
-
-* AWS
-
-  For AWS if the `-r|--regions` argument is not provided then images will be built for all the available regions.
-
-  ```
-  build-image -i aws -r us-east-1
-  ```
-
-* Azure
-
-  TBD
-
 #### `caps-init`
+
+This utility sets the current environment context and will initialize a control file if one is not available.
+
+```
+USAGE: caps-init <NAME> -d|--deployment <DEPLOYMENT_NAME> -i|--iaas <IAAS_PROVIDER>
+
+    This utility will create a control file for a new environment in the repository root.
+    This file will be named '.envrc-<NAME>'. Its format is compatible with the 'direnv'
+    (https://github.com/direnv/direnv) utility which is recommend for managing profiles
+    for multiple deployment environments.
+
+    <NAME>             The name of the environment. This will also be the name of your primary VPC.
+    <DEPLOYMENT_NAME>  The name of one of the deployment recipes.
+    <IAAS_PROVIDER>    The iaas provider that the deployment has been deployed to.
+```
+
+Control files are environment scripts and have the name format `.caps-env_<NAME>`. They will be placed within the root of this repository. It is important that you keep all IAAS credentials out of this file and instead reference them as environment variables that have been exported via another mechanism such the 'direnv' utility. The control files contain all externalized variables that customize the Terraform templates for the bootstrap infrastructure as well as any configuration that needs to be passed to the operations automation pipelines.
 
 #### `caps-tf`
 
-#### `caps-ci`
+Since the control plane for each environment is Terraform this utility will be the tool you will use most often to apply changes to the bootstrap envrionment. Once an environment has been bootstrapped the internal automation will handle all upgrades and operation workflows via Concourse. Once you have set the context you need to run a `plan` via this script to see what changes are pending. If the environment has already been set up then the `plan` should yield only an update to download the SSH keys for the environment. You will need to run `apply` to ensure keys have been downloaded before running any of the other utilities below.
+
+```
+USAGE: caps-tf [ plan | apply | taint-bastion | destroy ] -o|-options <TERRAFORM_OPTIONS>
+
+    This utility will perform the given Terraform action on the deployment's bootstrap template.
+
+    <TERRAFORM_OPTIONS>  Additional options to pass to terraform.
+```
 
 #### `caps-vpn`
 
+If you configure the bootstrap infrastructure to setup VPN then the following utility can be used to download the vpn admin credentials. For Mac OS environments the credentials downloaded can be used with the [TunnelBlick](https://tunnelblick.net/) VPN client and the utility will automatically import them if the software has been installed locally.
+
+These admin credentials can also be used to SSH into the VPN bastion instance and create additional VPN users.
+
+```
+USAGE: caps-vpn
+
+    This utility will download the VPN credentials required to access
+    the environment's internal resources. The credentials will be
+    download to the following folder.
+
+       * /Users/msamaratunga/Work/community/concourse/caps/tmp
+```
+
+#### `caps-ci`
+
+The bootstrap Concourse automation environment is configured to be exposed only locally within the automation instance. This utility creates a tunnel to this instance so that Concourse can be accessed via an SSH tunnel. It will also display the concourse basic-auth usermame and password after the tunnel has been established.
+
+```
+USAGE: caps-ci logout | login
+
+    This utility will create an SSH tunnel to the Concourse environment that
+    runs the automation pipelines. It will also initialize the 'fly' CLI and
+    create a target to this concourse environment.
+```
+
 #### `caps-ssh`
+
+This helper script that can be used to create an SSH session to an instance within the cloud environment.
+
+```
+USAGE: caps-ssh <NAME> [ -u|user <SSH_USER> ]
+
+    This utility will create launch an SSH session to an instance within the deployed
+    environment.
+
+    <NAME>             The name or IP of the instance to SSH to. If the name is 'bastion'
+                       then an SSH session will be created to the bastion instance.
+                       Otherwise it should be of the host prefix of the instance name.
+                       For example <host prefix>.<vpc domain>.
+    <SSH_USER>         The SSH user to login as. This will be ignored when you SSH to the
+                       bastion instance. For any other instance if this argument is not
+                       provided the default SSH user will be 'ubuntu'.
+```
 
 #### `caps-info`
 
+```
+USAGE: caps-info
+
+    This utility will display useful information about the current environment.
+```
 
 ### Advance Users
 

@@ -21,13 +21,21 @@ NC='\033[0m' # No Color
 common::validate() {
 
     if [[ ! -e $root_dir/deployments/$deployment_name ]]; then
-        echo -e "${RED}\nERROR! Deployment recipe does not exist at:" 
-        echo -e "\n$root_dir/deployments/$deployment_name\n"
+        echo -e "${RED}\nERROR! Deployment recipe does not exist.\n" 
+        echo -e "${GREEN}Available deployments are:\n"
+        for d in $(find $root_dir/deployments -type d -depth 1 -print); do 
+            echo "- \"$(basename $d)\"" 
+        done
+        echo
         exit 1
     fi
     if [[ ! -e $root_dir/deployments/$deployment_name/$iaas_provider ]]; then
-        echo -e "${RED}\nERROR! IAAS specific deployment recipe does not exist at:"
-        echo -e "\n$root_dir/deployments/$deployment_name/$iaas_provider\n"
+        echo -e "${RED}\nERROR! IAAS specific deployment recipe does not exist at:\n"
+        echo -e "${GREEN}Available IAAS configurations for deployment \"$deployment_name\" are:\n"
+        for d in $(find $root_dir/deployments/$deployment_name -type d -depth 1 -print); do 
+            echo "- \"$(basename $d)\"" 
+        done
+        echo        
         exit 1
     fi
     if [[ ! -e $root_dir/deployments/$deployment_name/$iaas_provider/terraform ]]; then
