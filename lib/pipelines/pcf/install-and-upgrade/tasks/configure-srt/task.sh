@@ -9,7 +9,7 @@ set -eo pipefail
 source_variables 'terraform-output/pcf-env-*.sh'
 
 PRODUCT_NAME=cf
-TEMPLATE_PATH=automation/lib/pipelines/pcf/install-and-upgrade/templates/pks
+TEMPLATE_PATH=automation/lib/pipelines/pcf/install-and-upgrade/templates/srt
 TEMPLATE_OVERRIDE_PATH=automation-extensions/$TEMPLATE_OVERRIDE_PATH
 
 INSTALLED_VERSION=$(om \
