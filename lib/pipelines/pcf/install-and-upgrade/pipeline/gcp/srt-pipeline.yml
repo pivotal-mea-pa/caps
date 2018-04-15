@@ -387,11 +387,11 @@ jobs:
   - task: wait-if-apply-in-progress
     file: automation/lib/tasks/opsman/wait-opsman/task.yml
     params:
-      OPSMAN_HOST: ((opsman_host))
-      OPSMAN_USERNAME: ((opsman_user))
-      OPSMAN_PASSWORD: ((opsman_passwd))
-      OPSMAN_CLIENT_ID: ((pcfops_client))
-      OPSMAN_CLIENT_SECRET: ((pcfops_secret))
+      OPSMAN_HOST: ((opsman_domain_or_ip_address))
+      OPSMAN_USERNAME: ((opsman_admin_username))
+      OPSMAN_PASSWORD: ((opsman_admin_password))
+      OPSMAN_CLIENT_ID: ((opsman_client_id))
+      OPSMAN_CLIENT_SECRET: ((opsman_client_secret))
 
   # Apply the changes to deploy the SRT
   - task: apply-changes
