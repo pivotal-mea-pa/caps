@@ -2,14 +2,14 @@
 
 vpc_dns_zone=$(echo -e "$tf_output" | awk '/vpc_dns_zone =/{ print $3 }')
 bastion_fqdn=$(echo -e "$tf_output" | awk '/bastion_fqdn =/{ print $3 }')
-vpn_admin_password=$(echo -e "$tf_output" | awk '/vpn_admin_password =/{ print $3 }')
+bastion_admin_password=$(echo -e "$tf_output" | awk '/bastion_admin_password =/{ print $3 }')
 opsman_admin_password=$(echo -e "$tf_output" | awk '/opsman_admin_password =/{ print $3 }')
 
 [[ -z $vpc_dns_zone ]] && exit
 
 echo -e "${GREEN}Primary domain:      $vpc_dns_zone"
 echo -e "VPN server URL:      https://$bastion_fqdn"
-echo -e "VPN admin password:  $vpn_admin_password\n"
+echo -e "VPN admin password:  $bastion_admin_password\n"
 
 echo -e "${LIGHT_GREEN}Cloud Foundry"
 echo -e "-------------\n"

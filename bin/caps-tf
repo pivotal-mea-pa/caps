@@ -7,7 +7,7 @@ common::initialize
 set -e
 
 usage () {
-    echo -e "${BLUE}\nUSAGE: caps-tf [ plan | apply | taint-bastion | destroy ] -o|-options <TERRAFORM_OPTIONS>\n"
+    echo -e "${BLUE}\nUSAGE: caps-tf [ plan | apply | destroy | recreate-bastion ] -o|-options <TERRAFORM_OPTIONS>\n"
     echo -e "    This utility will perform the given Terraform action on the deployment's bootstrap template.\n"
     echo -e "    <TERRAFORM_OPTIONS>  Additional options to pass to terraform.\n"
 }
@@ -17,7 +17,7 @@ case "$1" in
         usage
         exit 0
         ;;
-    init|plan|apply|output|taint-bastion|destroy)
+    init|plan|apply|output|destroy|recreate-bastion)
         tf_action=$1
         ;;
     *)
@@ -86,19 +86,6 @@ case $tf_action in
     output)
         terraform output 2>&1 | tee terraform.output
         ;;
-    taint-bastion)
-        terraform taint \
-            -state=$workspace_path/.terraform/terraform.tfstate \
-            -module=bootstrap.network.inception \
-            google_compute_instance.bastion
-            
-        terraform taint \
-            -state=$workspace_path/.terraform/terraform.tfstate \
-            -module=bootstrap.network.inception \
-            google_compute_disk.bastion-data-volume
-
-        terraform plan -out=terraform.plan $terraform_path
-        ;;
     apply)
         [[ -e terraform.plan ]] || \
             terraform plan -out=terraform.plan $terraform_options $terraform_path
@@ -115,4 +102,18 @@ case $tf_action in
 
         rm -f terraform.plan
         ;; 
+    recreate-bastion)
+        terraform taint \
+            -state=$workspace_path/.terraform/terraform.tfstate \
+            -module=bootstrap.network.inception \
+            google_compute_instance.bastion
+            
+        terraform taint \
+            -state=$workspace_path/.terraform/terraform.tfstate \
+            -module=bootstrap.network.inception \
+            google_compute_disk.bastion-data-volume
+
+        $0 plan
+        $0 apply
+        ;;
 esac

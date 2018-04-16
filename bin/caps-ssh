@@ -59,10 +59,10 @@ common::read_terraform_output
 if [[ "$name" == "bastion" ]]; then
 
     ssh_host=$(echo -e "$tf_output" | awk '/bastion_admin_fqdn =/{ print $3 }')
-    ssh_key=$workspace_path/vpn-admin-ssh-key.pem
-    ssh_user=vpn_admin
+    ssh_key=$workspace_path/bastion-admin-ssh-key.pem
+    ssh_user=$TF_VAR_bastion_admin_user
     
-    su_password=$(echo -e "$tf_output" | awk '/vpn_admin_password =/{ print $3 }')
+    su_password=$(echo -e "$tf_output" | awk '/bastion_admin_password =/{ print $3 }')
 else
     if [ $(echo "$name" | sed 's|[0-9]*\.[0-9]*\.[0-9]*\.[0-9]*|ip|') == ip ]; then
         ssh_host=$name

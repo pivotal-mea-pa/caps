@@ -29,23 +29,23 @@ done
 
 common::read_terraform_output
 vpn_host=$(echo -e "$tf_output" | awk '/bastion_fqdn =/{ print $3 }')
-vpn_admin_password=$(echo -e "$tf_output" | awk '/vpn_admin_password =/{ print $3 }')
+bastion_admin_password=$(echo -e "$tf_output" | awk '/bastion_admin_password =/{ print $3 }')
 
 os_type="$(uname -s)"
 if [[ $os_type == Darwin ]]; then
 
     set +e
 
-    curl -k -s -f -u "vpn_admin:$vpn_admin_password" \
-        https://$vpn_host/~vpn_admin/openvpn-config.tunnelblick.zip	 \
+    curl -k -s -f -u "$TF_VAR_bastion_admin_user:$bastion_admin_password" \
+        https://$vpn_host/~$TF_VAR_bastion_admin_user/openvpn-config.tunnelblick.zip	 \
         -o $root_dir/tmp/ovpn_config.zip
     
     while [[ $? -ne 0 ]]; do
         echo "Waiting for bastion services to become available..."
         sleep 5
 
-        curl -k -s -f -u "vpn_admin:$vpn_admin_password" \
-            https://$vpn_host/~vpn_admin/openvpn-config.tunnelblick.zip	 \
+        curl -k -s -f -u "$TF_VAR_bastion_admin_user:$bastion_admin_password" \
+            https://$vpn_host/~$TF_VAR_bastion_admin_user/openvpn-config.tunnelblick.zip	 \
             -o $root_dir/tmp/ovpn_config.zip
     done
 
@@ -60,21 +60,21 @@ if [[ $os_type == Darwin ]]; then
 elif [[ $os_type == Linux ]]; then
 
     wget --no-check-certificate \
-        --http-user="vpn_admin" --http-password="$vpn_admin_password" \    
-        https://$vpn_host/~vpn_admin/openvpn-config.client.zip \
+        --http-user="$TF_VAR_bastion_admin_user" --http-password="$bastion_admin_password" \    
+        https://$vpn_host/~$TF_VAR_bastion_admin_user/openvpn-config.client.zip \
         -O $root_dir/tmp/ovpn_config.zip
 
     echo "\nVPN credentials downloaded to $root_dir/tmp/ovpn_config.zip.\n"
 else
     echo -e "\nERROR: Unable to determine OS type for which the VPN configurations should be"
     echo -e "       downloaded. Please download manually from:\n"
-    echo -e "       url: https://$vpn_host/~vpn_admin"
-    echo -e "       user: vpn_admin"
-    echo -e "       password: $vpn_admin_password\n"
+    echo -e "       url: https://$vpn_host/~$TF_VAR_bastion_admin_user"
+    echo -e "       user: $TF_VAR_bastion_admin_user"
+    echo -e "       password: $bastion_admin_password\n"
     exit 1
 fi
 
 echo -e "\nThe VPN configuration downloaded successfully. Use"
 echo -e "the following credentials to login to the VPN.\n"
-echo -e "  user: vpn_admin"
-echo -e "  password: $vpn_admin_password\n"
+echo -e "  user: $TF_VAR_bastion_admin_user"
+echo -e "  password: $bastion_admin_password\n"

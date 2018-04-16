@@ -136,6 +136,12 @@ while IFS='' read -r line || [[ -n "$line" ]]; do
             vpc_name)
                 echo "export TF_VAR_$curr_var=$name" >>$root_dir/.caps-env_$name
                 ;;
+            bastion_admin_user)
+                echo "export TF_VAR_$curr_var=admin" >>$root_dir/.caps-env_$name
+                ;;
+            bastion_allow_public_ssh)
+                echo "export TF_VAR_$curr_var=false" >>$root_dir/.caps-env_$name
+                ;;
             ssh_key_file_path)
                 echo "#export TF_VAR_$curr_var=$workspace_path" >>$root_dir/.caps-env_$name
                 ;;

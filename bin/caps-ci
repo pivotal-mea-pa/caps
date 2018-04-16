@@ -67,7 +67,7 @@ fi
 echo -e "\nCreating SSH tunnel in order to access Concourse."
 ps -ef | awk '/8080\:127\.0\.0\.1\:8080/{ print $2 }' | sudo xargs kill -15
 ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no \
-    -i $workspace_path/vpn-admin-ssh-key.pem vpn_admin@$host \
+    -i $workspace_path/bastion-admin-ssh-key.pem $TF_VAR_bastion_admin_user@$host \
     -L 8080:127.0.0.1:8080 -N >/dev/null 2>&1 &
 
 sleep 2

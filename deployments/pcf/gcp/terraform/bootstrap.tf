@@ -33,14 +33,6 @@ module "bootstrap" {
 
   max_azs = "${var.max_azs}"
 
-  bastion_host_name = "vpn"
-
-  bastion_instance_type = "n1-standard-2"
-
-  deploy_jumpbox = "${var.deploy_jumpbox}"
-
-  jumpbox_data_disk_size = "${var.jumpbox_data_disk_size}"
-
   # DNS Name for VPC will be 'cf.tfacc.pcfs.io'
   vpc_dns_zone = "${var.vpc_dns_zone}"
 
@@ -51,19 +43,38 @@ module "bootstrap" {
   # Path to save all ssh key files
   ssh_key_file_path = "${var.ssh_key_file_path == "" ? path.module : var.ssh_key_file_path}"
 
-  #
-  # VPN Settings
-  #
-  vpn_server_port = "2295"
+  # Bastion configuration
+  bastion_host_name = "${var.bastion_host_name}"
 
-  vpn_protocol = "udp"
+  bastion_instance_type = "n1-standard-2"
 
-  vpn_network = "192.168.111.0/24"
+  bastion_admin_ssh_port = "${var.bastion_admin_ssh_port}"
+  bastion_admin_user     = "${var.bastion_admin_user}"
+
+  bastion_allow_public_ssh = "${
+    var.bastion_allow_public_ssh == ""
+      ? var.bastion_setup_vpn == "true" 
+        ? "false"
+        : "true"
+      : var.bastion_allow_public_ssh }"
+
+  deploy_jumpbox         = "${var.deploy_jumpbox}"
+  jumpbox_data_disk_size = "${var.jumpbox_data_disk_size}"
+
+  vpn_server_port = "${
+    var.bastion_setup_vpn == "true" 
+      ? var.bastion_vpn_port
+      : "" }"
+
+  vpn_protocol = "${var.bastion_vpn_protocol}"
+  vpn_network  = "${var.bastion_vpn_network}"
 
   #
   # Concourse Settings
   #
   concourse_admin_password = "${random_string.concourse-admin-password.result}"
+
+  concourse_server_port = "8080"
 
   #
   # Bootstrap pipeline

@@ -82,6 +82,44 @@ variable "vpc_parent_dns_zone_name" {
 }
 
 #
+# Bastion access configuration
+#
+variable "bastion_host_name" {
+  default = "bastion"
+}
+
+variable "bastion_admin_ssh_port" {
+  default = "22"
+}
+
+# This needs to be a name other than 'root' or 'admin' otherwise 
+# the user setup on the bastion will fail and you will be unable 
+# to login to the instance.
+variable "bastion_admin_user" {
+  type = "string"
+}
+
+variable "bastion_setup_vpn" {
+  type = "string"
+}
+
+variable "bastion_vpn_port" {
+  default = "2295"
+}
+
+variable "bastion_vpn_protocol" {
+  default = "udp"
+}
+
+variable "bastion_vpn_network" {
+  default = "192.168.111.0/24"
+}
+
+variable "bastion_allow_public_ssh" {
+  default = ""
+}
+
+#
 # Local file path to write SSH private key for bastion instance
 #
 variable "ssh_key_file_path" {
