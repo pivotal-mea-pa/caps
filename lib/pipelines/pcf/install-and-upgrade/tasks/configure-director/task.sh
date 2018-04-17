@@ -72,7 +72,7 @@ om \
   --username "${OPSMAN_USERNAME}" \
   --password "${OPSMAN_PASSWORD}" \
   configure-director \
-  --network-assignment "$network_assignment" >/dev/null 2>&1
+  --network-assignment "$network_assignment"
 
 [[ $? -ne 0 ]] && \
   echo "WARNING! Network assignment failed. Most likely this has already been done and cannot be changed once applied."
