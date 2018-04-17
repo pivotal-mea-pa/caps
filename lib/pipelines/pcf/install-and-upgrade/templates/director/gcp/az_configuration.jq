@@ -4,4 +4,6 @@
 #   "$(cat az_configuration.jq)"
 #
 
-($availability_zones | split(",") | map({name: .}))
+{
+  "availability_zones": ($availability_zones | split(",") | map({name: .}))
+}

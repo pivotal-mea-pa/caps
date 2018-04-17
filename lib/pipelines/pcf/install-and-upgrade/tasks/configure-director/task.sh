@@ -11,10 +11,38 @@ source_variables 'terraform-output/pcf-env-*.sh'
 TEMPLATE_PATH=automation/lib/pipelines/pcf/install-and-upgrade/templates/director
 TEMPLATE_OVERRIDE_PATH=automation-extensions/$TEMPLATE_OVERRIDE_PATH
 
+# Retrieved cofigured AZs and merge them with template where template overrides
+
+om \
+  --skip-ssl-validation \
+  --target "https://${OPSMAN_HOST}" \
+  --client-id "${OPSMAN_CLIENT_ID}" \
+  --client-secret "${OPSMAN_CLIENT_SECRET}" \
+  --username "${OPSMAN_USERNAME}" \
+  --password "${OPSMAN_PASSWORD}" \
+  curl --silent --path /api/v0/staged/director/availability_zones > az-curr.json
+
+eval_jq_templates "az_configuration" "$TEMPLATE_PATH" "$TEMPLATE_OVERRIDE_PATH" "$IAAS" > az-new.json
+az_configuration=$(jq -s '(.[0] * .[1]) | .availability_zones' az-new.json az-curr.json)
+
+# Retrieve configured networks and merge them with template where template overrides
+
+om \
+  --skip-ssl-validation \
+  --target "https://${OPSMAN_HOST}" \
+  --client-id "${OPSMAN_CLIENT_ID}" \
+  --client-secret "${OPSMAN_CLIENT_SECRET}" \
+  --username "${OPSMAN_USERNAME}" \
+  --password "${OPSMAN_PASSWORD}" \
+  curl --silent --path /api/v0/staged/director/networks > networks-curr.json
+
+eval_jq_templates "network_configuration" "$TEMPLATE_PATH" "$TEMPLATE_OVERRIDE_PATH" "$IAAS" > networks-new.json
+networks_configuration=$(jq -s '.[0] * .[1]' networks-new.json networks-curr.json)
+
+# Evaluate remaining templates and configure director
+
 iaas_configuration=$(eval_jq_templates "iaas_configuration" "$TEMPLATE_PATH" "$TEMPLATE_OVERRIDE_PATH" "$IAAS")
 director_configuration=$(eval_jq_templates "director_config" "$TEMPLATE_PATH" "$TEMPLATE_OVERRIDE_PATH" "$IAAS")
-az_configuration=$(eval_jq_templates "az_configuration" "$TEMPLATE_PATH" "$TEMPLATE_OVERRIDE_PATH" "$IAAS")
-networks_configuration=$(eval_jq_templates "network_configuration" "$TEMPLATE_PATH" "$TEMPLATE_OVERRIDE_PATH" "$IAAS")
 network_assignment=$(eval_jq_templates "network_assignment" "$TEMPLATE_PATH" "$TEMPLATE_OVERRIDE_PATH" "$IAAS")
 security_configuration=$(eval_jq_templates "security_configuration" "$TEMPLATE_PATH" "$TEMPLATE_OVERRIDE_PATH" "$IAAS")
 resource_configuration=$(eval_jq_templates "resource_configuration" "$TEMPLATE_PATH" "$TEMPLATE_OVERRIDE_PATH" "$IAAS")
