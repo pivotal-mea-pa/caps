@@ -29,7 +29,7 @@
 #   --arg dynamic_services_dns "192.168.24.1,8.8.8.8" \
 #   --arg dynamic_services_gateway "192.168.24.1" \
 #   --arg dynamic_services_availability_zones "$AVAILABILITY_ZONES" \
-#   --argjson curr_network_configuration {} \
+#   --argjson curr_network_configuration {"networks":[]} \
 #   "$(cat network_configuration.jq)"
 #
 
