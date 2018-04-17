@@ -28,9 +28,11 @@ function eval_jq_templates() {
   args=$(cat $tpl_path/$tpl_name.jq \
     | awk -v q="'" '/#/&& ($2 == "--arg" || $2== "--argjson") { 
         if ($2=="--arg") 
-            print $2" "$3" \"${" toupper($3) ":-" $4 "}\" "; 
-        else 
-            print $2" "$3" ${" toupper($3) ":-" q $4 q "} ";
+            print $2 " " $3 " \"${" toupper($3) ":-" $4 "}\" "; 
+        else if ($4~/[\[{].*/)
+            print $2 " " $3 " \"${" toupper($3) ":-" q $4 q "}\" ";
+        else
+            print $2 " " $3 " ${" toupper($3) ":-" $4 "} ";
     }' \
     | tr -d '\n')
 
@@ -42,9 +44,11 @@ function eval_jq_templates() {
       args="$args "$(cat $f \
         | awk -v q="'" '/#/&& ($2 == "--arg" || $2== "--argjson") { 
             if ($2=="--arg") 
-                print $2" "$3" \"${" toupper($3) ":-" $4 "}\" "; 
-            else 
-                print $2" "$3" ${" toupper($3) ":-" q $4 q "} ";
+                print $2 " " $3 " \"${" toupper($3) ":-" $4 "}\" "; 
+            else if ($4~/[\[{].*/)
+                print $2 " " $3 " \"${" toupper($3) ":-" q $4 q "}\" ";
+            else
+                print $2 " " $3 " ${" toupper($3) ":-" $4 "} ";
         }' \
         | tr -d '\n')
     done
