@@ -29,6 +29,7 @@
 #   --arg dynamic_services_dns "192.168.24.1,8.8.8.8" \
 #   --arg dynamic_services_gateway "192.168.24.1" \
 #   --arg dynamic_services_availability_zones "$AVAILABILITY_ZONES" \
+#   --argjson curr_network_configuration {} \
 #   "$(cat network_configuration.jq)"
 #
 
@@ -36,10 +37,28 @@
   "icmp_checks_enabled": $icmp_checks_enabled,
   "networks": [
     {
+      "guid": (
+        (
+          $curr_network_configuration 
+            | .networks[] 
+            | select(.name == $infra_network_name) 
+            | .guid
+        ) // null
+      ),
       "name": $infra_network_name,
       "service_network": false,
       "subnets": [
         {
+          "guid": (
+            (
+              $curr_network_configuration 
+                | .networks[] 
+                | select(.name == $infra_network_name) 
+                | .subnets[] 
+                | select(.iaas_identifier == $infra_iaas_network) 
+                | .guid
+            ) // null
+          ),
           "iaas_identifier": $infra_iaas_network,
           "cidr": $infra_network_cidr,
           "reserved_ip_ranges": $infra_reserved_ip_ranges,
@@ -50,10 +69,28 @@
       ]
     },
     {
+      "guid": (
+        (
+          $curr_network_configuration 
+            | .networks[] 
+            | select(.name == $deployment_network_name) 
+            | .guid
+        ) // null
+      ),
       "name": $deployment_network_name,
       "service_network": false,
       "subnets": [
         {
+          "guid": (
+            (
+              $curr_network_configuration 
+                | .networks[] 
+                | select(.name == $deployment_network_name) 
+                | .subnets[] 
+                | select(.iaas_identifier == $deployment_iaas_network) 
+                | .guid
+            ) // null
+          ),
           "iaas_identifier": $deployment_iaas_network,
           "cidr": $deployment_network_cidr,
           "reserved_ip_ranges": $deployment_reserved_ip_ranges,
@@ -64,10 +101,28 @@
       ]
     },
     {
+      "guid": (
+        (
+          $curr_network_configuration 
+            | .networks[] 
+            | select(.name == $services_network_name) 
+            | .guid
+        ) // null
+      ),
       "name": $services_network_name,
       "service_network": false,
       "subnets": [
         {
+          "guid": (
+            (
+              $curr_network_configuration 
+                | .networks[] 
+                | select(.name == $services_network_name) 
+                | .subnets[] 
+                | select(.iaas_identifier == $services_iaas_network) 
+                | .guid
+            ) // null
+          ),
           "iaas_identifier": $services_iaas_network,
           "cidr": $services_network_cidr,
           "reserved_ip_ranges": $services_reserved_ip_ranges,
@@ -78,10 +133,28 @@
       ]
     },
     {
+      "guid": (
+        (
+          $curr_network_configuration 
+            | .networks[] 
+            | select(.name == $dynamic_services_network_name) 
+            | .guid
+        ) // null
+      ),
       "name": $dynamic_services_network_name,
       "service_network": true,
       "subnets": [
         {
+          "guid": (
+            (
+              $curr_network_configuration 
+                | .networks[] 
+                | select(.name == $dynamic_services_network_name) 
+                | .subnets[] 
+                | select(.iaas_identifier == $dynamic_services_iaas_network) 
+                | .guid
+            ) // null
+          ),
           "iaas_identifier": $dynamic_services_iaas_network,
           "cidr": $dynamic_services_network_cidr,
           "reserved_ip_ranges": $dynamic_services_reserved_ip_ranges,
