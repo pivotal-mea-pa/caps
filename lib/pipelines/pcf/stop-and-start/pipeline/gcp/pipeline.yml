@@ -81,12 +81,6 @@ jobs:
 
 resources:
 
-- name: pcf-pipelines
-  type: git
-  source:
-    uri: https://github.com/pivotal-cf/pcf-pipelines.git
-    branch: master
-
 - name: automation
   type: git
   source:
