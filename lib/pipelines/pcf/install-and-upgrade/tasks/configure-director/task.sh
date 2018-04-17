@@ -3,7 +3,7 @@
 source automation/lib/scripts/utility/template-utils.sh
 
 [[ -n "$TRACE" ]] && set -x
-set -xeo pipefail
+set -eo pipefail
 
 # Source terraform output variables if available
 source_variables 'terraform-output/pcf-env-*.sh'
@@ -74,5 +74,8 @@ om \
   configure-director \
   --network-assignment "$network_assignment"
 
-[[ $? -ne 0 ]] && \
+if [[ $? -ne 0 ]]; then
   echo "WARNING! Network assignment failed. Most likely this has already been done and cannot be changed once applied."
+fi
+echo "Ops Manager director configuration complete."
+
