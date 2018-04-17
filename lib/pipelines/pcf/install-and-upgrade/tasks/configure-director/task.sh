@@ -21,7 +21,7 @@ CURR_AZ_CONFIGURATION=$(om \
   --client-secret "${OPSMAN_CLIENT_SECRET}" \
   --username "${OPSMAN_USERNAME}" \
   --password "${OPSMAN_PASSWORD}" \
-  curl --silent --path /api/v0/staged/director/availability_zones | jq )
+  curl --silent --path /api/v0/staged/director/availability_zones | jq .availability_zones)
 
 # Retrieve configured networks if any which will be  
 # passed as a json arg to the network_configuration  
