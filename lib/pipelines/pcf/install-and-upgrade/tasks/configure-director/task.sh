@@ -3,7 +3,7 @@
 source automation/lib/scripts/utility/template-utils.sh
 
 [[ -n "$TRACE" ]] && set -x
-set -eo pipefail
+set -xeo pipefail
 
 # Source terraform output variables if available
 source_variables 'terraform-output/pcf-env-*.sh'
