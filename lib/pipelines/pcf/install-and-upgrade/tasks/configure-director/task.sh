@@ -77,5 +77,5 @@ om \
 if [[ $? -ne 0 ]]; then
   echo "WARNING! Network assignment failed. Most likely this has already been done and cannot be changed once applied."
 fi
-echo "Ops Manager director configuration complete."
+
 
