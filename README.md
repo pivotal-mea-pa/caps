@@ -179,7 +179,7 @@ export TF_VAR_pcf_start_at=09:00
 
 #### `caps-tf`
 
-Since the control plane for each environment is Terraform this utility will be the tool you will use most often to apply changes to the bootstrap envrionment. Once an environment has been bootstrapped the internal automation will handle all upgrades and operational workflows via Concourse. Once you have set the context you can run a `plan` via this script to see what changes are pending. If the environment has already been set up then the `plan` should yield only an update to download the SSH keys for the environment. You will need to run `apply` to ensure keys have been downloaded before running any of the other utilities below.
+Since the control plane for each environment is Terraform, this utility will be the tool you will use most often to apply changes to the bootstrap envrionment. Once an environment has been bootstrapped the internal automation will handle all upgrades and operational workflows via Concourse. Once you have set the context you can run a `plan` via this script to see what changes are pending. If the environment has already been set up then the `plan` should yield only an update to download the SSH keys for the environment. You will need to run `apply` to ensure keys have been downloaded before running any of the other utilities below.
 
 ```
 USAGE: caps-tf [ plan | apply | destroy | recreate-bastion ] -o|--options <TERRAFORM_OPTIONS> -c|--clean
@@ -246,7 +246,7 @@ USAGE: caps-info
     This utility will display useful information about the current environment.
 ```
 
-#### Managing Access to an Environment
+### Managing Access to an Environment
 
 By default when you set the environment context you will have full administrative privileges to the environment as long as you have IaaS credentials with the appropriate role to access the bootstrap Terraform state. Access to the bastion instance using the bastion user and password is the highest level of access and it grants you access to all the bootstrap automation infrastructure as well as the keys to the access the IaaS. Hence, the bastion credentials should be considered highly sensitive. In the event the credentials need to be changed then the generated password can be tainted in the bootstrap Terraform state and the bastion instance rebuilt without affecting already deployed infrastructure.
 
@@ -258,7 +258,7 @@ If you need to grant access to the internal VPC network resources then you can c
 caps-ssh bastion
 ```
 
-2) Create the user as follows
+2) Create the user as follows one the SSH session has been established.
 
 ```
 sudo create_vpn_user <USER> <PASSWORD>
