@@ -30,7 +30,7 @@ run:
       version=0
     else
       version=$(($(echo ${state#*-})+${VERSION_INCREMENT:-0}))
-      mc find auto/pcf/stopped --name "$ON_STATE-$(($version-2))" --exec "mc rm {}" 2>/dev/null
+      mc rm $state 2>/dev/null
     fi
 
     set -e
