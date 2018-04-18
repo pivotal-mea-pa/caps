@@ -101,7 +101,7 @@ All build logs will be written to the `<repository home>/log` folder.
 
 #### `caps-init`
 
-This utility sets the current environment context and will initialize a control file if one is not available.
+This utility sets the current environment context and will initialize a control file if one is not available. When switching context using this utility any active VPN sessions will be disconnected as the new context may require a different connection.
 
 ```
 USAGE: caps-init <NAME> -d|--deployment <DEPLOYMENT_NAME> -i|--iaas <IAAS_PROVIDER>
@@ -109,7 +109,8 @@ USAGE: caps-init <NAME> -d|--deployment <DEPLOYMENT_NAME> -i|--iaas <IAAS_PROVID
     This utility will create a control file for a new environment in the repository root.
     This file will be named '.envrc-<NAME>'. Its format is compatible with the 'direnv'
     (https://github.com/direnv/direnv) utility which is recommend for managing profiles
-    for multiple deployment environments.
+    for multiple deployment environments. Running this script will terminate any
+    connected VPN sessions.
 
     <NAME>                             The name of the environment. This will also be the name of your primary VPC.
     -d|--deployment <DEPLOYMENT_NAME>  The name of one of the deployment recipes.
