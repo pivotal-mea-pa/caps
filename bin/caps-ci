@@ -57,18 +57,16 @@ if [[ -z $host || -z $password ]]; then
     exit 1
 fi
 
-echo -e "\nChecking connectivity to $host...\n  * This will hang if you are not logged on to the VPN."
-nc -v -z -w 1 $host 22 >/dev/null 2>&1
-if [[ $? -ne 0 ]]; then
-    echo "ERROR! Unable to reach SSH port of $host."
-    exit 1
-fi
+echo -e "\nThe Concourse UI is available via the following URL: http://localhost:8080\n"
+echo -e "user: admin\npassword: $password"
 
-echo -e "\nCreating SSH tunnel in order to access Concourse."
+echo -e "\nEstablishing SSH tunnel in order to access Concourse:\n  ...Creating tunnel. This will hang if you are not logged on to the VPN."
 ps -ef | awk '/8080\:127\.0\.0\.1\:8080/{ print $2 }' | sudo xargs kill -15
 ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no \
     -i $workspace_path/bastion-admin-ssh-key.pem $TF_VAR_bastion_admin_user@$host \
     -L 8080:127.0.0.1:8080 -N >/dev/null 2>&1 &
+
+echo -e "  ...Logging in and synchronizing using the fly CLI."
 
 sleep 2
 fly -t local login -k -c http://localhost:8080 -u admin -p $password >/dev/null 2>&1
@@ -78,7 +76,4 @@ if [[ $? -ne 0 ]]; then
 fi
 
 fly -t local sync >/dev/null 2>&1
-
-echo -e "\nThe Concourse UI is available via the following URL: http://localhost:8080\n"
-echo -e "user: admin"
-echo -e "password: $password\n"
+echo -e "  ...Session established.\n"

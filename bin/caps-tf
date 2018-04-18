@@ -7,9 +7,11 @@ common::initialize
 set -e
 
 usage () {
-    echo -e "${BLUE}\nUSAGE: caps-tf [ plan | apply | destroy | recreate-bastion ] -o|--options <TERRAFORM_OPTIONS>\n"
+    echo -e "${BLUE}\nUSAGE: caps-tf [ plan | apply | destroy | recreate-bastion ] -o|--options <TERRAFORM_OPTIONS> -c|--clean\n"
     echo -e "    This utility will perform the given Terraform action on the deployment's bootstrap template.\n"
-    echo -e "    <TERRAFORM_OPTIONS>  Additional options to pass to terraform.\n"
+    echo -e "    -o|--options  <TERRAFORM_OPTIONS>  Additional options to pass to terraform."
+    echo -e "    -c|--clean                         Ensures any rebuilds are clean (i.e. recreate-bastion with this"
+    echo -e "                                       option will ensure the persistent data volume is also recreated.\n"
 }
 
 case "$1" in
@@ -35,6 +37,9 @@ while [[ $# -gt 0 ]]; do
         -o|--options)
             terraform_options=$2
             shift
+            ;;
+        -c|--clean)
+            clean=yes
             ;;
         *)
             usage
@@ -107,6 +112,13 @@ case $tf_action in
             -state=$workspace_path/.terraform/terraform.tfstate \
             -module=bootstrap.network.inception \
             google_compute_instance.bastion
+
+        if [[ $clean == yes ]]; then
+            terraform taint \
+                -state=$workspace_path/.terraform/terraform.tfstate \
+                -module=bootstrap.network.inception \
+                google_compute_disk.bastion-data-volume            
+        fi
 
         $0 plan
         $0 apply

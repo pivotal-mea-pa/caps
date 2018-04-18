@@ -2,10 +2,10 @@
 
 usage () {
     echo -e "\nUSAGE: build-image -i|--iaas <IAAS_PROVIDER> [ -r|--regions <REGIONS> ]\n"
-    echo -e "    <IAAS_PROVIDER>  The iaas provider for which images will be built.\n"
-    echo -e "    <REGIONS>        Command separated list of the iaas provider's regions for which"
-    echo -e "                     images will be built. This does not apply to all providers and"
-    echo -e "                     will be ignored where appropriate.\n"
+    echo -e "    -i|--iaas <IAAS_PROVIDER>  The iaas provider for which images will be built.\n"
+    echo -e "    -r|--regions <REGIONS>     Command separated list of the iaas provider's regions for which"
+    echo -e "                               images will be built. This does not apply to all providers and"
+    echo -e "                               will be ignored where appropriate.\n"
 }
 
 root_dir=$(cd $(dirname $BASH_SOURCE)/.. && pwd)
