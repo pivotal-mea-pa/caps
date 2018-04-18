@@ -119,6 +119,64 @@ USAGE: caps-init <NAME> -d|--deployment <DEPLOYMENT_NAME> -i|--iaas <IAAS_PROVID
 
 Control files are environment scripts and have the name format `.caps-env_<NAME>`. They will be placed within the root of this repository. You should keep all IAAS credentials out of this file and reference them as environment variables that have been exported via another mechanism such the [direnv](https://direnv.net/) utility. The control files contain all externalized variables that customize the Terraform templates for the bootstrap infrastructure as well as any configuration that needs to be passed to the operations automation pipelines.
 
+Below is a sample control file for an environment named *pcf-poc1* deployed to *GCP*.
+
+```
+#!/bin/bash
+
+#
+# Environment variables required by Terraform 
+# to bootstrap and install the PCF environment
+#
+
+export TF_VAR_gcp_project=$GOOGLE_PROJECT
+export TF_VAR_gcp_credentials=$GOOGLE_CREDENTIALS
+export TF_VAR_gcp_region=$GOOGLE_REGION
+
+export TF_VAR_gcp_storage_access_key=$GCS_STORAGE_ACCESS_KEY
+export TF_VAR_gcp_storage_secret_key=$GCS_STORAGE_SECRET_KEY
+
+export TF_VAR_mysql_monitor_recipient_email=$OPS_EMAIL
+
+# Pivnet Token for downloading pivotal releases
+export TF_VAR_pivnet_token=WTPf8AQK6FMczvuxhmqM
+
+# VPC configurations
+
+# PoC #1 Environment
+
+export TF_VAR_vpc_name=pcf-poc1
+export TF_VAR_vpc_dns_zone=pcfenv1.pocs.pcfs.io
+export TF_VAR_vpc_parent_dns_zone_name=pocs-pcfs-io
+
+export TF_VAR_terraform_state_bucket=tfstate-${GOOGLE_REGION}
+export TF_VAR_bootstrap_state_prefix=${TF_VAR_vpc_name}-bootstrap
+
+export TF_VAR_locale=Asia/Dubai
+export TF_VAR_automation_pipelines_branch=dev
+export TF_VAR_automation_extensions_repo_branch=dev
+
+export TF_VAR_bastion_admin_user=bastion-admin
+export TF_VAR_bastion_setup_vpn=true
+export TF_VAR_bastion_allow_public_ssh=
+
+export TF_VAR_opsman_major_minor_version=2\\.1\\.[0-9]+$
+export TF_VAR_ert_major_minor_version=2\\.1\\.[0-9]+$
+
+export TF_VAR_products='
+    healthwatch:p-healthwatch/^1\\.1\\..*$
+    metrics:apm/^1\\.4\\..*$
+    mysql:p-mysql/^1\\.10\\..*$
+    mysqlv2:pivotal-mysql/^2\\.2\\..*$
+    rabbitmq:p-rabbitmq/^1\\.11\\..*$
+    redis:p-redis/^1\\.11\\..*$
+    pks:pivotal-container-service/^1\\.0\\..*$
+    scs:p-spring-cloud-services/^1\\.5\\..*$'
+
+export TF_VAR_pcf_stop_at=15:00
+export TF_VAR_pcf_start_at=09:00
+```
+
 #### `caps-tf`
 
 Since the control plane for each environment is Terraform this utility will be the tool you will use most often to apply changes to the bootstrap envrionment. Once an environment has been bootstrapped the internal automation will handle all upgrades and operational workflows via Concourse. Once you have set the context you can run a `plan` via this script to see what changes are pending. If the environment has already been set up then the `plan` should yield only an update to download the SSH keys for the environment. You will need to run `apply` to ensure keys have been downloaded before running any of the other utilities below.
