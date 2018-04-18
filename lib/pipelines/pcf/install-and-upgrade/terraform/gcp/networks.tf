@@ -35,32 +35,32 @@ resource "google_compute_subnetwork" "subnet-dynamic-services-1" {
 }
 
 #
-# Peer perimeter mgmt network to PCF virtual network
+# Peer perimeter admin network to PCF virtual network
 #
 
-resource "google_compute_network_peering" "pcf-mgmt" {
-  name         = "${var.prefix}-pcf-mgmt"
+resource "google_compute_network_peering" "pcf-admin" {
+  name         = "${var.prefix}-pcf-admin"
   network      = "${google_compute_network.pcf-virt-net.self_link}"
-  peer_network = "${data.terraform_remote_state.bootstrap.mgmt_network}"
+  peer_network = "${data.terraform_remote_state.bootstrap.admin_network}"
 }
 
-resource "google_compute_network_peering" "mgmt-pcf" {
-  name         = "${var.prefix}-mgmt-pcf"
-  network      = "${data.terraform_remote_state.bootstrap.mgmt_network}"
+resource "google_compute_network_peering" "admin-pcf" {
+  name         = "${var.prefix}-admin-pcf"
+  network      = "${data.terraform_remote_state.bootstrap.admin_network}"
   peer_network = "${google_compute_network.pcf-virt-net.self_link}"
 }
 
 #
-# Allow access to internal resources in PCF virtual network from mgmt network
+# Allow access to internal resources in PCF virtual network from admin network
 #
 
-data "google_compute_subnetwork" "mgmt" {
-  name   = "${basename(data.terraform_remote_state.bootstrap.mgmt_subnetwork)}"
+data "google_compute_subnetwork" "admin" {
+  name   = "${basename(data.terraform_remote_state.bootstrap.admin_subnetwork)}"
   region = "${var.gcp_region}"
 }
 
-resource "google_compute_firewall" "mgmt-to-pcf-allow-all" {
-  name = "${var.prefix}-mgmt-to-pcf-allow-all"
+resource "google_compute_firewall" "admin-to-pcf-allow-all" {
+  name = "${var.prefix}-admin-to-pcf-allow-all"
 
   network = "${google_compute_network.pcf-virt-net.name}"
 
@@ -70,6 +70,6 @@ resource "google_compute_firewall" "mgmt-to-pcf-allow-all" {
 
   direction = "INGRESS"
 
-  source_ranges = ["${data.google_compute_subnetwork.mgmt.ip_cidr_range}"]
+  source_ranges = ["${data.google_compute_subnetwork.admin.ip_cidr_range}"]
   target_tags   = ["${var.prefix}", "${var.prefix}-opsman"]
 }

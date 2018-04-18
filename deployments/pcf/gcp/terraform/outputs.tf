@@ -223,12 +223,12 @@ output "dmz_subnetwork" {
   value = "${module.bootstrap.dmz_subnetwork}"
 }
 
-output "mgmt_network" {
-  value = "${module.bootstrap.mgmt_network}"
+output "admin_network" {
+  value = "${module.bootstrap.admin_network}"
 }
 
-output "mgmt_subnetwork" {
-  value = "${module.bootstrap.mgmt_subnetwork}"
+output "admin_subnetwork" {
+  value = "${module.bootstrap.admin_subnetwork}"
 }
 
 #
