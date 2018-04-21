@@ -1,0 +1,62 @@
+---
+platform: linux
+
+image_resource:
+  type: docker-image
+  source:
+    repository: appbricks/automation-tools
+
+inputs:
+- name: automation
+- name: automation-extensions
+- name: terraform-output
+
+run:
+  path: automation/lib/tasks/opsman/common/configure-product.sh
+
+params:
+  TRACE:
+  OPSMAN_HOST:
+  OPSMAN_CLIENT_ID:
+  OPSMAN_CLIENT_SECRET:
+  OPSMAN_USERNAME:
+  OPSMAN_PASSWORD:
+  # Product configuration
+  PRODUCT_NAME: p-rabbitmq
+  TEMPLATE_PATH: automation/lib/pipelines/pcf/install-and-upgrade/templates/rabbitmq
+  TEMPLATE_OVERRIDE_PATH:
+  # Networking
+  NETWORK_NAME:
+  SERVICE_NETWORK_NAME:
+  SINGLETON_AVAILABILITY_ZONE:
+  OTHER_AVAILABILITY_ZONES:
+  # Resources
+  RABBITMQ_LB_NAME:
+  INTERNET_CONNECTED:
+  # Properties
+  ADMIN_PASSWORD:
+  SERVER_PLUGINS:
+  CA_CERTIFICATE:
+  SERVER_TLS_CERT:
+  SERVER_TLS_KEY:
+  EXTERNAL_DNS_NAME:
+  DISK_ALARM_THRESHOLD:
+  HAPROXY_STATIC_IPS: 
+  SERVER_NODE_STATIC_IPS:
+  SYSLOG_ADDRESS:
+  SYSLOG_PORT:
+  SYSLOG_TRANSPORT:
+  SYSLOG_TLS:
+  SYSLOG_PERMITTED_PEER:
+  SYSLOG_CA_CERT:
+  ON_DEMAND_SERVICE_INSTANCE_QUOTA:
+  PLAN_1_CF_SERVICE_ACCESS:
+  PLAN_1_NAME:
+  PLAN_1_DESCRIPTION:
+  PLAN_1_FEATURES:
+  PLAN_1_INSTANCE_QUOTA:
+  PLAN_1_NUMBER_OF_NODES:
+  PLAN_1_CLUSTER_STRATEGY:
+  PLAN_1_VM_TYPE:
+  PLAN_1_PERSISTENT_DISK_TYPE:
+  AVAILABILITY_ZONES:

@@ -93,20 +93,26 @@
         OPSMAN_CLIENT_SECRET: ((opsman_client_secret))
         OPSMAN_USERNAME: ((opsman_admin_username))
         OPSMAN_PASSWORD: ((opsman_admin_password))
-        # pks product and configuration
+        # Product configuration
+        PRODUCT_NAME: pivotal-container-service
+        TEMPLATE_PATH: automation/lib/pipelines/pcf/install-and-upgrade/templates/pks
         TEMPLATE_OVERRIDE_PATH:
-        # pks networking
+        # Networking
         NETWORK_NAME: services-1
         SERVICE_NETWORK_NAME: dynamic-services-1
         SINGLETON_AVAILABILITY_ZONE: ((gcp_zone_1))
         OTHER_AVAILABILITY_ZONES: ((gcp_zone_1)),((gcp_zone_2)),((gcp_zone_3))
-        # pks resources
+        # Resources
         INTERNET_CONNECTED: false
-        # pks properties
+        PKS_API_LB_NAME:
+        # Properties
         PKS_API_URL: pks.((system_domain_prefix))
+        PKS_CERTIFICATE:
+        PKS_CERTIFICATE_KEY:        
         CLOUD_PROVIDER: gcp
         GCP_SERVICE_KEY: ((gcp_service_account_key))
         GCP_PROJECT_ID: ((gcp_project))
+        VPC_NETWORK_NAME:
         PLAN1_WORKER_INSTANCES: 3
         PLAN1_ALLOW_PRIVILEGED_CONTAINERS: true
         PLAN1_AZ_PLACEMENT: ((gcp_zone_1))

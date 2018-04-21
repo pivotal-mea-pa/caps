@@ -8,8 +8,6 @@ set -eo pipefail
 # Source terraform output variables if available
 source_variables 'terraform-output/pcf-env-*.sh'
 
-PRODUCT_NAME=pivotal-container-service
-TEMPLATE_PATH=automation/lib/pipelines/pcf/install-and-upgrade/templates/pks
 TEMPLATE_OVERRIDE_PATH=automation-extensions/$TEMPLATE_OVERRIDE_PATH
 
 INSTALLED_VERSION=$(om \
