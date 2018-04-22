@@ -53,8 +53,8 @@
         OPS_MGR_USR: ((opsman_admin_username))
         OPS_MGR_PWD: ((opsman_admin_password))
         PIVNET_API_TOKEN: ((pivnet_token))
-        NO_PROXY: ""
-        OM_IP: ""
+        NO_PROXY: ''
+        OM_IP: ''
 
     # Stage product tile
     - task: stage-tile
@@ -114,34 +114,34 @@
         PLAN_3_MULTI_NODE_DEPLOYMENT: true
         PLAN_3_SERVICE_PLAN_ACCESS: "enable"
         PLAN_3_INSTANCE_LIMIT: 5
-        S3_BACKUP_ACCESS_KEY_ID: ""
-        S3_BACKUP_SECRET_ACCESS_KEY: ""
-        S3_BACKUP_ENDPOINT_URL: ""
-        S3_BACKUP_REGION: ""
-        S3_BACKUP_BUCKET_NAME: ""
-        S3_BACKUP_PATH: ""
-        SCP_BACKUP_USER: ""
-        SCP_BACKUP_SERVER: ""
-        SCP_BACKUP_DESTINATION: ""
-        SCP_BACKUP_FINGERPRINT: ""
-        SCP_BACKUP_KEY: ""
+        S3_BACKUP_ACCESS_KEY_ID: ''
+        S3_BACKUP_SECRET_ACCESS_KEY: ''
+        S3_BACKUP_ENDPOINT_URL: ''
+        S3_BACKUP_REGION: ''
+        S3_BACKUP_BUCKET_NAME: ''
+        S3_BACKUP_PATH: ''
+        SCP_BACKUP_USER: ''
+        SCP_BACKUP_SERVER: ''
+        SCP_BACKUP_DESTINATION: ''
+        SCP_BACKUP_FINGERPRINT: ''
+        SCP_BACKUP_KEY: ''
         SCP_BACKUP_PORT: null
-        GCS_BACKUP_PROJECT_ID: ""
-        GCS_BACKUP_BUCKET_NAME: ""
-        GCS_BACKUP_SERVICE_ACCOUNT_JSON: ""
-        AZURE_BACKUP_ACCOUNT: ""
-        AZURE_BACKUP_STORAGE_ACCESS_KEY: ""
-        AZURE_BACKUP_PATH: ""
-        AZURE_BACKUP_CONTAINER: ""
-        AZURE_BACKUP_BLOB_STORE_BASE_URL: ""
+        GCS_BACKUP_PROJECT_ID: ''
+        GCS_BACKUP_BUCKET_NAME: ''
+        GCS_BACKUP_SERVICE_ACCOUNT_JSON: ''
+        AZURE_BACKUP_ACCOUNT: ''
+        AZURE_BACKUP_STORAGE_ACCESS_KEY: ''
+        AZURE_BACKUP_PATH: ''
+        AZURE_BACKUP_CONTAINER: ''
+        AZURE_BACKUP_BLOB_STORE_BASE_URL: ''
         BACKUP_CRON_SCHEDULE: "0 */8 * * *"
         ENABLE_BACKUP_EMAIL_ALERTS: false
-        SYSLOG_ADDRESS: ""
+        SYSLOG_ADDRESS: ''
         SYSLOG_PORT: null
         SYSLOG_TRANSPORT: "tcp"
         SYSLOG_TLS: false
-        SYSLOG_PERMITTED_PEER: ""
-        SYSLOG_CA_CERT: ""
+        SYSLOG_PERMITTED_PEER: ''
+        SYSLOG_CA_CERT: ''
 
 - op: add
   path: /jobs/name=deploy/plan/0/aggregate/-

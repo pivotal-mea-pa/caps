@@ -52,8 +52,8 @@
         OPS_MGR_USR: ((opsman_admin_username))
         OPS_MGR_PWD: ((opsman_admin_password))
         PIVNET_API_TOKEN: ((pivnet_token))
-        NO_PROXY: ""
-        OM_IP: ""
+        NO_PROXY: ''
+        OM_IP: ''
 
     # This task will block if the environment 
     # has been put into stopped state
