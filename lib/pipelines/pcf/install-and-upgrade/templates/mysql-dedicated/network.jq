@@ -17,5 +17,5 @@
   "singleton_availability_zone": {
     "name": $singleton_availability_zone
   },
-  "availability_zones": ($availability_zones | split(",") | map({name: .}))
+  "other_availability_zones": ($availability_zones | split(",") | map({name: .}))
 }

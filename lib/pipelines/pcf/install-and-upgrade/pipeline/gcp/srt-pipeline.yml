@@ -300,8 +300,8 @@ jobs:
       TEMPLATE_OVERRIDE_PATH:
       # srt networking
       NETWORK_NAME: ert
-      SINGLETON_AVAILABILITY_ZONE: ((gcp_zone_1))
-      OTHER_AVAILABILITY_ZONES: ((gcp_zone_1)),((gcp_zone_2)),((gcp_zone_3))
+      SINGLETON_AVAILABILITY_ZONE: # Sourced from terraform output
+      AVAILABILITY_ZONES: # Sourced from terraform output
       # srt resources
       INTERNET_CONNECTED: ((internet_connected))
       # srt properties
