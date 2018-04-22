@@ -1,7 +1,7 @@
 #
 # jq -n \
 #   --argjson enable_global_access true \
-#   --argjson disable_cert_check false \
+#   --argjson disable_cert_check true \
 #   --argjson secure_credentials false \
 #   "$(cat properties.jq)"
 #
