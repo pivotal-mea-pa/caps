@@ -1,25 +1,29 @@
 // Core Project Output
 
-output "region" {
-  value = "${var.gcp_region}"
-}
-
-output "azs" {
-  value = "${var.gcp_zone_1},${var.gcp_zone_2},${var.gcp_zone_3}"
+output "company_name" {
+  value = "${data.terraform_remote_state.bootstrap.company_name}"
 }
 
 output "deployment_prefix" {
   value = "${var.prefix}-vms"
 }
 
-output "company_name" {
-  value = "${data.terraform_remote_state.bootstrap.company_name}"
+output "region" {
+  value = "${var.gcp_region}"
+}
+
+output "singleton_availability_zone" {
+  value = "${var.gcp_zone_1}"
+}
+
+output "availability_zones" {
+  value = "${var.gcp_zone_1},${var.gcp_zone_2},${var.gcp_zone_3}"
 }
 
 // DNS Output
 
-output "ops_manager_dns" {
-  value = "${google_dns_record_set.ops-manager-dns.name}"
+output "env_dns_zone_name_servers" {
+  value = "${google_dns_managed_zone.env_dns_zone.name_servers}"
 }
 
 output "pcf_ert_domain" {
@@ -38,8 +42,22 @@ output "tcp_domain" {
   value = "tcp.${local.pas_domain}"
 }
 
-output "env_dns_zone_name_servers" {
-  value = "${google_dns_managed_zone.env_dns_zone.name_servers}"
+output "apps_domain" {
+  value = "${local.apps_domain}"
+}
+
+output "ops_manager_dns" {
+  value = "${
+    substr(
+      google_dns_record_set.ops-manager-dns.name, 0, 
+      length(google_dns_record_set.ops-manager-dns.name)-1)}"
+}
+
+output "pks_api_url" {
+  value = "${
+    substr(
+      google_dns_record_set.pks-api.name, 0, 
+      length(google_dns_record_set.pks-api.name)-1)}"
 }
 
 // Network Output

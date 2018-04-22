@@ -86,7 +86,7 @@
 
     # Configure product tile
     - task: configure
-      file: automation/lib/pipelines/pcf/install-and-upgrade/tasks/configure-pks/task.yml
+      file: automation/lib/pipelines/pcf/install-and-upgrade/tasks/configure-scs/task.yml
       params:
         OPSMAN_HOST: ((opsman_domain_or_ip_address))
         OPSMAN_CLIENT_ID: ((opsman_client_id))
@@ -94,34 +94,19 @@
         OPSMAN_USERNAME: ((opsman_admin_username))
         OPSMAN_PASSWORD: ((opsman_admin_password))
         # Product configuration
-        PRODUCT_NAME: pivotal-container-service
-        TEMPLATE_PATH: automation/lib/pipelines/pcf/install-and-upgrade/templates/pks
+        PRODUCT_NAME: p-spring-cloud-services
+        TEMPLATE_PATH: automation/lib/pipelines/pcf/install-and-upgrade/templates/scs
         TEMPLATE_OVERRIDE_PATH:
         # Networking
         NETWORK_NAME: services-1
-        SERVICE_NETWORK_NAME: dynamic-services-1
         SINGLETON_AVAILABILITY_ZONE: # Sourced from terraform output
         AVAILABILITY_ZONES: # Sourced from terraform output
         # Resources
         INTERNET_CONNECTED: false
-        PKS_API_LB_NAME:
         # Properties
-        PKS_API_URL:
-        PKS_CERTIFICATE:
-        PKS_CERTIFICATE_KEY:        
-        CLOUD_PROVIDER: gcp
-        GCP_SERVICE_KEY: ((gcp_service_account_key))
-        GCP_PROJECT_ID: ((gcp_project))
-        VPC_NETWORK_NAME:
-        PLAN1_WORKER_INSTANCES: 3
-        PLAN1_ALLOW_PRIVILEGED_CONTAINERS: true
-        PLAN1_AZ_PLACEMENT: ((gcp_zone_1))
-        PLAN2_WORKER_INSTANCES: 5
-        PLAN2_ALLOW_PRIVILEGED_CONTAINERS: true
-        PLAN2_AZ_PLACEMENT: ((gcp_zone_2))
-        PLAN3_WORKER_INSTANCES: 0
-        PLAN3_ALLOW_PRIVILEGED_CONTAINERS: true
-        PLAN3_AZ_PLACEMENT: ((gcp_zone_3))
+        ENABLE_GLOBAL_ACCESS:
+        DISABLE_CERT_CHECK:
+        SECURE_CREDENTIALS:
 
 - op: add
   path: /jobs/name=deploy/plan/0/aggregate/-

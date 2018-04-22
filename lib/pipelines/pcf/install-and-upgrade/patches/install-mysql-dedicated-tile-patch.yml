@@ -86,7 +86,7 @@
 
     # Configure product tile
     - task: configure
-      file: automation/lib/pipelines/pcf/install-and-upgrade/tasks/configure-pks/task.yml
+      file: automation/lib/pipelines/pcf/install-and-upgrade/tasks/configure-mysql-dedicated/task.yml
       params:
         OPSMAN_HOST: ((opsman_domain_or_ip_address))
         OPSMAN_CLIENT_ID: ((opsman_client_id))
@@ -94,8 +94,8 @@
         OPSMAN_USERNAME: ((opsman_admin_username))
         OPSMAN_PASSWORD: ((opsman_admin_password))
         # Product configuration
-        PRODUCT_NAME: pivotal-container-service
-        TEMPLATE_PATH: automation/lib/pipelines/pcf/install-and-upgrade/templates/pks
+        PRODUCT_NAME: pivotal-mysql
+        TEMPLATE_PATH: automation/lib/pipelines/pcf/install-and-upgrade/templates/mysql-dedicated
         TEMPLATE_OVERRIDE_PATH:
         # Networking
         NETWORK_NAME: services-1
@@ -104,24 +104,44 @@
         AVAILABILITY_ZONES: # Sourced from terraform output
         # Resources
         INTERNET_CONNECTED: false
-        PKS_API_LB_NAME:
         # Properties
-        PKS_API_URL:
-        PKS_CERTIFICATE:
-        PKS_CERTIFICATE_KEY:        
-        CLOUD_PROVIDER: gcp
-        GCP_SERVICE_KEY: ((gcp_service_account_key))
-        GCP_PROJECT_ID: ((gcp_project))
-        VPC_NETWORK_NAME:
-        PLAN1_WORKER_INSTANCES: 3
-        PLAN1_ALLOW_PRIVILEGED_CONTAINERS: true
-        PLAN1_AZ_PLACEMENT: ((gcp_zone_1))
-        PLAN2_WORKER_INSTANCES: 5
-        PLAN2_ALLOW_PRIVILEGED_CONTAINERS: true
-        PLAN2_AZ_PLACEMENT: ((gcp_zone_2))
-        PLAN3_WORKER_INSTANCES: 0
-        PLAN3_ALLOW_PRIVILEGED_CONTAINERS: true
-        PLAN3_AZ_PLACEMENT: ((gcp_zone_3))
+        PLAN_1_MULTI_NODE_DEPLOYMENT:
+        PLAN_1_SERVICE_PLAN_ACCESS:
+        PLAN_1_INSTANCE_LIMIT:
+        PLAN_2_MULTI_NODE_DEPLOYMENT:
+        PLAN_2_SERVICE_PLAN_ACCESS:
+        PLAN_2_INSTANCE_LIMIT:
+        PLAN_3_MULTI_NODE_DEPLOYMENT:
+        PLAN_3_SERVICE_PLAN_ACCESS:
+        PLAN_3_INSTANCE_LIMIT:
+        S3_BACKUP_ACCESS_KEY_ID:
+        S3_BACKUP_SECRET_ACCESS_KEY:
+        S3_BACKUP_ENDPOINT_URL:
+        S3_BACKUP_REGION:
+        S3_BACKUP_BUCKET_NAME:
+        S3_BACKUP_PATH:
+        SCP_BACKUP_USER:
+        SCP_BACKUP_SERVER:
+        SCP_BACKUP_DESTINATION:
+        SCP_BACKUP_FINGERPRINT:
+        SCP_BACKUP_KEY:
+        SCP_BACKUP_PORT:
+        GCS_BACKUP_PROJECT_ID:
+        GCS_BACKUP_BUCKET_NAME:
+        GCS_BACKUP_SERVICE_ACCOUNT_JSON:
+        AZURE_BACKUP_ACCOUNT:
+        AZURE_BACKUP_STORAGE_ACCESS_KEY:
+        AZURE_BACKUP_PATH:
+        AZURE_BACKUP_CONTAINER:
+        AZURE_BACKUP_BLOB_STORE_BASE_URL:
+        BACKUP_CRON_SCHEDULE:
+        ENABLE_BACKUP_EMAIL_ALERTS:
+        SYSLOG_ADDRESS:
+        SYSLOG_PORT:
+        SYSLOG_TRANSPORT:
+        SYSLOG_TLS:
+        SYSLOG_PERMITTED_PEER:
+        SYSLOG_CA_CERT:
 
 - op: add
   path: /jobs/name=deploy/plan/0/aggregate/-
