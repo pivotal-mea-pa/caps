@@ -34,10 +34,6 @@ output "system_domain" {
   value = "${local.system_domain}"
 }
 
-output "apps_domain" {
-  value = "${local.apps_domain}"
-}
-
 output "tcp_domain" {
   value = "tcp.${local.pas_domain}"
 }
