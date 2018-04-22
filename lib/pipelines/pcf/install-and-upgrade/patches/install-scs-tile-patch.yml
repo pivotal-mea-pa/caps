@@ -104,9 +104,9 @@
         # Resources
         INTERNET_CONNECTED: false
         # Properties
-        ENABLE_GLOBAL_ACCESS:
-        DISABLE_CERT_CHECK:
-        SECURE_CREDENTIALS:
+        ENABLE_GLOBAL_ACCESS: true
+        DISABLE_CERT_CHECK: true
+        SECURE_CREDENTIALS: false
 
 - op: add
   path: /jobs/name=deploy/plan/0/aggregate/-

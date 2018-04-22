@@ -106,13 +106,13 @@
         INTERNET_CONNECTED: false
         PKS_API_LB_NAME:
         # Properties
-        PKS_API_URL:
-        PKS_CERTIFICATE:
-        PKS_CERTIFICATE_KEY:        
+        PKS_API_URL: # Sourced from terraform output
+        PKS_CERTIFICATE: # Sourced from terraform output
+        PKS_CERTIFICATE_KEY: # Sourced from terraform output
         CLOUD_PROVIDER: gcp
         GCP_SERVICE_KEY: ((gcp_service_account_key))
         GCP_PROJECT_ID: ((gcp_project))
-        VPC_NETWORK_NAME:
+        VPC_NETWORK_NAME: # Sourced from terraform output
         PLAN1_WORKER_INSTANCES: 3
         PLAN1_ALLOW_PRIVILEGED_CONTAINERS: true
         PLAN1_AZ_PLACEMENT: ((gcp_zone_1))

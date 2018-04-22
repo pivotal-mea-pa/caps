@@ -105,21 +105,21 @@
         # Resources
         INTERNET_CONNECTED: false
         # Properties
-        REDIS_SHARED_MAXMEMORY:
-        REDIS_SHARED_INSTANCE_LIMIT:
-        REDIS_ON_DEMAND_INSTANCE_LIMIT:
-        SMALL_PLAN_AZ:
-        SMALL_PLAN_INSTANCE_LIMIT:
-        MEDIUM_PLAN_AZ:
-        MEDIUM_PLAN_INSTANCE_LIMIT:
-        LARGE_PLAN_AZ:
-        LARGE_PLAN_INSTANCE_LIMI:
-        SYSLOG_ADDRESS:
-        SYSLOG_PORT:
-        SYSLOG_TRANSPORT:
-        SYSLOG_FORMAT:
-        TLS_SYSLOG_PERMITTED_PEER:
-        TLS_SYSLOG_CA_CERT:
+        REDIS_SHARED_MAXMEMORY: 512MB
+        REDIS_SHARED_INSTANCE_LIMIT: 5
+        REDIS_ON_DEMAND_INSTANCE_LIMIT: 20
+        SMALL_PLAN_AZ: ((gcp_zone_1))
+        SMALL_PLAN_INSTANCE_LIMIT: 20
+        MEDIUM_PLAN_AZ: ((gcp_zone_2))
+        MEDIUM_PLAN_INSTANCE_LIMIT: 20
+        LARGE_PLAN_AZ: ((gcp_zone_3))
+        LARGE_PLAN_INSTANCE_LIMI: 0
+        SYSLOG_ADDRESS: ''
+        SYSLOG_PORT: null
+        SYSLOG_TRANSPORT: ''
+        SYSLOG_FORMAT: ''
+        TLS_SYSLOG_PERMITTED_PEER: null
+        TLS_SYSLOG_CA_CERT: ''
 
 - op: add
   path: /jobs/name=deploy/plan/0/aggregate/-

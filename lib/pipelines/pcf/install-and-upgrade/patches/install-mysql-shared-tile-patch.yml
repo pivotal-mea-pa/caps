@@ -104,12 +104,12 @@
         # Resources
         INTERNET_CONNECTED: false
         # Properties
-        PROXY_STATIC_IPS: 
-        CREDENTIALS_HOSTNAME:
+        PROXY_STATIC_IPS:  ""
+        CREDENTIALS_HOSTNAME: ""
         ALERTS_EMAIL: ((mysql_monitor_recipient_email))
-        SYSLOG_ADDRESS:
-        SYSLOG_PORT:
-        SYSLOG_PROTOCOL:
+        SYSLOG_ADDRESS: ""
+        SYSLOG_PORT: null
+        SYSLOG_PROTOCOL: ""
 
 - op: add
   path: /jobs/name=deploy/plan/0/aggregate/-
