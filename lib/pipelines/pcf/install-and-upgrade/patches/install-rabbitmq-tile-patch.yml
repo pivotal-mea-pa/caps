@@ -53,8 +53,8 @@
         OPS_MGR_USR: ((opsman_admin_username))
         OPS_MGR_PWD: ((opsman_admin_password))
         PIVNET_API_TOKEN: ((pivnet_token))
-        NO_PROXY: ""
-        OM_IP: ""
+        NO_PROXY: ''
+        OM_IP: ''
 
     # Stage product tile
     - task: stage-tile
@@ -108,19 +108,19 @@
         # Properties
         ADMIN_PASSWORD: ((opsman_admin_password))
         SERVER_PLUGINS: 'rabbitmq_management'
-        CA_CERTIFICATE: ""
-        SERVER_TLS_CERT: ""
-        SERVER_TLS_KEY: ""
-        EXTERNAL_DNS_NAME: ""
+        CA_CERTIFICATE: ''
+        SERVER_TLS_CERT: ''
+        SERVER_TLS_KEY: ''
+        EXTERNAL_DNS_NAME: ''
         DISK_ALARM_THRESHOLD: "mem_relative_1_5"
-        HAPROXY_STATIC_IPS: ""
-        SERVER_NODE_STATIC_IPS: ""
-        SYSLOG_ADDRESS: ""
+        HAPROXY_STATIC_IPS: ''
+        SERVER_NODE_STATIC_IPS: ''
+        SYSLOG_ADDRESS: ''
         SYSLOG_PORT: null
-        SYSLOG_TRANSPORT: ""
+        SYSLOG_TRANSPORT: ''
         SYSLOG_TLS: false
-        SYSLOG_PERMITTED_PEER: ""
-        SYSLOG_CA_CERT: ""
+        SYSLOG_PERMITTED_PEER: ''
+        SYSLOG_CA_CERT: ''
         ON_DEMAND_SERVICE_INSTANCE_QUOTA: 20
         PLAN_1_CF_SERVICE_ACCESS: "enable"
         PLAN_1_NAME: "single-node"
