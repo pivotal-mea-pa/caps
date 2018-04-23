@@ -11,7 +11,7 @@ inputs:
 - name: automation-extensions
 
 run:
-  path: automation/lib/pipelines/pcf/install-and-upgrade/tasks/common/configure-product.shconfigure-opsman/task.sh
+  path: automation/lib/pipelines/pcf/install-and-upgrade/tasks/configure-opsman/task.sh
 
 params:
   TRACE:
