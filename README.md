@@ -81,6 +81,12 @@ export GOOGLE_ZONE=$GOOGLE_REGION-b
 
 export GCS_STORAGE_ACCESS_KEY=****
 export GCS_STORAGE_SECRET_KEY=****
+
+#
+# Token for downloading Pivotal products
+#
+
+export PIVNET_TOKEN=****
 ```
 
 #### `build-image`
@@ -139,7 +145,7 @@ export TF_VAR_gcp_storage_secret_key=$GCS_STORAGE_SECRET_KEY
 export TF_VAR_mysql_monitor_recipient_email=$OPS_EMAIL
 
 # Pivnet Token for downloading pivotal releases
-export TF_VAR_pivnet_token=****
+export TF_VAR_pivnet_token=$PIVNET_TOKEN
 
 # VPC configurations
 
