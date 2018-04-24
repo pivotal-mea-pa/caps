@@ -98,7 +98,7 @@ USAGE: build-image -i|--iaas <IAAS_PROVIDER> [ -r|--regions <REGIONS> ]
 
     -i|--iaas <IAAS_PROVIDER>  The iaas provider for which images will be built.
 
-    -r|--regions <REGIONS>     Command separated list of the iaas provider's regions for which
+    -r|--regions <REGIONS>     Comma separated list of the iaas provider's regions for which
                                images will be built. This does not apply to all providers and
                                will be ignored where appropriate.
 ```
