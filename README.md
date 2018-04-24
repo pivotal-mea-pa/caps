@@ -139,7 +139,7 @@ export TF_VAR_gcp_storage_secret_key=$GCS_STORAGE_SECRET_KEY
 export TF_VAR_mysql_monitor_recipient_email=$OPS_EMAIL
 
 # Pivnet Token for downloading pivotal releases
-export TF_VAR_pivnet_token=WTPf8AQK6FMczvuxhmqM
+export TF_VAR_pivnet_token=****
 
 # VPC configurations
 
@@ -166,8 +166,8 @@ export TF_VAR_ert_major_minor_version=2\\.1\\.[0-9]+$
 export TF_VAR_products='
     healthwatch:p-healthwatch/^1\\.1\\..*$
     metrics:apm/^1\\.4\\..*$
-    mysql:p-mysql/^1\\.10\\..*$
-    mysqlv2:pivotal-mysql/^2\\.2\\..*$
+    mysql-shared:p-mysql/^1\\.10\\..*$
+    mysql-dedicated:pivotal-mysql/^2\\.2\\..*$
     rabbitmq:p-rabbitmq/^1\\.11\\..*$
     redis:p-redis/^1\\.11\\..*$
     pks:pivotal-container-service/^1\\.0\\..*$
