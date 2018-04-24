@@ -225,6 +225,8 @@ USAGE: caps-ci logout | login
     create a target to this concourse environment.
 ```
 
+> If jobs in the deployment fail due to IaaS issues or timeouts simple restart the deployment by accessing concourse using the `caps-ci` utility.
+
 #### `caps-ssh`
 
 This helper script that can be used to create an SSH session to an instance within the cloud environment. It can also be used to login to the bastion instance using the admin credentials.
