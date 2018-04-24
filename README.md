@@ -254,7 +254,7 @@ USAGE: caps-info
 
 ### Managing Access to an Environment
 
-By default when you set the environment context you will have full administrative privileges to the environment as long as you have IaaS credentials with the appropriate role to access the bootstrap Terraform state. Access to the bastion instance using the bastion user and password is the highest level of access and it grants you access to all the bootstrap automation infrastructure as well as the keys to the access the IaaS. Hence, the bastion credentials should be considered highly sensitive. In the event the credentials need to be changed then the generated password can be tainted in the bootstrap Terraform state and the bastion instance rebuilt without affecting already deployed infrastructure.
+By default when you set the environment context you will have full administrative privileges to the environment, as long as you have the IaaS credentials with the appropriate role to access the bootstrap Terraform state. Access to the bastion instance using the bastion admin user and password is the highest level of access and it grants you access to all the bootstrap automation infrastructure as well as the keys to the access the IaaS. Hence, the bastion credentials should be considered highly sensitive. In the event the credentials need to be changed then the generated password can be tainted in the bootstrap Terraform state and the bastion instance rebuilt without affecting already deployed infrastructure.
 
 If you need to grant access to the internal VPC network resources then you can create additional VPN credentials which can be shared by traditional means. To create a new VPN user.
 
@@ -274,7 +274,7 @@ sudo create_vpn_user <USER> <PASSWORD>
 
 https://`BASTION PUBLIC DNS NAME]`/~`USER`
 
-This link is secured using the user's VPN credentials which were set in 2).
+This link is secured using the user's VPN credentials which were set in 2). This user will not be able to SSH to the bastion instance or access any of the automation tooling, but will have access to any other deployed resource within VPC.
 
 ### Advance Users
 
