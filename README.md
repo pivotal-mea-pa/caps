@@ -244,6 +244,8 @@ USAGE: caps-ssh <NAME> [ -u|user <SSH_USER> ]
                          provided the default SSH user will be 'ubuntu'.
 ```
 
+> The base image may implement [`sshguard`](https://www.sshguard.net/) or [`fail2ban`](https://www.fail2ban.org/wiki/index.php/Main_Page). Which means repeated failures to login will result in temporary block on your IP. If SSH is hanging then you will need re-try after some time or simply stop or disable the service as soon as you can SSH into the bastion instance.
+
 #### `caps-info`
 
 ```
