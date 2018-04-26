@@ -28,7 +28,9 @@ source ~/scripts/opsman-func.sh
 opsman_url='$opsman_url'
 opsman_token='$opsman_token'
 
-export BOSH_HOST=''\$(opsman::get_director_ip)''
+export BOSH_HOST=''\$(opsman::get_installation | jq -r \
+    '.products[] | select(.installation_name == "p-bosh") | .director_configuration.allocated_director_ips[0]')''
+
 if [[ -z "\$BOSH_HOST" ]]; then
     echo "ERROR! Unable to retrieve BOSH host address. You may need to re-run prepare task to refresh the ops manager token."
     exit 1
