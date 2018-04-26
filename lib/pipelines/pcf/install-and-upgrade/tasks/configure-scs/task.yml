@@ -10,6 +10,7 @@ inputs:
 - name: automation
 - name: automation-extensions
 - name: terraform-output
+- name: pivnet-product
 
 run:
   path: automation/lib/pipelines/pcf/install-and-upgrade/tasks/common/configure-product.sh
