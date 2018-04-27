@@ -209,8 +209,9 @@ variable "ert_errands_to_disable" {
 }
 
 # List of products to install. This should be a comma separated list of 
-# 'product_name:product_slug/product_version_regex' as required by the pipeline at
-# https://github.com/pivotal-cf/pcf-pipelines/tree/master/upgrade-tile.
+# 'product_name:product_slug/product_version_regex[:errands to disable]'.
+# The 'errands to disable' field is optional and has the same format
+# as the 'ert_errands_to_disable' variable.
 variable "products" {
   type = "string"
 }

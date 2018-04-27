@@ -132,6 +132,17 @@
         PLAN_1_VM_TYPE: "large"
         PLAN_1_PERSISTENT_DISK_TYPE: 30720
 
+    - task: disable-errands
+      file: automation/lib/pipelines/pcf/install-and-upgrade/tasks/disable-errands/task.yml
+      params:
+        PRODUCT_NAME: p-rabbitmq
+        OPSMAN_HOST: ((opsman_domain_or_ip_address))
+        OPSMAN_USERNAME: ((opsman_admin_username))
+        OPSMAN_PASSWORD: ((opsman_admin_password))
+        ERRANDS_TO_DISABLE: ${errands_to_disable}
+        OPSMAN_CLIENT_ID: ((opsman_client_id))
+        OPSMAN_CLIENT_SECRET: ((opsman_client_secret))
+
 - op: add
   path: /jobs/name=deploy/plan/0/aggregate/-
   value:

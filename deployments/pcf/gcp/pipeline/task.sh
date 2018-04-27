@@ -34,8 +34,9 @@ set -x
 cp $INSTALL_AND_UPGRADE_PIPELINE_PATH/gcp/${PCF_PAS_RUNTIME_TYPE}-pipeline.yml install-pcf-pipeline0.yml
 i=0 && j=1
 for p in $(echo -e "$PRODUCTS"); do 
-  product_name=${p%:*}
-  slug_and_version=${p#*:}
+  product_name=$(echo $p | awk -F':' '{ print $1 }')
+  slug_and_version=$(echo $p | awk -F':' '{ print $2 }')
+  errands_to_disable=$(echo $p | awk -F':' '{ print $3 }')
   product_slug=${slug_and_version%/*}
   product_version=${slug_and_version#*/}
 
