@@ -327,3 +327,26 @@ The framework depends on a pre-configured cloud image that bootstraps the enviro
 * *DNS (TBD)*
 * *SMTP Service (TBD)*
 
+## Tearing down the environment
+
+### `wipe-env`
+
+There is a job, `wipe-env` in the install pipeline, which you can run to destroy the infrastructure
+that was created by `create-infrastructure`.
+
+_**Note: This job currently is not all-encompassing. If you have deployed PAS (or other tiles) you will want to delete from within Ops Manager before proceeding with `wipe-env`, as well as deleting the BOSH director VM from within.**_
+
+#### `caps-tf`
+
+Once the PCF environment created by Ops Manager has been removed you can undo the bootstrapping process by running the `caps-tf destroy`. 
+
+```
+USAGE: caps-tf [ plan | apply | destroy | recreate-bastion ] -o|--options <TERRAFORM_OPTIONS> -c|--clean
+
+    This utility will perform the given Terraform action on the deployment's bootstrap template.
+
+    -o|--options  <TERRAFORM_OPTIONS>  Additional options to pass to terraform.
+    -c|--clean                         Ensures any rebuilds are clean (i.e. recreate-bastion with this
+                                       option will ensure the persistent data volume is also recreated.
+``` 
+> NOTE: If running a destroy option you may need to run a couple of times to complete. This is a known issue with regards to modules.
