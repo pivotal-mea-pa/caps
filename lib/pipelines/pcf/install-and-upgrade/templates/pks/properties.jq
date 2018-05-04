@@ -4,7 +4,8 @@
 #    --arg pks_certificate "$pks_certificate" \
 #    --arg pks_certificate_key "$pks_certificate_key" \
 #    --arg cloud_provider "gcp" \
-#    --arg gcp_service_key "$GCP_SERVICE_ACCOUNT_KEY" \
+#    --arg gcp_master_service_account_key "$GCP_SERVICE_ACCOUNT_KEY" \
+#    --arg gcp_worker_service_account_key "$GCP_SERVICE_ACCOUNT_KEY" \
 #    --arg gcp_project_id "$GCP_PROJECT_ID" \
 #    --arg vpc_network_name "${TF_VAR_prefix}-virt-net" \
 #    --argjson plan1_worker_instances 3 \
@@ -102,7 +103,8 @@ end
 if $cloud_provider == "gcp" then
 {
   ".properties.cloud_provider": { "value": "GCP" },
-  ".properties.cloud_provider.gcp.service_key": { "value": $gcp_service_key },
+  ".properties.cloud_provider.gcp.master_service_account_key": { "value": $gcp_master_service_account_key },
+  ".properties.cloud_provider.gcp.worker_service_account_key": { "value": $gcp_worker_service_account_key },
   ".properties.cloud_provider.gcp.project_id": { "value": $gcp_project_id },
   ".properties.cloud_provider.gcp.network": { "value": $vpc_network_name },
 }
