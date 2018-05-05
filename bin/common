@@ -83,7 +83,7 @@ function common::read_terraform_output() {
     if [[ ! -e $workspace_path/terraform.output ]]; then
         common::show_env
 
-        echo -e "ERROR! The deployment recipe needs to initialized and refreshed."
+        echo -e "${RED}\nERROR! The deployment recipe needs to initialized and refreshed."
         echo -e "       Run 'caps-tf plan' to list the changes to be made. If the"
         echo -e "       environment has already been provisioned then the only"
         echo -e "       change should be the creation of the local SSH key files.\n"

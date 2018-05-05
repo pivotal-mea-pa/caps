@@ -7,17 +7,21 @@ common::initialize
 set -e
 
 usage () {
-    echo -e "\n${BLUE}USAGE: caps-ssh <NAME> [ -u|user <SSH_USER> ]\n"
+    echo -e "\n${BLUE}USAGE: caps-ssh <NAME> [ -u|--user <SSH_USER> ] [ -x|--proxy ]\n"
     echo -e "    This utility will create launch an SSH session to an instance within the deployed"
     echo -e "    environment.\n"
-    echo -e "    <NAME>               The name or IP of the instance to SSH to. If the name is 'bastion'"
-    echo -e "                         then an SSH session will be created to the bastion instance. If the"
-    echo -e "                         name is 'tunnel' then an SSH tunnel will be created to the VPC."
-    echo -e "                         Otherwise it should be of the host prefix of the instance name."
-    echo -e "                         For example <host prefix>.<vpc domain>."
-    echo -e "    -u|user <SSH_USER>   The SSH user to login as. This will be ignored when you SSH to the"
-    echo -e "                         bastion instance. For any other instance if this argument is not"
-    echo -e "                         provided the default SSH user will be 'ubuntu'.\n"
+    echo -e "    <NAME>                The name or IP of the instance to SSH to. If the name is 'bastion'"
+    echo -e "                          then an SSH session will be created to the bastion instance."
+    echo -e "                          Otherwise it should be of the host prefix of the instance name."
+    echo -e "                          For example <host prefix>.<vpc domain>."
+    echo -e "    -u|--user <SSH_USER>  The SSH user to login as. This will be ignored when you SSH to the"
+    echo -e "                          bastion instance. For any other instance if this argument is not"
+    echo -e "                          provided the default SSH user will be 'ubuntu'."
+    echo -e "    -x|--proxy            This will create a transparent proxy server that works as a poor"
+    echo -e "                          man's VPN. To install the sshuttle utility refer to the following"
+    echo -e "                          url: ${BROWN_ORANGE}https://github.com/sshuttle/sshuttle${BLUE}. Use this only if you"
+    echo -e "                          have not setup or connected through a VPN in the bastion server"
+    echo -e "                          and require direct access to VPC's internal resources.\n"
 }
 
 case "$1" in
@@ -43,9 +47,21 @@ while [[ $# -gt 0 ]]; do
         -v|--debug)
             set -x
             ;;
-        -u|user)
+        -u|--user)
             ssh_user=$2
             shift
+            ;;
+        -x|--proxy)
+            create_sshuttle_session=yes
+
+            set +e
+            which sshuttle >/dev/null 2>&1
+            if [[ $? -ne 0 ]]; then
+                echo -e "${RED}\nERROR! The 'sshuttle' utility is not installed. Please refer instructions"
+                echo -e "       at https://github.com/sshuttle/sshuttle on installation steps.\n"
+                exit 1
+            fi
+            set -e
             ;;
         *)
             usage
@@ -80,14 +96,15 @@ if [[ -z $ssh_host ]]; then
     exit 1
 fi
 
-echo -e "\nChecking connectivity to $ssh_host...\n  * This will hang if you are not logged on to the VPN."
-nc -v -z -w 1 $ssh_host 22 >/dev/null 2>&1
-if [[ $? -ne 0 ]]; then
-    echo "ERROR! Unable to reach SSH port of $ssh_host."
-    exit 1
+if [[ $create_sshuttle_session == yes ]]; then
+    echo -e "\nCreating SHHuttle session through $ssh_host...\n"
+
+    sshuttle --dns \
+        --ssh-cmd="ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i $ssh_key" \
+        --remote="$ssh_user@$ssh_host" 10.0.0.0/8 172.16.0.0/16 192.168.0.0/16
+else
+    echo -e "\nCreating SSH session to $ssh_host...\n"
+    [[ -n $su_password ]] && echo -e "  The SU password is: $su_password\n"
+
+    ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i $ssh_key $ssh_user@$ssh_host
 fi
-
-echo -e "\nCreating SSH session to $host...\n"
-[[ -n $su_password ]] && echo -e "  The SU password is: $su_password\n"
-
-ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i $ssh_key $ssh_user@$ssh_host
