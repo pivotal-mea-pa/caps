@@ -13,12 +13,6 @@
   },
   ".healthwatch-forwarder.health_check_az": {
     "value": ($availability_zones | split(",") | .[0])
-  },
-  ".healthwatch-forwarder.app_db_credentials": {
-    "value": {
-      "identity": "db_app_user",
-      "password": "db_app_password"
-    },
   }
 }
 +
