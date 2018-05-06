@@ -178,7 +178,7 @@ output "db_host" {
 
 // Certificates
 
-output "ca_cert" {
+output "ca_certs" {
   value = "${data.terraform_remote_state.bootstrap.root_ca_cert}"
 }
 
