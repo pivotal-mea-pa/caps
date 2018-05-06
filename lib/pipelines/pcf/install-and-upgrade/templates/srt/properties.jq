@@ -7,21 +7,21 @@
 #   --arg s3_endpoint "" \
 #   --arg gcp_storage_access_key "$GCS_STORAGE_ACCESS_KEY" \
 #   --arg gcp_storage_secret_key "$GCS_STORAGE_SECRET_KEY" \
-#   --arg terraform_prefix "$terraform_prefix" \
-#   --arg system_domain "sys.pas.pcfenv1.pocs.pcfs.io" \
-#   --arg apps_domain "apps.pas.pcfenv1.pocs.pcfs.io" \
+#   --arg terraform_prefix "" \
+#   --arg system_domain "$system_domain" \
+#   --arg apps_domain "$apps_domain" \
 #   --arg router_static_ips "" \
 #   --arg diego_brain_static_ips "" \
 #   --arg ha_proxy_static_ips "" \
 #   --arg tcp_router_static_ips "" \
-#   --arg ert_certificate "" \
-#   --arg ert_certificate_key "" \
-#   --arg routing_custom_ca_certificates "" \
+#   --arg ert_cert "$ert_cert" \
+#   --arg ert_cert_key "$ert_cert_key" \
+#   --arg ca_certs "$ca_certs" \
 #   --arg routing_tls_termination "load_balancer" \
 #   --arg router_tls_ciphers "ECDHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384" \
 #   --arg haproxy_tls_ciphers "DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384" \
 #   --arg haproxy_forward_tls "enable" \
-#   --arg haproxy_backend_ca "$ROOT_CA" \
+#   --arg haproxy_backend_ca "$ca_certs" \
 #   --argjson skip_cert_verify true \
 #   --argjson routing_disable_http false \
 #   --arg container_networking_network_cidr "10.255.0.0/16" \
@@ -32,8 +32,8 @@
 #   --argjson default_app_ssh_access true \
 #   --arg security_acknowledgement "X" \
 #   --arg insecure_docker_registry_list "" \
-#   --arg saml_certificate "" \
-#   --arg saml_certificate_key "" \
+#   --arg saml_cert "$saml_cert" \
+#   --arg saml_cert_key "$saml_cert_key" \
 #   --arg credhub_primary_encryption_name "default" \
 #   --arg credhub_encryption_key_name1 "default" \
 #   --arg credhub_encryption_key_secret1 "" \
@@ -99,14 +99,14 @@
       {
         "name": "ERT SAN Certificate",
         "certificate": {
-          "cert_pem": $ert_certificate,
-          "private_key_pem": $ert_certificate_key
+          "cert_pem": $ert_cert,
+          "private_key_pem": $ert_cert_key
         }
       }
     ]
   },
   
-  ".properties.routing_custom_ca_certificates": { "value": $routing_custom_ca_certificates },
+  ".properties.routing_custom_ca_certificates": { "value": $ca_certs },
   ".properties.routing_tls_termination": { "value": $routing_tls_termination },
 
   # TLS Cipher Suites
@@ -208,8 +208,8 @@ end
 {
   ".uaa.service_provider_key_credentials": {
     "value": {
-      "cert_pem": $saml_certificate,
-      "private_key_pem": $saml_certificate_key
+      "cert_pem": $saml_cert,
+      "private_key_pem": $saml_cert_key
     }
   }
 }
