@@ -48,21 +48,9 @@ resource "tls_locally_signed_cert" "pcf-san-cert" {
   ]
 }
 
-# Save ERT SAN certificate as GCP cert
-resource "google_compute_ssl_certificate" "ert-san-cert" {
-  name        = "${var.prefix}-ert-san-cert"
-  certificate = "${length(var.pcf_ert_ssl_cert) > 0 ? var.pcf_ert_ssl_cert : tls_locally_signed_cert.pcf-san-cert.cert_pem}"
-  private_key = "${length(var.pcf_ert_ssl_key) > 0 ? var.pcf_ert_ssl_key : tls_private_key.pcf-san-cert.private_key_pem}"
-
-  lifecycle {
-    create_before_destroy = true
-  }
-}
-
 # This needs to be removed as it creates 
 # a race condition when renaming the resource
 resource "google_compute_ssl_certificate" "lb-cert" {
-  name        = "${var.prefix}-lb-cert"
   certificate = "${length(var.pcf_ert_ssl_cert) > 0 ? var.pcf_ert_ssl_cert : tls_locally_signed_cert.pcf-san-cert.cert_pem}"
   private_key = "${length(var.pcf_ert_ssl_key) > 0 ? var.pcf_ert_ssl_key : tls_private_key.pcf-san-cert.private_key_pem}"
 
