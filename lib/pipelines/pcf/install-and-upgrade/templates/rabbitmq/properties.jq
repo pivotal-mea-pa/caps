@@ -3,8 +3,8 @@
 #   --arg admin_password "Passw0rd" \
 #   --arg server_plugins "rabbitmq_management" \
 #   --arg ca_certificate "" \
-#   --arg server_tls_cert "" \
-#   --arg server_tls_key "" \
+#   --arg rabbitmq_cert "" \
+#   --arg rabbitmq_cert_key "" \
 #   --arg external_dns_name "" \
 #   --arg disk_alarm_threshold "mem_relative_1_5" \
 #   --arg haproxy_static_ips "" \
@@ -61,8 +61,8 @@ if $server_tls_cert != "" then
 {
   ".rabbitmq-server.rsa_certificate": {
     "value": {
-      "cert_pem": $server_tls_cert,
-      "private_key_pem": $server_tls_key
+      "cert_pem": $rabbitmq_cert,
+      "private_key_pem": $rabbitmq_cert_key
     }
   }
 }
