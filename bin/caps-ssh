@@ -99,7 +99,7 @@ fi
 if [[ $create_sshuttle_session == yes ]]; then
     echo -e "\nCreating SSHuttle session through $ssh_host...\n"
 
-    sshuttle -—no-latency-control --dns \
+    sshuttle --no-latency-control --dns \
         --ssh-cmd="ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i $ssh_key" \
         --remote="$ssh_user@$ssh_host" 10.0.0.0/8 172.16.0.0/16 192.168.0.0/16
 else
