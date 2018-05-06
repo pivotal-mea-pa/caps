@@ -87,7 +87,7 @@ resource "google_dns_record_set" "tcp-dns" {
 }
 
 resource "google_dns_record_set" "pks-api" {
-  name         = "pks.${local.system_domain}."
+  name         = "pks.${local.pas_domain}."
   managed_zone = "${data.terraform_remote_state.bootstrap.vpc_dns_zone_name}"
 
   type = "A"
@@ -97,7 +97,7 @@ resource "google_dns_record_set" "pks-api" {
 }
 
 resource "google_dns_record_set" "harbor" {
-  name         = "harbor.${local.system_domain}."
+  name         = "harbor.${local.pas_domain}."
   managed_zone = "${data.terraform_remote_state.bootstrap.vpc_dns_zone_name}"
 
   type = "A"
