@@ -1,0 +1,42 @@
+---
+platform: linux
+
+image_resource:
+  type: docker-image
+  source:
+    repository: appbricks/automation-tools
+
+inputs:
+- name: automation
+- name: automation-extensions
+- name: terraform-output
+- name: pivnet-product
+
+run:
+  path: automation/lib/pipelines/pcf/install-and-upgrade/tasks/common/configure-product.sh
+
+params:
+  TRACE:
+  OPSMAN_HOST:
+  OPSMAN_CLIENT_ID:
+  OPSMAN_CLIENT_SECRET:
+  OPSMAN_USERNAME:
+  OPSMAN_PASSWORD:
+  # Product configuration
+  PRODUCT_NAME: harbor-container-registry
+  TEMPLATE_PATH: automation/lib/pipelines/pcf/install-and-upgrade/templates/harbor
+  TEMPLATE_OVERRIDE_PATH:
+  # Networking
+  NETWORK_NAME:
+  SINGLETON_AVAILABILITY_ZONE:
+  AVAILABILITY_ZONES:
+  # Resources
+  INTERNET_CONNECTED:
+  # Properties
+  HARBOR_REGISTRY_FQDN:
+  HARBOR_REGISTRY_CERTIFICATE:
+  HARBOR_REGISTRY_CERTIFICATE_KEY:
+  CA_CERTS:
+  ADMIN_PASSWORD:
+  AUTH_MODE:
+  REGISTRY_STORAGE:
