@@ -2,7 +2,7 @@
 # jq -n \
 #   --arg admin_password "Passw0rd" \
 #   --arg server_plugins "rabbitmq_management" \
-#   --arg ca_certificate "" \
+#   --arg ca_certs "$ca_certs" \
 #   --arg rabbitmq_cert "" \
 #   --arg rabbitmq_cert_key "" \
 #   --arg external_dns_name "" \
@@ -41,7 +41,7 @@
     "value": ($server_plugins | split(","))
   },
   ".rabbitmq-server.ssl_cacert": {
-    "value": $ca_certificate
+    "value": $ca_certs
   },
   ".rabbitmq-broker.dns_host": {
     "value": $external_dns_name
