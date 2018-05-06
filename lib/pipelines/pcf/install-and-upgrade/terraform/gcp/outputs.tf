@@ -195,25 +195,25 @@ output "saml_cert_key" {
 }
 
 output "ert_cert" {
-  value = "${google_compute_ssl_certificate.ert-san-cert.certificate}"
+  value = "${google_compute_ssl_certificate.lb-cert.certificate}"
 }
 
 output "ert_cert_key" {
-  value = "${google_compute_ssl_certificate.ert-san-cert.private_key}"
+  value = "${google_compute_ssl_certificate.lb-cert.private_key}"
 }
 
 output "pks_cert" {
-  value = "${google_compute_ssl_certificate.ert-san-cert.certificate}"
+  value = "${google_compute_ssl_certificate.lb-cert.certificate}"
 }
 
 output "pks_cert_key" {
-  value = "${google_compute_ssl_certificate.ert-san-cert.private_key}"
+  value = "${google_compute_ssl_certificate.lb-cert.private_key}"
 }
 
 output "harbor_registry_cert" {
-  value = "${google_compute_ssl_certificate.ert-san-cert.certificate}"
+  value = "${google_compute_ssl_certificate.lb-cert.certificate}"
 }
 
 output "harbor_registry_cert_key" {
-  value = "${google_compute_ssl_certificate.ert-san-cert.private_key}"
+  value = "${google_compute_ssl_certificate.lb-cert.private_key}"
 }
