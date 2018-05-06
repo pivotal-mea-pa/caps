@@ -178,38 +178,38 @@ output "db_host" {
 
 // Certificates
 
-output "root_ca" {
+output "ca_cert" {
   value = "${data.terraform_remote_state.bootstrap.root_ca_cert}"
 }
 
-output "saml_certificate" {
+output "saml_cert" {
   value = "${length(var.pcf_saml_ssl_cert) > 0 ? var.pcf_saml_ssl_cert : tls_locally_signed_cert.saml-san.cert_pem}"
 }
 
-output "saml_certificate_key" {
+output "saml_cert_key" {
   value = "${length(var.pcf_saml_ssl_key) > 0 ? var.pcf_saml_ssl_key : tls_private_key.saml-san.private_key_pem}"
 }
 
-output "ert_certificate" {
+output "ert_cert" {
   value = "${google_compute_ssl_certificate.ert-san-cert.certificate}"
 }
 
-output "ert_certificate_key" {
+output "ert_cert_key" {
   value = "${google_compute_ssl_certificate.ert-san-cert.private_key}"
 }
 
-output "pks_certificate" {
+output "pks_cert" {
   value = "${google_compute_ssl_certificate.ert-san-cert.certificate}"
 }
 
-output "pks_certificate_key" {
+output "pks_cert_key" {
   value = "${google_compute_ssl_certificate.ert-san-cert.private_key}"
 }
 
-output "harbor_registry_certificate" {
+output "harbor_registry_cert" {
   value = "${google_compute_ssl_certificate.ert-san-cert.certificate}"
 }
 
-output "harbor_registry_certificate_key" {
+output "harbor_registry_cert_key" {
   value = "${google_compute_ssl_certificate.ert-san-cert.private_key}"
 }
