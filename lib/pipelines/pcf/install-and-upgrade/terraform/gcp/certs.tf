@@ -12,6 +12,7 @@ resource "tls_cert_request" "ert-san" {
   private_key_pem = "${tls_private_key.ert-san.private_key_pem}"
 
   dns_names = [
+    "*.${local.pas_domain}",
     "*.${local.apps_domain}",
     "*.${local.system_domain}",
     "*.uaa.${local.system_domain}",
