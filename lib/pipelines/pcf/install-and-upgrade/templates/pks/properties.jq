@@ -1,8 +1,8 @@
 #
 # jq -n \
-#    --arg pks_api_url "pks.sys.pas.pcfenv1.pocs.pcfs.io" \
-#    --arg pks_certificate "$pks_certificate" \
-#    --arg pks_certificate_key "$pks_certificate_key" \
+#    --arg pks_api_url "pks.pas.pcfenv1.pocs.pcfs.io" \
+#    --arg pks_cert "$pks_cert" \
+#    --arg pks_cert_key "$pks_cert_key" \
 #    --arg cloud_provider "gcp" \
 #    --arg gcp_master_service_account_key "$GCP_SERVICE_ACCOUNT_KEY" \
 #    --arg gcp_worker_service_account_key "$GCP_SERVICE_ACCOUNT_KEY" \
@@ -24,8 +24,8 @@
   ".properties.uaa_url": { "value": $pks_api_url },
   ".pivotal-container-service.pks_tls": {
     "value": {
-      "cert_pem": $pks_certificate,
-      "private_key_pem": $pks_certificate_key
+      "cert_pem": $pks_cert,
+      "private_key_pem": $pks_cert_key
     }
   }
 }

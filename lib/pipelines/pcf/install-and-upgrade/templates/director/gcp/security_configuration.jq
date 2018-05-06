@@ -1,6 +1,6 @@
 #
 # jq -n \
-#   --arg trusted_certificates "$OPS_MGR_TRUSTED_CERTS" \
+#   --arg trusted_certificates "$ca_certs" \
 #   "$(cat security_configuration.jq)"
 #
 

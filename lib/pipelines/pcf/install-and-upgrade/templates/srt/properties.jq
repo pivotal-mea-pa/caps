@@ -16,7 +16,7 @@
 #   --arg tcp_router_static_ips "" \
 #   --arg ert_cert "$ert_cert" \
 #   --arg ert_cert_key "$ert_cert_key" \
-#   --arg ca_certs "$ca_certs" \
+#   --arg routing_custom_ca_certificates "$ca_certs" \
 #   --arg routing_tls_termination "load_balancer" \
 #   --arg router_tls_ciphers "ECDHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384" \
 #   --arg haproxy_tls_ciphers "DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384" \
@@ -106,7 +106,7 @@
     ]
   },
   
-  ".properties.routing_custom_ca_certificates": { "value": $ca_certs },
+  ".properties.routing_custom_ca_certificates": { "value": $routing_custom_ca_certificates },
   ".properties.routing_tls_termination": { "value": $routing_tls_termination },
 
   # TLS Cipher Suites
