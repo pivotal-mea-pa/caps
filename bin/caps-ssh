@@ -97,7 +97,7 @@ if [[ -z $ssh_host ]]; then
 fi
 
 if [[ $create_sshuttle_session == yes ]]; then
-    echo -e "\nCreating SHHuttle session through $ssh_host...\n"
+    echo -e "\nCreating SSHuttle session through $ssh_host...\n"
 
     sshuttle —no-latency-control --dns \
         --ssh-cmd="ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no -i $ssh_key" \
