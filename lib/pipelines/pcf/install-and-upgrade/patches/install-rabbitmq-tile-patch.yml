@@ -106,7 +106,7 @@
         # RABBITMQ_LB_NAME:
         INTERNET_CONNECTED: false
         # Properties
-        ADMIN_PASSWORD: ((opsman_admin_password))
+        ADMIN_PASSWORD: ((common_admin_password))
         SERVER_PLUGINS: 'rabbitmq_management'
         CA_CERTIFICATE: ''
         SERVER_TLS_CERT: ''

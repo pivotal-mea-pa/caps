@@ -48,6 +48,7 @@ data "template_file" "params" {
     vpc_dns_zone           = "${data.terraform_remote_state.bootstrap.vpc_dns_zone}"
     credhub_encryption_key = "${data.terraform_remote_state.bootstrap.credhub_encryption_key}"
     pas_system_dbpassword  = "${data.terraform_remote_state.bootstrap.pas_system_dbpassword}"
+    common_admin_password  = "${data.terraform_remote_state.bootstrap.common_admin_password}"
 
     opsman_major_minor_version = "${data.terraform_remote_state.bootstrap.opsman_major_minor_version}"
     ert_major_minor_version    = "${data.terraform_remote_state.bootstrap.ert_major_minor_version}"

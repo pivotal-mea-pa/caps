@@ -142,6 +142,10 @@ output "opsman_admin_password" {
   value = "${random_string.opsman-admin-password.result}"
 }
 
+output "common_admin_password" {
+  value = "${random_string.common-admin-password.result}"
+}
+
 output "pas_system_dbpassword" {
   value     = "${random_string.pas-system-dbpassword.result}"
   sensitive = true

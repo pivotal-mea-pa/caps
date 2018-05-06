@@ -28,6 +28,11 @@ resource "random_string" "opsman-admin-password" {
   special = false
 }
 
+resource "random_string" "common-admin-password" {
+  length  = 10
+  special = false
+}
+
 resource "random_string" "pas-system-dbpassword" {
   length  = 10
   special = false
