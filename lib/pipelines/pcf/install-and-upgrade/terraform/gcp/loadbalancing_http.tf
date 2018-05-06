@@ -60,8 +60,6 @@ resource "google_compute_ssl_certificate" "lb-cert" {
   lifecycle {
     create_before_destroy = true
   }
-
-  ssl_certificates = ["${google_compute_ssl_certificate.ert-san-cert.self_link}"]
 }
 
 resource "google_compute_http_health_check" "cf" {

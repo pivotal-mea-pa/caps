@@ -49,7 +49,7 @@ resource "tls_locally_signed_cert" "ert-san" {
 
 # Save ERT SAN certificate as GCP cert
 resource "google_compute_ssl_certificate" "ert-san-cert" {
-  name_prefix = "${var.prefix}-ert-san-cert"
+  name        = "${var.prefix}-ert-san-cert"
   certificate = "${length(var.pcf_ert_ssl_cert) > 0 ? var.pcf_ert_ssl_cert : tls_locally_signed_cert.ert-san.cert_pem}"
   private_key = "${length(var.pcf_ert_ssl_key) > 0 ? var.pcf_ert_ssl_key : tls_private_key.ert-san.private_key_pem}"
 
