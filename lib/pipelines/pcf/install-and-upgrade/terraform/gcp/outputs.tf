@@ -146,6 +146,10 @@ output "pks_api_lb_name" {
   value = "tcp:${google_compute_target_pool.pks-api.name}"
 }
 
+output "harbor_lb_name" {
+  value = "tcp:${google_compute_target_pool.harbor.name}"
+}
+
 output "tcp_routing_reservable_ports" {
   value = "${google_compute_forwarding_rule.cf-tcp.port_range}"
 }
