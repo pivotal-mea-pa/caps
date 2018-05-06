@@ -50,6 +50,20 @@ resource "google_compute_target_https_proxy" "https_lb_proxy" {
   ssl_certificates = ["${google_compute_ssl_certificate.ert-san-cert.self_link}"]
 }
 
+# This needs to be removed as it creates 
+# a race condition when renaming the resource
+resource "google_compute_ssl_certificate" "lb-cert" {
+  name_prefix = "${var.prefix}-lb-cert"
+  certificate = "${length(var.pcf_ert_ssl_cert) > 0 ? var.pcf_ert_ssl_cert : tls_locally_signed_cert.ert-san.cert_pem}"
+  private_key = "${length(var.pcf_ert_ssl_key) > 0 ? var.pcf_ert_ssl_key : tls_private_key.ert-san.private_key_pem}"
+
+  lifecycle {
+    create_before_destroy = true
+  }
+
+  ssl_certificates = ["${google_compute_ssl_certificate.ert-san-cert.self_link}"]
+}
+
 resource "google_compute_http_health_check" "cf" {
   name = "${var.prefix}-cf-public"
 
