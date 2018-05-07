@@ -16,7 +16,17 @@ staged_products=$(om \
   | jq -r '.[] | select(.type != "p-bosh") | .guid')
 
 if [[ $DIRECTOR_ONLY == "true" ]]; then
-  request='{"deploy_products":"none","ignore_warnings":true}'
+  om \
+    --target "https://${OPSMAN_HOST}" \
+    --skip-ssl-validation \
+    --client-id "${OPSMAN_CLIENT_ID}" \
+    --client-secret "${OPSMAN_CLIENT_SECRET}" \
+    --username "${OPSMAN_USERNAME}" \
+    --password "${OPSMAN_PASSWORD}" \
+    apply-changes \
+    --ignore-warnings \
+    --skip-deploy-products
+
 elif [[ $DISABLE_ERRANDS == "true" ]]; then
   request='{"deploy_products":"all","ignore_warnings":true,"errands":{}}'
 
@@ -41,18 +51,26 @@ elif [[ $DISABLE_ERRANDS == "true" ]]; then
       | jq --argjson disabled_errands "$disabled_errands" '.errands *= $disabled_errands')
   done
 
-else
-  request='{"deploy_products":"all","ignore_warnings":true}'
-fi
+  om \
+    --target "https://${OPSMAN_HOST}" \
+    --skip-ssl-validation \
+    --client-id "${OPSMAN_CLIENT_ID}" \
+    --client-secret "${OPSMAN_CLIENT_SECRET}" \
+    --username "${OPSMAN_USERNAME}" \
+    --password "${OPSMAN_PASSWORD}" \
+    curl \
+    --path /api/v0/installations \
+    --request POST \
+    --data "$request"
 
-om \
-  --target "https://${OPSMAN_HOST}" \
-  --skip-ssl-validation \
-  --client-id "${OPSMAN_CLIENT_ID}" \
-  --client-secret "${OPSMAN_CLIENT_SECRET}" \
-  --username "${OPSMAN_USERNAME}" \
-  --password "${OPSMAN_PASSWORD}" \
-  curl \
-  --path /api/v0/installations \
-  --request POST \
-  --data "$request"
+else
+  om \
+    --target "https://${OPSMAN_HOST}" \
+    --skip-ssl-validation \
+    --client-id "${OPSMAN_CLIENT_ID}" \
+    --client-secret "${OPSMAN_CLIENT_SECRET}" \
+    --username "${OPSMAN_USERNAME}" \
+    --password "${OPSMAN_PASSWORD}" \
+    apply-changes \
+    --ignore-warnings
+fi
