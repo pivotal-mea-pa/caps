@@ -229,6 +229,8 @@ jobs:
       OPSMAN_CLIENT_SECRET: ((opsman_client_id))
       OPSMAN_USERNAME: ((opsman_admin_username))
       OPSMAN_PASSWORD: ((opsman_admin_password))
+      DIRECTOR_ONLY: true
+      DISABLE_ERRANDS:
 
 - name: pas-tile-regulator
   plan:
@@ -401,6 +403,8 @@ jobs:
       OPSMAN_PASSWORD: ((opsman_admin_password))
       OPSMAN_CLIENT_ID: ((opsman_client_id))
       OPSMAN_CLIENT_SECRET: ((opsman_client_secret))
+      DIRECTOR_ONLY:
+      DISABLE_ERRANDS:
 
   # Toggle the environment state to started
   - task: set-started-state
