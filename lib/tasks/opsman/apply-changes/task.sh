@@ -5,29 +5,18 @@ set -eo pipefail
 
 echo "Applying changes on Ops Manager @ ${OPSMAN_HOST}"
 
-staged_products=$(om \
-  --target "https://${OPSMAN_HOST}" \
-  --skip-ssl-validation \
-  --client-id "${OPSMAN_CLIENT_ID}" \
-  --client-secret "${OPSMAN_CLIENT_SECRET}" \
-  --username "${OPSMAN_USERNAME}" \
-  --password "${OPSMAN_PASSWORD}" \
-  curl --path /api/v0/staged/products \
-  | jq -r '.[] | select(.type != "p-bosh") | .guid')
+if [[ $DISABLE_ERRANDS == "true" ]]; then
 
-if [[ $DIRECTOR_ONLY == "true" ]]; then
-  om \
+  staged_products=$(om \
     --target "https://${OPSMAN_HOST}" \
     --skip-ssl-validation \
     --client-id "${OPSMAN_CLIENT_ID}" \
     --client-secret "${OPSMAN_CLIENT_SECRET}" \
     --username "${OPSMAN_USERNAME}" \
     --password "${OPSMAN_PASSWORD}" \
-    apply-changes \
-    --ignore-warnings \
-    --skip-deploy-products
+    curl --path /api/v0/staged/products \
+    | jq -r '.[] | select(.type != "p-bosh") | .guid')
 
-elif [[ $DISABLE_ERRANDS == "true" ]]; then
   request='{"deploy_products":"all","ignore_warnings":true,"errands":{}}'
 
   for product_guid in $(echo $staged_products); do
@@ -62,6 +51,18 @@ elif [[ $DISABLE_ERRANDS == "true" ]]; then
     --path /api/v0/installations \
     --request POST \
     --data "$request"
+
+elif [[ $DIRECTOR_ONLY == "true" ]]; then
+  om \
+    --target "https://${OPSMAN_HOST}" \
+    --skip-ssl-validation \
+    --client-id "${OPSMAN_CLIENT_ID}" \
+    --client-secret "${OPSMAN_CLIENT_SECRET}" \
+    --username "${OPSMAN_USERNAME}" \
+    --password "${OPSMAN_PASSWORD}" \
+    apply-changes \
+    --ignore-warnings \
+    --skip-deploy-products
 
 else
   om \
