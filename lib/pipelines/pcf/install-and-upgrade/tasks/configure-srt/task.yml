@@ -24,6 +24,9 @@ params:
   PRODUCT_NAME: cf
   TEMPLATE_PATH: automation/lib/pipelines/pcf/install-and-upgrade/templates/srt
   TEMPLATE_OVERRIDE_PATH:
+  ERRANDS_TO_DISABLE:
+  ERRANDS_TO_ENABLE:
+  ERRAND_DEFAULT_IF_ENABLED: when-changed
   # srt networking
   NETWORK_NAME:
   SINGLETON_AVAILABILITY_ZONE:

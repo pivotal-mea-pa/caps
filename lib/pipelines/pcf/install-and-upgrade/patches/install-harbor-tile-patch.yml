@@ -97,6 +97,9 @@
         PRODUCT_NAME: pivotal-container-service
         TEMPLATE_PATH: automation/lib/pipelines/pcf/install-and-upgrade/templates/harbor
         TEMPLATE_OVERRIDE_PATH:
+        ERRANDS_TO_DISABLE: ${errands_to_enable}
+        ERRANDS_TO_ENABLE: ${errands_to_disable}
+        ERRAND_DEFAULT_IF_ENABLED: when-changed
         # Networking
         NETWORK_NAME: services-1
         SINGLETON_AVAILABILITY_ZONE: # Sourced from terraform output
@@ -111,17 +114,6 @@
         ADMIN_PASSWORD: ((common_admin_password))
         AUTH_MODE: db_auth
         REGISTRY_STORAGE: filesystem
-
-    - task: disable-errands
-      file: automation/lib/pipelines/pcf/install-and-upgrade/tasks/disable-errands/task.yml
-      params:
-        PRODUCT_NAME: pivotal-container-service
-        OPSMAN_HOST: ((opsman_domain_or_ip_address))
-        OPSMAN_USERNAME: ((opsman_admin_username))
-        OPSMAN_PASSWORD: ((opsman_admin_password))
-        ERRANDS_TO_DISABLE: ${errands_to_disable}
-        OPSMAN_CLIENT_ID: ((opsman_client_id))
-        OPSMAN_CLIENT_SECRET: ((opsman_client_secret))
 
 - op: add
   path: /jobs/name=deploy/plan/0/aggregate/-

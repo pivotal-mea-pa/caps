@@ -85,7 +85,6 @@ if [ "$(echo $UNSTAGED_PRODUCT | jq '. | length')" -gt 0 ]; then
         --product-name "${PRODUCT_NAME}" \
         --product-version "${full_version}"
 
-      ./automation/lib/pipelines/pcf/install-and-upgrade/tasks/toggle-errands/task.sh
       ./automation/lib/tasks/opsman/apply-changes/task.sh
     else
       echo "Skipping staging and upgrade of $PRODUCT_NAME version $desired_version as a prior installed version was not found."

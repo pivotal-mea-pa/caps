@@ -362,17 +362,6 @@ jobs:
       DB_SILK_PASSWORD: ((db_silk_password))
       MYSQL_MONITOR_RECIPIENT_EMAIL: ((mysql_monitor_recipient_email))
 
-  - task: disable-errands
-    file: automation/lib/pipelines/pcf/install-and-upgrade/tasks/disable-errands/task.yml
-    params:
-      PRODUCT_NAME: cf
-      OPSMAN_HOST: ((opsman_domain_or_ip_address))
-      OPSMAN_USERNAME: ((opsman_admin_username))
-      OPSMAN_PASSWORD: ((opsman_admin_password))
-      ERRANDS_TO_DISABLE: ((ert_errands_to_disable))
-      OPSMAN_CLIENT_ID: ((opsman_client_id))
-      OPSMAN_CLIENT_SECRET: ((opsman_client_secret))
-
   # This task will block if the environment 
   # has been put into stopped state
   - task: wait-if-stopped
