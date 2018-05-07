@@ -305,6 +305,8 @@ jobs:
       OPSMAN_USERNAME: ((opsman_admin_username))
       OPSMAN_PASSWORD: ((opsman_admin_password))
       # srt product and configuration
+      PRODUCT_NAME: cf
+      TEMPLATE_PATH: automation/lib/pipelines/pcf/install-and-upgrade/templates/srt
       TEMPLATE_OVERRIDE_PATH:
       # srt networking
       NETWORK_NAME: ert

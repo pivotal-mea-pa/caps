@@ -12,7 +12,7 @@ inputs:
 - name: terraform-output
 
 run:
-  path: automation/lib/pipelines/pcf/install-and-upgrade/tasks/configure-srt/task.sh
+  path: automation/lib/pipelines/pcf/install-and-upgrade/tasks/common/configure-product.sh
 
 params:
   OPSMAN_HOST:
@@ -20,7 +20,9 @@ params:
   OPSMAN_CLIENT_SECRET:
   OPSMAN_USERNAME:
   OPSMAN_PASSWORD:
-  # srt product and configuration
+  # Product configuration
+  PRODUCT_NAME: cf
+  TEMPLATE_PATH: automation/lib/pipelines/pcf/install-and-upgrade/templates/srt
   TEMPLATE_OVERRIDE_PATH:
   # srt networking
   NETWORK_NAME:
