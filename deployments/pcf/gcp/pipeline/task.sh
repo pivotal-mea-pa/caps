@@ -37,6 +37,7 @@ for p in $(echo -e "$PRODUCTS"); do
   product_name=$(echo $p | awk -F':' '{ print $1 }')
   slug_and_version=$(echo $p | awk -F':' '{ print $2 }')
   errands_to_disable=$(echo $p | awk -F':' '{ print $3 }')
+  errands_to_enable=$(echo $p | awk -F':' '{ print $4 }')
   product_slug=${slug_and_version%/*}
   product_version=${slug_and_version#*/}
 
