@@ -15,5 +15,11 @@
     },
     ".deploy-service-broker.secure_credentials": {
       "value": false
+    },
+    ".deploy-service-broker.persistence_store_service": {
+      "value": "p.mysql"
+    },
+    ".deploy-service-broker.persistence_store_service_plan": {
+      "value": "db-small"
     }
 }
