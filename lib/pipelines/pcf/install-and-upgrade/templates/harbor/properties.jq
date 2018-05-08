@@ -14,7 +14,7 @@
   ".properties.hostname": { "value": $harbor_registry_fqdn },
   ".properties.server_cert_key": {
     "value": {
-      "cert_pem": $harbor_registry_certificate,
+      "cert_pem": $harbor_registry_cert,
       "private_key_pem": $harbor_registry_cert_key
     }
   },
