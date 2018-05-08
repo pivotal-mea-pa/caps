@@ -56,6 +56,13 @@ output "pks_api_url" {
       length(google_dns_record_set.pks-api.name)-1)}"
 }
 
+output "harbor_registry_fqdn" {
+  value = "${
+    substr(
+      google_dns_record_set.harbor.name, 0, 
+      length(google_dns_record_set.harbor.name)-1)}"
+}
+
 // Network Output
 
 output "vpc_network_name" {

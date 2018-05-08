@@ -1,8 +1,8 @@
 #
 # jq -n \
 #    --arg harbor_registry_fqdn "harbor.pas.pcfenv1.pocs.pcfs.io" \
-#    --arg harbor_registry_certificate "$harbor_registry_certificate" \
-#    --arg harbor_registry_certificate_key "$harbor_registry_certificate_key" \
+#    --arg harbor_registry_cert "$harbor_registry_cert" \
+#    --arg harbor_registry_cert_key "$harbor_registry_cert_key" \
 #    --arg ca_certs "$ca_certs" \
 #    --arg admin_password "Passw0rd" \
 #    --arg auth_mode "db_auth" \
@@ -15,7 +15,7 @@
   ".properties.server_cert_key": {
     "value": {
       "cert_pem": $harbor_registry_certificate,
-      "private_key_pem": $harbor_registry_certificate_key
+      "private_key_pem": $harbor_registry_cert_key
     }
   },
   ".properties.server_cert_ca": { "value": $ca_certs },
