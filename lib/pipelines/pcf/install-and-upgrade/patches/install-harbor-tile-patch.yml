@@ -112,7 +112,7 @@
         HARBOR_REGISTRY_CERTIFICATE_KEY: # Sourced from terraform output
         CA_CERTS: # Sourced from terraform output
         ADMIN_PASSWORD: ((common_admin_password))
-        AUTH_MODE: db_auth
+        AUTH_MODE: uaa_auth_pks
         REGISTRY_STORAGE: filesystem
 
 - op: add
