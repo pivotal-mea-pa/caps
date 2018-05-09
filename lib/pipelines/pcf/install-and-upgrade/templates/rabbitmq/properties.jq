@@ -57,7 +57,7 @@
   },
 }
 +
-if $server_tls_cert != "" then
+if $rabbitmq_cert != "" then
 {
   ".rabbitmq-server.rsa_certificate": {
     "value": {
