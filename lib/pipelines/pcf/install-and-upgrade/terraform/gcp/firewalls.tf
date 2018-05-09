@@ -77,20 +77,6 @@ resource "google_compute_firewall" "allow-ert-all" {
   source_tags = ["${var.prefix}", "${var.prefix}-opsman", "nat-traverse"]
 }
 
-//// Allow access to ssh-proxy [Optional]
-resource "google_compute_firewall" "cf-ssh-proxy" {
-  name       = "${var.prefix}-allow-ssh-proxy"
-  depends_on = ["google_compute_network.pcf-virt-net"]
-  network    = "${google_compute_network.pcf-virt-net.name}"
-
-  allow {
-    protocol = "tcp"
-    ports    = ["2222"]
-  }
-
-  target_tags = ["${var.prefix}-ssh-proxy", "diego-brain"]
-}
-
 //// Allow access to Optional CF TCP router
 resource "google_compute_firewall" "cf-tcp" {
   name       = "${var.prefix}-allow-cf-tcp"
@@ -102,5 +88,52 @@ resource "google_compute_firewall" "cf-tcp" {
     ports    = ["1024-65535"]
   }
 
-  target_tags = ["${var.prefix}-cf-tcp-lb"]
+  target_tags = ["${google_compute_target_pool.cf-tcp.name}"]
+}
+
+//// Allow access to ssh-proxy [Optional]
+resource "google_compute_firewall" "cf-ssh-proxy" {
+  name       = "${var.prefix}-allow-ssh-proxy"
+  depends_on = ["google_compute_network.pcf-virt-net"]
+  network    = "${google_compute_network.pcf-virt-net.name}"
+
+  allow {
+    protocol = "tcp"
+    ports    = ["2222"]
+  }
+
+  target_tags = ["${google_compute_target_pool.cf-ssh.name}", "diego-brain"]
+}
+
+//// Allow access to PKS [Optional]
+resource "google_compute_firewall" "pks" {
+  name       = "${var.prefix}-allow-pks"
+  depends_on = ["google_compute_network.pcf-virt-net"]
+  network    = "${google_compute_network.pcf-virt-net.name}"
+
+  allow {
+    protocol = "tcp"
+    ports    = ["8443"]
+  }
+
+  allow {
+    protocol = "tcp"
+    ports    = ["9021"]
+  }
+
+  target_tags = ["${google_compute_target_pool.pks.name}"]
+}
+
+//// Allow access to Harbor [Optional]
+resource "google_compute_firewall" "harbor" {
+  name       = "${var.prefix}-allow-harbor"
+  depends_on = ["google_compute_network.pcf-virt-net"]
+  network    = "${google_compute_network.pcf-virt-net.name}"
+
+  allow {
+    protocol = "tcp"
+    ports    = ["443"]
+  }
+
+  target_tags = ["${google_compute_target_pool.harbor.name}"]
 }
