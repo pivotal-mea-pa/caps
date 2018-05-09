@@ -16,12 +16,12 @@
 #   --arg tcp_router_static_ips "" \
 #   --arg ert_cert "$ert_cert" \
 #   --arg ert_cert_key "$ert_cert_key" \
-#   --arg routing_custom_ca_certificates "$ca_certs" \
+#   --arg routing_custom_ca_certificates "$CA_CERTS" \
 #   --arg routing_tls_termination "load_balancer" \
 #   --arg router_tls_ciphers "ECDHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384" \
 #   --arg haproxy_tls_ciphers "DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384" \
 #   --arg haproxy_forward_tls "enable" \
-#   --arg haproxy_backend_ca "$ca_certs" \
+#   --arg haproxy_backend_ca "$CA_CERTS" \
 #   --argjson skip_cert_verify true \
 #   --argjson routing_disable_http false \
 #   --arg container_networking_network_cidr "10.255.0.0/16" \

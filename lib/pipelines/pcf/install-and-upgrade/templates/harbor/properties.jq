@@ -3,7 +3,7 @@
 #    --arg harbor_registry_fqdn "harbor.pas.pcfenv1.pocs.pcfs.io" \
 #    --arg harbor_registry_cert "$harbor_registry_cert" \
 #    --arg harbor_registry_cert_key "$harbor_registry_cert_key" \
-#    --arg ca_certs "$ca_certs" \
+#    --arg server_cert_ca "$CA_CERTS" \
 #    --arg admin_password "Passw0rd" \
 #    --arg auth_mode "db_auth" \
 #    --arg registry_storage "filesystem" \
@@ -18,7 +18,7 @@
       "private_key_pem": $harbor_registry_cert_key
     }
   },
-  ".properties.server_cert_ca": { "value": $ca_certs },
+  ".properties.server_cert_ca": { "value": $server_cert_ca },
   ".properties.admin_password": { "value": {
       "secret": $admin_password
     }

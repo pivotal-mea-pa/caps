@@ -1,6 +1,6 @@
 #
 # jq -n \
-#   --arg trusted_certificates "$ca_certs" \
+#   --arg trusted_certificates "$CA_CERTS" \
 #   "$(cat security_configuration.jq)"
 #
 
