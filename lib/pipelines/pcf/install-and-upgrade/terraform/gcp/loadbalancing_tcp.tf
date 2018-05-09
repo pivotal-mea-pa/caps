@@ -93,7 +93,7 @@ resource "google_compute_forwarding_rule" "pks-api" {
 // PKS UAA tcp forwarding rule
 resource "google_compute_forwarding_rule" "pks-uaa" {
   name        = "${var.prefix}-pks-uaa-lb"
-  target      = "${google_compute_target_pool.pks-api.self_link}"
+  target      = "${google_compute_target_pool.pks.self_link}"
   port_range  = "8443"
   ip_protocol = "TCP"
   ip_address  = "${google_compute_address.pks.address}"
