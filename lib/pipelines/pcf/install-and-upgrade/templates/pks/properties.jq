@@ -1,6 +1,6 @@
 #
 # jq -n \
-#    --arg pks_api_url "pks.pas.pcfenv1.pocs.pcfs.io" \
+#    --arg pks_url "pks.pcfenv1.pocs.pcfs.io" \
 #    --arg pks_cert "$pks_cert" \
 #    --arg pks_cert_key "$pks_cert_key" \
 #    --arg cloud_provider "gcp" \
@@ -21,7 +21,7 @@
 #
 
 {
-  ".properties.uaa_url": { "value": $pks_api_url },
+  ".properties.uaa_url": { "value": $pks_url },
   ".pivotal-container-service.pks_tls": {
     "value": {
       "cert_pem": $pks_cert,

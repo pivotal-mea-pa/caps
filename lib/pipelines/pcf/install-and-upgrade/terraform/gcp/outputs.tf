@@ -49,11 +49,11 @@ output "ops_manager_dns" {
       length(google_dns_record_set.ops-manager-dns.name)-1)}"
 }
 
-output "pks_api_url" {
+output "pks_url" {
   value = "${
     substr(
-      google_dns_record_set.pks-api.name, 0, 
-      length(google_dns_record_set.pks-api.name)-1)}"
+      google_dns_record_set.pks.name, 0, 
+      length(google_dns_record_set.pks.name)-1)}"
 }
 
 output "harbor_registry_fqdn" {
@@ -149,8 +149,8 @@ output "pas_doppler_lb_name" {
   value = "tcp:${google_compute_target_pool.cf-gorouter.name}"
 }
 
-output "pks_api_lb_name" {
-  value = "tcp:${google_compute_target_pool.pks-api.name}"
+output "pks_lb_name" {
+  value = "tcp:${google_compute_target_pool.pks.name}"
 }
 
 output "harbor_lb_name" {

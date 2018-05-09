@@ -24,8 +24,8 @@ resource "google_compute_address" "opsman" {
 }
 
 // PKS static address
-resource "google_compute_address" "pks-api" {
-  name = "${var.prefix}-pks-api"
+resource "google_compute_address" "pks" {
+  name = "${var.prefix}-pks"
 }
 
 // PKS static address
