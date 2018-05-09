@@ -26,18 +26,19 @@ if [[ "$NEW_VERSION" == "$INSTALLED_VERSION" ]]; then
   exit 0
 fi
 
-if [[ "$TRACE" == "render-templates-only" ]]; then
-  network=$(eval_jq_templates "network" "$TEMPLATE_PATH" "$TEMPLATE_OVERRIDE_PATH")
-  resources=$(eval_jq_templates "resources" "$TEMPLATE_PATH" "$TEMPLATE_OVERRIDE_PATH")
-  properties=$(eval_jq_templates "properties" "$TEMPLATE_PATH" "$TEMPLATE_OVERRIDE_PATH")
+network=$(eval_jq_templates "network" "$TEMPLATE_PATH" "$TEMPLATE_OVERRIDE_PATH")
+resources=$(eval_jq_templates "resources" "$TEMPLATE_PATH" "$TEMPLATE_OVERRIDE_PATH")
+properties=$(eval_jq_templates "properties" "$TEMPLATE_PATH" "$TEMPLATE_OVERRIDE_PATH")
 
+if [[ "$TRACE" == "render-templates-only" ]]; then
   set +x
 
   echo -e "\n**** Network Request Body ****\n$network"
   echo -e "\n**** Resources Request Body ****\n$resources"
   echo -e "\n**** Properties Request Body ****\n$properties"
-else
+  exit 0
 
+else
   om \
     --skip-ssl-validation \
     --target "https://${OPSMAN_HOST}" \
@@ -47,9 +48,9 @@ else
     --password "${OPSMAN_PASSWORD}" \
     configure-product \
     --product-name $PRODUCT_NAME \
-    --product-network "$(eval_jq_templates "network" "$TEMPLATE_PATH" "$TEMPLATE_OVERRIDE_PATH")" \
-    --product-resources "$(eval_jq_templates "resources" "$TEMPLATE_PATH" "$TEMPLATE_OVERRIDE_PATH")" \
-    --product-properties "$(eval_jq_templates "properties" "$TEMPLATE_PATH" "$TEMPLATE_OVERRIDE_PATH")"
+    --product-network "$network" \
+    --product-resources "$resources" \
+    --product-properties "$properties"
 fi
 
 #

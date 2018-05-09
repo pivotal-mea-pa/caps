@@ -13,6 +13,7 @@ function source_variables() {
 function eval_jq_templates() {
 
   [[ -n "$TRACE" ]] && set -x
+  set -e
 
   local tpl_name=$1
   local tpl_path=$2
