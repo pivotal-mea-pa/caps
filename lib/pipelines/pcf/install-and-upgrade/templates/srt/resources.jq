@@ -5,6 +5,7 @@
 #   --arg pas_tcp_lb_name "tcp:pcf-poc1-pcf-cf-tcp-lb" \
 #   --arg pas_ssh_lb_name "tcp:pcf-poc1-pcf-ssh-proxy" \
 #   --arg pas_doppler_lb_name "tcp:pcf-poc1-pcf-wss-logs" \
+#   --argjson num_diego_cells 1
 #   "$(cat resources.jq)"
 #
 
@@ -20,6 +21,7 @@
     "elb_names": [ $pas_ssh_lb_name ]
   },
   "compute": {
+    "instances": $num_diego_cells,
     "internet_connected": $internet_connected
   },
   "backup-prepare": {

@@ -172,6 +172,10 @@ output "mysql_monitor_recipient_email" {
   value = "${var.mysql_monitor_recipient_email}"
 }
 
+output "num_diego_cells" {
+  value = "${var.num_diego_cells}"
+}
+
 #
 # Backup / Restore pipeline params
 #

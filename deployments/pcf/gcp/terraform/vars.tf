@@ -221,6 +221,11 @@ variable "mysql_monitor_recipient_email" {
   type = "string"
 }
 
+# Number of Diego Cells to deploy
+variable "num_diego_cells" {
+  default = "1"
+}
+
 #
 # Backup / Restore pipeline params
 #

@@ -205,6 +205,9 @@ security_acknowledgement: 'X'
 # Whether or not the ERT VMs are internet connected.
 internet_connected: false
 
+# Number of Diego Cells to create
+num_diego_cells: $num_diego_cells
+
 #
 # Common variables for tile uploads
 #

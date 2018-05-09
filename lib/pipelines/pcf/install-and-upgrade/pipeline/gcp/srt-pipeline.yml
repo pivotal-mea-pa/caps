@@ -363,6 +363,7 @@ jobs:
       DB_SILK_USERNAME: ((db_silk_username))
       DB_SILK_PASSWORD: ((db_silk_password))
       MYSQL_MONITOR_RECIPIENT_EMAIL: ((mysql_monitor_recipient_email))
+      NUM_DIEGO_CELLS: ((num_diego_cells))
 
   # This task will block if the environment 
   # has been put into stopped state

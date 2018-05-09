@@ -56,6 +56,8 @@ data "template_file" "params" {
 
     mysql_monitor_recipient_email = "${data.terraform_remote_state.bootstrap.mysql_monitor_recipient_email}"
 
+    num_diego_cells = "${data.terraform_remote_state.bootstrap.num_diego_cells}"
+
     backup_interval       = "${data.terraform_remote_state.bootstrap.backup_interval}"
     backup_interval_start = "${data.terraform_remote_state.bootstrap.backup_interval_start}"
     backup_interval_stop  = "${data.terraform_remote_state.bootstrap.backup_interval_stop}"
