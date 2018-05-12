@@ -75,7 +75,7 @@ jobs:
       GCP_PROJECT_ID: ((gcp_project))
       GCP_REGION: ((gcp_region))
       TERRAFORM_STATE_BUCKET: ((terraform_state_bucket))
-      TERRAFORM_TEMPLATES_PATH: automation-extensions/((pcf_pas_terraform_templates_path))
+      TEMPLATE_OVERRIDE_PATH: automation-extensions/((pcf_terraform_templates_path))
       OPSMAN_HOST: ((opsman_domain_or_ip_address))
       OPSMAN_USERNAME: ((opsman_admin_username))
       OPSMAN_PASSWORD: ((opsman_admin_password))
@@ -117,7 +117,7 @@ jobs:
       GCP_PROJECT_ID: ((gcp_project))
       GCP_REGION: ((gcp_region))
       TERRAFORM_STATE_BUCKET: ((terraform_state_bucket))
-      TERRAFORM_TEMPLATES_PATH: automation-extensions/((pcf_pas_terraform_templates_path))
+      TEMPLATE_OVERRIDE_PATH: automation-extensions/((pcf_terraform_templates_path))
       # Inputs to PCF PAS infrastructure Terraform templates
       TF_VAR_gcp_region: ((gcp_region))
       TF_VAR_gcp_zone_1: ((gcp_zone_1))
@@ -309,7 +309,7 @@ jobs:
       # srt product and configuration
       PRODUCT_NAME: cf
       TEMPLATE_PATH: automation/lib/pipelines/pcf/install-and-upgrade/templates/srt
-      TEMPLATE_OVERRIDE_PATH:
+      TEMPLATE_OVERRIDE_PATH: automation-extensions/((pcf_tile_templates_path))
       # srt networking
       NETWORK_NAME: ert
       SINGLETON_AVAILABILITY_ZONE: # Sourced from terraform output

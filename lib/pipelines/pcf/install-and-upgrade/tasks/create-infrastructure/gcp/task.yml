@@ -23,7 +23,7 @@ params:
   GOOGLE_PROJECT:
   GOOGLE_REGION:
   TERRAFORM_STATE_BUCKET:
-  TERRAFORM_TEMPLATES_PATH:
+  TEMPLATE_OVERRIDE_PATH:
   # Inputs to PCF PAS infrastructure Terraform templates
   TF_VAR_gcp_region:
   TF_VAR_gcp_zone_1:

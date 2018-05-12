@@ -41,7 +41,8 @@ data "template_file" "params" {
     automation_extensions_repo   = "${data.terraform_remote_state.bootstrap.automation_extensions_repo}"
     automation_extensions_branch = "${data.terraform_remote_state.bootstrap.automation_extensions_branch}"
 
-    pcf_pas_terraform_templates_path = "${data.terraform_remote_state.bootstrap.pcf_pas_terraform_templates_path}"
+    pcf_terraform_templates_path = "${data.terraform_remote_state.bootstrap.pcf_terraform_templates_path}"
+    pcf_tile_templates_path      = "${data.terraform_remote_state.bootstrap.pcf_tile_templates_path}"
 
     pivnet_token           = "${data.terraform_remote_state.bootstrap.pivnet_token}"
     opsman_admin_password  = "${data.terraform_remote_state.bootstrap.opsman_admin_password}"

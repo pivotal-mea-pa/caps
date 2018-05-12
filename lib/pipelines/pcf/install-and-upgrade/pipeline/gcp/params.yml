@@ -41,8 +41,9 @@ bootstrap_state_prefix: "${bootstrap_state_prefix}"
 # Storage Location
 gcp_storage_bucket_location: '${gcp_region}'
 
-# Terraform templates path
-pcf_pas_terraform_templates_path: '${pcf_pas_terraform_templates_path}'
+# Templates overrides paths
+pcf_terraform_templates_path: '${pcf_terraform_templates_path}'
+pcf_tile_templates_path: '${pcf_tile_templates_path}'
 
 #
 # Pivnet download and Ops Manager configuration

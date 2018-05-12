@@ -124,9 +124,12 @@ output "automation_extensions_branch" {
   value = "${var.automation_extensions_repo_branch}"
 }
 
-# Path to terraform templates for creating PCF PAS infrastructure
-output "pcf_pas_terraform_templates_path" {
-  value = "${var.pcf_pas_terraform_templates_path}"
+output "pcf_terraform_templates_path" {
+  value = "${var.pcf_terraform_templates_path}"
+}
+
+output "pcf_tile_templates_path" {
+  value = "${var.pcf_terraform_templates_path}"
 }
 
 #

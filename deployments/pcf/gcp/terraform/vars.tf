@@ -167,9 +167,18 @@ variable "automation_extensions_repo_branch" {
   default = "master"
 }
 
-# Path to terraform templates for creating PCF PAS infrastructure
-variable "pcf_pas_terraform_templates_path" {
-  default = "lib/pipelines/pcf/install-and-upgrade/terraform/gcp"
+# Path to terraform template overrides in the 'automation extensions' 
+# repository for creating PCF PAS infrastructure
+variable "pcf_terraform_templates_path" {
+  default = ""
+}
+
+# Path to json template overrides in the 'automation extensions' 
+# repository for configuring PCF tiles. This folder should have 
+# folders named by the tile name as provided in the 'products' 
+# variable below.
+variable "pcf_tile_templates_path" {
+  default = ""
 }
 
 #
