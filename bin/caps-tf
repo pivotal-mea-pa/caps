@@ -10,6 +10,7 @@ usage () {
     echo -e "${BLUE}\nUSAGE: caps-tf [ plan | apply | destroy | recreate-bastion ] -o|--options <TERRAFORM_OPTIONS> -c|--clean\n"
     echo -e "    This utility will perform the given Terraform action on the deployment's bootstrap template.\n"
     echo -e "    -o|--options  <TERRAFORM_OPTIONS>  Additional options to pass to terraform."
+    echo -e "    -i|--init                          (Re)Initializes the terraform workspace."
     echo -e "    -c|--clean                         Ensures any rebuilds are clean (i.e. recreate-bastion with this"
     echo -e "                                       option will ensure the persistent data volume is also recreated.\n"
 }
@@ -38,6 +39,9 @@ while [[ $# -gt 0 ]]; do
             terraform_options=$2
             shift
             ;;
+        -i|--init)
+            terraform_init=yes
+            ;;
         -c|--clean)
             clean=yes
             ;;
@@ -56,18 +60,18 @@ bootstrap_state_prefix=${TF_VAR_vpc_name}-bootstrap
 
 export TF_VAR_ssh_key_file_path=$workspace_path
 
-if [ ! -e .terraform ]; then
+if [[ ! -e .terraform || $terraform_init == yes ]]; then
 
     if [[ -z $TF_VAR_terraform_state_bucket ]]; then
         echo -e "\nThe following environment variable must be set in order to initialize the context.\n"
         echo -e "    TF_VAR_terraform_state_bucket  The backend state bucket to save the bootstrap state.\n"
         exit 1
     fi
-        
+    
     echo -e "\nInitializing Terraform bootstrap state using"
     echo -e "state that may already exist in the following location.\n"
     echo -e "    TF_VAR_terraform_state_bucket = $TF_VAR_terraform_state_bucket\n"
-
+    
     terraform init \
         -backend-config="bucket=$TF_VAR_terraform_state_bucket" \
         -backend-config="prefix=$bootstrap_state_prefix" \
