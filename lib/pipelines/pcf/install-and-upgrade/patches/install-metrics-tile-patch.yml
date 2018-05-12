@@ -96,7 +96,7 @@
         # Product configuration
         PRODUCT_NAME: apm
         TEMPLATE_PATH: automation/lib/pipelines/pcf/install-and-upgrade/templates/metrics
-        TEMPLATE_OVERRIDE_PATH:
+        TEMPLATE_OVERRIDE_PATH: automation-extensions/((pcf_tile_templates_path))/metrics
         ERRANDS_TO_DISABLE: ${errands_to_enable}
         ERRANDS_TO_ENABLE: ${errands_to_disable}
         ERRAND_DEFAULT_IF_ENABLED: when-changed
