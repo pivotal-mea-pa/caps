@@ -50,7 +50,7 @@ output "terraform_state_bucket" {
 }
 
 output "bootstrap_state_prefix" {
-  value = "${var.bootstrap_state_prefix}"
+  value = "${local.bootstrap_state_prefix}"
 }
 
 #

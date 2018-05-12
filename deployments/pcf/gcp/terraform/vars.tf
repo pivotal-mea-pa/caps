@@ -34,10 +34,6 @@ variable "terraform_state_bucket" {
   type = "string"
 }
 
-variable "bootstrap_state_prefix" {
-  type = "string"
-}
-
 #
 # Certificate Subject data for certificate creation
 #

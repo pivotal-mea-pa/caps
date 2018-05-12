@@ -2,6 +2,10 @@
 # Bootstrap an base environment named "inceptor"
 #
 
+locals {
+  bootstrap_state_prefix = "${var.vpc_name}-bootstrap"
+}
+
 module "bootstrap" {
   source = "../../../../lib/inceptor/modules/bootstrap/gcp"
 
@@ -92,7 +96,7 @@ google_credentials_json: |
   ${indent(2, file(var.gcp_credentials))}
 
 bootstrap_state_bucket: ${var.terraform_state_bucket}
-bootstrap_state_prefix: ${var.bootstrap_state_prefix}
+bootstrap_state_prefix: ${local.bootstrap_state_prefix}
 
 automation_pipelines_repo: ${var.automation_pipelines_repo}
 automation_pipelines_branch: ${var.automation_pipelines_branch}

@@ -156,7 +156,6 @@ export TF_VAR_vpc_dns_zone=pcfenv1.pocs.pcfs.io
 export TF_VAR_vpc_parent_dns_zone_name=pocs-pcfs-io
 
 export TF_VAR_terraform_state_bucket=tfstate-${GOOGLE_REGION}
-export TF_VAR_bootstrap_state_prefix=${TF_VAR_vpc_name}-bootstrap
 
 export TF_VAR_locale=Asia/Dubai
 export TF_VAR_automation_pipelines_branch=dev
