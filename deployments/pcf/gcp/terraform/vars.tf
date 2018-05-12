@@ -170,7 +170,7 @@ variable "automation_extensions_repo_branch" {
 # Path to terraform template overrides in the 'automation extensions' 
 # repository for creating PCF PAS infrastructure
 variable "pcf_terraform_templates_path" {
-  default = ""
+  default = "-"
 }
 
 # Path to json template overrides in the 'automation extensions' 
@@ -178,7 +178,7 @@ variable "pcf_terraform_templates_path" {
 # folders named by the tile name as provided in the 'products' 
 # variable below.
 variable "pcf_tile_templates_path" {
-  default = ""
+  default = "-"
 }
 
 #
