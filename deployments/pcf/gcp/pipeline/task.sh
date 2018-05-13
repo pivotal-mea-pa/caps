@@ -31,7 +31,7 @@ for e in $ENVIRONMENTS; do
     -var "bootstrap_state_prefix=$BOOTSTRAP_STATE_PREFIX" \
     -var "params_template_file=$install_and_upgrade_pipeline_path/gcp/params.yml" \
     -var "params_file=install-pcf-params.yml" \
-    -var "environment=${env}" \
+    -var "environment=${e}" \
     $terraform_params_path >/dev/null
 
   set -x
@@ -151,7 +151,7 @@ for e in $ENVIRONMENTS; do
     -var "bootstrap_state_prefix=$BOOTSTRAP_STATE_PREFIX" \
     -var "params_template_file=$BACKUP_AND_RESTORE_PIPELINE_PATH/gcp/params.yml" \
     -var "params_file=backup-and-restore-params.yml" \
-    -var "environment=${env}" \
+    -var "environment=${e}" \
     $terraform_params_path >/dev/null
 
   fly -t default set-pipeline -n \
@@ -179,7 +179,7 @@ for e in $ENVIRONMENTS; do
     -var "bootstrap_state_prefix=$BOOTSTRAP_STATE_PREFIX" \
     -var "params_template_file=$START_AND_STOP_PIPELINE_PATH/gcp/params.yml" \
     -var "params_file=stop-and-start-params.yml" \
-    -var "environment=${env}" \
+    -var "environment=${e}" \
     $terraform_params_path >/dev/null
 
   if [[ $SET_START_STOP_SCHEDULE == true ]]; then
