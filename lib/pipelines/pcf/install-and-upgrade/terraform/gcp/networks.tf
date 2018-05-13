@@ -22,6 +22,29 @@ resource "google_compute_subnetwork" "pcf" {
   network       = "${google_compute_network.pcf.self_link}"
 }
 
+data "external" "pcf-network-info" {
+  count = "${length(local.subnet_names)}"
+
+  program = [
+    "echo",
+    <<RESULT
+{
+  "network_name": "${replace(local.subnet_names[count.index], "/-[0-9]+$/", "")}",
+  "subnet_name": "${local.subnet_names[count.index]}",
+  "subnet_link": "${google_compute_subnetwork.pcf.*.self_link[count.index]}",
+  "cidr": "${local.networks[local.subnet_names[count.index]]}",
+  "gateway": "${cidrhost(local.networks[local.subnet_names[count.index]], 1)}",
+  "reserved_range": "${
+    cidrhost(local.networks[local.subnet_names[count.index]], 0)}-${
+    cidrhost(local.networks[local.subnet_names[count.index]], 1)},${
+    cidrhost(local.networks[local.subnet_names[count.index]], -2)}-${
+    cidrhost(local.networks[local.subnet_names[count.index]], -1)}"
+}
+RESULT
+    ,
+  ]
+}
+
 #
 # Peer perimeter admin network to PCF virtual network
 #
