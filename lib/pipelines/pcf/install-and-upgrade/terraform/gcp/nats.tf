@@ -15,7 +15,7 @@ resource "google_compute_instance" "nat-gateway-pri" {
   }
 
   network_interface {
-    subnetwork = "${google_compute_subnetwork.subnet-ops-manager.name}"
+    subnetwork = "${local.subnet_links["infrastructure"]}"
 
     access_config {
       nat_ip = "${google_compute_address.nat-primary.address}"
@@ -48,7 +48,7 @@ resource "google_compute_instance" "nat-gateway-sec" {
   }
 
   network_interface {
-    subnetwork = "${google_compute_subnetwork.subnet-ops-manager.name}"
+    subnetwork = "${local.subnet_links["infrastructure"]}"
 
     access_config {
       nat_ip = "${google_compute_address.nat-secondary.address}"
@@ -81,7 +81,7 @@ resource "google_compute_instance" "nat-gateway-ter" {
   }
 
   network_interface {
-    subnetwork = "${google_compute_subnetwork.subnet-ops-manager.name}"
+    subnetwork = "${local.subnet_links["infrastructure"]}"
 
     access_config {
       nat_ip = "${google_compute_address.nat-tertiary.address}"
@@ -110,7 +110,7 @@ resource "google_compute_address" "nat-tertiary" {
 resource "google_compute_route" "nat-primary" {
   name                   = "${var.prefix}-nat-pri"
   dest_range             = "0.0.0.0/0"
-  network                = "${google_compute_network.pcf-virt-net.name}"
+  network                = "${google_compute_network.pcf.name}"
   next_hop_instance      = "${google_compute_instance.nat-gateway-pri.name}"
   next_hop_instance_zone = "${var.gcp_zone_1}"
   priority               = 800
@@ -122,7 +122,7 @@ resource "google_compute_route" "nat-secondary" {
 
   name                   = "${var.prefix}-nat-sec"
   dest_range             = "0.0.0.0/0"
-  network                = "${google_compute_network.pcf-virt-net.name}"
+  network                = "${google_compute_network.pcf.name}"
   next_hop_instance      = "${google_compute_instance.nat-gateway-sec.name}"
   next_hop_instance_zone = "${var.gcp_zone_2}"
   priority               = 800
@@ -134,7 +134,7 @@ resource "google_compute_route" "nat-tertiary" {
 
   name                   = "${var.prefix}-nat-ter"
   dest_range             = "0.0.0.0/0"
-  network                = "${google_compute_network.pcf-virt-net.name}"
+  network                = "${google_compute_network.pcf.name}"
   next_hop_instance      = "${google_compute_instance.nat-gateway-ter.name}"
   next_hop_instance_zone = "${var.gcp_zone_3}"
   priority               = 800

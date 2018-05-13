@@ -2,36 +2,24 @@
 # Virtual Network for PCF environment
 #
 
-resource "google_compute_network" "pcf-virt-net" {
-  name = "${var.prefix}-virt-net"
+locals {
+  networks     = "${data.terraform_remote_state.bootstrap.pcf_networks_cidr[var.environment]}"
+  subnet_names = "${keys(local.networks)}"
+
+  subnet_links = "${zipmap(local.subnet_names, google_compute_subnetwork.pcf.*.self_link)}"
 }
 
-// Ops Manager and Bosh Directory
-resource "google_compute_subnetwork" "subnet-ops-manager" {
-  name          = "${var.prefix}-subnet-infrastructure-${var.gcp_region}"
-  ip_cidr_range = "192.168.101.0/26"
-  network       = "${google_compute_network.pcf-virt-net.self_link}"
+resource "google_compute_network" "pcf" {
+  name                    = "${var.prefix}-network"
+  auto_create_subnetworks = false
 }
 
-// ERT
-resource "google_compute_subnetwork" "subnet-ert" {
-  name          = "${var.prefix}-subnet-ert-${var.gcp_region}"
-  ip_cidr_range = "192.168.16.0/22"
-  network       = "${google_compute_network.pcf-virt-net.self_link}"
-}
+resource "google_compute_subnetwork" "pcf" {
+  count = "${length(local.subnet_names)}"
 
-// Services Tile
-resource "google_compute_subnetwork" "subnet-services-1" {
-  name          = "${var.prefix}-subnet-services-1-${var.gcp_region}"
-  ip_cidr_range = "192.168.20.0/22"
-  network       = "${google_compute_network.pcf-virt-net.self_link}"
-}
-
-// Dynamic Services Tile
-resource "google_compute_subnetwork" "subnet-dynamic-services-1" {
-  name          = "${var.prefix}-subnet-dynamic-services-1-${var.gcp_region}"
-  ip_cidr_range = "192.168.24.0/22"
-  network       = "${google_compute_network.pcf-virt-net.self_link}"
+  name          = "${var.prefix}-subnet-${local.subnet_names[count.index]}"
+  ip_cidr_range = "${local.networks[local.subnet_names[count.index]]}"
+  network       = "${google_compute_network.pcf.self_link}"
 }
 
 #
@@ -40,14 +28,14 @@ resource "google_compute_subnetwork" "subnet-dynamic-services-1" {
 
 resource "google_compute_network_peering" "pcf-admin" {
   name         = "${var.prefix}-pcf-admin"
-  network      = "${google_compute_network.pcf-virt-net.self_link}"
+  network      = "${google_compute_network.pcf.self_link}"
   peer_network = "${data.terraform_remote_state.bootstrap.admin_network}"
 }
 
 resource "google_compute_network_peering" "admin-pcf" {
   name         = "${var.prefix}-admin-pcf"
   network      = "${data.terraform_remote_state.bootstrap.admin_network}"
-  peer_network = "${google_compute_network.pcf-virt-net.self_link}"
+  peer_network = "${google_compute_network.pcf.self_link}"
 }
 
 #
@@ -62,7 +50,7 @@ data "google_compute_subnetwork" "admin" {
 resource "google_compute_firewall" "admin-to-pcf-allow-all" {
   name = "${var.prefix}-admin-to-pcf-allow-all"
 
-  network = "${google_compute_network.pcf-virt-net.name}"
+  network = "${google_compute_network.pcf.name}"
 
   allow {
     protocol = "all"

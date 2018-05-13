@@ -133,6 +133,18 @@ output "pcf_tile_templates_path" {
 }
 
 #
+# PCF Deployment Networks CIDRs
+#
+
+output "pcf_networks" {
+  value = "${var.pcf_networks}"
+}
+
+output "pcf_network_dns" {
+  value = "${var.pcf_network_dns}"
+}
+
+#
 # PCF Install params
 #
 

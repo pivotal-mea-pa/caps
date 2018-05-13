@@ -3,12 +3,12 @@
 #
 
 resource "google_compute_instance" "ops-manager" {
-  name         = "${var.prefix}-ops-manager"
-  depends_on   = ["google_compute_subnetwork.subnet-ops-manager"]
-  machine_type = "n1-standard-2"
-  zone         = "${var.gcp_zone_1}"
+  name = "${var.prefix}-ops-manager"
 
   tags = ["${var.prefix}", "${var.prefix}-opsman"]
+
+  zone         = "${var.gcp_zone_1}"
+  machine_type = "n1-standard-2"
 
   boot_disk {
     initialize_params {
@@ -22,7 +22,7 @@ resource "google_compute_instance" "ops-manager" {
   }
 
   network_interface {
-    subnetwork = "${google_compute_subnetwork.subnet-ops-manager.name}"
+    subnetwork = "${local.subnet_links["infrastructure"]}"
   }
 
   metadata {

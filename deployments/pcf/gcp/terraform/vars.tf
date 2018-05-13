@@ -178,6 +178,37 @@ variable "pcf_tile_templates_path" {
 }
 
 #
+# PCF Deployment Environments and Networks CIDRs
+#
+
+variable "pcf_environments" {
+  type    = "list"
+  default = ["pcf"]
+}
+
+variable "pcf_networks" {
+  type = "map"
+
+  default = {
+    pcf = {
+      # A network named infrastructure is mandatory,
+      # as it will be where the NATs gateways and
+      # Ops Manager instance will be launched.
+      infrastructure = "192.168.0.0/26"
+
+      monitoring         = "192.168.0.64/26"
+      runtime-1          = "192.168.4.0/22"
+      services-1         = "192.168.8.0/22"
+      dynamic-services-1 = "192.168.12.0/22"
+    }
+  }
+}
+
+variable "pcf_network_dns" {
+  default = "8.8.8.8"
+}
+
+#
 # PCF Install params
 #
 

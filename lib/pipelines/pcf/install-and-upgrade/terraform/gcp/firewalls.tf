@@ -1,7 +1,7 @@
 // Allow ssh from public networks
 resource "google_compute_firewall" "allow-ssh" {
   name    = "${var.prefix}-allow-ssh"
-  network = "${google_compute_network.pcf-virt-net.name}"
+  network = "${google_compute_network.pcf.name}"
 
   allow {
     protocol = "tcp"
@@ -15,7 +15,7 @@ resource "google_compute_firewall" "allow-ssh" {
 // Allow http from public
 resource "google_compute_firewall" "pcf-allow-http" {
   name    = "${var.prefix}-allow-http"
-  network = "${google_compute_network.pcf-virt-net.name}"
+  network = "${google_compute_network.pcf.name}"
 
   allow {
     protocol = "tcp"
@@ -29,7 +29,7 @@ resource "google_compute_firewall" "pcf-allow-http" {
 // Allow https from public
 resource "google_compute_firewall" "pcf-allow-https" {
   name    = "${var.prefix}-allow-https"
-  network = "${google_compute_network.pcf-virt-net.name}"
+  network = "${google_compute_network.pcf.name}"
 
   allow {
     protocol = "tcp"
@@ -43,7 +43,7 @@ resource "google_compute_firewall" "pcf-allow-https" {
 //// GO Router Health Checks
 resource "google_compute_firewall" "pcf-allow-http-8080" {
   name    = "${var.prefix}-allow-http-8080"
-  network = "${google_compute_network.pcf-virt-net.name}"
+  network = "${google_compute_network.pcf.name}"
 
   allow {
     protocol = "tcp"
@@ -57,9 +57,8 @@ resource "google_compute_firewall" "pcf-allow-http-8080" {
 //// Create Firewall Rule for allow-ert-all com between bosh deployed ert jobs
 //// This will match the default OpsMan tag configured for the deployment
 resource "google_compute_firewall" "allow-ert-all" {
-  name       = "${var.prefix}-allow-ert-all"
-  depends_on = ["google_compute_network.pcf-virt-net"]
-  network    = "${google_compute_network.pcf-virt-net.name}"
+  name    = "${var.prefix}-allow-ert-all"
+  network = "${google_compute_network.pcf.name}"
 
   allow {
     protocol = "icmp"
@@ -79,9 +78,8 @@ resource "google_compute_firewall" "allow-ert-all" {
 
 //// Allow access to Optional CF TCP router
 resource "google_compute_firewall" "cf-tcp" {
-  name       = "${var.prefix}-allow-cf-tcp"
-  depends_on = ["google_compute_network.pcf-virt-net"]
-  network    = "${google_compute_network.pcf-virt-net.name}"
+  name    = "${var.prefix}-allow-cf-tcp"
+  network = "${google_compute_network.pcf.name}"
 
   allow {
     protocol = "tcp"
@@ -93,9 +91,8 @@ resource "google_compute_firewall" "cf-tcp" {
 
 //// Allow access to ssh-proxy [Optional]
 resource "google_compute_firewall" "cf-ssh-proxy" {
-  name       = "${var.prefix}-allow-ssh-proxy"
-  depends_on = ["google_compute_network.pcf-virt-net"]
-  network    = "${google_compute_network.pcf-virt-net.name}"
+  name    = "${var.prefix}-allow-ssh-proxy"
+  network = "${google_compute_network.pcf.name}"
 
   allow {
     protocol = "tcp"
@@ -107,9 +104,8 @@ resource "google_compute_firewall" "cf-ssh-proxy" {
 
 //// Allow access to PKS [Optional]
 resource "google_compute_firewall" "pks" {
-  name       = "${var.prefix}-allow-pks"
-  depends_on = ["google_compute_network.pcf-virt-net"]
-  network    = "${google_compute_network.pcf-virt-net.name}"
+  name    = "${var.prefix}-allow-pks"
+  network = "${google_compute_network.pcf.name}"
 
   allow {
     protocol = "tcp"
@@ -126,9 +122,8 @@ resource "google_compute_firewall" "pks" {
 
 //// Allow access to Harbor [Optional]
 resource "google_compute_firewall" "harbor" {
-  name       = "${var.prefix}-allow-harbor"
-  depends_on = ["google_compute_network.pcf-virt-net"]
-  network    = "${google_compute_network.pcf-virt-net.name}"
+  name    = "${var.prefix}-allow-harbor"
+  network = "${google_compute_network.pcf.name}"
 
   allow {
     protocol = "tcp"

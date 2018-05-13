@@ -1,4 +1,5 @@
 variable "prefix" {}
+variable "environment" {}
 
 variable "gcp_region" {}
 
@@ -12,9 +13,13 @@ variable "gcp_storage_bucket_location" {}
 
 variable "pcf_opsman_image_name" {}
 
+# Network
+
 variable "pas_env_domain_prefix" {}
 variable "system_domain_prefix" {}
 variable "apps_domain_prefix" {}
+
+# Database
 
 variable "db_diego_username" {}
 variable "db_diego_password" {}
