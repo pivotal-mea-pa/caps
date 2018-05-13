@@ -26,7 +26,7 @@ output "env_dns_zone_name_servers" {
   value = "${google_dns_managed_zone.env_dns_zone.name_servers}"
 }
 
-output "pcf_ert_domain" {
+output "pcf_env_domain" {
   value = "${local.env_domain}"
 }
 
