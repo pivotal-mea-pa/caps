@@ -27,9 +27,6 @@ gcp_zone_1: '${gcp_zone_1}'
 gcp_zone_2: '${gcp_zone_2}'
 gcp_zone_3: '${gcp_zone_3}'
 
-# Identifier to prepend to GCP infrastructure names/labels; this should be globally unique
-gcp_resource_prefix: '${vpc_name}-pcf'
-
 # GCP Interopable storage access key: https://console.cloud.google.com/storage/settings
 gcp_storage_access_key: '${gcp_storage_access_key}'
 gcp_storage_secret_key: '${gcp_storage_secret_key}'
@@ -40,6 +37,10 @@ bootstrap_state_prefix: "${bootstrap_state_prefix}"
 
 # Storage Location
 gcp_storage_bucket_location: '${gcp_region}'
+
+# Environment identifiers
+gcp_resource_prefix: '${vpc_name}-${environment}'
+environment: '${environment}'
 
 # Templates overrides paths
 pcf_terraform_templates_path: '${pcf_terraform_templates_path}'
@@ -61,7 +62,7 @@ opsman_client_id: ''
 opsman_client_secret: ''
 
 # This should be your pcf_ert_domain with "opsman." as a prefix
-opsman_domain_or_ip_address: 'opsman.pas.${vpc_dns_zone}'
+opsman_domain_or_ip_address: 'opsman.${environment}.${vpc_dns_zone}'
 
 # PCF Ops Manager minor version to track
 opsman_major_minor_version: '${opsman_major_minor_version}'
@@ -129,7 +130,6 @@ db_uaa_username: 'pas_system'
 db_uaa_password: '${pas_system_dbpassword}'
 
 # Domain Names for ERT
-pas_env_domain_prefix: 'pas'
 system_domain_prefix: 'sys'
 apps_domain_prefix: 'apps'
 

@@ -9,6 +9,9 @@ image_resource:
 inputs:
 - name: automation
 
+run:
+  path: automation/deployments/pcf/gcp/pipeline/task.sh
+
 params:
   CONCOURSE_URL:
   CONCOURSE_USER:
@@ -21,15 +24,12 @@ params:
   GOOGLE_REGION:
   BOOTSTRAP_STATE_BUCKET:
   BOOTSTRAP_STATE_PREFIX:
+  VPC_DNS_ZONE:
+  ENVIRONMENTS:
   PCF_PAS_RUNTIME_TYPE:
-  PIVNET_API_TOKEN:
-  OPSMAN_DOMAIN_OR_IP_ADDRESS:
-  OPSMAN_CLIENT_ID:
-  OPSMAN_CLIENT_SECRET:
+  PRODUCTS:
+  UNPAUSE_INSTALL_PIPELINE:
   OPSMAN_USERNAME:
   OPSMAN_PASSWORD:
-  PRODUCTS:
   SET_START_STOP_SCHEDULE:
-
-run:
-  path: automation/deployments/pcf/gcp/pipeline/task.sh
+  

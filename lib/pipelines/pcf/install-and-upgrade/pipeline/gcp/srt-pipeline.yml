@@ -112,6 +112,7 @@ jobs:
   - task: create-infrastructure
     file: automation/lib/pipelines/pcf/install-and-upgrade/tasks/create-infrastructure/gcp/task.yml
     params:
+      ENVIRONMENT: ((environment))
       GCP_RESOURCE_PREFIX: ((gcp_resource_prefix))
       GCP_SERVICE_ACCOUNT_KEY: ((gcp_service_account_key))
       GCP_PROJECT_ID: ((gcp_project))
@@ -127,7 +128,6 @@ jobs:
       TF_VAR_gcp_storage_bucket_location: ((gcp_storage_bucket_location))
       TF_VAR_terraform_state_bucket: ((terraform_state_bucket))
       TF_VAR_bootstrap_state_prefix: ((bootstrap_state_prefix))
-      TF_VAR_pas_env_domain_prefix: ((pas_env_domain_prefix))
       TF_VAR_system_domain_prefix: ((system_domain_prefix))
       TF_VAR_apps_domain_prefix: ((apps_domain_prefix))
       TF_VAR_pcf_ert_ssl_cert: ((ert_ssl_cert1))

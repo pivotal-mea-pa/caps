@@ -31,7 +31,8 @@ data "template_file" "params" {
     terraform_state_bucket = "${data.terraform_remote_state.bootstrap.terraform_state_bucket}"
     bootstrap_state_prefix = "${data.terraform_remote_state.bootstrap.bootstrap_state_prefix}"
 
-    vpc_name = "${data.terraform_remote_state.bootstrap.vpc_name}"
+    vpc_name    = "${data.terraform_remote_state.bootstrap.vpc_name}"
+    environment = "${var.environment}"
 
     locale = "${data.terraform_remote_state.bootstrap.locale}"
 

@@ -101,19 +101,16 @@ bootstrap_state_prefix: ${local.bootstrap_state_prefix}
 automation_pipelines_repo: ${var.automation_pipelines_repo}
 automation_pipelines_branch: ${var.automation_pipelines_branch}
 
+vpc_dns_zone: ${var.vpc_dns_zone}
+
+environments: '${join(" ", var.pcf_environments)}'
 pcf_pas_runtime_type: srt
+product: '${var.products}'
 
-pivnet_token: "${var.pivnet_token}"
+unpause_install_pipeline: false
 
-opsman_domain_or_ip_address: opsman.pas.${var.vpc_dns_zone}
-opsman_client_id:
-opsman_client_secret:
 opsman_admin_username: admin
 opsman_admin_password: ${random_string.opsman-admin-password.result}
-
-unpause_install_pipeline: true
-
-product: '${var.products}'
 
 set_start_stop_schedule: ${var.pcf_stop_at != "0" ? "true" : "false"}
 
