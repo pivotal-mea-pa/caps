@@ -3,7 +3,7 @@
 #
 
 locals {
-  networks     = "${data.terraform_remote_state.bootstrap.pcf_networks_cidr[var.environment]}"
+  networks     = "${data.terraform_remote_state.bootstrap.pcf_networks[var.environment]}"
   subnet_names = "${keys(local.networks)}"
 
   subnet_links = "${zipmap(local.subnet_names, google_compute_subnetwork.pcf.*.self_link)}"
