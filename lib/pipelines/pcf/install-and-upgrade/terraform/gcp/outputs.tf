@@ -27,7 +27,7 @@ output "env_dns_zone_name_servers" {
 }
 
 output "pcf_ert_domain" {
-  value = "${local.pas_domain}"
+  value = "${local.env_domain}"
 }
 
 output "system_domain" {
@@ -35,7 +35,7 @@ output "system_domain" {
 }
 
 output "tcp_domain" {
-  value = "tcp.${local.pas_domain}"
+  value = "tcp.${local.env_domain}"
 }
 
 output "apps_domain" {

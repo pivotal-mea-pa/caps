@@ -13,7 +13,7 @@ resource "tls_cert_request" "pcf-san-cert" {
 
   dns_names = [
     "*.${local.bootstrap_domain}",
-    "*.${local.pas_domain}",
+    "*.${local.env_domain}",
     "*.${local.apps_domain}",
     "*.${local.system_domain}",
     "*.uaa.${local.system_domain}",
@@ -21,7 +21,7 @@ resource "tls_cert_request" "pcf-san-cert" {
   ]
 
   subject {
-    common_name         = "${local.pas_domain}"
+    common_name         = "${local.env_domain}"
     organization        = "${data.terraform_remote_state.bootstrap.company_name}"
     organizational_unit = "${data.terraform_remote_state.bootstrap.organization_name}"
     locality            = "${data.terraform_remote_state.bootstrap.locality}"
@@ -80,7 +80,7 @@ resource "tls_cert_request" "saml-san" {
   ]
 
   subject {
-    common_name         = "${local.pas_domain}"
+    common_name         = "${local.env_domain}"
     organization        = "${data.terraform_remote_state.bootstrap.company_name}"
     organizational_unit = "${data.terraform_remote_state.bootstrap.organization_name}"
     locality            = "${data.terraform_remote_state.bootstrap.locality}"

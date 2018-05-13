@@ -4,16 +4,16 @@
 
 locals {
   bootstrap_domain = "${substr(data.google_dns_managed_zone.vpc.dns_name, 0, length(data.google_dns_managed_zone.vpc.dns_name)-1)}"
-  pas_domain       = "${var.pas_env_domain_prefix}.${local.bootstrap_domain}"
-  system_domain    = "${var.system_domain_prefix}.${local.pas_domain}"
-  apps_domain      = "${var.apps_domain_prefix}.${local.pas_domain}"
+  env_domain       = "${var.environment}.${local.bootstrap_domain}"
+  system_domain    = "${var.system_domain_prefix}.${local.env_domain}"
+  apps_domain      = "${var.apps_domain_prefix}.${local.env_domain}"
 
-  opsman_dns_name = "opsman.${local.pas_domain}"
+  opsman_dns_name = "opsman.${local.env_domain}"
 }
 
 resource "google_dns_managed_zone" "env_dns_zone" {
-  name     = "${replace("${local.pas_domain}", ".", "-")}"
-  dns_name = "${local.pas_domain}."
+  name     = "${replace("${local.env_domain}", ".", "-")}"
+  dns_name = "${local.env_domain}."
 }
 
 resource "google_dns_record_set" "ops-manager-dns" {
@@ -79,7 +79,7 @@ resource "google_dns_record_set" "loggregator-dns" {
 resource "google_dns_record_set" "tcp-dns" {
   managed_zone = "${google_dns_managed_zone.env_dns_zone.name}"
 
-  name = "tcp.${local.pas_domain}."
+  name = "tcp.${local.env_domain}."
   type = "A"
   ttl  = 300
 
