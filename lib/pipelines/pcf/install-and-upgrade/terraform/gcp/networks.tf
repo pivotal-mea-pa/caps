@@ -3,8 +3,11 @@
 #
 
 locals {
-  networks     = "${data.terraform_remote_state.bootstrap.pcf_networks[var.environment]}"
-  subnet_names = "${keys(local.networks)}"
+  networks = "${data.terraform_remote_state.bootstrap.pcf_networks[var.environment]}"
+
+  service_networks = "${split(",", local.networks["service_networks"])}"
+  subnet_names     = "${split(",", local.networks["subnet_config_order"])}"
+  subnet_cidrs     = "${data.terraform_remote_state.bootstrap.pcf_network_subnets[var.environment]}"
 
   subnet_links = "${zipmap(local.subnet_names, google_compute_subnetwork.pcf.*.self_link)}"
 }
@@ -18,7 +21,7 @@ resource "google_compute_subnetwork" "pcf" {
   count = "${length(local.subnet_names)}"
 
   name          = "${var.prefix}-subnet-${local.subnet_names[count.index]}"
-  ip_cidr_range = "${local.networks[local.subnet_names[count.index]]}"
+  ip_cidr_range = "${local.subnet_cidrs[local.subnet_names[count.index]]}"
   network       = "${google_compute_network.pcf.self_link}"
 }
 
@@ -29,19 +32,16 @@ data "external" "pcf-network-info" {
     "echo",
     <<RESULT
 {
-  "network_name": "${
-    replace(local.subnet_names[count.index], "/-[0-9]+$/", "")}",
-  "is_service_network": "${
-    contains(data.terraform_remote_state.bootstrap.pcf_service_networks, 
-    replace(local.subnet_names[count.index], "/-[0-9]+$/", ""))}",
-  "iaas_identifier": "${google_compute_subnetwork.pcf.*.self_link[count.index]}",
-  "cidr": "${local.networks[local.subnet_names[count.index]]}",
-  "gateway": "${cidrhost(local.networks[local.subnet_names[count.index]], 1)}",
+  "network_name": "${replace(local.subnet_names[count.index], "/-[0-9]+$/", "")}",
+  "is_service_network": "${contains(local.service_networks, replace(local.subnet_names[count.index], "/-[0-9]+$/", ""))}",
+  "iaas_identifier": "${local.subnet_links[local.subnet_names[count.index]]}",
+  "cidr": "${local.subnet_cidrs[local.subnet_names[count.index]]}",
+  "gateway": "${cidrhost(local.subnet_cidrs[local.subnet_names[count.index]], 1)}",
   "reserved_ip_ranges": "${
-    cidrhost(local.networks[local.subnet_names[count.index]], 0)}-${
-    cidrhost(local.networks[local.subnet_names[count.index]], 1)},${
-    cidrhost(local.networks[local.subnet_names[count.index]], -2)}-${
-    cidrhost(local.networks[local.subnet_names[count.index]], -1)}"
+    cidrhost(local.subnet_cidrs[local.subnet_names[count.index]], 0)}-${
+    cidrhost(local.subnet_cidrs[local.subnet_names[count.index]], 1)},${
+    cidrhost(local.subnet_cidrs[local.subnet_names[count.index]], -2)}-${
+    cidrhost(local.subnet_cidrs[local.subnet_names[count.index]], -1)}"
 }
 RESULT
     ,

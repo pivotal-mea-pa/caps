@@ -12,12 +12,25 @@ variable "pcf_environments" {
 variable "pcf_networks" {
   type = "map"
 
+  default = {
+    pcf = {
+      service_networks = "services,dynamic-services"
+
+      # The order in which subnets should be configured
+      # in the Ops Manager director tile.
+      subnet_config_order = "infrastructure,runtime-1,services-1,dynamic-services-1,monitoring"
+    }
+  }
+}
+
+variable "pcf_network_subnets" {
+  type = "map"
+
   # The range 192.168.0.0/22 is reserved for bootstrap 
-  # services so should not be used for PCF environments.
-  # The networks named 'infrastructure','runtime' and 
-  # 'dynamic-services' are mandatory. If the network can
-  # have multiple subnets post-fix the network name with 
-  # '-#' for each subnet. 
+  # services and should not be used for PCF environments.
+  # Multiple subnets must post-fix the network name with 
+  # '-#' for each subnet. Subnets are additive once they
+  # have been created.
 
   default = {
     pcf = {
@@ -28,12 +41,6 @@ variable "pcf_networks" {
       monitoring         = "192.168.101.64/26"
     }
   }
-}
-
-variable "pcf_service_networks" {
-  type = "list"
-
-  default = ["services", "dynamic-services"]
 }
 
 variable "pcf_network_dns" {
