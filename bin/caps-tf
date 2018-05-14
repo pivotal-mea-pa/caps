@@ -20,7 +20,7 @@ case "$1" in
         usage
         exit 0
         ;;
-    init|plan|apply|output|destroy|recreate-bastion)
+    plan|apply|output|destroy|recreate-bastion)
         tf_action=$1
         ;;
     *)
@@ -94,7 +94,7 @@ case $tf_action in
         terraform plan -out=terraform.plan $terraform_options $terraform_path
         ;;
     output)
-        terraform output 2>&1 | tee terraform.output
+        terraform output $terraform_options 2>&1 | tee terraform.output
         ;;
     apply)
         [[ -e terraform.plan ]] || \
