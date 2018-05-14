@@ -29,12 +29,15 @@ data "external" "pcf-network-info" {
     "echo",
     <<RESULT
 {
-  "network_name": "${replace(local.subnet_names[count.index], "/-[0-9]+$/", "")}",
-  "subnet_name": "${local.subnet_names[count.index]}",
-  "subnet_link": "${google_compute_subnetwork.pcf.*.self_link[count.index]}",
+  "network_name": "${
+    replace(local.subnet_names[count.index], "/-[0-9]+$/", "")}",
+  "is_service_network": "${
+    contains(data.terraform_remote_state.bootstrap.pcf_service_networks, 
+    replace(local.subnet_names[count.index], "/-[0-9]+$/", ""))}",
+  "iaas_identifier": "${google_compute_subnetwork.pcf.*.self_link[count.index]}",
   "cidr": "${local.networks[local.subnet_names[count.index]]}",
   "gateway": "${cidrhost(local.networks[local.subnet_names[count.index]], 1)}",
-  "reserved_range": "${
+  "reserved_ip_ranges": "${
     cidrhost(local.networks[local.subnet_names[count.index]], 0)}-${
     cidrhost(local.networks[local.subnet_names[count.index]], 1)},${
     cidrhost(local.networks[local.subnet_names[count.index]], -2)}-${

@@ -140,6 +140,10 @@ output "pcf_networks" {
   value = "${var.pcf_networks}"
 }
 
+output "pcf_service_networks" {
+  value = "${var.pcf_service_networks}"
+}
+
 output "pcf_network_dns" {
   value = "${var.pcf_network_dns}"
 }
