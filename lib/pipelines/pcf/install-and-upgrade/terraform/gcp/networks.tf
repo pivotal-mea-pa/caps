@@ -11,7 +11,8 @@ locals {
 
   subnet_links = "${zipmap(local.subnet_names, google_compute_subnetwork.pcf.*.self_link)}"
 
-  singleton_zone = "${data.google_compute_zones.zones.names[0]}"
+  singleton_zone            = "${data.google_compute_zones.zones.names[0]}"
+  infrastructure_subnetwork = "${var.prefix}-subnet-infrastructure"
 }
 
 data "google_compute_zones" "zones" {
