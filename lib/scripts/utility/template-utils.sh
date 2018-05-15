@@ -6,14 +6,14 @@ function source_variables() {
   local var_file_path=$(dirname $var_file_glob)
 
   if [[ -e $var_file_path ]]; then
-    eval "$(cat $var_file_path/pcf-env-*.sh | awk -F '=' '{ if ($2 != "") print toupper($1)"="$2; else print $0 }')"
+    eval "$(cat $var_file_glob | awk -F '=' '{ if ($2 != "") print toupper($1)"="$2; else print $0 }')"
   fi
 }
 
 function eval_jq_templates() {
 
   [[ -n "$TRACE" ]] && set -x
-  set -e
+  # set -e
 
   local tpl_name=$1
   local tpl_path=$2
@@ -27,13 +27,13 @@ function eval_jq_templates() {
 
   tpls="\$(cat $tpl_path/$tpl_name.jq)"
   args=$(cat $tpl_path/$tpl_name.jq \
-    | awk -v q="'" '/#/&& ($2 == "--arg" || $2== "--argjson") { 
+    | awk -v q="'" -v fs="\\" '/#/&& ($2 == "--arg" || $2== "--argjson") { 
       if ($2=="--arg") {
         l=length($0)
         i=index($0, $4);
         print $2 " " $3 " \"${" toupper($3) ":-" substr($0,i,index(substr($0,i+1,l),"\"")+1) "}\" "; 
       } else if ($4~/[\[{].*/)
-        print $2 " " $3 " \"${" toupper($3) ":-" q $4 q "}\" ";
+        print $2 " " $3 " \"$(echo ${" toupper($3) ":-" $4 "})\" ";
       else
         print $2 " " $3 " ${" toupper($3) ":-" $4 "} ";
     }' \
