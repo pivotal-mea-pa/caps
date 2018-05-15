@@ -42,13 +42,6 @@ output "apps_domain" {
   value = "${local.apps_domain}"
 }
 
-output "ops_manager_dns" {
-  value = "${
-    substr(
-      google_dns_record_set.ops-manager-dns.name, 0, 
-      length(google_dns_record_set.ops-manager-dns.name)-1)}"
-}
-
 output "pks_url" {
   value = "${
     substr(
@@ -66,7 +59,11 @@ output "harbor_registry_fqdn" {
 // Network Output
 
 output "pcf_networks" {
-  value = "${jsonencode(data.external.pcf-network-info.*.result)}"
+  value = <<JSON
+{
+  "pcf_networks": ${jsonencode(data.external.pcf-network-info.*.result)}
+}
+JSON
 }
 
 output "vpc_network_name" {
