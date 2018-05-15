@@ -29,6 +29,8 @@ resource "google_compute_instance" "nat-gateway-pri" {
 sudo sh -c 'echo 1 > /proc/sys/net/ipv4/ip_forward'
 sudo iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
 EOF
+
+  depends_on = ["google_compute_subnetwork.pcf"]
 }
 
 // NAT Secondary
@@ -60,10 +62,12 @@ resource "google_compute_instance" "nat-gateway-sec" {
   }
 
   metadata_startup_script = <<EOF
-  #! /bin/bash
-  sudo sh -c 'echo 1 > /proc/sys/net/ipv4/ip_forward'
-  sudo iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
-  EOF
+#! /bin/bash
+sudo sh -c 'echo 1 > /proc/sys/net/ipv4/ip_forward'
+sudo iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+EOF
+
+  depends_on = ["google_compute_subnetwork.pcf"]
 }
 
 // NAT Tertiary
@@ -95,10 +99,12 @@ resource "google_compute_instance" "nat-gateway-ter" {
   }
 
   metadata_startup_script = <<EOF
-  #! /bin/bash
-  sudo sh -c 'echo 1 > /proc/sys/net/ipv4/ip_forward'
-  sudo iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
-  EOF
+#! /bin/bash
+sudo sh -c 'echo 1 > /proc/sys/net/ipv4/ip_forward'
+sudo iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+EOF
+
+  depends_on = ["google_compute_subnetwork.pcf"]
 }
 
 resource "google_compute_address" "nat-primary" {

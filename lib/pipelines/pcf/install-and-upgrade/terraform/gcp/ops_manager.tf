@@ -69,6 +69,8 @@ resource "google_compute_instance" "ops-manager" {
     private_key = "${data.terraform_remote_state.bootstrap.default_openssh_private_key}"
     host        = "${self.network_interface.0.address}"
   }
+
+  depends_on = ["google_compute_subnetwork.pcf"]
 }
 
 resource "null_resource" "ops-manager" {
