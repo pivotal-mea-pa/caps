@@ -23,8 +23,6 @@ resource "google_compute_instance" "ops-manager" {
 
   network_interface {
     subnetwork = "${local.infrastructure_subnetwork}"
-
-    # subnetwork = "${local.subnet_links["infrastructure"]}"
   }
 
   metadata {

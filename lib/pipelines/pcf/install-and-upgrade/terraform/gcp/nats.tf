@@ -17,8 +17,6 @@ resource "google_compute_instance" "nat-gateway-pri" {
   network_interface {
     subnetwork = "${local.infrastructure_subnetwork}"
 
-    # subnetwork = "${local.subnet_links["infrastructure"]}"
-
     access_config {
       nat_ip = "${google_compute_address.nat-primary.address}"
     }
@@ -54,8 +52,6 @@ resource "google_compute_instance" "nat-gateway-sec" {
   network_interface {
     subnetwork = "${local.infrastructure_subnetwork}"
 
-    # subnetwork = "${local.subnet_links["infrastructure"]}"
-
     access_config {
       nat_ip = "${google_compute_address.nat-secondary.address}"
     }
@@ -90,8 +86,6 @@ resource "google_compute_instance" "nat-gateway-ter" {
 
   network_interface {
     subnetwork = "${local.infrastructure_subnetwork}"
-
-    # subnetwork = "${local.subnet_links["infrastructure"]}"
 
     access_config {
       nat_ip = "${google_compute_address.nat-tertiary.address}"
