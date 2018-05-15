@@ -17,7 +17,10 @@ variable "pcf_networks" {
       service_networks = "services,dynamic-services"
 
       # The order in which subnets should be configured
-      # in the Ops Manager director tile.
+      # in the Ops Manager director tile. If you need to
+      # add subnets always add to the end of this list.
+      # Otherwise any reordering will result in networks
+      # being recreated and may have undesired outcomes.
       subnet_config_order = "infrastructure,runtime-1,services-1,dynamic-services-1,monitoring"
     }
   }
@@ -30,7 +33,7 @@ variable "pcf_network_subnets" {
   # services and should not be used for PCF environments.
   # Multiple subnets must post-fix the network name with 
   # '-#' for each subnet. Subnets are additive once they
-  # have been created.
+  # have been created. 
 
   default = {
     pcf = {
