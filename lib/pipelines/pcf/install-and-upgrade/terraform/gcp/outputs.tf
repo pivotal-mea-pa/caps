@@ -12,14 +12,6 @@ output "region" {
   value = "${var.gcp_region}"
 }
 
-output "singleton_availability_zone" {
-  value = "${var.gcp_zone_1}"
-}
-
-output "availability_zones" {
-  value = "${var.gcp_zone_1},${var.gcp_zone_2},${var.gcp_zone_3}"
-}
-
 // DNS Output
 
 output "env_dns_zone_name_servers" {
@@ -54,6 +46,16 @@ output "harbor_registry_fqdn" {
     substr(
       google_dns_record_set.harbor.name, 0, 
       length(google_dns_record_set.harbor.name)-1)}"
+}
+
+// Availability Zones
+
+output "singleton_availability_zone" {
+  value = "${local.singleton_zone)}"
+}
+
+output "availability_zones" {
+  value = "${join(",", data.google_compute_zones.zones.names)}"
 }
 
 // Network Output
