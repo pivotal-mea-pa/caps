@@ -51,7 +51,7 @@ output "harbor_registry_fqdn" {
 // Availability Zones
 
 output "singleton_availability_zone" {
-  value = "${local.singleton_zone)}"
+  value = "${local.singleton_zone}"
 }
 
 output "availability_zones" {
