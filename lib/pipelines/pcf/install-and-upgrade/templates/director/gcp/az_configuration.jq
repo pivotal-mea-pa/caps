@@ -1,7 +1,7 @@
 #
 # jq -n \
 #   --arg availability_zones "europe-west1-b,europe-west1-c,europe-west1-d" \
-#   --argjson curr_az_configuration {} \
+#   --argjson curr_az_configuration '{}' \
 #   "$(cat az_configuration.jq)"
 #
 
