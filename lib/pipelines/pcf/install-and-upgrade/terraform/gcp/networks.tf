@@ -46,7 +46,7 @@ data "external" "pcf-network-info" {
   "gateway": "${cidrhost(local.subnet_cidrs[local.subnet_names[count.index]], 1)}",
   "reserved_ip_ranges": "${
     cidrhost(local.subnet_cidrs[local.subnet_names[count.index]], 0)}-${
-    cidrhost(local.subnet_cidrs[local.subnet_names[count.index]], 1)},${
+    cidrhost(local.subnet_cidrs[local.subnet_names[count.index]], 9)},${
     cidrhost(local.subnet_cidrs[local.subnet_names[count.index]], -2)}-${
     cidrhost(local.subnet_cidrs[local.subnet_names[count.index]], -1)}",
   "dns": "${data.terraform_remote_state.bootstrap.pcf_network_dns}",
