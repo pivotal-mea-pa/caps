@@ -164,7 +164,7 @@ variable "automation_extensions_repo_branch" {
 }
 
 # Path to terraform template overrides in the 'automation extensions' 
-# repository for creating PCF PAS infrastructure
+# repository for creating PCF PAS infrastructure.
 variable "pcf_terraform_templates_path" {
   default = "-"
 }
@@ -175,6 +175,72 @@ variable "pcf_terraform_templates_path" {
 # variable below.
 variable "pcf_tile_templates_path" {
   default = "-"
+}
+
+# The list of PCF environments to deploy.
+
+#export TF_VAR_pcf_environments='["pcf"]'
+variable "pcf_environments" {
+  type    = "list"
+  default = ["pcf"]
+}
+
+# The PCF Networks to create. The order in which subnets should 
+# be configured are provided via the 'subnet_config_order' key.
+# If you need to add subnets always add to the end of this list.
+# Otherwise any reordering will result in networks being recreated 
+# and may have undesired outcomes.
+
+#export TF_VAR_pcf_networks='{
+#  pcf = {
+#    service_networks    = "services,dynamic-services"
+#    subnet_config_order = "infrastructure,pas-1,services-1,dynamic-services-1,monitoring"
+#  }
+#}'
+variable "pcf_networks" {
+  type = "map"
+
+  default = {
+    pcf = {
+      service_networks    = "services,dynamic-services"
+      subnet_config_order = "infrastructure,pas-1,services-1,dynamic-services-1,monitoring"
+    }
+  }
+}
+
+# The CIDRs of the PCF Networks subnets. The range 192.168.0.0/22 
+# is reserved for bootstrap services and should not be used for PCF 
+# environments.  Multiple subnets must post-fix the network name 
+# with '-#' for each subnet. Subnets are additive once they have 
+# been created.
+
+#export TF_VAR_pcf_network_subnets='{
+#  pcf = {
+#    infrastructure     = "192.168.101.0/26"
+#    pas-1              = "192.168.4.0/22"
+#    services-1         = "192.168.8.0/22"
+#    dynamic-services-1 = "192.168.12.0/22"
+#    monitoring         = "192.168.101.64/26"
+#  }
+#}
+variable "pcf_network_subnets" {
+  type = "map"
+
+  default = {
+    pcf = {
+      infrastructure     = "192.168.101.0/26"
+      pas-1              = "192.168.4.0/22"
+      services-1         = "192.168.8.0/22"
+      dynamic-services-1 = "192.168.12.0/22"
+      monitoring         = "192.168.101.64/26"
+    }
+  }
+}
+
+# Comma separated list of additional DNS hosts to use
+# for instances deployed to the pcf networks.
+variable "pcf_network_dns" {
+  default = "8.8.8.8"
 }
 
 #
