@@ -1,7 +1,6 @@
 #
 # jq -n \
 #   --argjson icmp_checks_enabled false \
-#   --arg dynamic_services_availability_zones "$AVAILABILITY_ZONES" \
 #   --argjson pcf_networks '{}' \
 #   --argjson curr_network_configuration '{"networks":[]}' \
 #   "$(cat network_configuration.jq)"
