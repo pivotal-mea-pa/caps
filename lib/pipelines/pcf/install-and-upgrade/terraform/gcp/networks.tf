@@ -9,6 +9,8 @@ locals {
   subnet_names     = "${split(",", local.networks["subnet_config_order"])}"
   subnet_cidrs     = "${data.terraform_remote_state.bootstrap.pcf_network_subnets[var.environment]}"
 
+  subnets = "${zipmap(local.subnet_names, google_compute_subnetwork.pcf.*.name)}"
+
   singleton_zone            = "${data.google_compute_zones.zones.names[0]}"
   infrastructure_subnetwork = "${var.prefix}-subnet-infrastructure"
 }
@@ -39,7 +41,7 @@ data "external" "pcf-network-info" {
 {
   "network_name": "${replace(local.subnet_names[count.index], "/-[0-9]+$/", "")}",
   "is_service_network": "${contains(local.service_networks, replace(local.subnet_names[count.index], "/-[0-9]+$/", ""))}",
-  "iaas_identifier": "${google_compute_network.pcf.name}/${local.subnet_names[count.index]}/${var.gcp_region}",
+  "iaas_identifier": "${google_compute_network.pcf.name}/${local.subnets[local.subnet_names[count.index]]}/${var.gcp_region}",
   "cidr": "${local.subnet_cidrs[local.subnet_names[count.index]]}",
   "gateway": "${cidrhost(local.subnet_cidrs[local.subnet_names[count.index]], 1)}",
   "reserved_ip_ranges": "${
