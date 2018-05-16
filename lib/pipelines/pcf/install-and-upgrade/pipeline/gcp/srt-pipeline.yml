@@ -206,23 +206,23 @@ jobs:
       GCP_REGION: ((gcp_region))
       GCP_RESOURCE_PREFIX: ((gcp_resource_prefix))
       # Director properties
-      NTP_SERVERS: # Default '0.pool.ntp.org,1.pool.ntp.org'
-      RESURRECTOR_ENABLED: # Default 'true'
-      POST_DEPLOY_ENABLED: # Default 'false'
-      RETRY_BOSH_DEPLOYS: # Default 'true'
+      NTP_SERVERS: ''                 # Default '0.pool.ntp.org,1.pool.ntp.org'
+      RESURRECTOR_ENABLED: ''         # Default 'true'
+      POST_DEPLOY_ENABLED: ''         # Default 'false'
+      RETRY_BOSH_DEPLOYS:  ''         # Default 'true'
       # Availability Zone properties
-      AVAILABILITY_ZONES: # Sourced from terraform output
-      CURR_AZ_CONFIGURATION: # Retrieved from via OM CLI
+      AVAILABILITY_ZONES: ''          # Sourced from terraform output
+      CURR_AZ_CONFIGURATION: ''       # Retrieved from via OM CLI
       # Network properties
-      ICMP_CHECKS_ENABLED: # Default 'false'
-      PCF_NETWORKS: # Sourced from terraform output
-      CURR_NETWORK_CONFIGURATION: # Retrieved from via OM CLI
+      ICMP_CHECKS_ENABLED: ''         # Default 'false'
+      PCF_NETWORKS: ''                # Sourced from terraform output
+      CURR_NETWORK_CONFIGURATION: ''  # Retrieved from via OM CLI
       # AZ and Network assignement properties
-      NETWORK: # Default 'infrastructure'
+      NETWORK: ''                     # Default 'infrastructure'
       # Security properties
-      TRUSTED_CERTIFICATES: # Sourced from terraform output
+      TRUSTED_CERTIFICATES: ''        # Sourced from terraform output
       # Resource properties
-      INTERNET_CONNECTED: # Default 'false'
+      INTERNET_CONNECTED: ''          # Default 'false'
 
 - name: deploy-director
   serial_groups: [opsman]
