@@ -1,7 +1,7 @@
 #
 # jq -n \
-#   --arg network_name "services-1" \
-#   --arg service_network_name "dynamic-services-1" \
+#   --arg network_name "services" \
+#   --arg service_network_name "dynamic-services" \
 #   --arg singleton_availability_zone "europe-west1-b" \
 #   --arg availability_zones "europe-west1-b,europe-west1-c,europe-west1-d" \
 #   "$(cat network.jq)"

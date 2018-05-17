@@ -101,8 +101,8 @@
         ERRANDS_TO_ENABLE: ${errands_to_disable}
         ERRAND_DEFAULT_IF_ENABLED: when-changed
         # Networking
-        NETWORK_NAME: services-1
-        SERVICE_NETWORK_NAME: dynamic-services-1
+        NETWORK_NAME: services
+        SERVICE_NETWORK_NAME: dynamic-services
         SINGLETON_AVAILABILITY_ZONE: # Sourced from terraform output
         AVAILABILITY_ZONES: # Sourced from terraform output
         # Resources
