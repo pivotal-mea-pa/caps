@@ -331,7 +331,7 @@ jobs:
       TEMPLATE_PATH: automation/lib/pipelines/pcf/install-and-upgrade/templates/srt
       TEMPLATE_OVERRIDE_PATH: automation-extensions/((pcf_tile_templates_path))/srt
       # srt networking
-      NETWORK_NAME: ert
+      NETWORK_NAME: pas
       SINGLETON_AVAILABILITY_ZONE: # Sourced from terraform output
       AVAILABILITY_ZONES: # Sourced from terraform output
       # srt resources
