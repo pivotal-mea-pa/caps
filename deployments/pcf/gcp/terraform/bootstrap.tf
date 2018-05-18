@@ -107,7 +107,7 @@ environments: '${join(" ", var.pcf_environments)}'
 pcf_pas_runtime_type: srt
 product: '${var.products}'
 
-unpause_install_pipeline: false
+unpause_install_pipeline: ${var.autostart_deployment_pipelines}
 
 opsman_admin_username: admin
 opsman_admin_password: ${random_string.opsman-admin-password.result}

@@ -2,6 +2,10 @@
 # Externalized Variables
 #
 
+variable "autostart_deployment_pipelines" {
+  default = "true"
+}
+
 #
 # GCP credentials
 #
