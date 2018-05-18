@@ -102,7 +102,7 @@ for e in $ENVIRONMENTS; do
 
   # Setup buildpack upgrade pipeline
   om_cli="om --skip-ssl-validation 
-    --target https://opsman.${e}.${VPC_DNS_ZONE:} 
+    --target https://opsman.${e}.${VPC_DNS_ZONE} 
     --username ${OPSMAN_USERNAME}
     --password ${OPSMAN_PASSWORD}"
 
