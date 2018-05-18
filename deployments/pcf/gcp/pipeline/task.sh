@@ -81,8 +81,8 @@ for e in $ENVIRONMENTS; do
 
   set +e
 
-  Wait until the Pivotal Application Service
-  tile has been successfully deployed.
+  # Wait until the Pivotal Application Service
+  # tile has been successfully deployed.
   b=1
   while true; do
     r=$(fly -t default watch -j PCF_install-and-upgrade/deploy -b $b 2>&1)
