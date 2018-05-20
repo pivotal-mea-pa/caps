@@ -7,7 +7,7 @@ common::initialize
 set -e
 
 usage () {
-    echo -e "\n${BLUE}USAGE: caps-ci logout | login\n"
+    echo -e "\n${BLUE}USAGE: caps-ci logout | login | info\n"
     echo -e "    This utility will create an SSH tunnel to the Concourse environment that"
     echo -e "    runs the automation pipelines. It will also initialize the 'fly' CLI and"
     echo -e "    create a target to this concourse environment.\n"
@@ -18,7 +18,8 @@ case "$1" in
         usage
         exit 0
         ;;
-    login)
+    login|info)
+        action=$1    
         shift
         while [[ $# -gt 0 ]]; do
             case "$1" in
@@ -58,22 +59,24 @@ if [[ -z $host || -z $password ]]; then
 fi
 
 echo -e "\nThe Concourse UI is available via the following URL: http://localhost:8080\n"
-echo -e "user: admin\npassword: $password"
+echo -e "user: admin\npassword: $password\n"
 
-echo -e "\nEstablishing SSH tunnel in order to access Concourse:\n  ...Creating tunnel. This will hang if you are not logged on to the VPN."
-ps -ef | awk '/8080\:127\.0\.0\.1\:8080/{ print $2 }' | sudo xargs kill -15
-ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no \
-    -i $workspace_path/bastion-admin-ssh-key.pem $TF_VAR_bastion_admin_user@$host \
-    -L 8080:127.0.0.1:8080 -N >/dev/null 2>&1 &
+if [[ $action == login ]]; then
+    echo -e "Establishing SSH tunnel in order to access Concourse:\n  ...Creating tunnel. This will hang if you are not logged on to the VPN."
+    ps -ef | awk '/8080\:127\.0\.0\.1\:8080/{ print $2 }' | sudo xargs kill -15
+    ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no \
+        -i $workspace_path/bastion-admin-ssh-key.pem $TF_VAR_bastion_admin_user@$host \
+        -L 8080:127.0.0.1:8080 -N >/dev/null 2>&1 &
 
-echo -e "  ...Logging in and synchronizing using the fly CLI."
+    echo -e "  ...Logging in and synchronizing using the fly CLI."
 
-sleep 2
-fly -t local login -k -c http://localhost:8080 -u admin -p $password >/dev/null 2>&1
-if [[ $? -ne 0 ]]; then
-    echo "ERROR! Unable to login to Concourse using the fly CLI."
-    exit 1
+    sleep 2
+    fly -t local login -k -c http://localhost:8080 -u admin -p $password >/dev/null 2>&1
+    if [[ $? -ne 0 ]]; then
+        echo "ERROR! Unable to login to Concourse using the fly CLI."
+        exit 1
+    fi
+
+    fly -t local sync >/dev/null 2>&1
+    echo -e "  ...Session established.\n"
 fi
-
-fly -t local sync >/dev/null 2>&1
-echo -e "  ...Session established.\n"
