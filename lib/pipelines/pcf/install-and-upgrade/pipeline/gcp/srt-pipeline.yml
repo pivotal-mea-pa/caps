@@ -385,16 +385,6 @@ jobs:
       MYSQL_MONITOR_RECIPIENT_EMAIL: ((mysql_monitor_recipient_email))
       NUM_DIEGO_CELLS: ((num_diego_cells))
 
-  # This task will block if the environment 
-  # has been put into stopped state
-  - task: wait-if-stopped
-    file: automation/lib/tasks/automation/wait-on-state/task.yml
-    params: 
-      WAIT_ON_STATE: stopped
-      AUTOS3_URL: ((autos3_url))
-      AUTOS3_ACCESS_KEY: ((autos3_access_key))
-      AUTOS3_SECRET_KEY: ((autos3_secret_key))
-
 - name: deploy
   serial_groups: [opsman]
   plan:
@@ -405,7 +395,17 @@ jobs:
       trigger: true
       params: { globs: [] }
 
-  # Wait if an opsman is currently in the process of apply a change
+  # This task will block if the environment 
+  # has been put into stopped state
+  - task: wait-if-stopped
+    file: automation/lib/tasks/automation/wait-on-state/task.yml
+    params: 
+      WAIT_ON_STATE: stopped
+      AUTOS3_URL: ((autos3_url))
+      AUTOS3_ACCESS_KEY: ((autos3_access_key))
+      AUTOS3_SECRET_KEY: ((autos3_secret_key))
+
+  # Wait if an opsman is currently in the process of applying a change
   - task: wait-if-apply-in-progress
     file: automation/lib/tasks/opsman/wait-opsman/task.yml
     params:
