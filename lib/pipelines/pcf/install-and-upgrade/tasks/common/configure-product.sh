@@ -10,21 +10,21 @@ source_variables 'terraform-output/pcf-env-*.sh'
 
 TEMPLATE_OVERRIDE_PATH=automation-extensions/$TEMPLATE_OVERRIDE_PATH
 
-NEW_VERSION=$(cat pivnet-product/version | cut -d'#' -f1)
-INSTALLED_VERSION=$(om \
-  --skip-ssl-validation \
-  --target "https://${OPSMAN_HOST}" \
-  --client-id "${OPSMAN_CLIENT_ID}" \
-  --client-secret "${OPSMAN_CLIENT_SECRET}" \
-  --username "${OPSMAN_USERNAME}" \
-  --password "${OPSMAN_PASSWORD}" \
-  curl -path /api/v0/deployed/products \
-  | jq -r --arg product_name $PRODUCT_NAME '.[] | select(.type==$product_name) | .product_version')
+# NEW_VERSION=$(cat pivnet-product/version | cut -d'#' -f1)
+# INSTALLED_VERSION=$(om \
+#   --skip-ssl-validation \
+#   --target "https://${OPSMAN_HOST}" \
+#   --client-id "${OPSMAN_CLIENT_ID}" \
+#   --client-secret "${OPSMAN_CLIENT_SECRET}" \
+#   --username "${OPSMAN_USERNAME}" \
+#   --password "${OPSMAN_PASSWORD}" \
+#   curl -path /api/v0/deployed/products \
+#   | jq -r --arg product_name $PRODUCT_NAME '.[] | select(.type==$product_name) | .product_version')
 
-if [[ "$NEW_VERSION" == "$INSTALLED_VERSION" ]]; then  
-  echo "The product tile '$PRODUCT_NAME' version '$NEW_VERSION' has already been configured and deployed."
-  exit 0
-fi
+# if [[ "$NEW_VERSION" == "$INSTALLED_VERSION" ]]; then  
+#   echo "The product tile '$PRODUCT_NAME' version '$NEW_VERSION' has already been configured and deployed."
+#   exit 0
+# fi
 
 network=$(eval_jq_templates "network" "$TEMPLATE_PATH" "$TEMPLATE_OVERRIDE_PATH")
 resources=$(eval_jq_templates "resources" "$TEMPLATE_PATH" "$TEMPLATE_OVERRIDE_PATH")
