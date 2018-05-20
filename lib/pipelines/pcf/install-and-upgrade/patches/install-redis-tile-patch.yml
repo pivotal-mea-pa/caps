@@ -47,7 +47,7 @@
       file: automation/lib/pipelines/pcf/install-and-upgrade/tasks/upload-product-and-stemcell/task.yml
       params:
         IAAS: ((iaas_type))
-        OPSMAN_HOST: ((opsman_domain_or_ip_address))
+        OPSMAN_HOST: ((opsman_host))
         OPSMAN_CLIENT_ID: ((opsman_client_id))
         OPSMAN_CLIENT_SECRET: ((opsman_client_secret))
         OPS_MGR_USR: ((opsman_admin_username))
@@ -60,7 +60,7 @@
     - task: stage-tile
       file: automation/lib/pipelines/pcf/install-and-upgrade/tasks/stage-product/task.yml
       params:
-        OPSMAN_HOST: ((opsman_domain_or_ip_address))
+        OPSMAN_HOST: ((opsman_host))
         OPSMAN_CLIENT_ID: ((opsman_client_id))
         OPSMAN_CLIENT_SECRET: ((opsman_client_secret))
         OPSMAN_USERNAME: ((opsman_admin_username))
@@ -88,7 +88,7 @@
     - task: configure
       file: automation/lib/pipelines/pcf/install-and-upgrade/tasks/configure-redis/task.yml
       params:
-        OPSMAN_HOST: ((opsman_domain_or_ip_address))
+        OPSMAN_HOST: ((opsman_host))
         OPSMAN_CLIENT_ID: ((opsman_client_id))
         OPSMAN_CLIENT_SECRET: ((opsman_client_secret))
         OPSMAN_USERNAME: ((opsman_admin_username))

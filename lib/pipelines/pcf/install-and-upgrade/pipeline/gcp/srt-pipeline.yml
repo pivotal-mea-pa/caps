@@ -76,7 +76,7 @@ jobs:
       GCP_REGION: ((gcp_region))
       TERRAFORM_STATE_BUCKET: ((terraform_state_bucket))
       TEMPLATE_OVERRIDE_PATH: automation-extensions/((pcf_terraform_templates_path))
-      OPSMAN_HOST: ((opsman_domain_or_ip_address))
+      OPSMAN_HOST: ((opsman_host))
       OPSMAN_USERNAME: ((opsman_admin_username))
       OPSMAN_PASSWORD: ((opsman_admin_password))
       OPSMAN_ZONE: ((gcp_zone_1))
@@ -182,7 +182,7 @@ jobs:
   - task: configure-opsman-authentication
     file: automation/lib/pipelines/pcf/install-and-upgrade/tasks/configure-opsman/task.yml
     params:
-      OPSMAN_HOST: ((opsman_domain_or_ip_address))
+      OPSMAN_HOST: ((opsman_host))
       OPSMAN_USERNAME: ((opsman_admin_username))
       OPSMAN_PASSWORD: ((opsman_admin_password))
       OPSMAN_CLIENT_ID: ((opsman_client_id))
@@ -191,7 +191,7 @@ jobs:
   - task: configure-director
     file: automation/lib/pipelines/pcf/install-and-upgrade/tasks/configure-director/task.yml
     params:
-      OPSMAN_HOST: ((opsman_domain_or_ip_address))
+      OPSMAN_HOST: ((opsman_host))
       OPSMAN_CLIENT_ID: ((opsman_client_id))
       OPSMAN_CLIENT_SECRET: ((opsman_client_secret))
       OPSMAN_USERNAME: ((opsman_admin_username))
@@ -236,7 +236,7 @@ jobs:
   - task: check-opsman-clear
     file: automation/lib/tasks/opsman/wait-opsman/task.yml
     params:
-      OPSMAN_HOST: ((opsman_domain_or_ip_address))
+      OPSMAN_HOST: ((opsman_host))
       OPSMAN_USERNAME: ((opsman_admin_username))
       OPSMAN_PASSWORD: ((opsman_admin_password))
       OPSMAN_CLIENT_ID: ((opsman_client_id))
@@ -244,7 +244,7 @@ jobs:
   - task: deploy-director
     file: automation/lib/tasks/opsman/apply-changes/task.yml
     params:
-      OPSMAN_HOST: ((opsman_domain_or_ip_address))
+      OPSMAN_HOST: ((opsman_host))
       OPSMAN_CLIENT_ID: ((opsman_client_id))
       OPSMAN_CLIENT_SECRET: ((opsman_client_id))
       OPSMAN_USERNAME: ((opsman_admin_username))
@@ -284,7 +284,7 @@ jobs:
     file: automation/lib/pipelines/pcf/install-and-upgrade/tasks/upload-product-and-stemcell/task.yml
     params:
       IAAS: ((iaas_type))
-      OPSMAN_HOST: ((opsman_domain_or_ip_address))
+      OPSMAN_HOST: ((opsman_host))
       OPSMAN_CLIENT_ID: ((opsman_client_id))
       OPSMAN_CLIENT_SECRET: ((opsman_client_secret))
       OPS_MGR_USR: ((opsman_admin_username))
@@ -297,7 +297,7 @@ jobs:
   - task: stage-tile
     file: automation/lib/pipelines/pcf/install-and-upgrade/tasks/stage-product/task.yml
     params:
-      OPSMAN_HOST: ((opsman_domain_or_ip_address))
+      OPSMAN_HOST: ((opsman_host))
       OPSMAN_CLIENT_ID: ((opsman_client_id))
       OPSMAN_CLIENT_SECRET: ((opsman_client_secret))
       OPSMAN_USERNAME: ((opsman_admin_username))
@@ -321,7 +321,7 @@ jobs:
   - task: configure-srt
     file: automation/lib/pipelines/pcf/install-and-upgrade/tasks/configure-srt/task.yml
     params:
-      OPSMAN_HOST: ((opsman_domain_or_ip_address))
+      OPSMAN_HOST: ((opsman_host))
       OPSMAN_CLIENT_ID: ((opsman_client_id))
       OPSMAN_CLIENT_SECRET: ((opsman_client_secret))
       OPSMAN_USERNAME: ((opsman_admin_username))
@@ -409,7 +409,7 @@ jobs:
   - task: wait-if-apply-in-progress
     file: automation/lib/tasks/opsman/wait-opsman/task.yml
     params:
-      OPSMAN_HOST: ((opsman_domain_or_ip_address))
+      OPSMAN_HOST: ((opsman_host))
       OPSMAN_USERNAME: ((opsman_admin_username))
       OPSMAN_PASSWORD: ((opsman_admin_password))
       OPSMAN_CLIENT_ID: ((opsman_client_id))
@@ -419,7 +419,7 @@ jobs:
   - task: apply-changes
     file: automation/lib/tasks/opsman/apply-changes/task.yml
     params:
-      OPSMAN_HOST: ((opsman_domain_or_ip_address))
+      OPSMAN_HOST: ((opsman_host))
       OPSMAN_USERNAME: ((opsman_admin_username))
       OPSMAN_PASSWORD: ((opsman_admin_password))
       OPSMAN_CLIENT_ID: ((opsman_client_id))

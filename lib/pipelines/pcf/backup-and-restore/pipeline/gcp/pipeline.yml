@@ -137,8 +137,8 @@ shared:
   TRACE: {{trace_tasks}}
   SSH_KEY: {{ssh_key}}
   OPSMAN_HOST: {{opsman_host}}
-  OPSMAN_USERNAME: {{opsman_user}}
-  OPSMAN_PASSWORD: {{opsman_passwd}}
+  OPSMAN_USERNAME: {{opsman_username}}
+  OPSMAN_PASSWORD: {{opsman_password}}
   OPSMAN_SSH_USER: {{opsman_ssh_user}}
   OPSMAN_SSH_PASSWD: {{opsman_ssh_passwd}}
   OPSMAN_DECRYPTION_KEY: {{opsman_pass_phrase}}
