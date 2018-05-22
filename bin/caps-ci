@@ -7,7 +7,7 @@ common::initialize
 set -e
 
 usage () {
-    echo -e "\n${BLUE}USAGE: caps-ci logout | login | info\n"
+    echo -e "\n${BLUE}USAGE: caps-ci logout|login|info\n"
     echo -e "    This utility will create an SSH tunnel to the Concourse environment that"
     echo -e "    runs the automation pipelines. It will also initialize the 'fly' CLI and"
     echo -e "    create a target to this concourse environment.\n"

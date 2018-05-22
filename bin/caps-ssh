@@ -7,7 +7,7 @@ common::initialize
 set -e
 
 usage () {
-    echo -e "\n${BLUE}USAGE: caps-ssh <NAME> [ -u|--user <SSH_USER> ] [ -x|--proxy ]\n"
+    echo -e "\n${BLUE}USAGE: caps-ssh <NAME> [-u|--user <SSH_USER>] [-x|--proxy]\n"
     echo -e "    This utility will create launch an SSH session to an instance within the deployed"
     echo -e "    environment.\n"
     echo -e "    <NAME>                The name or IP of the instance to SSH to. If the name is 'bastion'"

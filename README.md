@@ -159,24 +159,24 @@ export TF_VAR_terraform_state_bucket=tfstate-${GOOGLE_REGION}
 
 export TF_VAR_locale=Asia/Dubai
 export TF_VAR_automation_pipelines_branch=dev
-export TF_VAR_automation_extensions_repo_branch=dev
 
 export TF_VAR_bastion_admin_user=bastion-admin
-export TF_VAR_bastion_setup_vpn=true
-export TF_VAR_bastion_allow_public_ssh=
+export TF_VAR_bastion_setup_vpn=false
+export TF_VAR_bastion_allow_public_ssh=true
 
 export TF_VAR_opsman_major_minor_version=2\\.1\\.[0-9]+$
 export TF_VAR_ert_major_minor_version=2\\.1\\.[0-9]+$
 
 export TF_VAR_products='
-    healthwatch:p-healthwatch/^1\\.1\\..*$
     metrics:apm/^1\\.4\\..*$
-    mysql-shared:p-mysql/^1\\.10\\..*$
-    mysql-dedicated:pivotal-mysql/^2\\.2\\..*$
+    mysql:pivotal-mysql/^2\\.2\\..*$
     rabbitmq:p-rabbitmq/^1\\.11\\..*$
     redis:p-redis/^1\\.11\\..*$
     pks:pivotal-container-service/^1\\.0\\..*$
+    harbor:harbor-container-registry/^1\\.4\\..*$
     scs:p-spring-cloud-services/^1\\.5\\..*$'
+
+export TF_VAR_num_diego_cells=2
 
 export TF_VAR_pcf_stop_at=15:00
 export TF_VAR_pcf_start_at=09:00
@@ -187,11 +187,12 @@ export TF_VAR_pcf_start_at=09:00
 Since the control plane for each environment is Terraform, this utility will be the tool you will use most often to apply changes to the bootstrap envrionment. Once an environment has been bootstrapped the internal automation will handle all upgrades and operational workflows via Concourse. Once you have set the context you can run a `plan` via this script to see what changes are pending. If the environment has already been set up then the `plan` should yield only an update to download the SSH keys for the environment. You will need to run `apply` to ensure keys have been downloaded before running any of the other utilities below.
 
 ```
-USAGE: caps-tf [ plan | apply | destroy | recreate-bastion ] -o|--options <TERRAFORM_OPTIONS> -c|--clean
+USAGE: caps-tf plan|apply|destroy|recreate-bastion [-o|--options <TERRAFORM_OPTIONS>] [-i|--init] [-c|--clean]
 
     This utility will perform the given Terraform action on the deployment's bootstrap template.
 
     -o|--options  <TERRAFORM_OPTIONS>  Additional options to pass to terraform.
+    -i|--init                          (Re)Initializes the terraform workspace.
     -c|--clean                         Ensures any rebuilds are clean (i.e. recreate-bastion with this
                                        option will ensure the persistent data volume is also recreated.
 ```
@@ -217,7 +218,7 @@ The bootstrap Concourse automation environment is configured to be exposed only 
 Once the script has established the tunnel it will display the concourse basic-auth usermame and password required to login to the UI or via the `fly` CLI.
 
 ```
-USAGE: caps-ci logout | login
+USAGE: caps-ci logout|login|info
 
     This utility will create an SSH tunnel to the Concourse environment that
     runs the automation pipelines. It will also initialize the 'fly' CLI and
@@ -231,18 +232,23 @@ USAGE: caps-ci logout | login
 This helper script that can be used to create an SSH session to an instance within the cloud environment. It can also be used to login to the bastion instance using the admin credentials.
 
 ```
-USAGE: caps-ssh <NAME> [ -u|user <SSH_USER> ]
+USAGE: caps-ssh <NAME> [-u|--user <SSH_USER>] [-x|--proxy]
 
     This utility will create launch an SSH session to an instance within the deployed
     environment.
 
-    <NAME>               The name or IP of the instance to SSH to. If the name is 'bastion'
-                         then an SSH session will be created to the bastion instance.
-                         Otherwise it should be the IP or the host prefix of the instance
-                         name. For example <host prefix>.<vpc domain>.
-    -u|user <SSH_USER>   The SSH user to login as. This will be ignored when you SSH to the
-                         bastion instance. For any other instance if this argument is not
-                         provided the default SSH user will be 'ubuntu'.
+    <NAME>                The name or IP of the instance to SSH to. If the name is 'bastion'
+                          then an SSH session will be created to the bastion instance.
+                          Otherwise it should be of the host prefix of the instance name.
+                          For example <host prefix>.<vpc domain>.
+    -u|--user <SSH_USER>  The SSH user to login as. This will be ignored when you SSH to the
+                          bastion instance. For any other instance if this argument is not
+                          provided the default SSH user will be 'ubuntu'.
+    -x|--proxy            This will create a transparent proxy server that works as a poor
+                          man's VPN. To install the sshuttle utility refer to the following
+                          url: https://github.com/sshuttle/sshuttle. Use this only if you
+                          have not setup or connected through a VPN in the bastion server
+                          and require direct access to VPC's internal resources.
 ```
 
 > The base image may implement [`sshguard`](https://www.sshguard.net/) or [`fail2ban`](https://www.fail2ban.org/wiki/index.php/Main_Page). Which means repeated failures to login will result in temporary block on your IP. If SSH is hanging then you will need re-try after some time or simply stop or disable the service as soon as you can SSH into the bastion instance.
@@ -259,7 +265,7 @@ USAGE: caps-info
 
 By default when you set the environment context you will have full administrative privileges to the environment, as long as you have the IaaS credentials with the appropriate role to access the bootstrap Terraform state. Access to the bastion instance using the bastion admin user and password is the highest level of access and it grants you access to all the bootstrap automation infrastructure as well as the keys to the access the IaaS. Hence, the bastion credentials should be considered highly sensitive. In the event the credentials need to be changed then the generated password can be tainted in the bootstrap Terraform state and the bastion instance rebuilt without affecting already deployed infrastructure.
 
-If you need to grant access to the internal VPC network resources then you can create additional VPN credentials which can be shared by traditional means. To create a new VPN user.
+If you need to grant non-admin access to the internal VPC network resources when VPN is configured and direct SSH has been disabled, you can create additional VPN credentials which can be shared by traditional means. To create a new VPN user.
 
 1) SSH into the bastion instance as the admin and note down the password for `sudo`.
 
@@ -278,6 +284,8 @@ sudo create_vpn_user <USER> <PASSWORD>
 https://`BASTION PUBLIC DNS NAME]`/~`USER`
 
 This link is secured using the user's VPN credentials which were set in 2). This user will not be able to SSH to the bastion instance or access any of the automation tooling, but will have access to any other deployed resource within VPC.
+
+If the bastion was setup with `TF_VAR_bastion_allow_public_ssh=true` then you can tunnel to the VPC network using [sshuttle](https://github.com/sshuttle/sshuttle) and VPN access is not required. For non-admin access simply SSH to the bastion server as admin and create system users with limited priveleges that can establish the tunnel via the [sshuttle](https://github.com/sshuttle/sshuttle) utility.
 
 ### Advance Users
 
