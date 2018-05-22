@@ -94,7 +94,7 @@ export PIVNET_TOKEN=****
 Before you can bootstrap an environment for a particular IaaS you need to first build the bootstrap image. This is a multi-role image that is used to automate and secure access to the environment. To build the image run the following command.
 
 ```
-USAGE: build-image -i|--iaas <IAAS_PROVIDER> [ -r|--regions <REGIONS> ]
+USAGE: build-image -i|--iaas <IAAS_PROVIDER> [-r|--regions <REGIONS>]
 
     -i|--iaas <IAAS_PROVIDER>  The iaas provider for which images will be built.
 
