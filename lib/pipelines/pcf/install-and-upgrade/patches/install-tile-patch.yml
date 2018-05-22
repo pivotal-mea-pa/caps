@@ -58,7 +58,7 @@
     # This task will block if the environment 
     # has been put into stopped state
     - task: wait-until-started
-      file: automation/lib/tasks/automation/wait-for-state/task.yml
+      file: automation/lib/inceptor/tasks/wait-for-state/task.yml
       params: 
         WAIT_FOR_STATE: started
         AUTOS3_URL: ((autos3_url))

@@ -137,7 +137,7 @@ shared:
   # This task will block if the environment 
   # has been put into stopped state
   task: wait-if-stopped
-  file: automation/lib/tasks/automation/wait-on-state/task.yml
+  file: automation/lib/inceptor/tasks/wait-on-state/task.yml
   params: 
     WAIT_ON_STATE: stopped
     AUTOS3_URL: ((autos3_url))
