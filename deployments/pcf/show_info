@@ -11,13 +11,23 @@ echo -e "${GREEN}Primary domain:      $vpc_dns_zone"
 echo -e "VPN server URL:      https://$bastion_fqdn"
 echo -e "VPN admin password:  $bastion_admin_password\n"
 
-echo -e "${LIGHT_GREEN}Cloud Foundry"
-echo -e "-------------\n"
-echo -e "${GREEN}  Apps Manager URL:    https://apps.sys.pas.$vpc_dns_zone"
-echo -e "  CF API URL:          https://api.sys.pas.$vpc_dns_zone\n"
+pcf_environments=${TF_VAR_pcf_environments:-["pcf1"]}
 
-echo -e "${LIGHT_GREEN}Ops Manager"
-echo -e "-----------\n"
-echo -e "${GREEN}  URL:                 https://opsman.pas.$vpc_dns_zone"
-echo -e "  User:                admin"
-echo -e "  Password:            $opsman_admin_password\n"
+for env in $(echo $pcf_environments | tr '["],' ' '); do
+
+  title="Environment '$env'"
+  ul=$(printf %${#title}s |tr " " "=")
+
+  echo -e "${BROWN_ORANGE}Environment '$env'\n${ul}\n"
+
+  echo -e "${LIGHT_GREEN}Cloud Foundry"
+  echo -e "-------------\n"
+  echo -e "${GREEN}  Apps Manager URL:    https://apps.sys.$env.$vpc_dns_zone"
+  echo -e "  CF API URL:          https://api.sys.$env.$vpc_dns_zone\n"
+
+  echo -e "${LIGHT_GREEN}Ops Manager"
+  echo -e "-----------\n"
+  echo -e "${GREEN}  URL:                 https://opsman.$env.$vpc_dns_zone"
+  echo -e "  User:                admin"
+  echo -e "  Password:            $opsman_admin_password\n"
+done
