@@ -15,7 +15,6 @@ variable "pcf_opsman_image_name" {}
 
 # Network
 
-variable "pas_env_domain_prefix" {}
 variable "system_domain_prefix" {}
 variable "apps_domain_prefix" {}
 
