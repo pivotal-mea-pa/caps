@@ -23,9 +23,12 @@ resource "google_compute_instance" "nat-gateway-pri" {
   }
 
   metadata_startup_script = <<EOF
-#! /bin/bash
-sudo sh -c 'echo 1 > /proc/sys/net/ipv4/ip_forward'
-sudo iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+#!/bin/bash -xe
+sysctl -w net.ipv4.ip_forward=1
+sed -i= 's/^[# ]*net.ipv4.ip_forward=[[:digit:]]/net.ipv4.ip_forward=1/g' /etc/sysctl.conf
+iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+apt-get update
+apt-get upgrade
 EOF
 
   depends_on = ["google_compute_subnetwork.pcf"]
@@ -58,9 +61,12 @@ resource "google_compute_instance" "nat-gateway-sec" {
   }
 
   metadata_startup_script = <<EOF
-#! /bin/bash
-sudo sh -c 'echo 1 > /proc/sys/net/ipv4/ip_forward'
-sudo iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+#!/bin/bash -xe
+sysctl -w net.ipv4.ip_forward=1
+sed -i= 's/^[# ]*net.ipv4.ip_forward=[[:digit:]]/net.ipv4.ip_forward=1/g' /etc/sysctl.conf
+iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE
+apt-get update
+apt-get upgrade
 EOF
 
   depends_on = ["google_compute_subnetwork.pcf"]
