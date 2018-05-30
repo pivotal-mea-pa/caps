@@ -3,12 +3,24 @@
   value:
     get: started
     passed: [stop-check]
+
+- op: add
+  path: /jobs/name=stop-pcf/plan/0/aggregate/-
+  value:
+    get: stop-schedule
+    passed: [stop-check]
     trigger: true
 
 - op: replace
   path: /jobs/name=start-pcf/plan/0/aggregate/get=stopped
   value:
     get: stopped
+    passed: [start-check]
+
+- op: add
+  path: /jobs/name=start-pcf/plan/0/aggregate/-
+  value:
+    get: start-schedule
     passed: [start-check]
     trigger: true
 
