@@ -244,7 +244,7 @@ variable "pcf_network_subnets" {
 # Comma separated list of additional DNS hosts to use
 # for instances deployed to the pcf networks.
 variable "pcf_network_dns" {
-  default = "8.8.8.8"
+  default = "169.254.169.254"
 }
 
 #
