@@ -99,15 +99,6 @@ resource "google_compute_forwarding_rule" "pks-uaa" {
   ip_address  = "${google_compute_address.pks.address}"
 }
 
-// PKS ODB tcp forwarding rule
-resource "google_compute_forwarding_rule" "pks-odb" {
-  name        = "${var.prefix}-pks-odb-lb"
-  target      = "${google_compute_target_pool.pks.self_link}"
-  port_range  = "8080"
-  ip_protocol = "TCP"
-  ip_address  = "${google_compute_address.pks.address}"
-}
-
 // Harbor tcp forwarding rule
 resource "google_compute_forwarding_rule" "harbor" {
   name        = "${var.prefix}-harbor-lb"
