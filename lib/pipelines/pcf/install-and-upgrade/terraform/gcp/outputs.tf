@@ -22,7 +22,7 @@ output "env_dns_zone_name" {
   value = "${google_dns_managed_zone.env_dns_zone.name}"
 }
 
-output "pcf_env_domain" {
+output "env_domain" {
   value = "${local.env_domain}"
 }
 
