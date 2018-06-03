@@ -5,7 +5,7 @@ output "company_name" {
 }
 
 output "deployment_prefix" {
-  value = "${var.prefix}-vms"
+  value = "${var.prefix}"
 }
 
 output "region" {
