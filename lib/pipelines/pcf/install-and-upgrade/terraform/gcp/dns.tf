@@ -87,8 +87,8 @@ resource "google_dns_record_set" "tcp-dns" {
 }
 
 resource "google_dns_record_set" "pks" {
-  name         = "pks.${local.bootstrap_domain}."
-  managed_zone = "${data.terraform_remote_state.bootstrap.vpc_dns_zone_name}"
+  name         = "pks.${local.env_domain}."
+  managed_zone = "${google_dns_managed_zone.env_dns_zone.name}"
 
   type = "A"
   ttl  = 300
