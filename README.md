@@ -20,6 +20,14 @@ Each environment is bootstrapped by an inception Virtual Private Cloud (VPC), wh
 
 ## Usage
 
+### Pre-requisites 
+
+A number of tools and configurations need to be in place before starting;
+* [Terraform installed](https://www.terraform.io/intro/getting-started/install.html)
+* [Packer installed](https://www.packer.io/docs/install/index.html) 
+* Correct IAM service account permissions on IaaS
+    * [GCP](docs/gcp/iam.md)
+
 ### Quick Start
 
 To use this framework effectively a collection of shell scripts are provided. It is recommended to use a tool like [direnv](https://direnv.net/) to manage your local environment. 
@@ -93,6 +101,8 @@ export PIVNET_TOKEN=****
 
 Before you can bootstrap an environment for a particular IaaS you need to first build the bootstrap image. This is a multi-role image that is used to automate and secure access to the environment. To build the image run the following command.
 
+> You should have [packer](https://www.packer.io/docs/install/index.html) installed on your environment.
+
 ```
 USAGE: build-image -i|--iaas <IAAS_PROVIDER> [-r|--regions <REGIONS>]
 
@@ -123,7 +133,7 @@ USAGE: caps-init <NAME> -d|--deployment <DEPLOYMENT_NAME> -i|--iaas <IAAS_PROVID
     -i|--iaas <IAAS_PROVIDER>          The iaas provider that the deployment has been deployed to.
 ```
 
-Control files are environment scripts and have the name format `.caps-env_<NAME>`. They will be placed within the root of this repository. You should keep all IAAS credentials out of this file and reference them as environment variables that have been exported via another mechanism such the [direnv](https://direnv.net/) utility. The control files contain all externalized variables that customize the Terraform templates for the bootstrap infrastructure as well as any configuration that needs to be passed to the operations automation pipelines.
+Control files are environment scripts and have the name format `.caps-env_<NAME>`. They will be placed within the root of this repository. You should keep all IaaS credentials out of this file and reference them as environment variables that have been exported via another mechanism such the [direnv](https://direnv.net/) utility. The control files contain all externalized variables that customize the Terraform templates for the bootstrap infrastructure as well as any configuration that needs to be passed to the operations automation pipelines.
 
 Below is a sample control file for an environment named *pcf-poc1* deployed to *GCP*.
 
@@ -184,7 +194,7 @@ export TF_VAR_pcf_start_at=09:00
 
 #### `caps-tf`
 
-Since the control plane for each environment is Terraform, this utility will be the tool you will use most often to apply changes to the bootstrap envrionment. Once an environment has been bootstrapped the internal automation will handle all upgrades and operational workflows via Concourse. Once you have set the context you can run a `plan` via this script to see what changes are pending. If the environment has already been set up then the `plan` should yield only an update to download the SSH keys for the environment. You will need to run `apply` to ensure keys have been downloaded before running any of the other utilities below.
+Since the control plane for each environment is Terraform, this utility will be the tool you will use most often to apply changes to the bootstrap environment. Once an environment has been bootstrapped the internal automation will handle all upgrades and operational workflows via Concourse. Once you have set the context you can run a `plan` via this script to see what changes are pending. If the environment has already been set up then the `plan` should yield only an update to download the SSH keys for the environment. You will need to run `apply` to ensure keys have been downloaded before running any of the other utilities below.
 
 ```
 USAGE: caps-tf plan|apply|destroy|recreate-bastion [-o|--options <TERRAFORM_OPTIONS>] [-i|--init] [-c|--clean]
@@ -197,9 +207,23 @@ USAGE: caps-tf plan|apply|destroy|recreate-bastion [-o|--options <TERRAFORM_OPTI
                                        option will ensure the persistent data volume is also recreated.
 ```
 
+> NOTE: If running a destroy option you may need to run a couple of times to complete. This is a known issue with regards to modules.
+
 #### `caps-vpn`
 
-If you configure the bootstrap infrastructure to setup VPN then the following utility can be used to download the vpn admin credentials. For Mac OS environments the credentials downloaded can be used with the [TunnelBlick](https://tunnelblick.net/) VPN client. The script will automatically import the credentials to [TunnelBlick](https://tunnelblick.net/) if it has been installed.
+If you configure the bootstrap infrastructure to setup VPN then the following utility can be used to download the VPN admin credentials. 
+
+The parameters to configure (or not) the VPN are;
+
+```
+export TF_VAR_bastion_setup_vpn=true                    # To disable set as false
+#export TF_VAR_bastion_vpn_port=2295                    # [optional] should you want to alter the defaults
+#export TF_VAR_bastion_vpn_protocol=udp                 # [optional] should you want to alter the defaults
+#export TF_VAR_bastion_vpn_network=192.168.111.0/24     # [optional] should you want to alter the defaults
+```
+> NOTE: If the VPN is disabled direct access to the Opsman UI not possible unless manual configuration is applied
+
+For Mac OS environments the credentials downloaded can be used with the [TunnelBlick](https://tunnelblick.net/) VPN client. The script will automatically import the credentials to [TunnelBlick](https://tunnelblick.net/) if it has been installed.
 
 ```
 USAGE: caps-vpn
@@ -310,3 +334,26 @@ The framework depends on a pre-configured cloud image that bootstraps the enviro
 * *DNS (TBD)*
 * *SMTP Service (TBD)*
 
+## Tearing down the environment
+
+### `wipe-env`
+
+There is a job, `wipe-env` in the install pipeline, which you can run to destroy the infrastructure
+that was created by `create-infrastructure`.
+
+_**Note: This job currently is not all-encompassing. If you have deployed PAS (or other tiles) you will want to delete from within Ops Manager before proceeding with `wipe-env`, as well as deleting the BOSH director VM from within.**_
+
+#### `caps-tf`
+
+Once the PCF environment created by Ops Manager has been removed you can undo the bootstrapping process by running the `caps-tf destroy`. 
+
+```
+USAGE: caps-tf [ plan | apply | destroy | recreate-bastion ] -o|--options <TERRAFORM_OPTIONS> -c|--clean
+
+    This utility will perform the given Terraform action on the deployment's bootstrap template.
+
+    -o|--options  <TERRAFORM_OPTIONS>  Additional options to pass to terraform.
+    -c|--clean                         Ensures any rebuilds are clean (i.e. recreate-bastion with this
+                                       option will ensure the persistent data volume is also recreated.
+``` 
+> NOTE: If running a destroy option you may need to run a couple of times to complete. This is a known issue with regards to modules.
