@@ -44,7 +44,7 @@ for e in $ENVIRONMENTS; do
     eval "echo \"$(cat $install_and_upgrade_patches_path/product-install-patch.yml)\"" \
         > product-install-patch.yml
 
-    cat install-pcf-pipeline$i.yml \
+    cat install-pcf-pipeline0.yml \
         | yaml_patch -o product-install-patch.yml \
         > install-pcf-pipeline1.yml
 
