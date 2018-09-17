@@ -152,6 +152,23 @@
         MYSQL_MONITOR_RECIPIENT_EMAIL: ((mysql_monitor_recipient_email))
         NUM_DIEGO_CELLS: ((num_diego_cells))
 
+    # Set buildpack upgrade pipeline
+    - task: set-buildpack-upgrade-pipeline
+      file: automation/lib/pipelines/pcf/install-and-upgrade/tasks/set-buildpack-upgrade-pipeline/task.yml
+      params:
+        CONCOURSE_URL: ((concourse_url))
+        CONCOURSE_USER: ((concourse_user))
+        CONCOURSE_PASSWORD: ((concourse_password))
+        AUTOS3_URL: ((autos3_url))
+        AUTOS3_ACCESS_KEY: ((autos3_access_key))
+        AUTOS3_SECRET_KEY: ((autos3_secret_key))
+        ENVIRONMENT: ((environment))
+        OPSMAN_HOST: ((opsman_host))
+        OPSMAN_CLIENT_ID: ((opsman_client_id))
+        OPSMAN_CLIENT_SECRET: ((opsman_client_secret))
+        OPSMAN_USERNAME: ((opsman_admin_username))
+        OPSMAN_PASSWORD: ((opsman_admin_password))
+
 - op: add
   path: /jobs/name=deploy/plan/0/aggregate/-
   value:

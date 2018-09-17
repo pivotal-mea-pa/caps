@@ -1,0 +1,26 @@
+---
+platform: linux
+
+image_resource:
+  type: docker-image
+  source:
+    repository: appbricks/automation-tools
+
+inputs:
+- name: automation
+- name: terraform-output
+
+run:
+  path: automation/lib/pipelines/pcf/install-and-upgrade/tasks/set-buildpack-upgrade-pipeline/task.sh
+
+params:
+  CONCOURSE_URL:
+  CONCOURSE_USER:
+  CONCOURSE_PASSWORD:
+  AUTOS3_URL:
+  AUTOS3_ACCESS_KEY:
+  AUTOS3_SECRET_KEY:
+  ENVIRONMENT:
+  OPSMAN_HOST:
+  OPSMAN_USERNAME:
+  OPSMAN_PASSWORD:
