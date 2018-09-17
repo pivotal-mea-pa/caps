@@ -36,30 +36,43 @@ for e in $ENVIRONMENTS; do
 
   set -x
 
-  cp $install_and_upgrade_pipeline_path/gcp/pipeline.yml install-pcf-pipeline0.yml
-  i=0 && j=1
-  for p in $(echo -e "$PRODUCTS"); do 
-    product_name=$(echo $p | awk -F':' '{ print $1 }')
-    slug_and_version=$(echo $p | awk -F':' '{ print $2 }')
-    errands_to_disable=$(echo $p | awk -F':' '{ print $3 }')
-    errands_to_enable=$(echo $p | awk -F':' '{ print $4 }')
-    product_slug=${slug_and_version%/*}
-    product_version=${slug_and_version#*/}
+  eval "echo \"$(cat $install_and_upgrade_pipeline_path/gcp/pipeline.yml)\"" \
+    > install-pcf-pipeline0.yml
+  
+  if [[ -n $PRODUCTS ]]; then
 
-    if [[ -e $install_and_upgrade_patches_path/install-${product_name}-tile-patch.yml ]]; then
-      eval "echo \"$(cat $install_and_upgrade_patches_path/install-${product_name}-tile-patch.yml)\"" \
-        > ${product_name}-patch.yml
-    else
-      eval "echo \"$(cat $install_and_upgrade_patches_path/install-tile-patch.yml)\"" \
-        > ${product_name}-patch.yml
-    fi
+    eval "echo \"$(cat $install_and_upgrade_patches_path/product-install-patch.yml)\"" \
+        > product-install-patch.yml
 
     cat install-pcf-pipeline$i.yml \
-      | yaml_patch -o ${product_name}-patch.yml \
-      > install-pcf-pipeline$j.yml
+        | yaml_patch -o product-install-patch.yml \
+        > install-pcf-pipeline1.yml
 
-    i=$(($i+1)) && j=$(($j+1))
-  done
+    i=1 && j=2
+    for p in $(echo -e "$PRODUCTS"); do 
+      product_name=$(echo $p | awk -F':' '{ print $1 }')
+      slug_and_version=$(echo $p | awk -F':' '{ print $2 }')
+      errands_to_disable=$(echo $p | awk -F':' '{ print $3 }')
+      errands_to_enable=$(echo $p | awk -F':' '{ print $4 }')
+      product_slug=${slug_and_version%/*}
+      product_version=${slug_and_version#*/}
+
+      if [[ -e $install_and_upgrade_patches_path/install-${product_name}-tile-patch.yml ]]; then
+        eval "echo \"$(cat $install_and_upgrade_patches_path/install-${product_name}-tile-patch.yml)\"" \
+          > ${product_name}-patch.yml
+      else
+        eval "echo \"$(cat $install_and_upgrade_patches_path/install-tile-patch.yml)\"" \
+          > ${product_name}-patch.yml
+      fi
+
+      cat install-pcf-pipeline$i.yml \
+        | yaml_patch -o ${product_name}-patch.yml \
+        > install-pcf-pipeline$j.yml
+
+      i=$(($i+1)) && j=$(($j+1))
+    done
+
+  fi
 
   set +x
 
