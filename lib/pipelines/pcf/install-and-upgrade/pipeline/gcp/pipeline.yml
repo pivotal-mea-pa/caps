@@ -72,7 +72,7 @@ jobs:
       trigger: true
       params:
         globs:
-        - "*GCP.yml"
+        - '*GCP.yml'
   - task: upload
     file: automation/lib/pipelines/pcf/install-and-upgrade/tasks/upload-opsman/gcp/task.yml
     params:
@@ -91,7 +91,7 @@ jobs:
       trigger: true
       params:
         globs:
-        - "*GCP.yml"
+        - '*GCP.yml'
   - task: create-infrastructure
     file: automation/lib/pipelines/pcf/install-and-upgrade/tasks/create-infrastructure/gcp/task.yml
     params:
