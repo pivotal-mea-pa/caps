@@ -79,9 +79,9 @@ for e in $ENVIRONMENTS; do
   [[ $UNPAUSE_INSTALL_PIPELINE == "true" ]] && \
     fly -t default unpause-pipeline -p ${env}_install-and-upgrade
 
+  # Wait until the PCF Ops Manager director has been been successfully deployed.
   set +e
 
-  # Wait until the PCF Ops Manager director has been been successfully deployed.
   b=1
   while true; do
     r=$(fly -t default watch -j PCF_install-and-upgrade/deploy-director -b $b 2>&1)
@@ -96,7 +96,6 @@ for e in $ENVIRONMENTS; do
     echo "Waiting for job PCF_install-and-upgrade/deploy-director  build $b to complete..."
     sleep 5
   done
-
   set -e
-  
+
 done
