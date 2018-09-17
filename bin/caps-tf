@@ -115,13 +115,13 @@ case $tf_action in
     recreate-bastion)
         terraform taint \
             -state=$workspace_path/.terraform/terraform.tfstate \
-            -module=bootstrap.network.inception \
+            -module=bootstrap \
             google_compute_instance.bastion
 
         if [[ $clean == yes ]]; then
             terraform taint \
                 -state=$workspace_path/.terraform/terraform.tfstate \
-                -module=bootstrap.network.inception \
+                -module=bootstrap \
                 google_compute_disk.bastion-data-volume            
         fi
 
