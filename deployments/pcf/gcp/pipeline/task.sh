@@ -113,4 +113,66 @@ for e in $ENVIRONMENTS; do
   done
   set -e
 
+  # Setup backup and restore pipeline
+
+  BACKUP_AND_RESTORE_PIPELINE_PATH=automation/lib/pipelines/pcf/backup-and-restore/pipeline
+
+  rm -fr .terraform/
+  rm terraform.tfstate
+
+  terraform init $terraform_params_path
+
+  terraform apply -auto-approve \
+    -var "bootstrap_state_bucket=$BOOTSTRAP_STATE_BUCKET" \
+    -var "bootstrap_state_prefix=$BOOTSTRAP_STATE_PREFIX" \
+    -var "params_template_file=$BACKUP_AND_RESTORE_PIPELINE_PATH/gcp/params.yml" \
+    -var "params_file=backup-and-restore-params.yml" \
+    -var "environment=${e}" \
+    $terraform_params_path >/dev/null
+
+  fly -t default set-pipeline -n \
+    -p ${env}_backup-and-restore \
+    -c $BACKUP_AND_RESTORE_PIPELINE_PATH/gcp/pipeline.yml \
+    -l backup-and-restore-params.yml \
+    -v "autos3_url=$AUTOS3_URL" \
+    -v "autos3_access_key=$AUTOS3_ACCESS_KEY" \
+    -v "autos3_secret_key=$AUTOS3_SECRET_KEY" >/dev/null
+
+  fly -t default unpause-pipeline -p ${env}_backup-and-restore
+
+  # Setup start and stop pipeline
+
+  START_AND_STOP_PIPELINE_PATH=automation/lib/pipelines/pcf/stop-and-start/pipeline
+  START_AND_STOP_PATCHES_PATH=automation/lib/pipelines/pcf/stop-and-start/patches
+
+  rm -fr .terraform/
+  rm terraform.tfstate
+
+  terraform init $terraform_params_path
+
+  terraform apply -auto-approve \
+    -var "bootstrap_state_bucket=$BOOTSTRAP_STATE_BUCKET" \
+    -var "bootstrap_state_prefix=$BOOTSTRAP_STATE_PREFIX" \
+    -var "params_template_file=$START_AND_STOP_PIPELINE_PATH/gcp/params.yml" \
+    -var "params_file=stop-and-start-params.yml" \
+    -var "environment=${e}" \
+    $terraform_params_path >/dev/null
+
+  if [[ $SET_START_STOP_SCHEDULE == true ]]; then
+    cat $START_AND_STOP_PIPELINE_PATH/gcp/pipeline.yml \
+      | yaml_patch -o $START_AND_STOP_PATCHES_PATH/start-stop-schedule.yml > stop-and-start-pipeline.yml
+  else
+    cp $START_AND_STOP_PIPELINE_PATH/gcp/pipeline.yml stop-and-start-pipeline.yml
+  fi
+
+  fly -t default set-pipeline -n \
+    -p ${env}_stop-and-start \
+    -c stop-and-start-pipeline.yml \
+    -l stop-and-start-params.yml \
+    -v "autos3_url=$AUTOS3_URL" \
+    -v "autos3_access_key=$AUTOS3_ACCESS_KEY" \
+    -v "autos3_secret_key=$AUTOS3_SECRET_KEY" >/dev/null
+
+  fly -t default unpause-pipeline -p ${env}_stop-and-start
+
 done
