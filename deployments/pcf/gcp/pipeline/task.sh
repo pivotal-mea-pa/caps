@@ -36,7 +36,7 @@ for e in $ENVIRONMENTS; do
 
   set -x
 
-  cp $install_and_upgrade_pipeline_path/gcp/${PCF_PAS_RUNTIME_TYPE}-pipeline.yml install-pcf-pipeline0.yml
+  cp $install_and_upgrade_pipeline_path/gcp/pipeline.yml install-pcf-pipeline0.yml
   i=0 && j=1
   for p in $(echo -e "$PRODUCTS"); do 
     product_name=$(echo $p | awk -F':' '{ print $1 }')

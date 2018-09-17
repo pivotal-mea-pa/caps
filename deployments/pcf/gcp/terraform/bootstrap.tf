@@ -104,7 +104,6 @@ automation_pipelines_branch: ${var.automation_pipelines_branch}
 vpc_dns_zone: ${var.vpc_dns_zone}
 
 environments: '${join(" ", var.pcf_environments)}'
-pcf_pas_runtime_type: srt
 product: '${var.products}'
 
 unpause_install_pipeline: ${var.autostart_deployment_pipelines}
