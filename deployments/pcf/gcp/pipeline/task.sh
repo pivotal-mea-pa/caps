@@ -72,6 +72,8 @@ for e in $ENVIRONMENTS; do
       i=$(($i+1)) && j=$(($j+1))
     done
 
+  else
+    i=0
   fi
 
   set +x
