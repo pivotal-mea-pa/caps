@@ -1,5 +1,8 @@
 #!/bin/bash
 
+source automation/lib/scripts/utility/template-utils.sh
+
+[[ -n "$TRACE" ]] && set -x
 set -euo pipefail
 
 # Source terraform output variables if available
