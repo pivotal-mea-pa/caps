@@ -53,8 +53,6 @@ data "template_file" "params" {
     common_admin_password  = "${data.terraform_remote_state.bootstrap.common_admin_password}"
 
     opsman_major_minor_version = "${data.terraform_remote_state.bootstrap.opsman_major_minor_version}"
-    ert_major_minor_version    = "${data.terraform_remote_state.bootstrap.ert_major_minor_version}"
-    ert_errands_to_disable     = "${data.terraform_remote_state.bootstrap.ert_errands_to_disable}"
 
     mysql_monitor_recipient_email = "${data.terraform_remote_state.bootstrap.mysql_monitor_recipient_email}"
 

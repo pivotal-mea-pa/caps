@@ -133,25 +133,6 @@ db_uaa_password: '${pas_system_dbpassword}'
 system_domain_prefix: 'sys'
 apps_domain_prefix: 'apps'
 
-# Errands to disable prior to deploying ERT
-# Valid values:
-#   all
-#   none
-#   "" (empty string)
-#   Any combination of the following, separated by comma:
-#     smoke-tests
-#     push-apps-manager
-#     notifications
-#     notifications-ui
-#     push-pivotal-account
-#     autoscaling
-#     autoscaling-register-broker
-#     nfsbrokerpush
-ert_errands_to_disable: '${ert_errands_to_disable}'
-
-# PCF Elastic Runtime minor version to track
-ert_major_minor_version: '${ert_major_minor_version}'
-
 # Required if haproxy_forward_tls is enabled - HAProxy will use the CA provided to verify the certificates provided by the router.
 haproxy_backend_ca: ''
 

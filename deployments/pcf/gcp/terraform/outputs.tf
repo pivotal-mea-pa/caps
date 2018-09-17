@@ -183,14 +183,6 @@ output "opsman_major_minor_version" {
   value = "${var.opsman_major_minor_version}"
 }
 
-output "ert_major_minor_version" {
-  value = "${var.ert_major_minor_version}"
-}
-
-output "ert_errands_to_disable" {
-  value = "${var.ert_errands_to_disable}"
-}
-
 output "mysql_monitor_recipient_email" {
   value = "${var.mysql_monitor_recipient_email}"
 }

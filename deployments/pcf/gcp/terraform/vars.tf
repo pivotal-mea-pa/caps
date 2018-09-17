@@ -260,33 +260,13 @@ variable "opsman_major_minor_version" {
   type = "string"
 }
 
-# PCF Elastic Runtime minor version to track
-variable "ert_major_minor_version" {
-  type = "string"
-}
-
-# Errands to disable prior to deploying ERT
-# Valid values:
-#   all
-#   none
-#   "" (empty string)
-#   Any combination of the following, separated by comma:
-#     smoke-tests
-#     push-apps-manager
-#     notifications
-#     notifications-ui
-#     push-pivotal-account
-#     autoscaling
-#     autoscaling-register-broker
-#     nfsbrokerpush
-variable "ert_errands_to_disable" {
-  default = "none"
-}
-
-# List of products to install. This should be a comma separated list of 
-# 'product_name:product_slug/product_version_regex[:errands to disable]'.
-# The 'errands to disable' field is optional and has the same format
-# as the 'ert_errands_to_disable' variable.
+# List of products to install. This should be a space 
+# separated list of:
+#
+# product_name:product_slug/product_version_regex[:errands_to_disable[:errands_to_enable]]
+#
+# The 'errands_to_disable' and 'errands_to_enable' fields 
+# should consist of comma separated errand names.
 variable "products" {
   type = "string"
 }
