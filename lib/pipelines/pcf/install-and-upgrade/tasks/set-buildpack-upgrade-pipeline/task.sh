@@ -37,7 +37,10 @@ curl -L https://raw.githubusercontent.com/pivotal-cf/pcf-pipelines/master/upgrad
 cat upgrade-buildpacks-pipeline-orig.yml \
     | yaml_patch -o $install_and_upgrade_patches_path/upgrade-buildpacks-patch.yml \
     > upgrade-buildpacks-pipeline.yml
-    
+
+fly -t default login -c $CONCOURSE_URL -u ''$CONCOURSE_USER'' -p ''$CONCOURSE_PASSWORD''
+fly -t default sync
+
 fly -t default set-pipeline -n \
   -p ${env}_upgrade-buildpacks \
   -c upgrade-buildpacks-pipeline.yml \
