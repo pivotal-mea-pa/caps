@@ -127,6 +127,8 @@
         DATABASE_TYPE: external
         DB_UAA_USERNAME: ((db_uaa_username))
         DB_UAA_PASSWORD: ((db_uaa_password))
+        DB_CREDHUB_USERNAME: ((db_credhub_username))
+        DB_CREDHUB_PASSWORD: ((db_credhub_password))
         DB_APP_USAGE_SERVICE_USERNAME: ((db_app_usage_service_username))
         DB_APP_USAGE_SERVICE_PASSWORD: ((db_app_usage_service_password))
         DB_AUTOSCALE_USERNAME: ((db_autoscale_username))
