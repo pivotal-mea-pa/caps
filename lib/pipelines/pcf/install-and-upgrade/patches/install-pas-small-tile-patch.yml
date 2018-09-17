@@ -40,7 +40,7 @@
         trigger: true
         params:
           globs:
-          - ((product_globs))
+          - 'srt*.pivotal'
 
     # Upload product tile and its stemcell
     - task: upload-tile
