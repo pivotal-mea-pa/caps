@@ -81,7 +81,7 @@ errands=$(om \
   curl --path /api/v0/staged/products/$product_guid/errands
 )
 
-ERRAND_DEFAULT_IF_ENABLED=${ERRAND_DEFAULT_IF_ENABLED:-when-changed}
+ERRAND_DEFAULT_IF_ENABLED=${ERRAND_DEFAULT_IF_ENABLED:-true}
 
 updated_errands=$(echo $errands | jq \
   --arg to_enable "$ERRANDS_TO_ENABLE" \
