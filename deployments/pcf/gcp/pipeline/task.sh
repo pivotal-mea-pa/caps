@@ -85,6 +85,9 @@ for e in $ENVIRONMENTS; do
     -p ${env}_install-and-upgrade \
     -c install-pcf-pipeline$i.yml \
     -l install-pcf-params.yml \
+    -v "concourse_url=$CONCOURSE_URL" \
+    -v "concourse_user=$CONCOURSE_USER" \
+    -v "concourse_password=$CONCOURSE_PASSWORD" \
     -v "autos3_url=$AUTOS3_URL" \
     -v "autos3_access_key=$AUTOS3_ACCESS_KEY" \
     -v "autos3_secret_key=$AUTOS3_SECRET_KEY" >/dev/null
@@ -99,16 +102,16 @@ for e in $ENVIRONMENTS; do
 
   b=1
   while true; do
-    r=$(fly -t default watch -j PCF_install-and-upgrade/deploy-director -b $b 2>&1)
+    r=$(fly -t default watch -j ${env}_install-and-upgrade/deploy-director -b $b 2>&1)
     [[ $? -eq 0 ]] && break
 
     s=$(echo "$r" | tail -1)
     if [[ "$s" == "failed" ]]; then
-      echo -e "\n*** Job PCF_install-and-upgrade/deploy-director  FAILED! ***\n"
+      echo -e "\n*** Job ${env}_install-and-upgrade/deploy-director  FAILED! ***\n"
       echo -e "$r\n"
       b=$(($b+1))
     fi
-    echo "Waiting for job PCF_install-and-upgrade/deploy-director  build $b to complete..."
+    echo "Waiting for job ${env}_install-and-upgrade/deploy-director  build $b to complete..."
     sleep 5
   done
   set -e
@@ -134,6 +137,9 @@ for e in $ENVIRONMENTS; do
     -p ${env}_backup-and-restore \
     -c $BACKUP_AND_RESTORE_PIPELINE_PATH/gcp/pipeline.yml \
     -l backup-and-restore-params.yml \
+    -v "concourse_url=$CONCOURSE_URL" \
+    -v "concourse_user=$CONCOURSE_USER" \
+    -v "concourse_password=$CONCOURSE_PASSWORD" \
     -v "autos3_url=$AUTOS3_URL" \
     -v "autos3_access_key=$AUTOS3_ACCESS_KEY" \
     -v "autos3_secret_key=$AUTOS3_SECRET_KEY" >/dev/null
@@ -169,6 +175,9 @@ for e in $ENVIRONMENTS; do
     -p ${env}_stop-and-start \
     -c stop-and-start-pipeline.yml \
     -l stop-and-start-params.yml \
+    -v "concourse_url=$CONCOURSE_URL" \
+    -v "concourse_user=$CONCOURSE_USER" \
+    -v "concourse_password=$CONCOURSE_PASSWORD" \
     -v "autos3_url=$AUTOS3_URL" \
     -v "autos3_access_key=$AUTOS3_ACCESS_KEY" \
     -v "autos3_secret_key=$AUTOS3_SECRET_KEY" >/dev/null
