@@ -29,7 +29,7 @@ cf_password=$(om --skip-ssl-validation \
   --password "${OPSMAN_PASSWORD}" \
   credentials -p cf -c .uaa.admin_credentials -f password)
 
-cf_api_uri=https://api.$system_domain
+cf_api_uri=https://api.$SYSTEM_DOMAIN
 
 curl -L https://raw.githubusercontent.com/pivotal-cf/pcf-pipelines/master/upgrade-buildpacks/pipeline.yml \
   -o upgrade-buildpacks-pipeline-orig.yml
@@ -41,7 +41,7 @@ cat upgrade-buildpacks-pipeline-orig.yml \
 fly -t default set-pipeline -n \
   -p ${env}_upgrade-buildpacks \
   -c upgrade-buildpacks-pipeline.yml \
-  -l install-pcf-params.yml \
+  -v "pivnet_token=$PIVNET_TOKEN" \
   -v "cf_api_uri=$cf_api_uri" \
   -v "cf_user=$cf_user" \
   -v "cf_password=$cf_password" \
