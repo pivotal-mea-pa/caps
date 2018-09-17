@@ -31,7 +31,6 @@ jobs:
       BOOTSTRAP_STATE_PREFIX: ((bootstrap_state_prefix))
       VPC_DNS_ZONE: ((vpc_dns_zone))
       ENVIRONMENTS: ((environments))
-      PCF_PAS_RUNTIME_TYPE: ((pcf_pas_runtime_type))
       PRODUCTS: ((product))
       UNPAUSE_INSTALL_PIPELINE: ((unpause_install_pipeline))
       OPSMAN_USERNAME: ((opsman_admin_username))
