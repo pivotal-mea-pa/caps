@@ -218,6 +218,7 @@ end
 }
 
 # Credhub
++
 if $database_type == "external" then
 {
   ".properties.credhub_database": { "value": $database_type },
