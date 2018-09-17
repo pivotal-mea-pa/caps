@@ -128,6 +128,8 @@ db_silk_username: 'pas_system'
 db_silk_password: '${pas_system_dbpassword}'
 db_uaa_username: 'pas_system'
 db_uaa_password: '${pas_system_dbpassword}'
+db_credhub_username: 'pas_system'
+db_credhub_password: '${pas_system_dbpassword}'
 
 # Domain Names for ERT
 system_domain_prefix: 'sys'

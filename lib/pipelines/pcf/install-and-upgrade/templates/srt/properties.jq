@@ -46,6 +46,9 @@
 #   --arg db_port "3306" \
 #   --arg db_uaa_username "cf_db_user" \
 #   --arg db_uaa_password "DbP@ssw0rd" \
+#   --arg db_credhub_username "cf_db_user" \
+#   --arg db_credhub_password "DbP@ssw0rd" \
+#   --arg db_credhub_tls_ca "$CA_CERTS" \
 #   --arg db_app_usage_service_username "cf_db_user" \
 #   --arg db_app_usage_service_password "DbP@ssw0rd" \
 #   --arg db_autoscale_username "cf_db_user" \
@@ -215,6 +218,20 @@ end
 }
 
 # Credhub
+if $database_type == "external" then
+{
+  ".properties.credhub_database": { "value": $database_type },
+  ".properties.credhub_database.external.host": { "value": $db_host },
+  ".properties.credhub_database.external.port": { "value": $db_port },
+  ".properties.credhub_database.external.username": { "value": $db_credhub_username },
+  ".properties.credhub_database.external.password": { "value": { "secret": $db_credhub_password } },
+  ".properties.credhub_database.external.tls_ca":  { "value": $db_credhub_tls_ca },
+}
+else
+{
+  ".properties.credhub_database": { "value": $database_type },
+}
+end
 +
 {
   ".properties.credhub_key_encryption_passwords": {
