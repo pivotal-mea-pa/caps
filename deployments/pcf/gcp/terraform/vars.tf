@@ -120,6 +120,22 @@ variable "bastion_allow_public_ssh" {
 }
 
 #
+# VPC SMTP Server Relay
+#
+
+variable "smtp_relay_host" {
+  default = ""
+}
+
+variable "smtp_relay_port" {
+  default = ""
+}
+
+variable "smtp_relay_api_key" {
+  default = ""
+}
+
+#
 # Local file path to write SSH private key for bastion instance
 #
 variable "ssh_key_file_path" {

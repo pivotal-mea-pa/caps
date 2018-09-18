@@ -81,6 +81,14 @@ module "bootstrap" {
   concourse_server_port = "8080"
 
   #
+  # SMTP Settings
+  #
+  smtp_relay_host = "${var.smtp_relay_host}"
+
+  smtp_relay_port    = "${var.smtp_relay_port}"
+  smtp_relay_api_key = "${var.smtp_relay_api_key}"
+
+  #
   # Bootstrap pipeline
   #
   bootstrap_pipeline_file = "${path.module}/../pipeline/pipeline.yml"
