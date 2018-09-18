@@ -142,8 +142,14 @@ output "director_blobstore_bucket" {
   value = "${google_storage_bucket.director.name}"
 }
 
+// Database
+
 output "db_host" {
   value = "${google_sql_database_instance.master.ip_address.0.ip_address}"
+}
+
+output "db_tls_ca" {
+  value = "${google_sql_database_instance.master.server_ca_cert.0.cert}"
 }
 
 // Certificates

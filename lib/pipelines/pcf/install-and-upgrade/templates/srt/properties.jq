@@ -48,7 +48,7 @@
 #   --arg db_uaa_password "DbP@ssw0rd" \
 #   --arg db_credhub_username "cf_db_user" \
 #   --arg db_credhub_password "DbP@ssw0rd" \
-#   --arg db_credhub_tls_ca "$CA_CERTS" \
+#   --arg db_credhub_tls_ca "$DB_TLS_CA" \
 #   --arg db_app_usage_service_username "cf_db_user" \
 #   --arg db_app_usage_service_password "DbP@ssw0rd" \
 #   --arg db_autoscale_username "cf_db_user" \
