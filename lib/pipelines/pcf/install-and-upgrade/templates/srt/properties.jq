@@ -34,7 +34,12 @@
 #   --arg insecure_docker_registry_list "" \
 #   --arg saml_cert "$saml_cert" \
 #   --arg saml_cert_key "$saml_cert_key" \
-#   --arg credhub_database_type "internal_mysql" \
+#   --arg db_uaa_type "internal_mysql" \\
+#   --arg db_uaa_username "cf_db_user" \
+#   --arg db_uaa_password "DbP@ssw0rd" \
+#   --arg db_credhub_type "internal_mysql" \\
+#   --arg db_credhub_username "cf_db_user" \
+#   --arg db_credhub_password "DbP@ssw0rd" \
 #   --arg credhub_primary_encryption_name "default" \
 #   --arg credhub_encryption_key_name1 "default" \
 #   --arg credhub_encryption_key_secret1 "" \
@@ -42,13 +47,9 @@
 #   --arg credhub_encryption_key_secret2 "" \
 #   --arg credhub_encryption_key_name3 "" \
 #   --arg credhub_encryption_key_secret3 "" \
-#   --arg database_type "internal_mysql" \
+#   --arg db_type "internal_pxc" \
 #   --arg db_host "" \
 #   --arg db_port "3306" \
-#   --arg db_uaa_username "cf_db_user" \
-#   --arg db_uaa_password "DbP@ssw0rd" \
-#   --arg db_credhub_username "cf_db_user" \
-#   --arg db_credhub_password "DbP@ssw0rd" \
 #   --arg db_credhub_tls_ca "$DB_TLS_CA" \
 #   --arg db_app_usage_service_username "cf_db_user" \
 #   --arg db_app_usage_service_password "DbP@ssw0rd" \
@@ -195,9 +196,9 @@ end
 # UAA
 #
 +
-if $database_type == "external" then
+if $db_uaa_type == "external" then
 {
-  ".properties.uaa_database": { "value": $database_type },
+  ".properties.uaa_database": { "value": $db_uaa_type },
   ".properties.uaa_database.external.host": { "value": $db_host },
   ".properties.uaa_database.external.port": { "value": $db_port },
   ".properties.uaa_database.external.uaa_username": { "value": $db_uaa_username },
@@ -205,7 +206,7 @@ if $database_type == "external" then
 }
 else
 {
-  ".properties.uaa_database": { "value": $database_type },
+  ".properties.uaa_database": { "value": $db_uaa_type },
 }
 end
 +
@@ -220,9 +221,9 @@ end
 
 # Credhub
 +
-if $credhub_database_type == "external" then
+if $db_credhub_type == "external" then
 {
-  ".properties.credhub_database": { "value": $credhub_database_type },
+  ".properties.credhub_database": { "value": $db_credhub_type },
   ".properties.credhub_database.external.host": { "value": $db_host },
   ".properties.credhub_database.external.port": { "value": $db_port },
   ".properties.credhub_database.external.username": { "value": $db_credhub_username },
@@ -231,7 +232,7 @@ if $credhub_database_type == "external" then
 }
 else
 {
-  ".properties.credhub_database": { "value": $credhub_database_type },
+  ".properties.credhub_database": { "value": $db_credhub_type },
 }
 end
 +
@@ -284,9 +285,9 @@ end
 # Databases
 #
 +
-if $database_type == "external" then
+if $db_type == "external" then
 {
-  ".properties.system_database": { "value":  $database_type },
+  ".properties.system_database": { "value":  $db_type },
   ".properties.system_database.external.host": { "value": $db_host },
   ".properties.system_database.external.port": { "value": $db_port },
   ".properties.system_database.external.app_usage_service_username": { "value": $db_app_usage_service_username },
@@ -314,7 +315,7 @@ if $database_type == "external" then
 }
 else
 {
-  ".properties.system_database": { "value":  $database_type }
+  ".properties.system_database": { "value":  $db_type }
 }
 end
 

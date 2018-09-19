@@ -104,6 +104,16 @@ credhub_encryption_key_secret3: '' # Optional Secret 2
 
 # DB Creds
 # Usernames must be 16 characters or fewer
+
+db_uaa_type: 'internal_mysql'
+db_uaa_username: 'pas_system'
+db_uaa_password: '${pas_system_dbpassword}'
+
+db_credhub_type: 'internal_mysql'
+db_credhub_username: 'pas_system'
+db_credhub_password: '${pas_system_dbpassword}'
+
+db_type: 'internal_pxc'
 db_accountdb_username: 'pas_system'
 db_accountdb_password: '${pas_system_dbpassword}'
 db_app_usage_service_username: 'pas_system'
@@ -126,10 +136,6 @@ db_routing_username: 'pas_system'
 db_routing_password: '${pas_system_dbpassword}'
 db_silk_username: 'pas_system'
 db_silk_password: '${pas_system_dbpassword}'
-db_uaa_username: 'pas_system'
-db_uaa_password: '${pas_system_dbpassword}'
-db_credhub_username: 'pas_system'
-db_credhub_password: '${pas_system_dbpassword}'
 
 # Domain Names for ERT
 system_domain_prefix: 'sys'
