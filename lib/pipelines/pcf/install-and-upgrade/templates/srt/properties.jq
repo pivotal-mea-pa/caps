@@ -34,6 +34,7 @@
 #   --arg insecure_docker_registry_list "" \
 #   --arg saml_cert "$saml_cert" \
 #   --arg saml_cert_key "$saml_cert_key" \
+#   --arg credhub_database_type "internal_mysql" \
 #   --arg credhub_primary_encryption_name "default" \
 #   --arg credhub_encryption_key_name1 "default" \
 #   --arg credhub_encryption_key_secret1 "" \
@@ -219,9 +220,9 @@ end
 
 # Credhub
 +
-if $database_type == "external" then
+if $credhub_database_type == "external" then
 {
-  ".properties.credhub_database": { "value": $database_type },
+  ".properties.credhub_database": { "value": $credhub_database_type },
   ".properties.credhub_database.external.host": { "value": $db_host },
   ".properties.credhub_database.external.port": { "value": $db_port },
   ".properties.credhub_database.external.username": { "value": $db_credhub_username },
@@ -230,7 +231,7 @@ if $database_type == "external" then
 }
 else
 {
-  ".properties.credhub_database": { "value": $database_type },
+  ".properties.credhub_database": { "value": $credhub_database_type },
 }
 end
 +
