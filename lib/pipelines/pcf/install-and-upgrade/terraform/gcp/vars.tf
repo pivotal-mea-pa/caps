@@ -44,6 +44,8 @@ variable "db_locket_username" {}
 variable "db_locket_password" {}
 variable "db_silk_username" {}
 variable "db_silk_password" {}
+variable "db_credhub_username" {}
+variable "db_credhub_password" {}
 
 # Certificates
 
