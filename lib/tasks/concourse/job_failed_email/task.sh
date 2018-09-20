@@ -6,32 +6,9 @@ env
 fly -t default login -c $CONCOURSE_URL -u ''$CONCOURSE_USER'' -p ''$CONCOURSE_PASSWORD''
 fly -t default sync
 
-pip install grip
-
-job_output=$(fly -t local watch -j $BUILD_PIPELINE_NAME/$BUILD_JOB_NAME -b $BUILD_NAME)
-echo -e "$job_output" | ./ansi2html.sh > email-out/job_output.html
-
-cat <<EOF > body.md
-## Job Access
-
-You can view the failure on the Concourse Web UI by clicking on the link below.
-
-[${BUILD_PIPELINE_NAME}/${BUILD_JOB_NAME}/${BUILD_NAME}]($ATC_EXTERNAL_URL/teams/$BUILD_TEAM_NAME/pipelines/$BUILD_PIPELINE_NAME/jobs/$BUILD_JOB_NAME/builds/$BUILD_NAME)
-
-> In order to navigate to the link you need to ensure that the you have logged into the automation concourse environment via \`caps-login\`.
-
-## Job Output
-
-\`\`\`
-$(echo -e "$job_output")
-\`\`\`
-EOF
-
-grip body.md --title="Job Failure Report" --export email-out/body
-
-cat <<EOF > email-out/subject
-${ENVIRONMENT} Automation Job FAILED: ${BUILD_PIPELINE_NAME}/${BUILD_JOB_NAME}/${BUILD_NAME}
-EOF
+build_name=$(fly -t local builds | awk -v j="$PIPELINE_JOB_PATH" '($2 == j){ print $3 }' | sort | tail -1)
+job_output=$(fly -t local watch -j $PIPELINE_JOB_PATH -b $build_name)
+echo -e "$job_output" | ./ansi2html.sh > email-out/body
 
 cat <<EOF > email-out/headers
 MIME-version: 1.0
