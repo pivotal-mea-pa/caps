@@ -1,5 +1,8 @@
 #!/bin/bash
 
+set -x
+env
+
 fly -t default login -c $CONCOURSE_URL -u ''$CONCOURSE_USER'' -p ''$CONCOURSE_PASSWORD''
 fly -t default sync
 
