@@ -1,0 +1,25 @@
+---
+platform: linux
+
+image_resource:
+  type: docker-image
+  source:
+    repository: appbricks/automation-tools
+
+inputs:
+- name: automation
+
+outputs:
+- name: email-out
+
+run:
+  path: automation/lib/tasks/concourse/job_failed_email/task.sh
+
+params:
+  CONCOURSE_URL:
+  CONCOURSE_USER:
+  CONCOURSE_PASSWORD:
+  ATC_EXTERNAL_URL:
+  BUILD_NAME:
+  BUILD_JOB_NAME:
+  BUILD_PIPELINE_NAME:

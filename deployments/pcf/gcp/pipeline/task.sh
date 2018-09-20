@@ -90,7 +90,10 @@ for e in $ENVIRONMENTS; do
     -v "concourse_password=$CONCOURSE_PASSWORD" \
     -v "autos3_url=$AUTOS3_URL" \
     -v "autos3_access_key=$AUTOS3_ACCESS_KEY" \
-    -v "autos3_secret_key=$AUTOS3_SECRET_KEY" >/dev/null
+    -v "autos3_secret_key=$AUTOS3_SECRET_KEY" \
+    -v "caps_email=$CAPS_EMAIL" \
+    -v "smtp_host=$SMTP_HOST" \
+    -v "smtp_port=$SMTP_PORT" >/dev/null
 
   # Unpause the pipeline. The pipeline jobs will rerun in 
   # an idempotent manner if a prior installation is found.
@@ -142,7 +145,10 @@ for e in $ENVIRONMENTS; do
     -v "concourse_password=$CONCOURSE_PASSWORD" \
     -v "autos3_url=$AUTOS3_URL" \
     -v "autos3_access_key=$AUTOS3_ACCESS_KEY" \
-    -v "autos3_secret_key=$AUTOS3_SECRET_KEY" >/dev/null
+    -v "autos3_secret_key=$AUTOS3_SECRET_KEY" \
+    -v "caps_email=$CAPS_EMAIL" \
+    -v "smtp_host=$SMTP_HOST" \
+    -v "smtp_port=$SMTP_PORT" >/dev/null
 
   fly -t default unpause-pipeline -p ${env}_backup-and-restore
 
@@ -180,8 +186,11 @@ for e in $ENVIRONMENTS; do
     -v "concourse_password=$CONCOURSE_PASSWORD" \
     -v "autos3_url=$AUTOS3_URL" \
     -v "autos3_access_key=$AUTOS3_ACCESS_KEY" \
-    -v "autos3_secret_key=$AUTOS3_SECRET_KEY" >/dev/null
-
+    -v "autos3_secret_key=$AUTOS3_SECRET_KEY" \
+    -v "caps_email=$CAPS_EMAIL" \
+    -v "smtp_host=$SMTP_HOST" \
+    -v "smtp_port=$SMTP_PORT" >/dev/null
+    
   fly -t default unpause-pipeline -p ${env}_stop-and-start
 
 done
