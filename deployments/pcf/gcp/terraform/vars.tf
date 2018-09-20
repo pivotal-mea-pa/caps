@@ -135,6 +135,11 @@ variable "smtp_relay_api_key" {
   default = ""
 }
 
+# Email to forward notifications to
+variable "notification_email" {
+  type = "string"
+}
+
 #
 # Local file path to write SSH private key for bastion instance
 #
@@ -284,11 +289,6 @@ variable "opsman_major_minor_version" {
 # The 'errands_to_disable' and 'errands_to_enable' fields 
 # should consist of comma separated errand names.
 variable "products" {
-  type = "string"
-}
-
-# Email to send mysql service health alerts
-variable "mysql_monitor_recipient_email" {
   type = "string"
 }
 

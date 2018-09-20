@@ -54,7 +54,7 @@ data "template_file" "params" {
 
     opsman_major_minor_version = "${data.terraform_remote_state.bootstrap.opsman_major_minor_version}"
 
-    mysql_monitor_recipient_email = "${data.terraform_remote_state.bootstrap.mysql_monitor_recipient_email}"
+    mysql_monitor_recipient_email = "${data.terraform_remote_state.bootstrap.notification_email}"
 
     num_diego_cells = "${data.terraform_remote_state.bootstrap.num_diego_cells}"
 
