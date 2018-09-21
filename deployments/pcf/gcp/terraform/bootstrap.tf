@@ -109,10 +109,13 @@ bootstrap_state_prefix: ${local.bootstrap_state_prefix}
 automation_pipelines_repo: ${var.automation_pipelines_repo}
 automation_pipelines_branch: ${var.automation_pipelines_branch}
 
+vpc_name: ${var.vpc_name}
 vpc_dns_zone: ${var.vpc_dns_zone}
 
 environments: '${join(" ", var.pcf_environments)}'
 product: '${var.products}'
+
+notification_email: '${var.notification_email}'
 
 unpause_install_pipeline: ${var.autostart_deployment_pipelines}
 
