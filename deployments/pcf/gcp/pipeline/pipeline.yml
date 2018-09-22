@@ -57,7 +57,7 @@ jobs:
 
   plan:
   - get: automation
-  - task: send_email
+  - task: prepare_job_email
     file: automation/lib/inceptor/tasks/prepare_job_email/task.yml
     params:
       CONCOURSE_URL: ((concourse_url))
@@ -72,7 +72,7 @@ jobs:
       SMTP_PORT: ((smtp_port))
       EMAIL_FROM: ((caps_email))
       EMAIL_TO: ((notification_email))      
-  - task: job_failed_alert
+  - task: send_job_emails
     file: automation/lib/inceptor/tasks/send_job_emails/task.yml
 
 resources:
