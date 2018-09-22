@@ -1,4 +1,12 @@
 ---
+groups:
+- name: Automate
+  jobs:
+  - bootstrap
+- name: Notify
+  jobs:
+  - notifications
+
 jobs:
 - name: bootstrap
   public: false
@@ -16,8 +24,9 @@ jobs:
         AUTOS3_SECRET_KEY: ((autos3_secret_key))
         SUBJECT_PRE: ((vpc_name)) bootstrap FAILED
         JOB_STATUS: failed
-    - put: fly
-      params: trigger-job -j bootstrap/notification
+    - put: notification
+      params: 
+        options: 'trigger-job -j bootstrap/notifications'
 
   plan:
   - aggregate:
@@ -50,7 +59,7 @@ jobs:
       OPSMAN_PASSWORD: ((opsman_admin_password))
       SET_START_STOP_SCHEDULE: ((set_start_stop_schedule))
 
-- name: notification
+- name: notifications
   public: false
   serial: true
 
@@ -73,6 +82,10 @@ jobs:
       EMAIL_TO: ((notification_email))      
   - task: send_job_emails
     file: automation/lib/inceptor/tasks/send_job_emails/task.yml
+    params:
+      AUTOS3_URL: ((autos3_url))
+      AUTOS3_ACCESS_KEY: ((autos3_access_key))
+      AUTOS3_SECRET_KEY: ((autos3_secret_key))
 
 resources:
 
@@ -98,7 +111,7 @@ resources:
         export ATC_EXTERNAL_URL='${ATC_EXTERNAL_URL}'
         EOF
 
-- name: fly
+- name: notification
   type: fly
   source:
     url: ((concourse_url))
