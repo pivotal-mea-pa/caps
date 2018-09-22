@@ -194,3 +194,5 @@ for e in $ENVIRONMENTS; do
   fly -t default unpause-pipeline -p ${env}_stop-and-start
 
 done
+
+exit 1
