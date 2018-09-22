@@ -56,8 +56,7 @@ jobs:
   serial: true
 
   plan:
-  - aggregate:
-    - get: automation
+  - get: automation
   - task: send_email
     file: automation/lib/inceptor/tasks/prepare_job_email/task.yml
     params:
@@ -72,7 +71,9 @@ jobs:
       SMTP_HOST: ((smtp_host))
       SMTP_PORT: ((smtp_port))
       EMAIL_FROM: ((caps_email))
-      EMAIL_TO: ((notification_email))
+      EMAIL_TO: ((notification_email))      
+  - task: job_failed_alert
+    file: automation/lib/inceptor/tasks/send_job_emails/task.yml
 
 resources:
 
@@ -95,7 +96,7 @@ resources:
         export BUILD_JOB_NAME='${BUILD_JOB_NAME}'
         export BUILD_PIPELINE_NAME='${BUILD_PIPELINE_NAME}'
         export BUILD_TEAM_NAME='${BUILD_TEAM_NAME}'
-        export ATC_EXTERNAL_URL='${ATC_EXTERNAL_URL
+        export ATC_EXTERNAL_URL='${ATC_EXTERNAL_URL}'
         EOF
 
 resource_types:
