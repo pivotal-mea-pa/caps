@@ -12,6 +12,7 @@ mc config host add auto $AUTOS3_URL $AUTOS3_ACCESS_KEY $AUTOS3_SECRET_KEY
   mc mb auto/pcf
 
 terraform_params_path=automation/deployments/pcf/gcp/params
+patch_job_notifications=automation/lib/inceptor/tasks/patches/patch_job_notifications.sh
 install_and_upgrade_pipeline_path=automation/lib/pipelines/pcf/install-and-upgrade/pipeline
 install_and_upgrade_patches_path=automation/lib/pipelines/pcf/install-and-upgrade/patches
 
@@ -81,9 +82,11 @@ for e in $ENVIRONMENTS; do
   fly -t default login -c $CONCOURSE_URL -u ''$CONCOURSE_USER'' -p ''$CONCOURSE_PASSWORD''
   fly -t default sync
 
+  $patch_job_notifications install-pcf-pipeline$i.yml > pipeline.yml
+
   fly -t default set-pipeline -n \
     -p ${env}_install-and-upgrade \
-    -c install-pcf-pipeline$i.yml \
+    -c pipeline.yml > bootstrap \
     -l install-pcf-params.yml \
     -v "concourse_url=$CONCOURSE_URL" \
     -v "concourse_user=$CONCOURSE_USER" \
@@ -136,9 +139,11 @@ for e in $ENVIRONMENTS; do
     -var "environment=${e}" \
     $terraform_params_path >/dev/null
 
+  $patch_job_notifications $BACKUP_AND_RESTORE_PIPELINE_PATH/gcp/pipeline.yml > pipeline.yml
+
   fly -t default set-pipeline -n \
     -p ${env}_backup-and-restore \
-    -c $BACKUP_AND_RESTORE_PIPELINE_PATH/gcp/pipeline.yml \
+    -c pipeline.yml \
     -l backup-and-restore-params.yml \
     -v "concourse_url=$CONCOURSE_URL" \
     -v "concourse_user=$CONCOURSE_USER" \
@@ -177,9 +182,11 @@ for e in $ENVIRONMENTS; do
     cp $START_AND_STOP_PIPELINE_PATH/gcp/pipeline.yml stop-and-start-pipeline.yml
   fi
 
+  $patch_job_notifications stop-and-start-pipeline.yml > pipeline.yml
+
   fly -t default set-pipeline -n \
     -p ${env}_stop-and-start \
-    -c stop-and-start-pipeline.yml \
+    -c pipeline.yml \
     -l stop-and-start-params.yml \
     -v "concourse_url=$CONCOURSE_URL" \
     -v "concourse_user=$CONCOURSE_USER" \
