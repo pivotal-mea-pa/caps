@@ -96,7 +96,8 @@ for e in $ENVIRONMENTS; do
     -v "autos3_secret_key=$AUTOS3_SECRET_KEY" \
     -v "caps_email=$CAPS_EMAIL" \
     -v "smtp_host=$SMTP_HOST" \
-    -v "smtp_port=$SMTP_PORT" >/dev/null
+    -v "smtp_port=$SMTP_PORT" \
+    -v "vpc_name=$VPC_NAME" >/dev/null
 
   # Unpause the pipeline. The pipeline jobs will rerun in 
   # an idempotent manner if a prior installation is found.
@@ -139,7 +140,7 @@ for e in $ENVIRONMENTS; do
     -var "environment=${e}" \
     $terraform_params_path >/dev/null
 
-  $patch_job_notifications $BACKUP_AND_RESTORE_PIPELINE_PATH/gcp/pipeline.yml > pipeline.yml
+  $patch_job_notifications $backup_and_restore_pipeline_path/gcp/pipeline.yml > pipeline.yml
 
   fly -t default set-pipeline -n \
     -p ${env}_backup-and-restore \
@@ -153,7 +154,8 @@ for e in $ENVIRONMENTS; do
     -v "autos3_secret_key=$AUTOS3_SECRET_KEY" \
     -v "caps_email=$CAPS_EMAIL" \
     -v "smtp_host=$SMTP_HOST" \
-    -v "smtp_port=$SMTP_PORT" >/dev/null
+    -v "smtp_port=$SMTP_PORT" \
+    -v "vpc_name=$VPC_NAME" >/dev/null
 
   fly -t default unpause-pipeline -p ${env}_backup-and-restore
 
@@ -196,7 +198,8 @@ for e in $ENVIRONMENTS; do
     -v "autos3_secret_key=$AUTOS3_SECRET_KEY" \
     -v "caps_email=$CAPS_EMAIL" \
     -v "smtp_host=$SMTP_HOST" \
-    -v "smtp_port=$SMTP_PORT" >/dev/null
+    -v "smtp_port=$SMTP_PORT" \
+    -v "vpc_name=$VPC_NAME" >/dev/null
     
   fly -t default unpause-pipeline -p ${env}_stop-and-start
 
