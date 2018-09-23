@@ -65,6 +65,9 @@ jobs:
       OPSMAN_ZONE: ((gcp_zone_1))
 
 - name: upload-opsman-image
+  on_failure:
+    do:
+    - task: notify on upload-opsman-image failure
   plan:
   - aggregate:
     - get: automation
@@ -82,6 +85,9 @@ jobs:
 
 - name: create-infrastructure
   serial_groups: [terraform,opsman]
+  on_failure:
+    do:
+    - task: notify on create-infrastructure failure
   plan:
   - aggregate:
     - get: automation
@@ -155,6 +161,9 @@ jobs:
 
 - name: configure-director
   serial_groups: [opsman]
+  on_failure:
+    do:
+    - task: notify on configure-director failure
   plan:
   - aggregate:
     - get: automation
@@ -211,6 +220,12 @@ jobs:
 
 - name: deploy-director
   serial_groups: [opsman]
+  on_failure:
+    do:
+    - task: notify on deploy-director failure
+  on_success:
+    do:
+    - task: notify on deploy-director success
   plan:
   - aggregate:
     - get: automation

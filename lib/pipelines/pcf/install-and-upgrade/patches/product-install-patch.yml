@@ -15,6 +15,13 @@
   value:
     name: deploy
     serial_groups: [opsman]
+    on_success:
+      do:
+      - task: notify on deploy success
+    on_failure:
+      do:
+      - task: notify on deploy failure
+
     plan:
     - aggregate:
       - get: automation
