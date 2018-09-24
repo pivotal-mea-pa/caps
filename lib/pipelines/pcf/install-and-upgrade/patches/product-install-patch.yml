@@ -1,4 +1,4 @@
-- op: add
+- op: replace
   path: /resources/-
   value:
     name: schedule
@@ -10,7 +10,7 @@
       location: America/Los_Angeles
       days: [Sunday, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday]
 
-- op: add
+- op: replace
   path: /jobs/-
   value:
     name: deploy

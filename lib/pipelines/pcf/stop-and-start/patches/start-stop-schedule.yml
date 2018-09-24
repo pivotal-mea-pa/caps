@@ -4,7 +4,7 @@
     get: started
     passed: [stop-check]
 
-- op: add
+- op: replace
   path: /jobs/name=stop-pcf/plan/0/aggregate/-
   value:
     get: stop-schedule
@@ -17,14 +17,14 @@
     get: stopped
     passed: [start-check]
 
-- op: add
+- op: replace
   path: /jobs/name=start-pcf/plan/0/aggregate/-
   value:
     get: start-schedule
     passed: [start-check]
     trigger: true
 
-- op: add
+- op: replace
   path: /jobs/-
   value:
     name: stop-check
@@ -33,7 +33,7 @@
       trigger: true
     - get: started
 
-- op: add
+- op: replace
   path: /jobs/-
   value:
     name: start-check
@@ -42,7 +42,7 @@
       trigger: true
     - get: stopped
 
-- op: add
+- op: replace
   path: /resources/-
   value:
     name: stop-schedule
@@ -54,7 +54,7 @@
       stop: ((stop_trigger_stop))
       days: ((stop_trigger_days))
 
-- op: add
+- op: replace
   path: /resources/-
   value:
     name: start-schedule

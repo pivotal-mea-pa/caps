@@ -1,6 +1,10 @@
 #!/bin/bash
 
+[[ -n "$TRACE" ]] && set -x
 set -euo pipefail
+
+source ~/scripts/bosh-func.sh
+bosh::set_bosh_cli
 
 echo "$GOOGLE_CREDENTIALS_JSON" > .gcp-service-account.json
 export GOOGLE_CREDENTIALS=$(pwd)/.gcp-service-account.json
@@ -45,9 +49,8 @@ for e in $ENVIRONMENTS; do
     eval "echo \"$(cat $install_and_upgrade_patches_path/product-install-patch.yml)\"" \
         > product-install-patch.yml
 
-    cat install-pcf-pipeline0.yml \
-        | yaml_patch -o product-install-patch.yml \
-        > install-pcf-pipeline1.yml
+    $bosh interpolate -o product-install-patch.yml \
+      install-pcf-pipeline0.yml > install-pcf-pipeline1.yml
 
     i=1 && j=2
     for p in $(echo -e "$PRODUCTS"); do 
@@ -66,9 +69,8 @@ for e in $ENVIRONMENTS; do
           > ${product_name}-patch.yml
       fi
 
-      cat install-pcf-pipeline$i.yml \
-        | yaml_patch -o ${product_name}-patch.yml \
-        > install-pcf-pipeline$j.yml
+      $bosh interpolate -o ${product_name}-patch.yml \
+        install-pcf-pipeline$i.yml > install-pcf-pipeline$j.yml
 
       i=$(($i+1)) && j=$(($j+1))
     done
@@ -178,8 +180,9 @@ for e in $ENVIRONMENTS; do
     $terraform_params_path >/dev/null
 
   if [[ $SET_START_STOP_SCHEDULE == true ]]; then
-    cat $START_AND_STOP_PIPELINE_PATH/gcp/pipeline.yml \
-      | yaml_patch -o $START_AND_STOP_PATCHES_PATH/start-stop-schedule.yml > stop-and-start-pipeline.yml
+
+    $bosh interpolate -o $START_AND_STOP_PATCHES_PATH/start-stop-schedule.yml \
+      $START_AND_STOP_PIPELINE_PATH/gcp/pipeline.yml > stop-and-start-pipeline.yml
   else
     cp $START_AND_STOP_PIPELINE_PATH/gcp/pipeline.yml stop-and-start-pipeline.yml
   fi

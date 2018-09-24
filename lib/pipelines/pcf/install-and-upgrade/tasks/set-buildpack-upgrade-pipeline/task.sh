@@ -1,9 +1,12 @@
 #!/bin/bash
 
-source automation/lib/scripts/utility/template-utils.sh
-
 [[ -n "$TRACE" ]] && set -x
 set -euo pipefail
+
+source ~/scripts/bosh-func.sh
+bosh::set_bosh_cli
+
+source automation/lib/scripts/utility/template-utils.sh
 
 # Source terraform output variables if available
 source_variables 'terraform-output/pcf-env-*.sh'
@@ -34,9 +37,8 @@ cf_api_uri=https://api.$SYSTEM_DOMAIN
 curl -L https://raw.githubusercontent.com/pivotal-cf/pcf-pipelines/master/upgrade-buildpacks/pipeline.yml \
   -o upgrade-buildpacks-pipeline-orig.yml
 
-cat upgrade-buildpacks-pipeline-orig.yml \
-    | yaml_patch -o $install_and_upgrade_patches_path/upgrade-buildpacks-patch.yml \
-    > upgrade-buildpacks-pipeline.yml
+$bosh interpolate -o $install_and_upgrade_patches_path/upgrade-buildpacks-patch.yml \
+  upgrade-buildpacks-pipeline-orig.yml > upgrade-buildpacks-pipeline.yml
 
 fly -t default login -c $CONCOURSE_URL -u ''$CONCOURSE_USER'' -p ''$CONCOURSE_PASSWORD''
 fly -t default sync
