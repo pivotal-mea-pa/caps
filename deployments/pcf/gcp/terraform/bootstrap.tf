@@ -7,7 +7,7 @@ locals {
 }
 
 module "bootstrap" {
-  source = "../../../../lib/inceptor/modules/bootstrap/gcp"
+  source = "../../../../lib/inceptor/modules/bootstrap-automation/gcp"
 
   #
   # Company information used in certificate creation
@@ -81,6 +81,14 @@ module "bootstrap" {
   concourse_server_port = "8080"
 
   #
+  # SMTP Settings
+  #
+  smtp_relay_host = "${var.smtp_relay_host}"
+
+  smtp_relay_port    = "${var.smtp_relay_port}"
+  smtp_relay_api_key = "${var.smtp_relay_api_key}"
+
+  #
   # Bootstrap pipeline
   #
   bootstrap_pipeline_file = "${path.module}/../pipeline/pipeline.yml"
@@ -101,11 +109,13 @@ bootstrap_state_prefix: ${local.bootstrap_state_prefix}
 automation_pipelines_repo: ${var.automation_pipelines_repo}
 automation_pipelines_branch: ${var.automation_pipelines_branch}
 
+vpc_name: ${var.vpc_name}
 vpc_dns_zone: ${var.vpc_dns_zone}
 
 environments: '${join(" ", var.pcf_environments)}'
-pcf_pas_runtime_type: srt
 product: '${var.products}'
+
+notification_email: '${var.notification_email}'
 
 unpause_install_pipeline: ${var.autostart_deployment_pipelines}
 

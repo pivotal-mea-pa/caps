@@ -55,6 +55,8 @@ if [[ -z $name || -z $deployment_name || -z $iaas_provider ]]; then
     usage
     exit 1
 fi
+
+common::set_working_dir
 common::validate
 
 # Disconnect all VPN connections (MacOS only)
@@ -63,16 +65,16 @@ if [[ $os_type == Darwin ]]; then
     osascript -e 'tell application "Tunnelblick.app" to disconnect all' >/dev/null 2>&1
 fi
 
-workspace_path=$root_dir/.workspace/$name
+workspace_path=$working_dir/.workspace/$name
 mkdir -p $workspace_path
 
-cat << ---EOF >$root_dir/.workspace/context
+cat << ---EOF >$working_dir/.workspace/context
 name=$name
 deployment_name=$deployment_name
 iaas_provider=$iaas_provider
 ---EOF
 
-if [[ -e $root_dir/.caps-env_$name ]]; then
+if [[ -e $working_dir/.caps-env_$name ]]; then
     echo -e "${GREEN}CAPs context initialized to $name."
     exit 0
 fi
@@ -94,7 +96,7 @@ if [[ ! -e $vars_file ]]; then
 fi
 tf_vars=$(cat $vars_file | awk '/^variable /{ print substr($2,2,length($2)-2) }')
 
-cat << ---EOF >$root_dir/.caps-env_$name
+cat << ---EOF >$working_dir/.caps-env_$name
 #!/bin/bash
 
 #
@@ -115,11 +117,11 @@ while IFS='' read -r line || [[ -n "$line" ]]; do
     if [[ "$first_char" == "#" && -z $curr_var ]]; then
 
         vnl=true
-        [[ $cnl == true ]] && echo >>$root_dir/.caps-env_$name
+        [[ $cnl == true ]] && echo >>$working_dir/.caps-env_$name
         cnl=false
 
-        [[ "${line% *}" == "#export" ]] && echo >>$root_dir/.caps-env_$name
-        echo "$line" >>$root_dir/.caps-env_$name
+        [[ "${line% *}" == "#export" ]] && echo >>$working_dir/.caps-env_$name
+        echo "$line" >>$working_dir/.caps-env_$name
         continue
     fi
 
@@ -135,28 +137,28 @@ while IFS='' read -r line || [[ -n "$line" ]]; do
     if [[ "$first_char" == "}" && -n $curr_var ]]; then
 
         cnl=true
-        [[ $vnl == true ]] && echo >>$root_dir/.caps-env_$name
+        [[ $vnl == true ]] && echo >>$working_dir/.caps-env_$name
         vnl=false
 
         case $curr_var in
             vpc_name)
-                echo "export TF_VAR_$curr_var=$name" >>$root_dir/.caps-env_$name
+                echo "export TF_VAR_$curr_var=$name" >>$working_dir/.caps-env_$name
                 ;;
             bastion_admin_user)
-                echo "export TF_VAR_$curr_var=bastion-admin" >>$root_dir/.caps-env_$name
+                echo "export TF_VAR_$curr_var=bastion-admin" >>$working_dir/.caps-env_$name
                 ;;
             bastion_allow_public_ssh)
-                echo "export TF_VAR_$curr_var=false" >>$root_dir/.caps-env_$name
+                echo "export TF_VAR_$curr_var=false" >>$working_dir/.caps-env_$name
                 ;;
             ssh_key_file_path)
-                echo "#export TF_VAR_$curr_var=$workspace_path" >>$root_dir/.caps-env_$name
+                echo "#export TF_VAR_$curr_var=$workspace_path" >>$working_dir/.caps-env_$name
                 ;;
             *)
                 if [[ $var_type != "list" && $var_type != "map" ]]; then
                     if [[ -n $curr_var && -n $def_val ]]; then
-                        echo "#export TF_VAR_$curr_var=$def_val" >>$root_dir/.caps-env_$name
+                        echo "#export TF_VAR_$curr_var=$def_val" >>$working_dir/.caps-env_$name
                     else
-                        echo "export TF_VAR_$curr_var=" >>$root_dir/.caps-env_$name
+                        echo "export TF_VAR_$curr_var=" >>$working_dir/.caps-env_$name
                     fi
                 else
                     cnl=false

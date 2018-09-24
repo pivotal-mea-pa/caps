@@ -27,6 +27,10 @@
   value:
     name: upload-${product_name}-tile
     serial_groups: [opsman]
+    on_failure:
+      do:
+      - task: notify on upload-${product_name}-tile failure
+
     plan:
     - aggregate:
       - get: automation
@@ -73,6 +77,10 @@
   value:
     name: configure-${product_name}-tile
     serial_groups: [opsman]
+    on_failure:
+      do:
+      - task: notify on configure-${product_name}-tile failure
+
     plan:
     - aggregate:
       - get: automation

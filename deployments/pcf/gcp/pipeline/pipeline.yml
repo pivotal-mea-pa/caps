@@ -1,16 +1,19 @@
 ---
-resources:
-
-- name: automation
-  type: git
-  source:
-    uri: ((automation_pipelines_repo))
-    branch: ((automation_pipelines_branch))
+groups:
+- name: Automate
+  jobs:
+  - bootstrap
+- name: Notify
+  jobs:
+  - notifications
 
 jobs:
 - name: bootstrap
   public: false
   serial: true
+  on_failure:
+    do:
+    - task: notify on bootstrap failure
   plan:
   - aggregate:
     - get: automation
@@ -24,16 +27,28 @@ jobs:
       AUTOS3_URL: ((autos3_url))
       AUTOS3_ACCESS_KEY: ((autos3_access_key))
       AUTOS3_SECRET_KEY: ((autos3_secret_key))
+      CAPS_EMAIL: ((caps_email))
+      NOTIFICATION_EMAIL: ((notification_email))
+      SMTP_HOST: ((smtp_host))
+      SMTP_PORT: ((smtp_port))
       GOOGLE_PROJECT: ((google_project))
       GOOGLE_CREDENTIALS_JSON: ((google_credentials_json))
       GOOGLE_REGION: ((google_region))
       BOOTSTRAP_STATE_BUCKET: ((bootstrap_state_bucket))
       BOOTSTRAP_STATE_PREFIX: ((bootstrap_state_prefix))
+      VPC_NAME: ((vpc_name))
       VPC_DNS_ZONE: ((vpc_dns_zone))
       ENVIRONMENTS: ((environments))
-      PCF_PAS_RUNTIME_TYPE: ((pcf_pas_runtime_type))
       PRODUCTS: ((product))
       UNPAUSE_INSTALL_PIPELINE: ((unpause_install_pipeline))
       OPSMAN_USERNAME: ((opsman_admin_username))
       OPSMAN_PASSWORD: ((opsman_admin_password))
       SET_START_STOP_SCHEDULE: ((set_start_stop_schedule))
+
+resources:
+
+- name: automation
+  type: git
+  source:
+    uri: ((automation_pipelines_repo))
+    branch: ((automation_pipelines_branch))

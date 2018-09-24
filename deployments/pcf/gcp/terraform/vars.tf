@@ -120,6 +120,27 @@ variable "bastion_allow_public_ssh" {
 }
 
 #
+# VPC SMTP Server Relay
+#
+
+variable "smtp_relay_host" {
+  default = ""
+}
+
+variable "smtp_relay_port" {
+  default = ""
+}
+
+variable "smtp_relay_api_key" {
+  default = ""
+}
+
+# Email to forward notifications to
+variable "notification_email" {
+  type = "string"
+}
+
+#
 # Local file path to write SSH private key for bastion instance
 #
 variable "ssh_key_file_path" {
@@ -260,39 +281,14 @@ variable "opsman_major_minor_version" {
   type = "string"
 }
 
-# PCF Elastic Runtime minor version to track
-variable "ert_major_minor_version" {
-  type = "string"
-}
-
-# Errands to disable prior to deploying ERT
-# Valid values:
-#   all
-#   none
-#   "" (empty string)
-#   Any combination of the following, separated by comma:
-#     smoke-tests
-#     push-apps-manager
-#     notifications
-#     notifications-ui
-#     push-pivotal-account
-#     autoscaling
-#     autoscaling-register-broker
-#     nfsbrokerpush
-variable "ert_errands_to_disable" {
-  default = "none"
-}
-
-# List of products to install. This should be a comma separated list of 
-# 'product_name:product_slug/product_version_regex[:errands to disable]'.
-# The 'errands to disable' field is optional and has the same format
-# as the 'ert_errands_to_disable' variable.
+# List of products to install. This should be a space 
+# separated list of:
+#
+# product_name:product_slug/product_version_regex[:errands_to_disable[:errands_to_enable]]
+#
+# The 'errands_to_disable' and 'errands_to_enable' fields 
+# should consist of comma separated errand names.
 variable "products" {
-  type = "string"
-}
-
-# Email to send mysql service health alerts
-variable "mysql_monitor_recipient_email" {
   type = "string"
 }
 
