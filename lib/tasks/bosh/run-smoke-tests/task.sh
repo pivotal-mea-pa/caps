@@ -5,7 +5,7 @@ source ~/scripts/bosh-func.sh
 iaas::initialize
 
 [[ -z "$TRACE" ]] || set -x
-set -e
+set -eo pipefail
 
 if [[ -e job-session/env ]]; then
     source job-session/env

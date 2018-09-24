@@ -3,6 +3,7 @@
 source ~/scripts/opsman-func.sh
 root=$PWD
 
+[[ -n "$TRACE" ]] && set -x
 set -eu
 
 # Save service key to a json file as Terraform GCS 

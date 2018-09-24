@@ -1,5 +1,6 @@
 #!/bin/bash
 
+[[ -n "$TRACE" ]] && set -x
 set -eu
 
 if [[ -n "$NO_PROXY" ]]; then

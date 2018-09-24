@@ -1,4 +1,6 @@
 #!/bin/bash
+
+[[ -n "$TRACE" ]] && set -x
 set -eu
 
 google_creds_json=$(mktemp)

@@ -14,7 +14,7 @@ run:
   path: automation/lib/tasks/bosh/stop-deployment/task.sh
 
 params:
-  TRACE:
+  TRACE: Y
 
   # The IAAS where the instances are deployed
   IAAS:

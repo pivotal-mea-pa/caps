@@ -1,5 +1,7 @@
 #!/bin/bash
 
+[[ -n "$TRACE" ]] && set -x
+set -o pipefail
 set +e
 
 start_time=$(date +%s)

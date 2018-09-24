@@ -11,6 +11,8 @@ inputs:
 - name: automation-extensions
 
 params:
+  TRACE: Y
+  
   GCP_PROJECT_ID:
   GCP_REGION:
   GCP_SERVICE_ACCOUNT_KEY:

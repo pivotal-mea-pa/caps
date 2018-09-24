@@ -15,6 +15,8 @@ run:
   path: automation/lib/pipelines/pcf/install-and-upgrade/tasks/common/configure-product.sh
 
 params:
+  TRACE: Y
+  
   OPSMAN_HOST:
   OPSMAN_CLIENT_ID:
   OPSMAN_CLIENT_SECRET:

@@ -14,6 +14,8 @@ run:
   path: automation/lib/pipelines/pcf/install-and-upgrade/tasks/set-buildpack-upgrade-pipeline/task.sh
 
 params:
+  TRACE: Y
+  
   CONCOURSE_URL:
   CONCOURSE_USER:
   CONCOURSE_PASSWORD:

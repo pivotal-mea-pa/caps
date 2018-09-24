@@ -14,6 +14,8 @@ run:
   path: automation/lib/pipelines/pcf/install-and-upgrade/tasks/upload-opsman/gcp/task.sh
 
 params:
+  TRACE: Y
+
   GCP_PROJECT_ID:
   GCP_REGION:
   GCP_SERVICE_ACCOUNT_KEY:
