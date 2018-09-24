@@ -1,5 +1,43 @@
 ---
 
+common:
+
+- &wait-if-stopped
+  # This task will block if the environment 
+  # has been put into stopped state
+  task: wait-if-stopped
+  file: automation/lib/inceptor/tasks/wait-on-state/task.yml
+  params: 
+    WAIT_ON_STATE: stopped
+    AUTOS3_URL: ((autos3_url))
+    AUTOS3_ACCESS_KEY: ((autos3_access_key))
+    AUTOS3_SECRET_KEY: ((autos3_secret_key))
+
+- &backup-restore-common-params
+  TRACE: ((trace_tasks))
+  SSH_KEY: ((ssh_key))
+  OPSMAN_HOST: ((opsman_host))
+  OPSMAN_USERNAME: ((opsman_username))
+  OPSMAN_PASSWORD: ((opsman_password))
+  OPSMAN_SSH_USER: ((opsman_ssh_user))
+  OPSMAN_SSH_PASSWD: ((opsman_ssh_passwd))
+  OPSMAN_DECRYPTION_KEY: ((opsman_pass_phrase))
+  OPSMAN_CLIENT_ID: ((pcfops_client))
+  OPSMAN_CLIENT_SECRET: ((pcfops_secret))
+
+- &backup-restore-storage-params
+
+  ## Backup storage backend type should be one of 'scp', 's3', 'gcs', 'swift'
+  BACKUP_TYPE: ((backup_storage_type))
+  BACKUP_TARGET: ((backup_target))
+  
+  ## Credentials for GCS access
+  GCP_SERVICE_ACCOUNT_KEY: ((gcp_service_account_key))
+  GCS_BUCKET_NAME: ((gcs_bucket_name))
+
+  ## GCS mount path
+  GCS_MOUNT: ((gcs_mount))
+
 jobs:
 
 #
@@ -77,7 +115,7 @@ jobs:
     params: 
       <<: *backup-restore-common-params
       <<: *backup-restore-storage-params
-      PIVNET_API_TOKEN: {{pivnet_api_token}}
+      PIVNET_API_TOKEN: ((pivnet_api_token))
 
   - task: restore-director
     privileged: true
@@ -126,51 +164,13 @@ resources:
 - name: automation
   type: git
   source:
-    uri: {{automation_pipelines_repo}}
-    branch: {{automation_pipelines_branch}}
+    uri: ((automation_pipelines_repo))
+    branch: ((automation_pipelines_branch))
 
 - name: daily
   type: time
   source:
-    interval: {{backup_interval}}
-    location: {{locale}}
-    start: {{backup_interval_start}}
-    stop: {{backup_interval_stop}}
-
-shared:
-
-- &wait-if-stopped
-  # This task will block if the environment 
-  # has been put into stopped state
-  task: wait-if-stopped
-  file: automation/lib/inceptor/tasks/wait-on-state/task.yml
-  params: 
-    WAIT_ON_STATE: stopped
-    AUTOS3_URL: ((autos3_url))
-    AUTOS3_ACCESS_KEY: ((autos3_access_key))
-    AUTOS3_SECRET_KEY: ((autos3_secret_key))
-
-- &backup-restore-common-params
-  TRACE: {{trace_tasks}}
-  SSH_KEY: {{ssh_key}}
-  OPSMAN_HOST: {{opsman_host}}
-  OPSMAN_USERNAME: {{opsman_username}}
-  OPSMAN_PASSWORD: {{opsman_password}}
-  OPSMAN_SSH_USER: {{opsman_ssh_user}}
-  OPSMAN_SSH_PASSWD: {{opsman_ssh_passwd}}
-  OPSMAN_DECRYPTION_KEY: {{opsman_pass_phrase}}
-  OPSMAN_CLIENT_ID: {{pcfops_client}}
-  OPSMAN_CLIENT_SECRET: {{pcfops_secret}}
-
-- &backup-restore-storage-params
-
-  ## Backup storage backend type should be one of 'scp', 's3', 'gcs', 'swift'
-  BACKUP_TYPE: {{backup_storage_type}}
-  BACKUP_TARGET: {{backup_target}}
-  
-  ## Credentials for GCS access
-  GCP_SERVICE_ACCOUNT_KEY: {{gcp_service_account_key}}
-  GCS_BUCKET_NAME: {{gcs_bucket_name}}
-
-  ## GCS mount path
-  GCS_MOUNT: {{gcs_mount}}
+    interval: ((backup_interval))
+    location: ((locale))
+    start: ((backup_interval_start))
+    stop: ((backup_interval_stop))

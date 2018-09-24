@@ -1,5 +1,20 @@
 ---
 
+common:
+
+- &params
+  TRACE: ((trace_tasks))
+  IAAS: ((iaas))
+  GCP_PROJECT_ID: ((gcp_project_id))
+  GCP_SERVICE_ACCOUNT_KEY: ((gcp_service_account_key))
+  LABEL: ((label))
+  OPSMAN_HOST: ((opsman_host))
+  OPSMAN_USERNAME: ((opsman_username))
+  OPSMAN_PASSWORD: ((opsman_password))
+  OPSMAN_DECRYPTION_KEY: ((opsman_pass_phrase))
+  OPSMAN_CLIENT_ID: ((pcfops_client))
+  OPSMAN_CLIENT_SECRET: ((pcfops_secret))
+
 jobs:
 
 #
@@ -116,18 +131,3 @@ resources:
     access_key_id: ((autos3_access_key))
     secret_access_key: ((autos3_secret_key))
     regexp: stopped/stopped-(.*)
-
-shared:
-
-- &params
-  TRACE: ((trace_tasks))
-  IAAS: ((iaas))
-  GCP_PROJECT_ID: ((gcp_project_id))
-  GCP_SERVICE_ACCOUNT_KEY: ((gcp_service_account_key))
-  LABEL: ((label))
-  OPSMAN_HOST: ((opsman_host))
-  OPSMAN_USERNAME: ((opsman_username))
-  OPSMAN_PASSWORD: ((opsman_password))
-  OPSMAN_DECRYPTION_KEY: ((opsman_pass_phrase))
-  OPSMAN_CLIENT_ID: ((pcfops_client))
-  OPSMAN_CLIENT_SECRET: ((pcfops_secret))
