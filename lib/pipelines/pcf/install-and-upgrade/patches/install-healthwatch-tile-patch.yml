@@ -1,4 +1,4 @@
-- op: replace
+- type: replace
   path: /resources/-
   value:
     name: ${product_name}-tile
@@ -9,7 +9,7 @@
       product_version: ${product_version}
       sort_by: semver
 
-- op: replace
+- type: replace
   path: /jobs/-
   value:
     name: ${product_name}-tile-regulator
@@ -22,7 +22,7 @@
       #   globs:
       #   - ((product_globs))
 
-- op: replace
+- type: replace
   path: /jobs/-
   value:
     name: upload-${product_name}-tile
@@ -72,7 +72,7 @@
         STAGE_AND_APPLY: false
         ENABLE_ERRANDS: ((enable_errands))
 
-- op: replace
+- type: replace
   path: /jobs/-
   value:
     name: configure-${product_name}-tile
@@ -121,7 +121,7 @@
         FOUNDATION_NAME: ((gcp_resource_prefix))
         OPSMAN_URL: https://((opsman_host))
 
-- op: replace
+- type: replace
   path: /jobs/name=deploy/plan/0/aggregate/-
   value:
     get: ${product_name}-tile

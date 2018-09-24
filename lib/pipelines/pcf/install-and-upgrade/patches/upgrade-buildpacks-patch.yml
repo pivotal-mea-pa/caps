@@ -1,6 +1,6 @@
 ---
 
-- op: replace
+- type: replace
   path: /resources/-
   value:
     name: automation
@@ -9,18 +9,18 @@
       uri: ((automation_pipelines_repo))
       branch: ((automation_pipelines_branch))
 
-- op: replace
+- type: replace
   path: /resources/name=pcf-pipelines/source
   value:
     uri: https://github.com/pivotal-cf/pcf-pipelines
     branch: master
 
-- op: replace
+- type: replace
   path: /jobs/name=stage-binary-buildpack/plan/0/aggregate/-
   value:
     get: automation
 
-- op: replace
+- type: replace
   path: /jobs/name=stage-binary-buildpack/plan/1
   value:
     task: wait_until_started
@@ -31,12 +31,12 @@
       AUTOS3_ACCESS_KEY: ((autos3_access_key))
       AUTOS3_SECRET_KEY: ((autos3_secret_key))
 
-- op: replace
+- type: replace
   path: /jobs/name=stage-dotnet-buildpack/plan/0/aggregate/-
   value:
     get: automation
 
-- op: replace
+- type: replace
   path: /jobs/name=stage-dotnet-buildpack/plan/1
   value:
     task: wait_until_started
@@ -47,12 +47,12 @@
       AUTOS3_ACCESS_KEY: ((autos3_access_key))
       AUTOS3_SECRET_KEY: ((autos3_secret_key))
 
-- op: replace
+- type: replace
   path: /jobs/name=stage-go-buildpack/plan/0/aggregate/-
   value:
     get: automation
 
-- op: replace
+- type: replace
   path: /jobs/name=stage-go-buildpack/plan/1
   value:
     task: wait_until_started
@@ -63,12 +63,12 @@
       AUTOS3_ACCESS_KEY: ((autos3_access_key))
       AUTOS3_SECRET_KEY: ((autos3_secret_key))
 
-- op: replace
+- type: replace
   path: /jobs/name=stage-java-buildpack/plan/0/aggregate/-
   value:
     get: automation
 
-- op: replace
+- type: replace
   path: /jobs/name=stage-java-buildpack/plan/1
   value:
     task: wait_until_started
@@ -79,12 +79,12 @@
       AUTOS3_ACCESS_KEY: ((autos3_access_key))
       AUTOS3_SECRET_KEY: ((autos3_secret_key))
 
-- op: replace
+- type: replace
   path: /jobs/name=stage-nodejs-buildpack/plan/0/aggregate/-
   value:
     get: automation
 
-- op: replace
+- type: replace
   path: /jobs/name=stage-nodejs-buildpack/plan/1
   value:
     task: wait_until_started
@@ -95,12 +95,12 @@
       AUTOS3_ACCESS_KEY: ((autos3_access_key))
       AUTOS3_SECRET_KEY: ((autos3_secret_key))
 
-- op: replace
+- type: replace
   path: /jobs/name=stage-php-buildpack/plan/0/aggregate/-
   value:
     get: automation
 
-- op: replace
+- type: replace
   path: /jobs/name=stage-php-buildpack/plan/1
   value:
     task: wait_until_started
@@ -111,12 +111,12 @@
       AUTOS3_ACCESS_KEY: ((autos3_access_key))
       AUTOS3_SECRET_KEY: ((autos3_secret_key))
 
-- op: replace
+- type: replace
   path: /jobs/name=stage-python-buildpack/plan/0/aggregate/-
   value:
     get: automation
 
-- op: replace
+- type: replace
   path: /jobs/name=stage-python-buildpack/plan/1
   value:
     task: wait_until_started
@@ -127,12 +127,12 @@
       AUTOS3_ACCESS_KEY: ((autos3_access_key))
       AUTOS3_SECRET_KEY: ((autos3_secret_key))
 
-- op: replace
+- type: replace
   path: /jobs/name=stage-ruby-buildpack/plan/0/aggregate/-
   value:
     get: automation
 
-- op: replace
+- type: replace
   path: /jobs/name=stage-ruby-buildpack/plan/1
   value:
     task: wait_until_started
@@ -143,12 +143,12 @@
       AUTOS3_ACCESS_KEY: ((autos3_access_key))
       AUTOS3_SECRET_KEY: ((autos3_secret_key))
 
-- op: replace
+- type: replace
   path: /jobs/name=stage-staticfile-buildpack/plan/0/aggregate/-
   value:
     get: automation
 
-- op: replace
+- type: replace
   path: /jobs/name=stage-staticfile-buildpack/plan/1
   value:
     task: wait_until_started
@@ -159,12 +159,12 @@
       AUTOS3_ACCESS_KEY: ((autos3_access_key))
       AUTOS3_SECRET_KEY: ((autos3_secret_key))
 
-- op: replace
+- type: replace
   path: /jobs/name=stage-tcserver-buildpack/plan/0/aggregate/-
   value:
     get: automation
 
-- op: replace
+- type: replace
   path: /jobs/name=stage-tcserver-buildpack/plan/1
   value:
     task: wait_until_started

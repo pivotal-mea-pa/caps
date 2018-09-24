@@ -1,5 +1,5 @@
 
-- op: replace
+- type: replace
   path: /jobs/name=restore-elastic-runtime/plan/2
   value:
     task: scale-down-ert-mysql-apply
@@ -17,7 +17,7 @@
       OPSMAN_CLIENT_ID: {{pcfops_client}}
       OPSMAN_CLIENT_SECRET: {{pcfops_secret}}
       
-- op: replace
+- type: replace
   path: /jobs/name=restore-elastic-runtime/plan/2
   value:
     task: scale-down-ert-mysql
@@ -35,7 +35,7 @@
       OPSMAN_CLIENT_ID: {{pcfops_client}}
       OPSMAN_CLIENT_SECRET: {{pcfops_secret}}
 
-- op: replace
+- type: replace
   path: /jobs/name=restore-elastic-runtime/plan/-
   value:
     task: scale-up-ert-mysql
@@ -53,7 +53,7 @@
       OPSMAN_CLIENT_ID: {{pcfops_client}}
       OPSMAN_CLIENT_SECRET: {{pcfops_secret}}
 
-- op: replace
+- type: replace
   path: /jobs/name=restore-elastic-runtime/plan/-
   value:
     task: scale-up-ert-mysql-apply
