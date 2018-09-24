@@ -2,6 +2,10 @@
 # Externalized Variables
 #
 
+variable "trace" {
+  default = ""
+}
+
 variable "autostart_deployment_pipelines" {
   default = "true"
 }

@@ -6,7 +6,7 @@
     privileged: true
     file: automation/lib/tasks/opsman/apply-changes/task.yml
     params: 
-      TRACE: {{trace_tasks}}
+      TRACE: {{trace}}
       SSH_KEY: {{ssh_key}}
       OPSMAN_HOST: {{opsman_host}}
       OPSMAN_USERNAME: {{opsman_username}}
@@ -24,7 +24,7 @@
     privileged: true
     file: automation/lib/tasks/opsman/scale-down-ert-mysql/task.yml
     params: 
-      TRACE: {{trace_tasks}}
+      TRACE: {{trace}}
       SSH_KEY: {{ssh_key}}
       OPSMAN_HOST: {{opsman_host}}
       OPSMAN_USERNAME: {{opsman_username}}
@@ -42,7 +42,7 @@
     privileged: true
     file: automation/lib/tasks/opsman/scale-up-ert-mysql/task.yml
     params: 
-      TRACE: {{trace_tasks}}
+      TRACE: {{trace}}
       SSH_KEY: {{ssh_key}}
       OPSMAN_HOST: {{opsman_host}}
       OPSMAN_USERNAME: {{opsman_username}}
@@ -60,7 +60,7 @@
     privileged: true
     file: automation/lib/tasks/opsman/apply-changes/task.yml
     params: 
-      TRACE: {{trace_tasks}}
+      TRACE: {{trace}}
       SSH_KEY: {{ssh_key}}
       OPSMAN_HOST: {{opsman_host}}
       OPSMAN_USERNAME: {{opsman_username}}

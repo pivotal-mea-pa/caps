@@ -21,6 +21,7 @@ jobs:
   - task: configure
     file: automation/deployments/pcf/gcp/pipeline/task.yml
     params:
+      TRACE: ((trace))
       CONCOURSE_URL: ((concourse_url))
       CONCOURSE_USER: ((concourse_user))
       CONCOURSE_PASSWORD: ((concourse_password))

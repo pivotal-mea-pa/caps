@@ -1,9 +1,5 @@
 ---
 
-# Set this value to non-empty value 
-# to trace task shell execution
-trace_tasks: ''
-
 # Locale to use for timer resources
 locale: '${locale}'
 

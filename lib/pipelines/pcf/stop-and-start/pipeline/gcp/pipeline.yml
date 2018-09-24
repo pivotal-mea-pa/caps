@@ -3,7 +3,7 @@
 common:
 
 - &params
-  TRACE: ((trace_tasks))
+  TRACE: ((trace))
   IAAS: ((iaas))
   GCP_PROJECT_ID: ((gcp_project_id))
   GCP_SERVICE_ACCOUNT_KEY: ((gcp_service_account_key))

@@ -14,7 +14,7 @@ common:
     AUTOS3_SECRET_KEY: ((autos3_secret_key))
 
 - &backup-restore-common-params
-  TRACE: ((trace_tasks))
+  TRACE: ((trace))
   SSH_KEY: ((ssh_key))
   OPSMAN_HOST: ((opsman_host))
   OPSMAN_USERNAME: ((opsman_username))

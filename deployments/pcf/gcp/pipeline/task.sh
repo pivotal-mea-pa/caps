@@ -40,8 +40,6 @@ for e in $ENVIRONMENTS; do
     -var "environment=${e}" \
     $terraform_params_path >/dev/null
 
-  set -x
-
   eval "echo \"$(cat $install_and_upgrade_pipeline_path/gcp/pipeline.yml)\"" \
     > install-pcf-pipeline0.yml
   
@@ -80,8 +78,6 @@ for e in $ENVIRONMENTS; do
     i=0
   fi
 
-  set +x
-
   fly -t default login -c $CONCOURSE_URL -u ''$CONCOURSE_USER'' -p ''$CONCOURSE_PASSWORD''
   fly -t default sync
 
@@ -91,6 +87,7 @@ for e in $ENVIRONMENTS; do
     -p ${env}_install-and-upgrade \
     -c pipeline.yml > bootstrap \
     -l install-pcf-params.yml \
+    -v "trace=$TRACE" \
     -v "concourse_url=$CONCOURSE_URL" \
     -v "concourse_user=$CONCOURSE_USER" \
     -v "concourse_password=$CONCOURSE_PASSWORD" \
@@ -149,6 +146,7 @@ for e in $ENVIRONMENTS; do
     -p ${env}_backup-and-restore \
     -c pipeline.yml \
     -l backup-and-restore-params.yml \
+    -v "trace=$TRACE" \
     -v "concourse_url=$CONCOURSE_URL" \
     -v "concourse_user=$CONCOURSE_USER" \
     -v "concourse_password=$CONCOURSE_PASSWORD" \
@@ -194,6 +192,7 @@ for e in $ENVIRONMENTS; do
     -p ${env}_stop-and-start \
     -c pipeline.yml \
     -l stop-and-start-params.yml \
+    -v "trace=$TRACE" \
     -v "concourse_url=$CONCOURSE_URL" \
     -v "concourse_user=$CONCOURSE_USER" \
     -v "concourse_password=$CONCOURSE_PASSWORD" \
