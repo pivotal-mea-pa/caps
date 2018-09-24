@@ -9,6 +9,12 @@ jobs:
 - name: stop-pcf
   serial: true
   serial_groups: [stop-and-start]
+  on_failure:
+    do:
+    - task: notify on stop-pcf failure
+  on_success:
+    do:
+    - task: notify on stop-pcf success
   plan:
 
   - aggregate:
@@ -53,6 +59,12 @@ jobs:
 - name: start-pcf
   serial: true
   serial_groups: [stop-and-start]
+  on_failure:
+    do:
+    - task: notify on start-pcf failure
+  on_success:
+    do:
+    - task: notify on start-pcf success
   plan:
 
   - aggregate:

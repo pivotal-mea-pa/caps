@@ -9,6 +9,9 @@ jobs:
 - name: backup-pcf
   serial: true
   serial_groups: [backups]
+  on_failure:
+    do:
+    - task: notify on backup-pcf failure
   plan:
 
   - aggregate:
@@ -96,6 +99,9 @@ jobs:
 - name: restore-elastic-runtime
   serial: true
   serial_groups: [backups]
+  on_failure:
+    do:
+    - task: notify on restore-elastic-runtime failure
   plan:
 
   - aggregate:
