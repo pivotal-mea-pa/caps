@@ -125,8 +125,6 @@ for e in $ENVIRONMENTS; do
 
   # Setup backup and restore pipeline
 
-  set -x
-
   BACKUP_AND_RESTORE_PIPELINE_PATH=automation/lib/pipelines/pcf/backup-and-restore/pipeline
 
   rm -fr .terraform/
