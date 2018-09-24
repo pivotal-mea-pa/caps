@@ -1,9 +1,10 @@
 #!/bin/bash
 
 [[ -n "$TRACE" ]] && set -x
-set -euo pipefail
 
 source ~/scripts/bosh-func.sh
+set -euo pipefail
+
 bosh::set_bosh_cli
 
 echo "$GOOGLE_CREDENTIALS_JSON" > .gcp-service-account.json

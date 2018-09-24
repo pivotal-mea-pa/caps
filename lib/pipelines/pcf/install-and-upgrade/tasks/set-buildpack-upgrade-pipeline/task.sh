@@ -1,9 +1,10 @@
 #!/bin/bash
 
 [[ -n "$TRACE" ]] && set -x
-set -euo pipefail
 
 source ~/scripts/bosh-func.sh
+set -euo pipefail
+
 bosh::set_bosh_cli
 
 source automation/lib/scripts/utility/template-utils.sh
