@@ -12,7 +12,8 @@ source automation/lib/scripts/utility/template-utils.sh
 # Source terraform output variables if available
 source_variables 'terraform-output/pcf-env-*.sh'
 
-install_and_upgrade_patches_path=automation/lib/pipelines/pcf/install-and-upgrade/patches
+patches_path=automation/lib/pipelines/pcf/install-and-upgrade/patches
+pipeline_path=automation/lib/pipelines/pcf/install-and-upgrade/pipeline/upgrade-buildpacks
 
 env=$(echo $ENVIRONMENT | awk '{print toupper($0)}')
 echo "\n*** Configuring buildpack upgrade pipeline for ${env} ***\n"
@@ -35,11 +36,8 @@ cf_password=$(om --skip-ssl-validation \
 
 cf_api_uri=https://api.$SYSTEM_DOMAIN
 
-curl -L https://raw.githubusercontent.com/pivotal-cf/pcf-pipelines/master/upgrade-buildpacks/pipeline.yml \
-  -o upgrade-buildpacks-pipeline-orig.yml
-
-$bosh interpolate -o $install_and_upgrade_patches_path/upgrade-buildpacks-patch.yml \
-  upgrade-buildpacks-pipeline-orig.yml > upgrade-buildpacks-pipeline.yml
+$bosh interpolate -o $patches_path/upgrade-buildpacks-patch.yml \
+  $pipeline_path/pipeline.yml > upgrade-buildpacks-pipeline.yml
 
 fly -t default login -c $CONCOURSE_URL -u ''$CONCOURSE_USER'' -p ''$CONCOURSE_PASSWORD''
 fly -t default sync
