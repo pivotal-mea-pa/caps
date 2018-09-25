@@ -12,10 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-cf_api_params: &cf_api_params
-  CF_API_URI: {{cf_api_uri}}
-  CF_USERNAME: {{cf_user}}
-  CF_PASSWORD: {{cf_password}}
+
+common:
+
+- cf_api_params: &cf_api_params
+    CF_API_URI: {{cf_api_uri}}
+    CF_USERNAME: {{cf_user}}
+    CF_PASSWORD: {{cf_password}}
 
 resource_types:
 - name: pivnet
