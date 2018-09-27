@@ -18,8 +18,16 @@ mc config host add auto $AUTOS3_URL $AUTOS3_ACCESS_KEY $AUTOS3_SECRET_KEY
 
 terraform_params_path=automation/deployments/pcf/gcp/params
 patch_job_notifications=automation/lib/inceptor/tasks/patches/patch_job_notifications.sh
+
 install_and_upgrade_pipeline_path=automation/lib/pipelines/pcf/install-and-upgrade/pipeline
 install_and_upgrade_patches_path=automation/lib/pipelines/pcf/install-and-upgrade/patches
+
+backup_and_restore_pipeline_path=automation/lib/pipelines/pcf/backup-and-restore/pipeline
+backup_and_restore_patches_path=automation/lib/pipelines/pcf/backup-and-restore/patches
+
+start_and_stop_pipeline_path=automation/lib/pipelines/pcf/stop-and-start/pipeline
+start_and_stop_patches_path=automation/lib/pipelines/pcf/stop-and-start/patches
+
 
 for e in $ENVIRONMENTS; do
 
@@ -125,8 +133,6 @@ for e in $ENVIRONMENTS; do
 
   # Setup backup and restore pipeline
 
-  BACKUP_AND_RESTORE_PIPELINE_PATH=automation/lib/pipelines/pcf/backup-and-restore/pipeline
-
   rm -fr .terraform/
   rm terraform.tfstate
 
@@ -135,12 +141,12 @@ for e in $ENVIRONMENTS; do
   terraform apply -auto-approve \
     -var "bootstrap_state_bucket=$BOOTSTRAP_STATE_BUCKET" \
     -var "bootstrap_state_prefix=$BOOTSTRAP_STATE_PREFIX" \
-    -var "params_template_file=$BACKUP_AND_RESTORE_PIPELINE_PATH/gcp/params.yml" \
+    -var "params_template_file=$backup_and_restore_pipeline_path/gcp/params.yml" \
     -var "params_file=backup-and-restore-params.yml" \
     -var "environment=${e}" \
     $terraform_params_path >/dev/null
 
-  $patch_job_notifications $BACKUP_AND_RESTORE_PIPELINE_PATH/gcp/pipeline.yml > pipeline.yml
+  $patch_job_notifications $backup_and_restore_pipeline_path/gcp/pipeline.yml > pipeline.yml
 
   fly -t default set-pipeline -n \
     -p ${env}_backup-and-restore \
@@ -162,9 +168,6 @@ for e in $ENVIRONMENTS; do
 
   # Setup start and stop pipeline
 
-  START_AND_STOP_PIPELINE_PATH=automation/lib/pipelines/pcf/stop-and-start/pipeline
-  START_AND_STOP_PATCHES_PATH=automation/lib/pipelines/pcf/stop-and-start/patches
-
   rm -fr .terraform/
   rm terraform.tfstate
 
@@ -173,17 +176,17 @@ for e in $ENVIRONMENTS; do
   terraform apply -auto-approve \
     -var "bootstrap_state_bucket=$BOOTSTRAP_STATE_BUCKET" \
     -var "bootstrap_state_prefix=$BOOTSTRAP_STATE_PREFIX" \
-    -var "params_template_file=$START_AND_STOP_PIPELINE_PATH/gcp/params.yml" \
+    -var "params_template_file=$start_and_stop_pipeline_path/gcp/params.yml" \
     -var "params_file=stop-and-start-params.yml" \
     -var "environment=${e}" \
     $terraform_params_path >/dev/null
 
   if [[ $SET_START_STOP_SCHEDULE == true ]]; then
 
-    $bosh interpolate -o $START_AND_STOP_PATCHES_PATH/start-stop-schedule.yml \
-      $START_AND_STOP_PIPELINE_PATH/gcp/pipeline.yml > stop-and-start-pipeline.yml
+    $bosh interpolate -o $start_and_stop_patches_path/start-stop-schedule.yml \
+      $start_and_stop_pipeline_path/gcp/pipeline.yml > stop-and-start-pipeline.yml
   else
-    cp $START_AND_STOP_PIPELINE_PATH/gcp/pipeline.yml stop-and-start-pipeline.yml
+    cp $start_and_stop_pipeline_path/gcp/pipeline.yml stop-and-start-pipeline.yml
   fi
 
   $patch_job_notifications stop-and-start-pipeline.yml > pipeline.yml
