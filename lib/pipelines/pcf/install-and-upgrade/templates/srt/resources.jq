@@ -24,7 +24,13 @@
     "instances": $num_diego_cells,
     "internet_connected": $internet_connected
   },
-  "backup-prepare": {
+  #
+  # Removed from 2.2 -> 2.3
+  #
+  # "backup-prepare": {
+  #   "internet_connected": $internet_connected
+  # },
+  "backup_restore": {
     "internet_connected": $internet_connected
   },
   "router": {
