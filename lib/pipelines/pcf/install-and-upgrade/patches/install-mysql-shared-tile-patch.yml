@@ -36,7 +36,6 @@
       - get: automation
       - get: pivnet-opsmgr
         passed: [deploy-director]
-        trigger: true
         params: {globs: []}
       - get: pivnet-product
         resource: ${product_name}-tile
