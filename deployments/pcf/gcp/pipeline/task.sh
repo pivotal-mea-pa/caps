@@ -28,7 +28,6 @@ backup_and_restore_patches_path=automation/lib/pipelines/pcf/backup-and-restore/
 start_and_stop_pipeline_path=automation/lib/pipelines/pcf/stop-and-start/pipeline
 start_and_stop_patches_path=automation/lib/pipelines/pcf/stop-and-start/patches
 
-
 for e in $ENVIRONMENTS; do
 
   env=$(echo $e | awk '{print toupper($0)}')
