@@ -22,5 +22,8 @@ params:
   OPSMAN_PASSWORD:
   OPSMAN_ZONE:
 
+  TERRAFORM_STATE_BUCKET:
+  TEMPLATE_OVERRIDE_PATH:
+
 run:
   path: automation/lib/pipelines/pcf/install-and-upgrade/tasks/destroy-infrastructure/gcp/task.sh
