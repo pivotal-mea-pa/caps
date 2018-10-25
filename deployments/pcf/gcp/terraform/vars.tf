@@ -3,7 +3,7 @@
 #
 
 variable "trace" {
-  default = ""
+  default = "true"
 }
 
 variable "autostart_deployment_pipelines" {
@@ -120,7 +120,7 @@ variable "bastion_vpn_network" {
 }
 
 variable "bastion_allow_public_ssh" {
-  default = ""
+  type = "string"
 }
 
 #

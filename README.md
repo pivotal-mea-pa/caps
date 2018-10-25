@@ -26,7 +26,8 @@ To use this framework effectively a collection of shell scripts are provided. It
 
 The IaaS credentials for the IaaS on which an environment should be launched should be provided as environment variables. This can be achieved by exporting the variables from  an `.envrc` file if you are using [direnv](https://direnv.net/) to manage you localized environments. Otherwise simply save them to a shell script and source it before executing the CAPs utilities. 
 
-> You should also add the `<repository home>/bin` folder to your path so you can run `caps-*` scripts without providing an explicit absolute or relative path.
+> You should also add the `<caps repository home>/bin` folder to your path so you can run `caps-*` scripts without providing an explicit absolute or relative path.
+
 
 The following IaaS specific environment variables are required by the bootstrap Terraform template.
 

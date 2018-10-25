@@ -40,6 +40,8 @@ module "bootstrap" {
   # DNS Name for VPC will be 'cf.tfacc.pcfs.io'
   vpc_dns_zone = "${var.vpc_dns_zone}"
 
+  vpc_internal_dns_zones = ["${var.vpc_name}.local"]
+
   # Name of parent zone 'tfacc.pcfs.io' to which the 
   # name server records of the 'vpc_dns_zone' will be added.
   dns_managed_zone_name = "${var.vpc_parent_dns_zone_name}"
@@ -93,6 +95,13 @@ module "bootstrap" {
   #
   bootstrap_pipeline_file = "${path.module}/../pipeline/pipeline.yml"
 
+  # Email to send pipeline otifications to
+  notification_email = "${var.notification_email}"
+
+  # Path to cloud-inceptor scripts 
+  # in pipeline automation resource
+  pipeline_automation_path = "automation/lib/inceptor"
+
   # This is a YML file snippet. It is important not to include
   # the '---' header as that is created via the bastion module 
   # when the complete params file is rendered.
@@ -116,8 +125,6 @@ vpc_dns_zone: ${var.vpc_dns_zone}
 
 environments: '${join(" ", var.pcf_environments)}'
 product: '${var.products}'
-
-notification_email: '${var.notification_email}'
 
 unpause_install_pipeline: ${var.autostart_deployment_pipelines}
 
