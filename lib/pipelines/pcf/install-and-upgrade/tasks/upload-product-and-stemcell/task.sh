@@ -59,7 +59,35 @@ if [ -n "$STEMCELL_VERSION" ]; then
     )
 
     pivnet-cli login --api-token="$PIVNET_API_TOKEN"
+    
+    set +e
     pivnet-cli download-product-files -p "$product_slug" -r $STEMCELL_VERSION -g "*${IAAS}*" --accept-eula
+    if [[ $? -ne 0 ]]; then
+      set -e
+
+      # Download stemcell from bosh.io
+      case "$IAAS" in
+        google)
+          stemcell_download_url=https://s3.amazonaws.com/bosh-gce-light-stemcells/light-bosh-stemcell-${STEMCELL_VERSION}-google-kvm-ubuntu-xenial-go_agent.tgz
+          ;;
+        # aws)
+        #   ;;
+        # azure)
+        #   ;;
+        # vsphere)
+        #   ;;
+        # openstack)
+        #   ;;
+        *)
+          echo "ERROR! Unknown IAAS - $IAAS."
+          exit 1
+          ;;
+      esac
+    else
+      set -e
+    fi
+
+    curl -OL $stemcell_download_url
 
     SC_FILE_PATH=`find ./ -name *.tgz`
 
