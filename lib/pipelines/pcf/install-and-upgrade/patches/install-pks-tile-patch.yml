@@ -126,13 +126,13 @@
         VPC_NETWORK_NAME: # Sourced from terraform output
         PLAN1_WORKER_INSTANCES: 3
         PLAN1_ALLOW_PRIVILEGED_CONTAINERS: true
-        PLAN1_AZ_PLACEMENT: # Sourced from terraform output
+        PLAN1_AZ_PLACEMENT: '' # Sourced from terraform output
         PLAN2_WORKER_INSTANCES: 5
         PLAN2_ALLOW_PRIVILEGED_CONTAINERS: true
-        PLAN2_AZ_PLACEMENT: # Sourced from terraform output
+        PLAN2_AZ_PLACEMENT: '' # Sourced from terraform output
         PLAN3_WORKER_INSTANCES: 0
         PLAN3_ALLOW_PRIVILEGED_CONTAINERS: true
-        PLAN3_AZ_PLACEMENT: # Sourced from terraform output
+        PLAN3_AZ_PLACEMENT: '' # Sourced from terraform output
 
 - type: replace
   path: /jobs/name=deploy/plan/0/aggregate/-
