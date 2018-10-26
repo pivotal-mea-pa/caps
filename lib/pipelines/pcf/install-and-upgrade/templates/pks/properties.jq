@@ -21,7 +21,7 @@
 #
 
 {
-  ".properties.uaa_url": { "value": $pks_url },
+  ".properties.pks_api_hostname": { "value": $pks_url },
   ".pivotal-container-service.pks_tls": {
     "value": {
       "cert_pem": $pks_cert,
