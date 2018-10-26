@@ -27,7 +27,8 @@
       "cert_pem": $pks_cert,
       "private_key_pem": $pks_cert_key
     }
-  }
+  },
+  ".properties.telemetry_selector": { "value": "disabled" }
 }
 
 # Configure plans
