@@ -10,13 +10,13 @@
 #    --arg vpc_network_name "${TF_VAR_prefix}-virt-net" \
 #    --argjson plan1_worker_instances 3 \
 #    --argjson plan1_allow_privileged_containers false \
-#    --arg plan1_az_placement "$availability_zones=" \
+#    --arg plan1_az_placement "$AVAILABILITY_ZONES" \
 #    --argjson plan2_worker_instances 5 \
 #    --argjson plan2_allow_privileged_containers false \
-#    --arg plan2_az_placement "$availability_zones=" \
+#    --arg plan2_az_placement "$AVAILABILITY_ZONES" \
 #    --argjson plan3_worker_instances 0 \
 #    --argjson plan3_allow_privileged_containers false \
-#    --arg plan3_az_placement "$availability_zones=" \
+#    --arg plan3_az_placement "$AVAILABILITY_ZONES" \
 #    "$(cat properties.jq)"
 #
 
