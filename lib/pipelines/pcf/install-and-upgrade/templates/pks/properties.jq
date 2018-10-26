@@ -10,13 +10,13 @@
 #    --arg vpc_network_name "${TF_VAR_prefix}-virt-net" \
 #    --argjson plan1_worker_instances 3 \
 #    --argjson plan1_allow_privileged_containers false \
-#    --arg plan1_az_placement "europe-west1-b" \
+#    --arg plan1_az_placement "$AVAILABILITY_ZONES" \
 #    --argjson plan2_worker_instances 5 \
 #    --argjson plan2_allow_privileged_containers false \
-#    --arg plan2_az_placement "europe-west1-c" \
+#    --arg plan2_az_placement "$AVAILABILITY_ZONES" \
 #    --argjson plan3_worker_instances 0 \
 #    --argjson plan3_allow_privileged_containers false \
-#    --arg plan3_az_placement "europe-west1-d" \
+#    --arg plan3_az_placement "$AVAILABILITY_ZONES" \
 #    "$(cat properties.jq)"
 #
 
@@ -37,7 +37,8 @@ if $plan1_worker_instances > 0 then
   ".properties.plan1_selector": { "value": "Plan Active" },
   ".properties.plan1_selector.active.name": { "value": "small" },
   ".properties.plan1_selector.active.description": { "value": "Default plan for K8s cluster" },
-  ".properties.plan1_selector.active.az_placement": { "value": $plan1_az_placement },
+  ".properties.plan1_selector.active.master_az_placement": { "value": ($plan1_az_placement | split(",")) },
+  ".properties.plan1_selector.active.worker_az_placement": { "value": ($plan1_az_placement | split(",")) },
   ".properties.plan1_selector.active.master_vm_type": { "value": "medium" },
   ".properties.plan1_selector.active.master_persistent_disk_type": { "value": "10240" },
   ".properties.plan1_selector.active.worker_vm_type": { "value": "medium" },
@@ -58,7 +59,8 @@ if $plan2_worker_instances > 0 then
   ".properties.plan2_selector": { "value": "Plan Active" },
   ".properties.plan2_selector.active.name": { "value": "medium" },
   ".properties.plan2_selector.active.description": { "value": "For Large Workloads" },
-  ".properties.plan2_selector.active.az_placement": { "value": $plan2_az_placement },
+  ".properties.plan2_selector.active.master_az_placement": { "value": ($plan2_az_placement | split(",")) },
+  ".properties.plan2_selector.active.worker_az_placement": { "value": ($plan2_az_placement | split(",")) },
   ".properties.plan2_selector.active.master_vm_type": { "value": "large" },
   ".properties.plan2_selector.active.master_persistent_disk_type": { "value": "10240" },
   ".properties.plan2_selector.active.worker_vm_type": { "value": "medium" },
@@ -79,7 +81,8 @@ if $plan3_worker_instances > 0 then
   ".properties.plan3_selector": { "value": "Plan Active" },
   ".properties.plan3_selector.active.name": { "value": "large" },
   ".properties.plan3_selector.active.description": { "value": "For Extra Large Workloads" },
-  ".properties.plan3_selector.active.az_placement": { "value": $plan3_az_placement },
+  ".properties.plan3_selector.active.master_az_placement": { "value": ($plan3_az_placement | split(",")) },
+  ".properties.plan3_selector.active.worker_az_placement": { "value": ($plan3_az_placement | split(",")) },
   ".properties.plan3_selector.active.master_vm_type": { "value": "xlarge" },
   ".properties.plan3_selector.active.master_persistent_disk_type": { "value": "10240" },
   ".properties.plan3_selector.active.worker_vm_type": { "value": "xlarge" },
