@@ -44,16 +44,6 @@ resource "google_compute_target_pool" "cf-ssh" {
   name = "${var.prefix}-ssh-proxy"
 }
 
-// PKS target pool
-resource "google_compute_target_pool" "pks" {
-  name = "${var.prefix}-pks"
-}
-
-// Harbor target pool
-resource "google_compute_target_pool" "harbor" {
-  name = "${var.prefix}-harbor"
-}
-
 // Doppler forwarding rule
 resource "google_compute_forwarding_rule" "cf-gorouter-wss" {
   name        = "${var.prefix}-gorouter-wss-lb"
@@ -79,31 +69,4 @@ resource "google_compute_forwarding_rule" "cf-tcp" {
   port_range  = "1024-65535"
   ip_protocol = "TCP"
   ip_address  = "${google_compute_address.cf-tcp.address}"
-}
-
-// PKS API tcp forwarding rule
-resource "google_compute_forwarding_rule" "pks-api" {
-  name        = "${var.prefix}-pks-api-lb"
-  target      = "${google_compute_target_pool.pks.self_link}"
-  port_range  = "9021"
-  ip_protocol = "TCP"
-  ip_address  = "${google_compute_address.pks.address}"
-}
-
-// PKS UAA tcp forwarding rule
-resource "google_compute_forwarding_rule" "pks-uaa" {
-  name        = "${var.prefix}-pks-uaa-lb"
-  target      = "${google_compute_target_pool.pks.self_link}"
-  port_range  = "8443"
-  ip_protocol = "TCP"
-  ip_address  = "${google_compute_address.pks.address}"
-}
-
-// Harbor tcp forwarding rule
-resource "google_compute_forwarding_rule" "harbor" {
-  name        = "${var.prefix}-harbor-lb"
-  target      = "${google_compute_target_pool.harbor.self_link}"
-  port_range  = "443"
-  ip_protocol = "TCP"
-  ip_address  = "${google_compute_address.harbor.address}"
 }

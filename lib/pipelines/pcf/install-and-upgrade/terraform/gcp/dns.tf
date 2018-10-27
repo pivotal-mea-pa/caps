@@ -86,26 +86,6 @@ resource "google_dns_record_set" "tcp-dns" {
   rrdatas = ["${google_compute_address.cf-tcp.address}"]
 }
 
-resource "google_dns_record_set" "pks" {
-  name         = "pks.${local.env_domain}."
-  managed_zone = "${google_dns_managed_zone.env_dns_zone.name}"
-
-  type = "A"
-  ttl  = 300
-
-  rrdatas = ["${google_compute_address.pks.address}"]
-}
-
-resource "google_dns_record_set" "harbor" {
-  name         = "harbor.${local.bootstrap_domain}."
-  managed_zone = "${data.terraform_remote_state.bootstrap.vpc_dns_zone_name}"
-
-  type = "A"
-  ttl  = 300
-
-  rrdatas = ["${google_compute_address.harbor.address}"]
-}
-
 #
 # Add Name Servers for ERT zone to bootstrap VPC zone.
 #

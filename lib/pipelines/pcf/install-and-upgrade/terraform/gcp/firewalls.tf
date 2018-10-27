@@ -101,34 +101,3 @@ resource "google_compute_firewall" "cf-ssh-proxy" {
 
   target_tags = ["${google_compute_target_pool.cf-ssh.name}", "diego-brain"]
 }
-
-//// Allow access to PKS [Optional]
-resource "google_compute_firewall" "pks" {
-  name    = "${var.prefix}-allow-pks"
-  network = "${google_compute_network.pcf.name}"
-
-  allow {
-    protocol = "tcp"
-    ports    = ["8443"]
-  }
-
-  allow {
-    protocol = "tcp"
-    ports    = ["9021"]
-  }
-
-  target_tags = ["${google_compute_target_pool.pks.name}"]
-}
-
-//// Allow access to Harbor [Optional]
-resource "google_compute_firewall" "harbor" {
-  name    = "${var.prefix}-allow-harbor"
-  network = "${google_compute_network.pcf.name}"
-
-  allow {
-    protocol = "tcp"
-    ports    = ["443"]
-  }
-
-  target_tags = ["${google_compute_target_pool.harbor.name}"]
-}

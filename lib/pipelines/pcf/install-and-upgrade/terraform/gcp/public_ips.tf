@@ -22,13 +22,3 @@ resource "google_compute_address" "cf-tcp" {
 resource "google_compute_address" "opsman" {
   name = "${var.prefix}-opsman"
 }
-
-// PKS static address
-resource "google_compute_address" "pks" {
-  name = "${var.prefix}-pks"
-}
-
-// PKS static address
-resource "google_compute_address" "harbor" {
-  name = "${var.prefix}-harbor"
-}
