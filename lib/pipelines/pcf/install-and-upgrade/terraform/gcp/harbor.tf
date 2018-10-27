@@ -9,7 +9,7 @@ resource "google_compute_address" "harbor" {
 
 // Harbor DNS
 resource "google_dns_record_set" "harbor" {
-  name         = "harbor.${local.env_domain}}."
+  name         = "harbor.${local.env_domain}."
   managed_zone = "${google_dns_managed_zone.env_dns_zone.name}"
 
   type = "A"
