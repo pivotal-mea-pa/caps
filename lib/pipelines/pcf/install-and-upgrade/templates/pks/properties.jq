@@ -28,6 +28,7 @@
       "private_key_pem": $pks_cert_key
     }
   },
+  ".properties.uaa_oidc": { "value": true },
   ".properties.telemetry_selector": { "value": "disabled" }
 }
 
