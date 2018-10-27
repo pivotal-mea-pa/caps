@@ -38,13 +38,13 @@ CURR_NETWORK_CONFIGURATION=$(om \
 
 OPSMAN_CA_CERT=$(om \
   --skip-ssl-validation \
-  --format json \
   --target "https://${OPSMAN_HOST}" \
   --client-id "${OPSMAN_CLIENT_ID}" \
   --client-secret "${OPSMAN_CLIENT_SECRET}" \
   --username "${OPSMAN_USERNAME}" \
   --password "${OPSMAN_PASSWORD}" \
   certificate-authorities \
+  --format json \
   | jq -r '.[] | select(.issuer | match("Pivotal")) | .cert_pem')
 
 export CA_CERTS="${OPSMAN_CA_CERT}\n${CA_CERTS}"
