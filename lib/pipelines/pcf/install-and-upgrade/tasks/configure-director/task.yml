@@ -12,7 +12,8 @@ inputs:
 - name: terraform-output
 
 params:
-  TRACE:
+  TRACE: Y
+  
   OPSMAN_HOST:
   OPSMAN_CLIENT_ID:
   OPSMAN_CLIENT_SECRET:
