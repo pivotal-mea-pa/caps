@@ -47,7 +47,7 @@ OPSMAN_CA_CERT=$(om \
   --format json \
   | jq -r '.[] | select(.issuer | match("Pivotal")) | .cert_pem')
 
-export CA_CERTS="${OPSMAN_CA_CERT}\n${CA_CERTS}"
+export CA_CERTS=$(echo -e "${OPSMAN_CA_CERT}\n${CA_CERTS}")
 
 iaas_configuration=$(eval_jq_templates "iaas_configuration" "$TEMPLATE_PATH" "$TEMPLATE_OVERRIDE_PATH" "$IAAS")
 director_configuration=$(eval_jq_templates "director_config" "$TEMPLATE_PATH" "$TEMPLATE_OVERRIDE_PATH" "$IAAS")
