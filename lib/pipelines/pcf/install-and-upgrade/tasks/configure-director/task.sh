@@ -36,6 +36,19 @@ CURR_NETWORK_CONFIGURATION=$(om \
   --password "${OPSMAN_PASSWORD}" \
   curl --silent --path /api/v0/staged/director/networks)
 
+OPSMAN_CA_CERT=$(om \
+  --skip-ssl-validation \
+  --format json \
+  --target "https://${OPSMAN_HOST}" \
+  --client-id "${OPSMAN_CLIENT_ID}" \
+  --client-secret "${OPSMAN_CLIENT_SECRET}" \
+  --username "${OPSMAN_USERNAME}" \
+  --password "${OPSMAN_PASSWORD}" \
+  certificate-authorities \
+  | jq -r '.[] | select(.issuer | match("Pivotal")) | .cert_pem')
+
+export CA_CERTS="${OPSMAN_CA_CERT}\n${CA_CERTS}"
+
 iaas_configuration=$(eval_jq_templates "iaas_configuration" "$TEMPLATE_PATH" "$TEMPLATE_OVERRIDE_PATH" "$IAAS")
 director_configuration=$(eval_jq_templates "director_config" "$TEMPLATE_PATH" "$TEMPLATE_OVERRIDE_PATH" "$IAAS")
 az_configuration=$(eval_jq_templates "az_configuration" "$TEMPLATE_PATH" "$TEMPLATE_OVERRIDE_PATH" "$IAAS")
