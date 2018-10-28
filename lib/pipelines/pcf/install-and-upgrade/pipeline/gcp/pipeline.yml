@@ -202,7 +202,7 @@ jobs:
       # Director properties
       NTP_SERVERS: ''                 # Default '0.pool.ntp.org,1.pool.ntp.org'
       RESURRECTOR_ENABLED: ''         # Default 'true'
-      POST_DEPLOY_ENABLED: 'true'
+      POST_DEPLOY_ENABLED: true
       RETRY_BOSH_DEPLOYS:  ''         # Default 'true'
       # Availability Zone properties
       AVAILABILITY_ZONES: ''          # Sourced from terraform output
