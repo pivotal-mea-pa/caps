@@ -31,24 +31,6 @@
 
 # RabbitMQ Configuration
 {
-  ".rabbitmq-server.server_admin_credentials": {
-    "value": {
-      "identity": "admin",
-      "password": $admin_password
-    },
-  },
-  ".rabbitmq-server.plugins": {
-    "value": ($server_plugins | split(","))
-  },
-  ".rabbitmq-server.ssl_cacert": {
-    "value": $ssl_cacert
-  },
-  ".rabbitmq-broker.dns_host": {
-    "value": $external_dns_name
-  },
-  ".properties.disk_alarm_threshold": {
-    "value": $disk_alarm_threshold
-  },
   ".rabbitmq-haproxy.static_ips": {
     "value": $haproxy_static_ips,
   },
