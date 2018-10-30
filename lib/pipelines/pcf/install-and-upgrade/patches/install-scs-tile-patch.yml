@@ -45,6 +45,14 @@
           globs:
           - ((product_globs))
 
+      - get: mysql-tile
+        passed: [deploy]
+        params: {globs: []}
+
+      - get: rabbitmq-tile
+        passed: [deploy]
+        params: {globs: []}
+
     # Upload product tile and its stemcell
     - task: upload-tile
       file: automation/lib/pipelines/pcf/install-and-upgrade/tasks/upload-product-and-stemcell/task.yml
@@ -118,10 +126,23 @@
         DISABLE_CERT_CHECK: true
         SECURE_CREDENTIALS: false
 
-- type: replace
-  path: /jobs/name=deploy/plan/0/aggregate/-
-  value:
-    get: ${product_name}-tile
-    passed: [configure-${product_name}-tile]
-    trigger: true
-    params: { globs: [] } 
+    # Wait if an opsman is currently in the process of applying a change
+    - task: wait-if-apply-in-progress
+      file: automation/lib/tasks/opsman/wait-opsman/task.yml
+      params:
+        OPSMAN_HOST: ((opsman_host))
+        OPSMAN_USERNAME: ((opsman_admin_username))
+        OPSMAN_PASSWORD: ((opsman_admin_password))
+        OPSMAN_CLIENT_ID: ((opsman_client_id))
+        OPSMAN_CLIENT_SECRET: ((opsman_client_secret))
+
+    # Apply the changes to deploy the SRT
+    - task: apply-changes
+      file: automation/lib/tasks/opsman/apply-changes/task.yml
+      params:
+        OPSMAN_HOST: ((opsman_host))
+        OPSMAN_USERNAME: ((opsman_admin_username))
+        OPSMAN_PASSWORD: ((opsman_admin_password))
+        OPSMAN_CLIENT_ID: ((opsman_client_id))
+        OPSMAN_CLIENT_SECRET: ((opsman_client_secret))
+        PRODUCT_NAME: p-spring-cloud-services
