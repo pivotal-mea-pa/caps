@@ -64,6 +64,18 @@ elif [[ $DIRECTOR_ONLY == "true" ]]; then
     --ignore-warnings \
     --skip-deploy-products
 
+else if [[ -n $PRODUCT_NAME ]]; then
+
+  om \
+    --target "https://${OPSMAN_HOST}" \
+    --skip-ssl-validation \
+    --client-id "${OPSMAN_CLIENT_ID}" \
+    --client-secret "${OPSMAN_CLIENT_SECRET}" \
+    --username "${OPSMAN_USERNAME}" \
+    --password "${OPSMAN_PASSWORD}" \
+    apply-changes \
+    --ignore-warnings \
+    --product-name $PRODUCT_NAME
 else
   om \
     --target "https://${OPSMAN_HOST}" \
@@ -73,5 +85,6 @@ else
     --username "${OPSMAN_USERNAME}" \
     --password "${OPSMAN_PASSWORD}" \
     apply-changes \
-    --ignore-warnings
+    --ignore-warnings \
+    --skip-unchanged-products
 fi
