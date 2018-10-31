@@ -114,8 +114,8 @@ jobs:
   - task: set-director-not-ready
     file: automation/lib/inceptor/tasks/toggle-state/task.yml
     params: 
-      OFF_STATE: director_not_ready
-      ON_STATE: director_ready
+      OFF_STATE: director_ready
+      ON_STATE: director_not_ready
       AUTOS3_URL: ((autos3_url))
       AUTOS3_ACCESS_KEY: ((autos3_access_key))
       AUTOS3_SECRET_KEY: ((autos3_secret_key))
@@ -318,8 +318,8 @@ jobs:
   - task: set-director-ready
     file: automation/lib/inceptor/tasks/toggle-state/task.yml
     params: 
-      OFF_STATE: director_ready
-      ON_STATE: director_not_ready
+      OFF_STATE: director_not_ready
+      ON_STATE: director_ready
       AUTOS3_URL: ((autos3_url))
       AUTOS3_ACCESS_KEY: ((autos3_access_key))
       AUTOS3_SECRET_KEY: ((autos3_secret_key))
