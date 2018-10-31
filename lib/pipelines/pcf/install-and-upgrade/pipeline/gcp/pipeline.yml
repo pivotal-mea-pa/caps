@@ -76,12 +76,37 @@ jobs:
       params:
         globs:
         - '*GCP.yml'
+
+  # Upload new Ops Manager image to the IAAS
   - task: upload
     file: automation/lib/pipelines/pcf/install-and-upgrade/tasks/upload-opsman/gcp/task.yml
     params:
       GCP_PROJECT_ID: ((gcp_project))
       GCP_REGION: ((gcp_region))
       GCP_SERVICE_ACCOUNT_KEY: ((gcp_service_account_key))
+
+  # Wait if the Ops Manager is currently in the
+  # process of applying a change
+  - task: wait-if-apply-in-progress
+    file: automation/lib/tasks/opsman/wait-opsman/task.yml
+    params:
+      OPSMAN_HOST: ((opsman_host))
+      OPSMAN_USERNAME: ((opsman_admin_username))
+      OPSMAN_PASSWORD: ((opsman_admin_password))
+      OPSMAN_CLIENT_ID: ((opsman_client_id))
+      OPSMAN_CLIENT_SECRET: ((opsman_client_secret))
+
+  # If a new Ops Manager has been uploaded to the  
+  # IaaS then set the director to a not-ready state 
+  # so the new one can be deployed
+  - task: set-director-not-ready
+    file: automation/lib/inceptor/tasks/toggle-state/task.yml
+    params: 
+      OFF_STATE: director_not_ready
+      ON_STATE: director_ready
+      AUTOS3_URL: ((autos3_url))
+      AUTOS3_ACCESS_KEY: ((autos3_access_key))
+      AUTOS3_SECRET_KEY: ((autos3_secret_key))
 
 - name: create-infrastructure
   serial_groups: [terraform,opsman]
@@ -98,6 +123,8 @@ jobs:
       params:
         globs:
         - '*GCP.yml'
+
+  # Prepare the IaaS for PCF (e.g. DNS, network, etc.)
   - task: create-infrastructure
     file: automation/lib/pipelines/pcf/install-and-upgrade/tasks/create-infrastructure/gcp/task.yml
     params:
@@ -173,6 +200,10 @@ jobs:
       trigger: true
       params: {globs: []}
   - get: terraform-output
+
+  # Initialize Ops Manager. This is a no-op
+  # if the Ops Manager has already been 
+  # initialized.
   - task: configure-opsman-authentication
     file: automation/lib/pipelines/pcf/install-and-upgrade/tasks/configure-opsman/task.yml
     params:
@@ -182,6 +213,8 @@ jobs:
       OPSMAN_CLIENT_ID: ((opsman_client_id))
       OPSMAN_CLIENT_SECRET: ((opsman_client_secret))
       OPSMAN_DECRYPTION_KEY: ((opsman_admin_password))
+
+  # Configure the Ops Manager Bosh Director
   - task: configure-director
     file: automation/lib/pipelines/pcf/install-and-upgrade/tasks/configure-director/task.yml
     params:
@@ -233,7 +266,10 @@ jobs:
       passed: [configure-director]
       trigger: true
       params: {globs: []}
-  - task: check-opsman-clear
+
+  # Wait if the Ops Manager is currently in the
+  # process of applying a change
+  - task: wait-if-apply-in-progress
     file: automation/lib/tasks/opsman/wait-opsman/task.yml
     params:
       OPSMAN_HOST: ((opsman_host))
@@ -241,6 +277,9 @@ jobs:
       OPSMAN_PASSWORD: ((opsman_admin_password))
       OPSMAN_CLIENT_ID: ((opsman_client_id))
       OPSMAN_CLIENT_SECRET: ((opsman_client_secret))
+
+  # Invoke Ops Manager Apply changes and ensure
+  # only changes to director will be applied
   - task: deploy-director
     file: automation/lib/tasks/opsman/apply-changes/task.yml
     params:
@@ -251,3 +290,15 @@ jobs:
       OPSMAN_PASSWORD: ((opsman_admin_password))
       DIRECTOR_ONLY: true
       DISABLE_ERRANDS:
+
+  # Sets the director ready state which will 
+  # allow any jobs that depend on the director
+  # to be up to proceed.
+  - task: set-director-ready
+    file: automation/lib/inceptor/tasks/toggle-state/task.yml
+    params: 
+      OFF_STATE: director_ready
+      ON_STATE: director_not_ready
+      AUTOS3_URL: ((autos3_url))
+      AUTOS3_ACCESS_KEY: ((autos3_access_key))
+      AUTOS3_SECRET_KEY: ((autos3_secret_key))
