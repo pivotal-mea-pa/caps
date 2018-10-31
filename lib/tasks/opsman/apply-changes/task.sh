@@ -64,7 +64,7 @@ elif [[ $DIRECTOR_ONLY == "true" ]]; then
     --ignore-warnings \
     --skip-deploy-products
 
-else if [[ -n $PRODUCT_NAME ]]; then
+elif [[ -n $PRODUCT_NAME ]]; then
 
   om \
     --target "https://${OPSMAN_HOST}" \
