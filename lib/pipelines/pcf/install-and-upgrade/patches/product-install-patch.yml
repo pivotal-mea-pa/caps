@@ -67,3 +67,7 @@
         AUTOS3_URL: ((autos3_url))
         AUTOS3_ACCESS_KEY: ((autos3_access_key))
         AUTOS3_SECRET_KEY: ((autos3_secret_key))
+
+- type: replace
+  path: /groups/name=Products/jobs/-
+  value: deploy

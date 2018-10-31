@@ -1,4 +1,14 @@
-groups: []
+---
+groups:
+- name: Director
+  jobs:
+  - destroy-env
+  - upload-opsman-image
+  - create-infrastructure
+  - configure-director
+  - deploy-director
+- name: Products
+  jobs:
 
 resource_types:
 - name: pivnet
