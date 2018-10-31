@@ -83,11 +83,11 @@ if [ -n "$STEMCELL_VERSION" ]; then
           exit 1
           ;;
       esac
+
+      curl -OL $stemcell_download_url
     else
       set -e
     fi
-
-    curl -OL $stemcell_download_url
 
     SC_FILE_PATH=`find ./ -name *.tgz`
 
