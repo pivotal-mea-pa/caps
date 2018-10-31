@@ -62,6 +62,7 @@
     - task: set-started-state
       file: automation/lib/inceptor/tasks/toggle-state/task.yml
       params: 
+        OFF_STATE: stopped
         ON_STATE: started
         AUTOS3_URL: ((autos3_url))
         AUTOS3_ACCESS_KEY: ((autos3_access_key))
