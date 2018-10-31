@@ -135,13 +135,13 @@
     params: { globs: [] } 
 
 - type: replace
-  path: /groups/name=Products/jobs/-
+  path: /groups/name=Products/jobs?/-
   value: ${product_name}-tile-regulator
 
 - type: replace
-  path: /groups/name=Products/jobs/-
+  path: /groups/name=Products/jobs?/-
   value: upload-${product_name}-tile
 
 - type: replace
-  path: /groups/name=Products/jobs/-
+  path: /groups/name=Products/jobs?/-
   value: configure-${product_name}-tile

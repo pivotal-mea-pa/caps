@@ -8,7 +8,6 @@ groups:
   - configure-director
   - deploy-director
 - name: Products
-  jobs:
 
 resource_types:
 - name: pivnet
