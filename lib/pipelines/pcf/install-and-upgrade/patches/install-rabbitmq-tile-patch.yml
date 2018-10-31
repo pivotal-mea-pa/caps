@@ -18,25 +18,19 @@
       trigger: true
     - get: ${product_name}-tile
       params: {globs: []}
-      # params:
-      #   globs:
-      #   - ((product_globs))
 
 - type: replace
   path: /jobs/-
   value:
     name: upload-${product_name}-tile
-    serial_groups: [opsman]
     on_failure:
       do:
       - task: notify on upload-${product_name}-tile failure
 
+    serial: true
     plan:
     - aggregate:
       - get: automation
-      - get: pivnet-opsmgr
-        passed: [deploy-director]
-        params: {globs: []}
       - get: pivnet-product
         resource: ${product_name}-tile
         passed: [${product_name}-tile-regulator]
@@ -44,6 +38,15 @@
         params:
           globs:
           - ((product_globs))
+
+    # Wait for director to be in a ready state
+    - task: wait-for-director-to-be-ready
+      file: automation/lib/inceptor/tasks/wait-for-state/task.yml
+      params: 
+        WAIT_FOR_STATE: director_ready
+        AUTOS3_URL: ((autos3_url))
+        AUTOS3_ACCESS_KEY: ((autos3_access_key))
+        AUTOS3_SECRET_KEY: ((autos3_secret_key))
 
     # Upload product tile and its stemcell
     - task: upload-tile
@@ -75,11 +78,13 @@
   path: /jobs/-
   value:
     name: configure-${product_name}-tile
-    serial_groups: [opsman]
+    serial_groups: [configure]
     on_failure:
       do:
       - task: notify on configure-${product_name}-tile failure
 
+    serial: true
+    serial_groups: [configure]
     plan:
     - aggregate:
       - get: automation
