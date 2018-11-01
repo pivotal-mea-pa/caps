@@ -106,7 +106,7 @@ VERSION=$(cat ./pivnet-product/metadata.json | jq --raw-output '.Release.Version
 
 PRODUCT_NAME=${NAME}_${VERSION}
 
-mc rm --force --recursive --older-than=7 auto/${BUCKET}/downloads/${NAME}_*
+# mc rm --force --recursive --older-than=7 auto/${BUCKET}/downloads/${NAME}_*
 mc cp pivnet-product/metadata.json auto/${BUCKET}/downloads/${PRODUCT_NAME}/metadata.json
 
 TILE_FILE_NAME=${TILE_FILE_PATH##*/}
