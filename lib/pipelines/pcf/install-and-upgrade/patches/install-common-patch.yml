@@ -78,8 +78,14 @@
     plan:
     - aggregate:
       - get: automation
-      - get: ${product_name}-download
-        #trigger: true
+      - get: pivnet-product
+        resource: ${product_name}-tile
+        passed: [${product_name}-tile-regulator]
+        # trigger: true
+        params:
+          globs:
+          - ${product_glob}
+
 
     # Wait for director to be in a ready state
     - task: wait-for-director-to-be-ready
