@@ -11,7 +11,7 @@ inputs:
 - name: pivnet-product
 
 run:
-  path: automation/lib/tasks/opsman/upload-product-and-stemcell/task.sh
+  path: automation/lib/tasks/opsman/download-product/task.sh
 
 params:
   TRACE: Y
