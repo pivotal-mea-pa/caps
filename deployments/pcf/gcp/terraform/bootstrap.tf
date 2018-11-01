@@ -124,7 +124,7 @@ vpc_name: ${var.vpc_name}
 vpc_dns_zone: ${var.vpc_dns_zone}
 
 environments: '${join(" ", var.pcf_environments)}'
-product: '${var.products}'
+products: '${var.products}'
 
 unpause_install_pipeline: ${var.autostart_deployment_pipelines}
 

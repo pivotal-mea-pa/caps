@@ -144,10 +144,6 @@ output "pcf_network_subnets" {
   value = "${var.pcf_network_subnets}"
 }
 
-output "pcf_service_networks" {
-  value = "${split(",",lookup(var.pcf_networks["pcf"],"service_networks"))}"
-}
-
 output "pcf_network_dns" {
   value = "${var.pcf_network_dns}"
 }
