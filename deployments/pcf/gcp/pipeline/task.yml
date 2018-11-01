@@ -13,6 +13,7 @@ run:
   path: automation/deployments/pcf/gcp/pipeline/task.sh
 
 params:
+  TRACE: Y
   CONCOURSE_URL:
   CONCOURSE_USER:
   CONCOURSE_PASSWORD:
