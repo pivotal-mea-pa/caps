@@ -47,7 +47,8 @@
 - type: replace
   path: /jobs/name=deploy/plan/0/aggregate/-
   value:
-    get: ${product_name}-tile
+    get: ${product_name}-download
     passed: [configure-${product_name}-tile]
     trigger: true
-    params: { globs: [] } 
+    params:
+      skip_download: true
