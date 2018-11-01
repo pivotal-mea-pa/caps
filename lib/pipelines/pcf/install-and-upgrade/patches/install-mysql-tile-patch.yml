@@ -14,10 +14,11 @@
       - get: automation-extensions
       - get: terraform-output
       - get: pivnet-product
-        resource: ${product_name}-tile
+        resource: ${product_name}-download
         passed: [upload-${product_name}-tile]
-        trigger: true
-        params: { globs: [] }
+        # trigger: true
+        params:
+          skip_download: true
 
     # Configure product tile
     - task: configure

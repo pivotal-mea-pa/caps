@@ -9,17 +9,17 @@
       product_version: ${product_version}
       sort_by: semver
 
-# - type: replace
-#   path: /resources/-
-#   value:
-#     name: ${product_name}-download
-#     type: s3
-#     source:
-#       bucket: pcf
-#       endpoint: ((autos3_url))
-#       access_key_id: ((autos3_access_key))
-#       secret_access_key: ((autos3_secret_key))
-#       regexp: downloads/${product_slug}-(.*)/.*
+- type: replace
+  path: /resources/-
+  value:
+    name: ${product_name}-download
+    type: s3
+    source:
+      bucket: pcf
+      endpoint: ((autos3_url))
+      access_key_id: ((autos3_access_key))
+      secret_access_key: ((autos3_secret_key))
+      regexp: downloads/${product_slug}-(.*)/.*
 
 - type: replace
   path: /jobs/-
@@ -55,16 +55,17 @@
     - task: download-to-local-repo
       file: automation/lib/tasks/opsman/download-product/task.yml
       params:
-        AUTOS3_URL: ((autos3_url))
-        AUTOS3_ACCESS_KEY: ((autos3_access_key))
-        AUTOS3_SECRET_KEY: ((autos3_secret_key))
-        BUCKET: pcf
+        IAAS: ((iaas_type))
         OPSMAN_HOST: ((opsman_host))
         OPSMAN_CLIENT_ID: ((opsman_client_id))
         OPSMAN_CLIENT_SECRET: ((opsman_client_secret))
         OPS_MGR_USR: ((opsman_admin_username))
         OPS_MGR_PWD: ((opsman_admin_password))
         PIVNET_API_TOKEN: ((pivnet_token))
+        AUTOS3_URL: ((autos3_url))
+        AUTOS3_ACCESS_KEY: ((autos3_access_key))
+        AUTOS3_SECRET_KEY: ((autos3_secret_key))
+        BUCKET: pcf
 
 - type: replace
   path: /jobs/-
@@ -79,13 +80,8 @@
     - aggregate:
       - get: automation
       - get: pivnet-product
-        resource: ${product_name}-tile
-        passed: [${product_name}-tile-regulator]
+        resource: ${product_name}-download
         # trigger: true
-        params:
-          globs:
-          - ${product_glob}
-
 
     # Wait for director to be in a ready state
     - task: wait-for-director-to-be-ready
@@ -96,31 +92,31 @@
         AUTOS3_ACCESS_KEY: ((autos3_access_key))
         AUTOS3_SECRET_KEY: ((autos3_secret_key))
 
-    # Upload product tile and its stemcell
-    # - task: upload-tile
-    #   file: automation/lib/pipelines/pcf/install-and-upgrade/tasks/upload-product-and-stemcell/task.yml
-    #   params:
-    #     IAAS: ((iaas_type))
-    #     OPSMAN_HOST: ((opsman_host))
-    #     OPSMAN_CLIENT_ID: ((opsman_client_id))
-    #     OPSMAN_CLIENT_SECRET: ((opsman_client_secret))
-    #     OPS_MGR_USR: ((opsman_admin_username))
-    #     OPS_MGR_PWD: ((opsman_admin_password))
-    #     PIVNET_API_TOKEN: ((pivnet_token))
-    #     NO_PROXY: ''
-    #     OM_IP: ''
+    Upload product tile and its stemcell
+    - task: upload-tile
+      file: automation/lib/pipelines/pcf/install-and-upgrade/tasks/upload-product-and-stemcell/task.yml
+      params:
+        IAAS: ((iaas_type))
+        OPSMAN_HOST: ((opsman_host))
+        OPSMAN_CLIENT_ID: ((opsman_client_id))
+        OPSMAN_CLIENT_SECRET: ((opsman_client_secret))
+        OPS_MGR_USR: ((opsman_admin_username))
+        OPS_MGR_PWD: ((opsman_admin_password))
+        PIVNET_API_TOKEN: ((pivnet_token))
+        NO_PROXY: ''
+        OM_IP: ''
 
-    # Stage product tile
-    # - task: stage-tile
-    #   file: automation/lib/pipelines/pcf/install-and-upgrade/tasks/stage-product/task.yml
-    #   params:
-    #     OPSMAN_HOST: ((opsman_host))
-    #     OPSMAN_CLIENT_ID: ((opsman_client_id))
-    #     OPSMAN_CLIENT_SECRET: ((opsman_client_secret))
-    #     OPSMAN_USERNAME: ((opsman_admin_username))
-    #     OPSMAN_PASSWORD: ((opsman_admin_password))
-    #     STAGE_AND_APPLY: false
-    #     ENABLE_ERRANDS: ((enable_errands))
+    Stage product tile
+    - task: stage-tile
+      file: automation/lib/pipelines/pcf/install-and-upgrade/tasks/stage-product/task.yml
+      params:
+        OPSMAN_HOST: ((opsman_host))
+        OPSMAN_CLIENT_ID: ((opsman_client_id))
+        OPSMAN_CLIENT_SECRET: ((opsman_client_secret))
+        OPSMAN_USERNAME: ((opsman_admin_username))
+        OPSMAN_PASSWORD: ((opsman_admin_password))
+        STAGE_AND_APPLY: false
+        ENABLE_ERRANDS: ((enable_errands))
 
 - type: replace
   path: /groups/name=Install & Upgrade Products/jobs?/-
