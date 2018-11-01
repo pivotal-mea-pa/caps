@@ -1,7 +1,7 @@
 - type: replace
   path: /resources/-
   value:
-    name: ${product_name}-tile
+    name: ${product_name}-download
     type: pivnet
     source:
       api_token: ((pivnet_token))
@@ -12,7 +12,7 @@
 - type: replace
   path: /resources/-
   value:
-    name: ${product_name}-download
+    name: ${product_name}-tile
     type: s3
     source:
       bucket: pcf
@@ -24,28 +24,28 @@
 - type: replace
   path: /jobs/-
   value:
-    name: ${product_name}-tile-regulator
+    name: ${product_name}-download-regulator
     plan:
     - get: schedule
       trigger: true
-    - get: ${product_name}-tile
+    - get: ${product_name}-download
       params: {globs: []}
 
 - type: replace
   path: /jobs/-
   value:
-    name: download-${product_name}-tile
+    name: download-${product_name}
     on_failure:
       do:
-      - task: notify on download-${product_name}-tile failure
+      - task: notify on download-${product_name} failure
 
     serial: true
     plan:
     - aggregate:
       - get: automation
       - get: pivnet-product
-        resource: ${product_name}-tile
-        passed: [${product_name}-tile-regulator]
+        resource: ${product_name}-download
+        passed: [${product_name}-download-regulator]
         trigger: true
         params:
           globs:
@@ -80,7 +80,7 @@
     - aggregate:
       - get: automation
       - get: pivnet-product
-        resource: ${product_name}-download
+        resource: ${product_name}-tile
         # trigger: true
 
     # Wait for director to be in a ready state
@@ -120,11 +120,11 @@
 
 - type: replace
   path: /groups/name=Download Products/jobs?/-
-  value: ${product_name}-tile-regulator
+  value: ${product_name}-download-regulator
 
 - type: replace
   path: /groups/name=Download Products/jobs?/-
-  value: download-${product_name}-tile
+  value: download-${product_name}
 
 - type: replace
   path: /groups/name=Install & Upgrade Products/jobs?/-

@@ -15,19 +15,21 @@
       - get: terraform-output
       
       - get: pivnet-product
-        resource: ${product_name}-download
+        resource: ${product_name}-tile
         passed: [upload-${product_name}-tile]
         # trigger: true
         params:
           skip_download: true
 
-      - get: mysql-tile
+      - get: mysql-download
         passed: [deploy]
-        params: {globs: []}
+        params:
+          skip_download: true
 
-      - get: rabbitmq-tile
+      - get: rabbitmq-download
         passed: [deploy]
-        params: {globs: []}
+        params:
+          skip_download: true
 
     # Configure product tile
     - task: configure

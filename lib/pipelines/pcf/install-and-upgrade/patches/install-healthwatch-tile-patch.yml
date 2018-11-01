@@ -14,7 +14,7 @@
       - get: automation-extensions
       - get: terraform-output
       - get: pivnet-product
-        resource: ${product_name}-download
+        resource: ${product_name}-tile
         passed: [upload-${product_name}-tile]
         # trigger: true
         params:
@@ -52,7 +52,7 @@
 - type: replace
   path: /jobs/name=deploy/plan/0/aggregate/-
   value:
-    get: ${product_name}-download
+    get: ${product_name}-tile
     passed: [configure-${product_name}-tile]
     trigger: true
     params:
