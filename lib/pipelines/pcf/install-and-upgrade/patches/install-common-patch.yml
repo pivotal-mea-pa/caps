@@ -106,7 +106,7 @@
         NO_PROXY: ''
         OM_IP: ''
 
-    Stage product tile
+    # Stage product tile
     - task: stage-tile
       file: automation/lib/pipelines/pcf/install-and-upgrade/tasks/stage-product/task.yml
       params:
@@ -119,11 +119,11 @@
         ENABLE_ERRANDS: ((enable_errands))
 
 - type: replace
-  path: /groups/name=Install & Upgrade Products/jobs?/-
+  path: /groups/name=Download Products/jobs?/-
   value: ${product_name}-tile-regulator
 
 - type: replace
-  path: /groups/name=Install & Upgrade Products/jobs?/-
+  path: /groups/name=Download Products/jobs?/-
   value: download-${product_name}-tile
 
 - type: replace
