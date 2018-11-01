@@ -21,12 +21,12 @@
         params:
           skip_download: true
 
-      - get: mysql-download
+      - get: mysql-tile
         passed: [deploy]
         params:
           skip_download: true
 
-      - get: rabbitmq-download
+      - get: rabbitmq-tile
         passed: [deploy]
         params:
           skip_download: true
