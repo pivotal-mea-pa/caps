@@ -211,7 +211,7 @@ variable "pcf_tile_templates_path" {
 #export TF_VAR_pcf_environments='["pcf"]'
 variable "pcf_environments" {
   type    = "list"
-  default = ["pcf"]
+  default = ["pcf-sandbox"]
 }
 
 # The PCF Networks to create. The order in which subnets should 

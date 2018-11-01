@@ -13,7 +13,7 @@ inputs:
 
 run:
   path: automation/lib/tasks/bbr/common/backup-deployment.sh
-  args: ["cf-.*", "pas"]
+  args: ["p-container-service.*", "pas"]
 
 params:
   TRACE: Y

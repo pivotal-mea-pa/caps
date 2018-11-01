@@ -93,7 +93,7 @@ for e in $ENVIRONMENTS; do
   $patch_job_notifications install-pcf-pipeline$i.yml > pipeline.yml
 
   fly -t default set-pipeline -n \
-    -p ${env}_install-and-upgrade \
+    -p ${env} \
     -c pipeline.yml > bootstrap \
     -l install-pcf-params.yml \
     -v "trace=$TRACE" \
