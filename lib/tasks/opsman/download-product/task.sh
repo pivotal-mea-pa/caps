@@ -106,12 +106,27 @@ VERSION=$(cat ./pivnet-product/metadata.json | jq --raw-output '.Release.Version
 
 PRODUCT_NAME=${NAME}_${VERSION}
 
-# mc rm --force --recursive --older-than=7 auto/${BUCKET}/downloads/${NAME}_*
+# Keep only the 3 most recent versions
+PRODUCT_VERSIONS=$(mc ls --recursive auto/${BUCKET}/downloads \
+  | sort \
+  | awk "/ ${NAME}_/{ print \$5 }" \
+  | cut -d '/' -f 1 \
+  | uniq)
+
+NUM_VERSIONS=$(echo "${PRODUCT_VERSIONS}" | wc -l)
+if [[ ${NUM_VERSIONS} -gt 3 ]]; then
+  for v in $(echo "${PRODUCT_VERSIONS}" | head -$((${NUM_VERSIONS}-3))); do
+    echo mc rm --force --recursive auto/${BUCKET}/downloads/${v}/
+  done
+fi
+
+# Upload new files
 mc cp pivnet-product/metadata.json auto/${BUCKET}/downloads/${PRODUCT_NAME}/metadata.json
 
 TILE_FILE_NAME=${TILE_FILE_PATH##*/}
 mc cp ${TILE_FILE_PATH} auto/${BUCKET}/downloads/${PRODUCT_NAME}/${TILE_FILE_NAME}
 
+set +u
 if [[ -n ${STEMCELL_FILE_PATH} ]]; then
   STEMCELL_FILE_NAME=${STEMCELL_FILE_PATH##*/}
   mc cp ${STEMCELL_FILE_PATH} auto/${BUCKET}/downloads/${PRODUCT_NAME}/${STEMCELL_FILE_NAME}
