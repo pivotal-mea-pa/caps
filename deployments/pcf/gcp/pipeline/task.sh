@@ -62,7 +62,7 @@ for e in $ENVIRONMENTS; do
     for p in $(echo -e "$PRODUCTS"); do 
       product_name=$(echo $p | awk -F':' '{ print $1 }')
       slug_and_version=$(echo $p | awk -F':' '{ print $2 }')
-      product_glob=$(echo $p | awk -F':' '{ print $3 }')
+      product_glob="'$(echo $p | awk -F':' '{ print $3 }')'"
       errands_to_disable=$(echo $p | awk -F':' '{ print $4 }')
       errands_to_enable=$(echo $p | awk -F':' '{ print $5 }')
       product_slug=${slug_and_version%/*}
