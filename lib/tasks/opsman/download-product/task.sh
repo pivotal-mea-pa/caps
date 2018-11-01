@@ -3,11 +3,7 @@
 [[ -n "$TRACE" ]] && set -x
 set -eu
 
-if [[ -n "$NO_PROXY" ]]; then
-  echo "$OM_IP $OPSMAN_HOST" >> /etc/hosts
-fi
-
-exit 1
+TILE_FILE_PATH=`find ./pivnet-product -name *.pivotal | sort | head -1`
 
 STEMCELL_VERSION=$(
   cat ./pivnet-product/metadata.json |
@@ -91,32 +87,32 @@ if [ -n "$STEMCELL_VERSION" ]; then
       set -e
     fi
 
-    SC_FILE_PATH=`find ./ -name *.tgz`
+    STEMCELL_FILE_PATH=`find ./ -name *.tgz`
 
-    if [ ! -f "$SC_FILE_PATH" ]; then
+    if [ ! -f "$STEMCELL_FILE_PATH" ]; then
       echo "Stemcell file not found!"
       exit 1
     fi
-
-    om -t https://$OPSMAN_HOST \
-      --client-id "${OPSMAN_CLIENT_ID}" \
-      --client-secret "${OPSMAN_CLIENT_SECRET}" \
-      -u "$OPS_MGR_USR" \
-      -p "$OPS_MGR_PWD" \
-      -k \
-      upload-stemcell \
-      -s $SC_FILE_PATH
   fi
 fi
 
-# Should the slug contain more than one product, pick only the first.
-FILE_PATH=`find ./pivnet-product -name *.pivotal | sort | head -1`
-om -t https://$OPSMAN_HOST \
-  --client-id "${OPSMAN_CLIENT_ID}" \
-  --client-secret "${OPSMAN_CLIENT_SECRET}" \
-  -u "$OPS_MGR_USR" \
-  -p "$OPS_MGR_PWD" \
-  -k \
-  --request-timeout 3600 \
-  upload-product \
-  -p $FILE_PATH
+#
+# Upload product metadata, tile and stemcell to local s3 repo
+#
+mc config host add auto ${AUTOS3_URL} ${AUTOS3_ACCESS_KEY} ${AUTOS3_SECRET_KEY}
+
+NAME=$(echo "${TILE_FILE_PATH##*/}" | sed "s|\(.*\)-[0-9]*\.[0-9]*\.[0-9]*.*|\1|")
+VERSION=$(cat ./pivnet-product/metadata.json | jq --raw-output '.Release.Version')
+
+PRODUCT_NAME=${NAME}_${VERSION}
+
+mc rm --force --recursive --older-than=7 auto/${BUCKET}/downloads/${NAME}_*
+mc cp pivnet-product/metadata.json auto/${BUCKET}/downloads/${PRODUCT_NAME}/metadata.json
+
+TILE_FILE_NAME=${TILE_FILE_PATH##*/}
+mc cp ${TILE_FILE_PATH} auto/${BUCKET}/downloads/${PRODUCT_NAME}/${TILE_FILE_NAME}
+
+if [[ -n ${STEMCELL_FILE_PATH} ]]; then
+  STEMCELL_FILE_NAME=${STEMCELL_FILE_PATH##*/}
+  mc cp ${STEMCELL_FILE_PATH} auto/${BUCKET}/downloads/${PRODUCT_NAME}/${STEMCELL_FILE_NAME}
+fi

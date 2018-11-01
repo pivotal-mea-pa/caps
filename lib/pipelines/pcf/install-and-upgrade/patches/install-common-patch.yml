@@ -10,6 +10,18 @@
       sort_by: semver
 
 - type: replace
+  path: /resources/-
+  value:
+    name: ${product_name}-download
+    type: s3
+    source:
+      bucket: pcf
+      endpoint: ((autos3_url))
+      access_key_id: ((autos3_access_key))
+      secret_access_key: ((autos3_secret_key))
+      regexp: downloads/${product_slug}-(.*)/.*
+
+- type: replace
   path: /jobs/-
   value:
     name: ${product_name}-tile-regulator
@@ -18,6 +30,41 @@
       trigger: true
     - get: ${product_name}-tile
       params: {globs: []}
+
+- type: replace
+  path: /jobs/-
+  value:
+    name: download-${product_name}-tile
+    on_failure:
+      do:
+      - task: notify on download-${product_name}-tile failure
+
+    serial: true
+    plan:
+    - aggregate:
+      - get: automation
+      - get: pivnet-product
+        resource: ${product_name}-tile
+        passed: [${product_name}-tile-regulator]
+        trigger: true
+        params:
+          globs:
+          - ${product_globs}
+
+    # Download product tile and its stemcell to local repository
+    - task: download-to-local-repo
+      file: automation/lib/tasks/opsman/download-product/task.yml
+      params:
+        AUTOS3_URL: ((autos3_url))
+        AUTOS3_ACCESS_KEY: ((autos3_access_key))
+        AUTOS3_SECRET_KEY: ((autos3_secret_key))
+        BUCKET: pcf
+        OPSMAN_HOST: ((opsman_host))
+        OPSMAN_CLIENT_ID: ((opsman_client_id))
+        OPSMAN_CLIENT_SECRET: ((opsman_client_secret))
+        OPS_MGR_USR: ((opsman_admin_username))
+        OPS_MGR_PWD: ((opsman_admin_password))
+        PIVNET_API_TOKEN: ((pivnet_token))
 
 - type: replace
   path: /jobs/-
@@ -31,13 +78,8 @@
     plan:
     - aggregate:
       - get: automation
-      - get: pivnet-product
-        resource: ${product_name}-tile
-        passed: [${product_name}-tile-regulator]
-        trigger: true
-        params:
-          globs:
-          - ((product_globs))
+      - get: ${product_name}-download
+        #trigger: true
 
     # Wait for director to be in a ready state
     - task: wait-for-director-to-be-ready
@@ -77,6 +119,10 @@
 - type: replace
   path: /groups/name=Install & Upgrade Products/jobs?/-
   value: ${product_name}-tile-regulator
+
+- type: replace
+  path: /groups/name=Install & Upgrade Products/jobs?/-
+  value: download-${product_name}-tile
 
 - type: replace
   path: /groups/name=Install & Upgrade Products/jobs?/-
