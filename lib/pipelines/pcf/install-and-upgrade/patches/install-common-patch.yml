@@ -49,7 +49,7 @@
         trigger: true
         params:
           globs:
-          - ${product_globs}
+          - ${product_glob}
 
     # Download product tile and its stemcell to local repository
     - task: download-to-local-repo
