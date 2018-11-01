@@ -1,13 +1,13 @@
 ---
 groups:
-- name: Director
+- name: Install & Upgrade Director
   jobs:
   - destroy-env
   - upload-opsman-image
   - create-infrastructure
   - configure-director
   - deploy-director
-- name: Products
+- name: Install & Upgrade Products
 
 resource_types:
 - name: pivnet

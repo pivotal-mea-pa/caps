@@ -22,16 +22,15 @@
 - type: replace
   path: /jobs/-
   value:
-    name: upload-and-upgrade-${product_name}-tile
+    name: upload-${product_name}-tile
     on_failure:
       do:
-      - task: notify on upload-and-upgrade-${product_name}-tile failure
-    
+      - task: notify on upload-${product_name}-tile failure
+
     serial: true
     plan:
     - aggregate:
       - get: automation
-        params: {globs: []}
       - get: pivnet-product
         resource: ${product_name}-tile
         passed: [${product_name}-tile-regulator]
@@ -63,18 +62,8 @@
         NO_PROXY: ''
         OM_IP: ''
 
-    # This task will block if the environment 
-    # has been put into stopped state
-    - task: wait-until-started
-      file: automation/lib/inceptor/tasks/wait-for-state/task.yml
-      params: 
-        WAIT_FOR_STATE: started
-        AUTOS3_URL: ((autos3_url))
-        AUTOS3_ACCESS_KEY: ((autos3_access_key))
-        AUTOS3_SECRET_KEY: ((autos3_secret_key))
-
-    # Stage and apply changes
-    - task: stage-and-apply-tile
+    # Stage product tile
+    - task: stage-tile
       file: automation/lib/pipelines/pcf/install-and-upgrade/tasks/stage-product/task.yml
       params:
         OPSMAN_HOST: ((opsman_host))
@@ -82,7 +71,7 @@
         OPSMAN_CLIENT_SECRET: ((opsman_client_secret))
         OPSMAN_USERNAME: ((opsman_admin_username))
         OPSMAN_PASSWORD: ((opsman_admin_password))
-        STAGE_AND_APPLY: true
+        STAGE_AND_APPLY: false
         ENABLE_ERRANDS: ((enable_errands))
 
 - type: replace
@@ -91,4 +80,8 @@
 
 - type: replace
   path: /groups/name=Install & Upgrade Products/jobs?/-
-  value: upload-and-upgrade-${product_name}-tile
+  value: upload-${product_name}-tile
+
+- type: replace
+  path: /groups/name=Install & Upgrade Products/jobs?/-
+  value: configure-${product_name}-tile
