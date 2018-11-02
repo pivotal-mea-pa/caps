@@ -28,6 +28,7 @@ terraform_params_path=automation/deployments/pcf/gcp/params
 patch_job_notifications=automation/lib/inceptor/tasks/patches/patch_job_notifications.sh
 
 download_products_pipeline_path=automation/lib/pipelines/pcf/download-products/pipeline
+download_products_patches_path=automation/lib/pipelines/pcf/download-products/patches
 
 install_and_upgrade_pipeline_path=automation/lib/pipelines/pcf/install-and-upgrade/pipeline
 install_and_upgrade_patches_path=automation/lib/pipelines/pcf/install-and-upgrade/patches
@@ -52,6 +53,26 @@ terraform apply -auto-approve \
   -var "environment=" \
   $terraform_params_path >/dev/null
 
+eval "echo \"$(cat $download_products_pipeline_path/pipeline.yml)\"" \
+  > download-products-pipeline0.yml
+
+i=0 && j=1
+for p in $(echo -e "$PRODUCTS"); do 
+  product_name=$(echo $p | awk -F':' '{ print $1 }')
+  slug_and_version=$(echo $p | awk -F':' '{ print $2 }')
+  product_glob="'$(echo $p | awk -F':' '{ print $3 }')'"
+  product_slug=${slug_and_version%/*}
+  product_version=${slug_and_version#*/}
+
+  eval "echo \"$(cat $download_products_patches_path/download-product-patch.yml)\"" \
+    > download-${product_name}-patch.yml
+
+  $bosh interpolate -o download-${product_name}-patch.yml \
+    download-products-pipeline$i.yml > download-products-pipeline$j.yml
+
+  i=$(($i+1)) && j=$(($j+1))
+done
+
 fly -t default set-pipeline -n \
   -p download-products \
   -c $download_products_pipeline_path/pipeline.yml \
@@ -66,7 +87,7 @@ fly -t default set-pipeline -n \
   -v "pipeline_automation_path=$PIPELINE_AUTOMATION_PATH" \
   -v "vpc_name=$VPC_NAME" >/dev/null
 
-fly -t default unpause-pipeline -p download-products
+# fly -t default unpause-pipeline -p download-products
 
 exit 0
 
