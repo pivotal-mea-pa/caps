@@ -41,7 +41,7 @@
 
     # Download product tile and its stemcell to local repository
     - task: download-to-local-repo
-      file: automation/lib/tasks/opsman/download-product/task.yml
+      file: automation/lib/pipelines/pcf/download-products/tasks/download-product/task.yml
       params:
         IAAS: ((iaas_type))
         OPSMAN_HOST: ((opsman_host))

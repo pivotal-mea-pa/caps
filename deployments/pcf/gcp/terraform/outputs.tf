@@ -133,6 +133,14 @@ output "pcf_tile_templates_path" {
 }
 
 #
+# PCF Environments
+#
+
+output "pcf_sandbox_environment" {
+  value = "${var.pcf_environments[0]}"
+}
+
+#
 # PCF Deployment Networks CIDRs
 #
 
