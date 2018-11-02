@@ -23,6 +23,8 @@ STEMCELL_VERSION=$(
 )
 
 if [ -n "$STEMCELL_VERSION" ]; then
+
+  set +e
   diagnostic_report=$(
     om \
       --target https://$OPSMAN_HOST \
@@ -33,14 +35,18 @@ if [ -n "$STEMCELL_VERSION" ]; then
       --skip-ssl-validation \
       curl --silent --path "/api/v0/diagnostic_report"
   )
-
-  stemcell=$(
-    echo $diagnostic_report |
-    jq \
-      --arg version "$STEMCELL_VERSION" \
-      --arg glob "$IAAS" \
-    '.stemcells[] | select(contains($version) and contains($glob))'
-  )
+  if [[ $? -eq 0 ]]; then
+    stemcell=$(
+      echo $diagnostic_report |
+      jq \
+        --arg version "$STEMCELL_VERSION" \
+        --arg glob "$IAAS" \
+      '.stemcells[] | select(contains($version) and contains($glob))'
+    )
+  else
+    stemcell=""
+  fi
+  set -e
 
   if [[ -z "$stemcell" ]]; then
     echo "Downloading stemcell $STEMCELL_VERSION"
