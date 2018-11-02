@@ -24,7 +24,7 @@
       - get: automation
       - get: pivnet-download
         resource: ${product_name}-tile
-        # trigger: true
+        trigger: true
 
     # Wait for director to be in a ready state
     - task: wait-for-director-to-be-ready

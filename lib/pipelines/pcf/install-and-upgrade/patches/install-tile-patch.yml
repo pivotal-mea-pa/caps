@@ -2,22 +2,13 @@
   path: /resources/-
   value:
     name: ${product_name}-tile
-    type: pivnet
+    type: s3
     source:
-      api_token: ((pivnet_token))
-      product_slug: ${product_slug}
-      product_version: ${product_version}
-      sort_by: semver
-
-- type: replace
-  path: /jobs/-
-  value:
-    name: ${product_name}-tile-regulator
-    plan:
-    - get: schedule
-      trigger: true
-    - get: ${product_name}-tile
-      params: {globs: []}
+      bucket: pcf
+      endpoint: ((autos3_url))
+      access_key_id: ((autos3_access_key))
+      secret_access_key: ((autos3_secret_key))
+      regexp: downloads/${product_slug}_(.*).tgz
 
 - type: replace
   path: /jobs/-
@@ -31,14 +22,9 @@
     plan:
     - aggregate:
       - get: automation
-        params: {globs: []}
-      - get: pivnet-product
+      - get: pivnet-download
         resource: ${product_name}-tile
-        passed: [${product_name}-tile-regulator]
         trigger: true
-        params:
-          globs:
-          - ((product_globs))
 
     # Wait for director to be in a ready state
     - task: wait-for-director-to-be-ready
@@ -51,17 +37,15 @@
 
     # Upload product tile and its stemcell
     - task: upload-tile
-      file: automation/lib/pipelines/pcf/install-and-upgrade/tasks/upload-product-and-stemcell/task.yml
+      file: automation/lib/tasks/opsman/upload-product-and-stemcell/task.yml
       params:
         IAAS: ((iaas_type))
         OPSMAN_HOST: ((opsman_host))
         OPSMAN_CLIENT_ID: ((opsman_client_id))
         OPSMAN_CLIENT_SECRET: ((opsman_client_secret))
-        OPS_MGR_USR: ((opsman_admin_username))
-        OPS_MGR_PWD: ((opsman_admin_password))
+        OPSMAN_USERNAME: ((opsman_admin_username))
+        OPSMAN_PASSWORD: ((opsman_admin_password))
         PIVNET_API_TOKEN: ((pivnet_token))
-        NO_PROXY: ''
-        OM_IP: ''
 
     # This task will block if the environment 
     # has been put into stopped state
@@ -75,7 +59,7 @@
 
     # Stage and apply changes
     - task: stage-and-apply-tile
-      file: automation/lib/pipelines/pcf/install-and-upgrade/tasks/stage-product/task.yml
+      file: automation/lib/tasks/opsman/stage-product/task.yml
       params:
         OPSMAN_HOST: ((opsman_host))
         OPSMAN_CLIENT_ID: ((opsman_client_id))
