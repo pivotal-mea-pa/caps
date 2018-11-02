@@ -12,5 +12,3 @@ resources:
   source:
     uri: ((automation_pipelines_repo))
     branch: ((automation_pipelines_branch))
-
-jobs:
