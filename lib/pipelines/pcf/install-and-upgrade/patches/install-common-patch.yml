@@ -100,8 +100,8 @@
         OPSMAN_HOST: ((opsman_host))
         OPSMAN_CLIENT_ID: ((opsman_client_id))
         OPSMAN_CLIENT_SECRET: ((opsman_client_secret))
-        OPS_MGR_USR: ((opsman_admin_username))
-        OPS_MGR_PWD: ((opsman_admin_password))
+        OPSMAN_USERNAME: ((opsman_admin_username))
+        OPSMAN_PASSWORD: ((opsman_admin_password))
         PIVNET_API_TOKEN: ((pivnet_token))
 
     # Stage product tile
