@@ -221,7 +221,7 @@ variable "pcf_environments" {
 # and may have undesired outcomes.
 
 #export TF_VAR_pcf_networks='{
-#  pcf-sandbox = {
+#  sandbox = {
 #    service_networks    = "services,dynamic-services"
 #    subnet_config_order = "infrastructure,pas-1,services-1,dynamic-services-1,monitoring"
 #  }
@@ -230,7 +230,7 @@ variable "pcf_networks" {
   type = "map"
 
   default = {
-    pcf-sandbox = {
+    sandbox = {
       service_networks    = "services,dynamic-services"
       subnet_config_order = "infrastructure,pas-1,services-1,dynamic-services-1,monitoring"
     }
@@ -244,7 +244,7 @@ variable "pcf_networks" {
 # been created.
 
 #export TF_VAR_pcf_network_subnets='{
-#  pcf-sandbox = {
+#  sandbox = {
 #    infrastructure     = "192.168.101.0/26"
 #    pas-1              = "192.168.4.0/22"
 #    services-1         = "192.168.8.0/22"
@@ -256,7 +256,7 @@ variable "pcf_network_subnets" {
   type = "map"
 
   default = {
-    pcf-sandbox = {
+    sandbox = {
       infrastructure     = "192.168.101.0/26"
       pas-1              = "192.168.4.0/22"
       services-1         = "192.168.8.0/22"

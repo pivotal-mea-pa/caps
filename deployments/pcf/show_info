@@ -11,7 +11,7 @@ echo -e "${GREEN}Primary domain:      $vpc_dns_zone"
 echo -e "VPN server URL:      https://$bastion_fqdn"
 echo -e "VPN admin password:  $bastion_admin_password\n"
 
-pcf_environments=${TF_VAR_pcf_environments:-["pcf-sandbox"]}
+pcf_environments=${TF_VAR_pcf_environments:-["sandbox"]}
 
 for env in $(echo $pcf_environments | tr '["],' ' '); do
 
