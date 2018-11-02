@@ -18,7 +18,7 @@
   }
 }
 +
-if "opsman_url" != "" then
+if $opsman_url != "" then
 {
     ".properties.opsman.enable.url": {
       "value": $opsman_url
@@ -32,20 +32,22 @@ else
 }
 end
 +
-if "uaa_client" != "" then
+if $uaa_client != "" then
 {
-    ".properties.boshtasks": {
-      "value": "enable"
-    },
-    ".properties.boshtasks.enable.bosh_taskcheck_username": {
-      "value": $uaa_client
-    },
-    ".properties.boshtasks.enable.bosh_taskcheck_password": {
-      "value": $uaa_client_secret
-    }
+  ".properties.boshtasks": {
+    "value": "enable"
+  },
+  ".properties.boshtasks.enable.bosh_taskcheck_username": {
+    "value": $uaa_client
+  },
+  ".properties.boshtasks.enable.bosh_taskcheck_password": {
+    "value": $uaa_client_secret
+  }
 }
 else
 {
-
+  ".properties.boshtasks": {
+      "value": "disable"
+  }
 }
 end
