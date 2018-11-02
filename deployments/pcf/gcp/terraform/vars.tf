@@ -86,6 +86,17 @@ variable "vpc_parent_dns_zone_name" {
 }
 
 #
+# Bastion inception instance variables
+#
+variable "bastion_instance_type" {
+  default = "n1-standard-2"
+}
+
+variable "bastion_data_disk_size" {
+  default = 250
+}
+
+#
 # Bastion access configuration
 #
 variable "bastion_host_name" {
