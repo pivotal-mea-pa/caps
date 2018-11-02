@@ -1,5 +1,5 @@
 - type: replace
-  path: /resources/-
+  path: /resources?/-
   value:
     name: ${product_name}-download
     type: pivnet
@@ -10,7 +10,7 @@
       sort_by: semver
 
 - type: replace
-  path: /jobs/-
+  path: /jobs?/-
   value:
     name: ${product_name}-download-regulator
     plan:
@@ -20,7 +20,7 @@
       params: {globs: []}
 
 - type: replace
-  path: /jobs/-
+  path: /jobs?/-
   value:
     name: download-${product_name}
     on_failure:
