@@ -94,7 +94,7 @@
 
     # Upload product tile and its stemcell
     - task: upload-tile
-      file: automation/lib/pipelines/pcf/install-and-upgrade/tasks/upload-product-and-stemcell/task.yml
+      file: automation/lib/tasks/opsman/upload-product-and-stemcell/task.yml
       params:
         IAAS: ((iaas_type))
         OPSMAN_HOST: ((opsman_host))
@@ -103,12 +103,10 @@
         OPS_MGR_USR: ((opsman_admin_username))
         OPS_MGR_PWD: ((opsman_admin_password))
         PIVNET_API_TOKEN: ((pivnet_token))
-        NO_PROXY: ''
-        OM_IP: ''
 
     # Stage product tile
     - task: stage-tile
-      file: automation/lib/pipelines/pcf/install-and-upgrade/tasks/stage-product/task.yml
+      file: automation/lib/tasks/opsman/stage-product/task.yml
       params:
         OPSMAN_HOST: ((opsman_host))
         OPSMAN_CLIENT_ID: ((opsman_client_id))
