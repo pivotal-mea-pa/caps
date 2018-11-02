@@ -110,9 +110,7 @@ tar cvzf pivnet-product.tgz ./pivnet-product
 #
 mc config host add auto ${AUTOS3_URL} ${AUTOS3_ACCESS_KEY} ${AUTOS3_SECRET_KEY}
 
-NAME=$(echo "${TILE_FILE_PATH##*/}" | sed "s|\(.*\)-[0-9]*\.[0-9]*\.[0-9]*.*|\1|")
 VERSION=$(cat ./pivnet-product/metadata.json | jq --raw-output '.Release.Version')
-
 PRODUCT_NAME=${NAME}_${VERSION}
 
 # Keep only the 3 most recent versions

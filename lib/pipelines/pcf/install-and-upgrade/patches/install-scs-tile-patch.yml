@@ -19,7 +19,7 @@
         passed: [upload-${product_name}-tile]
         trigger: true
         params:
-          skip_download: true
+          skip_download: 'true'
 
       - get: mysql-tile
         passed: [deploy]

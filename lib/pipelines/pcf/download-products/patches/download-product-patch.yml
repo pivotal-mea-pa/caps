@@ -50,6 +50,7 @@
         OPSMAN_USERNAME: ((opsman_admin_username))
         OPSMAN_PASSWORD: ((opsman_admin_password))
         PIVNET_API_TOKEN: ((pivnet_token))
+        NAME: ${product_slug}
         AUTOS3_URL: ((autos3_url))
         AUTOS3_ACCESS_KEY: ((autos3_access_key))
         AUTOS3_SECRET_KEY: ((autos3_secret_key))
