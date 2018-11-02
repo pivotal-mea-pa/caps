@@ -89,9 +89,7 @@ fly -t default set-pipeline -n \
   -v "pipeline_automation_path=$PIPELINE_AUTOMATION_PATH" \
   -v "vpc_name=$VPC_NAME" >/dev/null
 
-# fly -t default unpause-pipeline -p download-products
-
-exit 0
+fly -t default unpause-pipeline -p download-products
 
 #
 # Configure pipelines per environment
@@ -102,6 +100,9 @@ for e in $ENVIRONMENTS; do
   env=$(echo $e | awk '{print toupper($0)}')
   echo "\n*** Configuring pipelines for ${env} ***\n"
 
+  rm -fr .terraform/
+  rm terraform.tfstate
+  
   terraform init $terraform_params_path
 
   terraform apply -auto-approve \
@@ -156,7 +157,7 @@ for e in $ENVIRONMENTS; do
   $patch_job_notifications install-pcf-pipeline$i.yml > pipeline.yml
 
   fly -t default set-pipeline -n \
-    -p ${env} \
+    -p ${env}_deployment \
     -c pipeline.yml > bootstrap \
     -l install-pcf-params.yml \
     -v "trace=$TRACE" \
@@ -172,23 +173,23 @@ for e in $ENVIRONMENTS; do
   # Unpause the pipeline. The pipeline jobs will rerun in 
   # an idempotent manner if a prior installation is found.
   [[ $UNPAUSE_INSTALL_PIPELINE == "true" ]] && \
-    fly -t default unpause-pipeline -p ${env}
+    fly -t default unpause-pipeline -p ${env}_deployment
 
   # Wait until the PCF Ops Manager director has been been successfully deployed.
   set +e
 
   b=1
   while true; do
-    r=$(fly -t default watch -j ${env}/deploy-director -b $b 2>&1)
+    r=$(fly -t default watch -j ${env}_deployment/deploy-director -b $b 2>&1)
     [[ $? -eq 0 ]] && break
 
     s=$(echo "$r" | tail -1)
     if [[ "$s" == "failed" ]]; then
-      echo -e "\n*** Job ${env}/deploy-director  FAILED! ***\n"
+      echo -e "\n*** Job $${env}_deployment/deploy-director  FAILED! ***\n"
       echo -e "$r\n"
       b=$(($b+1))
     fi
-    echo "Waiting for job ${env}/deploy-director  build $b to complete..."
+    echo "Waiting for job ${env}_deployment/deploy-director  build $b to complete..."
     sleep 5
   done
   set -e
