@@ -8,6 +8,9 @@ image_resource:
 
 inputs:
 - name: automation
+- name: pivnet-download
+
+outputs:
 - name: pivnet-product
 
 run:

@@ -79,7 +79,7 @@
     plan:
     - aggregate:
       - get: automation
-      - get: pivnet-product
+      - get: pivnet-download
         resource: ${product_name}-tile
         # trigger: true
 
