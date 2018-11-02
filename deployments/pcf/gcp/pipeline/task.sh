@@ -16,8 +16,18 @@ mc config host add auto $AUTOS3_URL $AUTOS3_ACCESS_KEY $AUTOS3_SECRET_KEY
 [[ "$(mc ls auto/ | awk '/pcf\/$/{ print $5 }')" == "pcf/" ]] || \
   mc mb auto/pcf
 
+# Login to concourse
+fly -t default login -c $CONCOURSE_URL -u ''$CONCOURSE_USER'' -p ''$CONCOURSE_PASSWORD''
+fly -t default sync
+
+#
+# Setup pipeline paths
+#
+
 terraform_params_path=automation/deployments/pcf/gcp/params
 patch_job_notifications=automation/lib/inceptor/tasks/patches/patch_job_notifications.sh
+
+download_products_pipeline_path=automation/lib/pipelines/pcf/download-products/pipeline
 
 install_and_upgrade_pipeline_path=automation/lib/pipelines/pcf/install-and-upgrade/pipeline
 install_and_upgrade_patches_path=automation/lib/pipelines/pcf/install-and-upgrade/patches
@@ -28,14 +38,46 @@ backup_and_restore_patches_path=automation/lib/pipelines/pcf/backup-and-restore/
 start_and_stop_pipeline_path=automation/lib/pipelines/pcf/stop-and-start/pipeline
 start_and_stop_patches_path=automation/lib/pipelines/pcf/stop-and-start/patches
 
+#
+# Configure pipeline for downloading products
+#
+
+terraform init $terraform_params_path
+
+terraform apply -auto-approve \
+  -var "bootstrap_state_bucket=$BOOTSTRAP_STATE_BUCKET" \
+  -var "bootstrap_state_prefix=$BOOTSTRAP_STATE_PREFIX" \
+  -var "params_template_file=$download_products_pipeline_path/params.yml" \
+  -var "params_file=download-products-params.yml" \
+  -var "environment=${e}" \
+  $terraform_params_path >/dev/null
+
+fly -t default set-pipeline -n \
+  -p download-products \
+  -c $download_products_pipeline_path/pipeline.yml \
+  -l download-products-params.yml \
+  -v "trace=$TRACE" \
+  -v "concourse_url=$CONCOURSE_URL" \
+  -v "concourse_user=$CONCOURSE_USER" \
+  -v "concourse_password=$CONCOURSE_PASSWORD" \
+  -v "autos3_url=$AUTOS3_URL" \
+  -v "autos3_access_key=$AUTOS3_ACCESS_KEY" \
+  -v "autos3_secret_key=$AUTOS3_SECRET_KEY" \
+  -v "pipeline_automation_path=$PIPELINE_AUTOMATION_PATH" \
+  -v "vpc_name=$VPC_NAME" >/dev/null
+
+fly -t default unpause-pipeline -p
+
+exit 0
+
+#
+# Configure pipelines per environment
+#
+
 for e in $ENVIRONMENTS; do
 
   env=$(echo $e | awk '{print toupper($0)}')
   echo "\n*** Configuring pipelines for ${env} ***\n"
-
-  #
-  # Configure install PCF pipeline
-  #
 
   terraform init $terraform_params_path
 
@@ -87,9 +129,6 @@ for e in $ENVIRONMENTS; do
   else
     i=0
   fi
-
-  fly -t default login -c $CONCOURSE_URL -u ''$CONCOURSE_USER'' -p ''$CONCOURSE_PASSWORD''
-  fly -t default sync
 
   $patch_job_notifications install-pcf-pipeline$i.yml > pipeline.yml
 

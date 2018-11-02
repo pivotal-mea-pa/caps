@@ -1,6 +1,5 @@
 ---
 groups:
-- name: Download Products
 - name: Install & Upgrade Director
   jobs:
   - destroy-env
