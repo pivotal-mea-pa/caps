@@ -12,3 +12,13 @@ resources:
   source:
     uri: ((automation_pipelines_repo))
     branch: ((automation_pipelines_branch))
+
+- name: schedule
+  type: time
+  source:
+    interval: 30m
+    start: "12:00 AM"
+    stop: "11:59 PM"
+    location: America/Los_Angeles
+    days: [Sunday, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday]
+    

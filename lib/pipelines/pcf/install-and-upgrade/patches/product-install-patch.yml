@@ -1,16 +1,4 @@
 - type: replace
-  path: /resources/-
-  value:
-    name: schedule
-    type: time
-    source:
-      interval: 30m
-      start: "12:00 AM"
-      stop: "11:59 PM"
-      location: America/Los_Angeles
-      days: [Sunday, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday]
-
-- type: replace
   path: /jobs/-
   value:
     name: deploy
