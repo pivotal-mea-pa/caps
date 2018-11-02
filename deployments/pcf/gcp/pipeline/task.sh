@@ -49,7 +49,7 @@ terraform apply -auto-approve \
   -var "bootstrap_state_prefix=$BOOTSTRAP_STATE_PREFIX" \
   -var "params_template_file=$download_products_pipeline_path/params.yml" \
   -var "params_file=download-products-params.yml" \
-  -var "environment=${e}" \
+  -var "environment=" \
   $terraform_params_path >/dev/null
 
 fly -t default set-pipeline -n \
