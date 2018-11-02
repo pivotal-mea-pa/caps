@@ -73,10 +73,12 @@ for p in $(echo -e "$PRODUCTS"); do
   i=$(($i+1)) && j=$(($j+1))
 done
 
+$patch_job_notifications install-pcf-pipeline$i.yml > pipeline.yml
+
 fly -t default set-pipeline -n \
   -p download-products \
   -c $download_products_pipeline_path/pipeline.yml \
-  -l download-products-params.yml \
+  -l pipeline.yml \
   -v "trace=$TRACE" \
   -v "concourse_url=$CONCOURSE_URL" \
   -v "concourse_user=$CONCOURSE_USER" \
