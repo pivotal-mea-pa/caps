@@ -37,7 +37,7 @@
 #   --argjson syslog_tls false \
 #   --arg syslog_permitted_peer "" \
 #   --arg syslog_ca_cert "" \
-#   --arg availability_zones "europe-west1-b,europe-west1-c,europe-west1-d" \
+#   --arg availability_zones "$AVAILABILITY_ZONES" \
 #   "$(cat properties.jq)"
 #
 

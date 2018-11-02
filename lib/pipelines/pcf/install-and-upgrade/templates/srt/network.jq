@@ -2,7 +2,7 @@
 # jq -n \
 #   --arg network_name "pas" \
 #   --arg singleton_availability_zone "europe-west1-b" \
-#   --arg availability_zones "europe-west1-b,europe-west1-c,europe-west1-d" \
+#   --arg availability_zones "$AVAILABILITY_ZONES" \
 #   "$(cat network.jq)"
 #
 

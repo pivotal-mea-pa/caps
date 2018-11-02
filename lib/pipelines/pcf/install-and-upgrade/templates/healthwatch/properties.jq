@@ -1,8 +1,10 @@
 #
 # jq -n \
 #   --arg foundation_name "pcf-poc-1" \
-#   --arg opsman_url "https://opsman.pas.pcfenv1.pocs.pcfs.io" \
-#   --arg availability_zones "europe-west1-b,europe-west1-c,europe-west1-d" \
+#   --arg opsman_url "" \
+#   --arg uaa_client "" \
+#   --arg uaa_client_secret "" \
+#   --arg availability_zones "$AVAILABILITY_ZONES" \
 #   "$(cat properties.jq)"
 #
 
@@ -27,5 +29,23 @@ else
   ".properties.opsman": {
     "value": "disable"
   }
+}
+end
++
+if "uaa_client" != "" then
+{
+    ".properties.boshtasks": {
+      "value": "enable"
+    },
+    ".properties.boshtasks.enable.bosh_taskcheck_username": {
+      "value": $uaa_client
+    },
+    ".properties.boshtasks.enable.bosh_taskcheck_password": {
+      "value": $uaa_client_secret
+    }
+}
+else
+{
+
 }
 end

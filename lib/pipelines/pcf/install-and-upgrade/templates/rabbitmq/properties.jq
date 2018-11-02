@@ -25,7 +25,7 @@
 #   --arg plan_1_cluster_strategy "pause_minority" \
 #   --arg plan_1_vm_type "large" \
 #   --arg plan_1_persistent_disk_type "30720" \
-#   --arg availability_zones "europe-west1-b,europe-west1-c,europe-west1-d" \
+#   --arg availability_zones "$AVAILABILITY_ZONES" \
 #   "$(cat properties.jq)"
 #
 
