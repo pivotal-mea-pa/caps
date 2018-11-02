@@ -44,6 +44,7 @@ if [ -n "$STEMCELL_VERSION" ]; then
       '.stemcells[] | select(contains($version) and contains($glob))'
     )
   else
+    echo "Ops Manager has not been setting so proceeding with stemcell download..."
     stemcell=""
   fi
   set -e
