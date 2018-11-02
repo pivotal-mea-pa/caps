@@ -1,10 +1,22 @@
 - type: replace
+  path: /resources/-
+  value:
+    name: ${product_name}-tile
+    type: s3
+    source:
+      bucket: pcf
+      endpoint: ((autos3_url))
+      access_key_id: ((autos3_access_key))
+      secret_access_key: ((autos3_secret_key))
+      regexp: downloads/${product_slug}_(.*).tgz
+
+- type: replace
   path: /jobs/-
   value:
-    name: configure-${product_name}-tile
+    name: stage-and-configure-${product_name}-tile
     on_failure:
       do:
-      - task: notify on configure-${product_name}-tile failure
+      - task: notify on stage-and-configure-${product_name}-tile failure
 
     serial: true
     serial_groups: [configure]
@@ -13,13 +25,9 @@
       - get: automation
       - get: automation-extensions
       - get: terraform-output
-      
-      - get: pivnet-product
+      - get: pivnet-download
         resource: ${product_name}-tile
-        passed: [upload-${product_name}-tile]
         trigger: true
-        params:
-          skip_download: 'true'
 
       - get: mysql-tile
         passed: [deploy]
@@ -30,6 +38,29 @@
         passed: [deploy]
         params:
           skip_download: true
+
+    # Upload product tile and its stemcell
+    - task: upload-tile
+      file: automation/lib/tasks/opsman/upload-product-and-stemcell/task.yml
+      params:
+        IAAS: ((iaas_type))
+        OPSMAN_HOST: ((opsman_host))
+        OPSMAN_CLIENT_ID: ((opsman_client_id))
+        OPSMAN_CLIENT_SECRET: ((opsman_client_secret))
+        OPSMAN_USERNAME: ((opsman_admin_username))
+        OPSMAN_PASSWORD: ((opsman_admin_password))
+
+    # Stage product tile
+    - task: stage-tile
+      file: automation/lib/tasks/opsman/stage-product/task.yml
+      params:
+        OPSMAN_HOST: ((opsman_host))
+        OPSMAN_CLIENT_ID: ((opsman_client_id))
+        OPSMAN_CLIENT_SECRET: ((opsman_client_secret))
+        OPSMAN_USERNAME: ((opsman_admin_username))
+        OPSMAN_PASSWORD: ((opsman_admin_password))
+        STAGE_AND_APPLY: false
+        ENABLE_ERRANDS: ((enable_errands))
 
     # Configure product tile
     - task: configure
