@@ -77,8 +77,8 @@ $patch_job_notifications download-products-pipeline$i.yml > download-products-pi
 
 fly -t default set-pipeline -n \
   -p download-products \
-  -c $download_products_pipeline_path/pipeline.yml \
-  -l download-products-pipeline.yml \
+  -c download-products-pipeline.yml \
+  -l download-products-params.yml \
   -v "trace=$TRACE" \
   -v "concourse_url=$CONCOURSE_URL" \
   -v "concourse_user=$CONCOURSE_USER" \
