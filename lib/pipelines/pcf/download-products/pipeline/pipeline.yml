@@ -51,6 +51,7 @@ jobs:
   - task: download-to-local-repo
     file: automation/lib/tasks/opsman/download-product/task.yml
     params:
+      TRACE: ((trace))
       IAAS: ((iaas_type))
       OPSMAN_HOST: ((opsman_host))
       OPSMAN_CLIENT_ID: ((opsman_client_id))
