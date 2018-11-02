@@ -66,7 +66,7 @@ fly -t default set-pipeline -n \
   -v "pipeline_automation_path=$PIPELINE_AUTOMATION_PATH" \
   -v "vpc_name=$VPC_NAME" >/dev/null
 
-fly -t default unpause-pipeline -p
+fly -t default unpause-pipeline -p download-products
 
 exit 0
 
