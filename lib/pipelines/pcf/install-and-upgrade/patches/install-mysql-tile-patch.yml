@@ -16,7 +16,7 @@
       - get: pivnet-product
         resource: ${product_name}-tile
         passed: [upload-${product_name}-tile]
-        # trigger: true
+        trigger: true
         params:
           skip_download: true
 
