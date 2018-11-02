@@ -1,3 +1,13 @@
+---
+#
+# Automation repo details
+#
+automation_pipelines_repo: '${automation_pipelines_repo}'
+automation_pipelines_branch: '${automation_pipelines_branch}'
+
+automation_extensions_repo: '${automation_extensions_repo}'
+automation_extensions_branch: '${automation_extensions_branch}'
+
 #
 # Pivnet download and Ops Manager configuration
 #
