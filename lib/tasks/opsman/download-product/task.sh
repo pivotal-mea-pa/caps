@@ -44,6 +44,7 @@ if [ -n "$STEMCELL_VERSION" ]; then
 
   if [[ -z "$stemcell" ]]; then
     echo "Downloading stemcell $STEMCELL_VERSION"
+    cd ./pivnet-product
 
     product_slug=$(
       jq --raw-output \
@@ -53,7 +54,7 @@ if [ -n "$STEMCELL_VERSION" ]; then
         else
           "stemcells"
         end
-        ' < pivnet-product/metadata.json
+        ' < ./pivnet-product/metadata.json
     )
 
     pivnet-cli login --api-token="$PIVNET_API_TOKEN"
@@ -87,14 +88,15 @@ if [ -n "$STEMCELL_VERSION" ]; then
       set -e
     fi
 
-    STEMCELL_FILE_PATH=`find ./ -name *.tgz`
-
-    if [ ! -f "$STEMCELL_FILE_PATH" ]; then
+    if [ ! -f "$(find ./ -name *.tgz)" ]; then
       echo "Stemcell file not found!"
       exit 1
     fi
+    cd -
   fi
 fi
+
+tar cvzf pivnet-product.tgz ./pivnet-product
 
 #
 # Upload product metadata, tile and stemcell to local s3 repo
@@ -110,24 +112,15 @@ PRODUCT_NAME=${NAME}_${VERSION}
 PRODUCT_VERSIONS=$(mc ls --recursive auto/${BUCKET}/downloads \
   | sort \
   | awk "/ ${NAME}_/{ print \$5 }" \
-  | cut -d '/' -f 1 \
+  | cut -d '.' -f 1 \
   | uniq)
 
 NUM_VERSIONS=$(echo "${PRODUCT_VERSIONS}" | wc -l)
 if [[ ${NUM_VERSIONS} -gt 3 ]]; then
   for v in $(echo "${PRODUCT_VERSIONS}" | head -$((${NUM_VERSIONS}-3))); do
-    echo mc rm --force --recursive auto/${BUCKET}/downloads/${v}/
+    echo mc rm auto/${BUCKET}/downloads/${v}.tgz
   done
 fi
 
 # Upload new files
-mc cp pivnet-product/metadata.json auto/${BUCKET}/downloads/${PRODUCT_NAME}/metadata.json
-
-TILE_FILE_NAME=${TILE_FILE_PATH##*/}
-mc cp ${TILE_FILE_PATH} auto/${BUCKET}/downloads/${PRODUCT_NAME}/${TILE_FILE_NAME}
-
-set +u
-if [[ -n ${STEMCELL_FILE_PATH} ]]; then
-  STEMCELL_FILE_NAME=${STEMCELL_FILE_PATH##*/}
-  mc cp ${STEMCELL_FILE_PATH} auto/${BUCKET}/downloads/${PRODUCT_NAME}/${STEMCELL_FILE_NAME}
-fi
+mc cp ./pivnet-product.tgz auto/${BUCKET}/downloads/${PRODUCT_NAME}.tgz
