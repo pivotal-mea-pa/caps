@@ -28,8 +28,8 @@ if [ -n "$STEMCELL_VERSION" ]; then
       --target https://$OPSMAN_HOST \
       --client-id "${OPSMAN_CLIENT_ID}" \
       --client-secret "${OPSMAN_CLIENT_SECRET}" \
-      --username "$OPS_MGR_USR" \
-      --password "$OPS_MGR_PWD" \
+      --username "$OPSMAN_USERNAME" \
+      --password "$OPSMAN_PASSWORD" \
       --skip-ssl-validation \
       curl --silent --path "/api/v0/diagnostic_report"
   )
@@ -54,7 +54,7 @@ if [ -n "$STEMCELL_VERSION" ]; then
         else
           "stemcells"
         end
-        ' < ./pivnet-product/metadata.json
+        ' < ./metadata.json
     )
 
     pivnet-cli login --api-token="$PIVNET_API_TOKEN"
