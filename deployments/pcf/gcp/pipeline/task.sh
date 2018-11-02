@@ -48,12 +48,12 @@ terraform init $terraform_params_path
 terraform apply -auto-approve \
   -var "bootstrap_state_bucket=$BOOTSTRAP_STATE_BUCKET" \
   -var "bootstrap_state_prefix=$BOOTSTRAP_STATE_PREFIX" \
-  -var "params_template_file=$download_products_pipeline_path/params.yml" \
+  -var "params_template_file=$download_products_pipeline_path/gcp/params.yml" \
   -var "params_file=download-products-params.yml" \
   -var "environment=" \
   $terraform_params_path >/dev/null
 
-eval "echo \"$(cat $download_products_pipeline_path/pipeline.yml)\"" \
+eval "echo \"$(cat $download_products_pipeline_path/gcp/pipeline.yml)\"" \
   > download-products-pipeline0.yml
 
 i=0 && j=1
