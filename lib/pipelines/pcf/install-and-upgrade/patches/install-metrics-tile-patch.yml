@@ -51,4 +51,4 @@
     passed: [configure-${product_name}-tile]
     trigger: true
     params:
-      skip_download: true
+      skip_download: 'true'
