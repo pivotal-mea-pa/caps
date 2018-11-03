@@ -1,16 +1,4 @@
 - type: replace
-  path: /resources/-
-  value:
-    name: ${product_name}-tile
-    type: s3
-    source:
-      bucket: pcf
-      endpoint: ((autos3_url))
-      access_key_id: ((autos3_access_key))
-      secret_access_key: ((autos3_secret_key))
-      regexp: downloads/${product_slug}_(.*).tgz
-
-- type: replace
   path: /jobs/-
   value:
     name: configure-${product_name}-tile
