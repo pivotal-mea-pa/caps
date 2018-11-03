@@ -105,13 +105,17 @@ fi
 
 tar cvzf pivnet-product.tgz ./pivnet-product
 
+FILE_PATH=`find ./pivnet-product -name *.pivotal | sort | head -1`
+unzip $FILE_PATH metadata/*
+PRODUCT_NAME="$(cat metadata/*.yml | grep '^name' | cut -d' ' -f 2)"
+
 #
 # Upload product metadata, tile and stemcell to local s3 repo
 #
 mc config host add auto ${AUTOS3_URL} ${AUTOS3_ACCESS_KEY} ${AUTOS3_SECRET_KEY}
 
 VERSION=$(cat ./pivnet-product/metadata.json | jq --raw-output '.Release.Version')
-PRODUCT_NAME=${NAME}_${VERSION}
+PRODUCT_VERSION=${NAME}_${VERSION}
 
 # Keep only the 3 most recent versions
 PRODUCT_VERSIONS=$(mc ls --recursive auto/${BUCKET}/downloads \
@@ -128,4 +132,4 @@ if [[ ${NUM_VERSIONS} -gt 3 ]]; then
 fi
 
 # Upload new files
-mc cp ./pivnet-product.tgz auto/${BUCKET}/downloads/${PRODUCT_NAME}.tgz
+mc cp ./pivnet-product.tgz auto/${BUCKET}/downloads/${PRODUCT_VERSION}_${PRODUCT_NAME}.tgz
