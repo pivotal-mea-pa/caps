@@ -46,18 +46,6 @@
         OPSMAN_USERNAME: ((opsman_admin_username))
         OPSMAN_PASSWORD: ((opsman_admin_password))
 
-    # Stage product tile
-    - task: stage-tile
-      file: automation/lib/tasks/opsman/stage-product/task.yml
-      params:
-        OPSMAN_HOST: ((opsman_host))
-        OPSMAN_CLIENT_ID: ((opsman_client_id))
-        OPSMAN_CLIENT_SECRET: ((opsman_client_secret))
-        OPSMAN_USERNAME: ((opsman_admin_username))
-        OPSMAN_PASSWORD: ((opsman_admin_password))
-        STAGE_AND_APPLY: false
-        ENABLE_ERRANDS: ((enable_errands))
-
 - type: replace
   path: /groups/name=Install & Upgrade Products/jobs?/-
   value: upload-${product_name}-tile

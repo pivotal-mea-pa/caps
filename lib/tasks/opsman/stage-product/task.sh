@@ -3,6 +3,8 @@
 [[ -n "$TRACE" ]] && set -x
 set -eu
 
+exit 1
+
 desired_version=$(jq --raw-output '.Release.Version' < ./pivnet-product/metadata.json)
 
 AVAILABLE=$(om \
