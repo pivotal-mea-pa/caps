@@ -25,9 +25,12 @@
       - get: automation
       - get: automation-extensions
       - get: terraform-output
-      - get: pivnet-download
+      - get: pivnet-product
         resource: ${product_name}-tile
+        passed: [upload-${product_name}-tile]
         trigger: true
+        params:
+          skip_download: 'true'
 
       - get: mysql-tile
         passed: [deploy]
