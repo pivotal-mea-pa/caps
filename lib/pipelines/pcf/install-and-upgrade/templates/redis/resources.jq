@@ -9,7 +9,7 @@
   "redis-on-demand-broker": {
     "internet_connected": $internet_connected
   },
-  "cf-redis-broke": {
+  "cf-redis-broker": {
     "internet_connected": $internet_connected
   },
   "dedicated-node": {
