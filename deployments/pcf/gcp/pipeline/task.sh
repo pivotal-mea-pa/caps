@@ -131,21 +131,15 @@ for e in $ENVIRONMENTS; do
       product_glob="'$(echo $p | awk -F':' '{ print $3 }')'"
       errands_to_disable=$(echo $p | awk -F':' '{ print $4 }')
       errands_to_enable=$(echo $p | awk -F':' '{ print $5 }')
-      skip_common_patch=$(echo $p | awk -F':' '{ print $6 }')
       product_slug=${slug_and_version%/*}
       product_version=${slug_and_version#*/}
 
       if [[ -e $install_and_upgrade_patches_path/install-${product_name}-tile-patch.yml ]]; then
 
-        if [[ -z $skip_common_patch ]]; then
-          eval "echo \"$(cat $install_and_upgrade_patches_path/install-common-patch.yml)\"" \
-            > ${product_name}-patch.yml
-          eval "echo \"$(cat $install_and_upgrade_patches_path/install-${product_name}-tile-patch.yml)\"" \
-            >> ${product_name}-patch.yml
-        else
-          eval "echo \"$(cat $install_and_upgrade_patches_path/install-${product_name}-tile-patch.yml)\"" \
-            > ${product_name}-patch.yml
-        fi
+        eval "echo \"$(cat $install_and_upgrade_patches_path/install-common-patch.yml)\"" \
+          > ${product_name}-patch.yml
+        eval "echo \"$(cat $install_and_upgrade_patches_path/install-${product_name}-tile-patch.yml)\"" \
+          >> ${product_name}-patch.yml
       else
         eval "echo \"$(cat $install_and_upgrade_patches_path/install-tile-patch.yml)\"" \
           > ${product_name}-patch.yml
