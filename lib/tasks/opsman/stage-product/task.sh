@@ -3,9 +3,9 @@
 [[ -n "$TRACE" ]] && set -x
 set -eu
 
-exit 1
-
-desired_version=$(jq --raw-output '.Release.Version' < ./pivnet-product/metadata.json)
+PRODUCT_VERSION=$(cat ./pivnet-product/version)
+DESIRED_VERSION=${PRODUCT_VERSION%_*}
+PRODUCT_NAME=${PRODUCT_VERSION#*_}
 
 AVAILABLE=$(om \
   --skip-ssl-validation \
@@ -24,19 +24,13 @@ STAGED=$(om \
   --target "https://${OPSMAN_HOST}" \
   curl -path /api/v0/staged/products)
 
-# Should the slug contain more than one product, pick only the first.
-FILE_PATH=`find ./pivnet-product -name *.pivotal | sort | head -1`
-unzip $FILE_PATH metadata/*
-
-PRODUCT_NAME="$(cat metadata/*.yml | grep '^name' | cut -d' ' -f 2)"
-
 # Figure out which products are unstaged.
 UNSTAGED_ALL=$(jq -n --argjson available "$AVAILABLE" --argjson staged "$STAGED" \
   '$available - ($staged | map({"name": .type, "product_version": .product_version}))')
 
 UNSTAGED_PRODUCT=$(echo "$UNSTAGED_ALL" | jq \
   --arg product_name "$PRODUCT_NAME" \
-  --arg product_version "$desired_version" \
+  --arg product_version "$DESIRED_VERSION" \
   'map(select(.name == $product_name)) | map(select(.product_version | startswith($product_version)))'
 )
 
@@ -44,7 +38,7 @@ UNSTAGED_PRODUCT=$(echo "$UNSTAGED_ALL" | jq \
 if [ "$(echo $UNSTAGED_PRODUCT | jq '. | length')" -gt 0 ]; then
 
   if [ "$(echo $UNSTAGED_PRODUCT | jq '. | length')" -ne 1 ]; then
-    echo "Need exactly one unstaged build for $PRODUCT_NAME version $desired_version"
+    echo "Need exactly one unstaged build for $PRODUCT_NAME version $DESIRED_VERSION"
     jq -n "$UNSTAGED_PRODUCT"
     exit 1
   fi
@@ -76,7 +70,7 @@ if [ "$(echo $UNSTAGED_PRODUCT | jq '. | length')" -gt 0 ]; then
 
       ./automation/lib/tasks/opsman/apply-changes/task.sh
     else
-      echo "Skipping staging and upgrade of $PRODUCT_NAME version $desired_version as a prior installed version was not found."
+      echo "Skipping staging and upgrade of $PRODUCT_NAME version $DESIRED_VERSION as a prior installed version was not found."
     fi
 
   else
@@ -92,5 +86,5 @@ if [ "$(echo $UNSTAGED_PRODUCT | jq '. | length')" -gt 0 ]; then
       --product-version "${full_version}"
   fi
 else
-  echo "No unstaged builds for $PRODUCT_NAME version $desired_version found. Most likely this version has already been installed."
+  echo "No unstaged builds for $PRODUCT_NAME version $DESIRED_VERSION found. Most likely this version has already been installed."
 fi
