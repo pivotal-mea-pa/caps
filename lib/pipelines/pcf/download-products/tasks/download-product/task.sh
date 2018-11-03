@@ -117,16 +117,14 @@ mc config host add auto ${AUTOS3_URL} ${AUTOS3_ACCESS_KEY} ${AUTOS3_SECRET_KEY}
 VERSION=$(cat ./pivnet-product/metadata.json | jq --raw-output '.Release.Version')
 PRODUCT_VERSION=${NAME}_${VERSION}
 
-# Keep only the 3 most recent versions
+# Keep only the given number of most recent versions
 PRODUCT_VERSIONS=$(mc ls --recursive auto/${BUCKET}/downloads \
   | sort \
-  | awk "/ ${NAME}_/{ print \$5 }" \
-  | cut -d '.' -f 1 \
-  | uniq)
+  | awk "/ ${NAME}_/{ print \$5 }")
 
 NUM_VERSIONS=$(echo "${PRODUCT_VERSIONS}" | wc -l)
 if [[ ${NUM_VERSIONS} -gt 3 ]]; then
-  for v in $(echo "${PRODUCT_VERSIONS}" | head -$((${NUM_VERSIONS}-3))); do
+  for v in $(echo "${PRODUCT_VERSIONS}" | head -$((${NUM_VERSIONS}-${MIN_VERSIONS_TO_KEEP}))); do
     echo mc rm auto/${BUCKET}/downloads/${v}.tgz
   done
 fi
