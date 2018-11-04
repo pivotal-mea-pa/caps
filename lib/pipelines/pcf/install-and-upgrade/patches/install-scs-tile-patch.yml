@@ -23,12 +23,12 @@
       - get: mysql-tile
         passed: [deploy]
         params:
-          skip_download: true
+          skip_download: 'true'
 
       - get: rabbitmq-tile
         passed: [deploy]
         params:
-          skip_download: true
+          skip_download: 'true'
 
     # Stage product tile
     - task: stage-tile
