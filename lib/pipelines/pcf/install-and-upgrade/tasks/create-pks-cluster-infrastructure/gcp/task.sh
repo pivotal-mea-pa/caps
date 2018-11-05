@@ -24,9 +24,46 @@ else
     exit 1
 fi
 
-export BOSH_HOST==$(opsman::get_director_ip())
+export BOSH_HOST=$(opsman::get_director_ip)
 export BOSH_CA_CERT=$(opsman::download_bosh_ca_cert)
 export BOSH_CLIENT='ops_manager'
 export BOSH_CLIENT_SECRET=$(opsman::get_director_client_secret ops_manager)
 
-exit 1
+pks login --skip-ssl-validation --api $PKS_API --username $PKS_USERNAME --password $PKS_PASSWORD
+
+clusters='['
+cluster_ids='{'
+cluster_instances='{'
+
+pks_clusters=$(pks clusters | awk '$1 != "Name" { print $1 }')
+for c in $pks_clusters; do
+
+    info=$(pks cluster $c)
+    status=$(echo "$info" | awk -F':' '/Last Action State/{ print $2 }' | sed -e 's/^[[:space:]]*//')
+    # if [[ "$status" != "ready" ]]; then
+
+        uuid=$(echo "$info" | awk '/UUID/{ print $ 2}')
+
+        clusters="$clusters \"$c\","
+        cluster_ids="$cluster_ids \"$c\"=\"$uuid\","
+        cluster_instances="$cluster_instances \"$c\"=\""
+
+        master_vms=$(bosh-cli -e $BOSH_HOST -d service-instance_$uuid vms | awk '/master\//{ print $3"/"$5 }')
+        for vm in $master_vms; do
+            cluster_instances="${cluster_instances}$vm,"
+        done
+
+        cluster_instances="$cluster_instances\","
+    # fi
+done
+
+export TF_VAR_clusters="$clusters ]"
+export TF_VAR_cluster_ids="$cluster_ids }"
+export TF_VAR_cluster_instances="$cluster_instances }"
+
+terraform init \
+    -backend-config="bucket=${TERRAFORM_STATE_BUCKET}" \
+    -backend-config="prefix=${GCP_RESOURCE_PREFIX}-k8s-clusters"
+
+terraform plan \
+    automation/lib/pipelines/pcf/install-and-upgrade/tasks/create-pks-cluster-infrastructure/gcp/terraform
