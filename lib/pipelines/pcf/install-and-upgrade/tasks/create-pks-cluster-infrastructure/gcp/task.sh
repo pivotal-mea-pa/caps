@@ -66,5 +66,6 @@ terraform init \
     -backend-config="prefix=${GCP_RESOURCE_PREFIX}-k8s-clusters" \
     automation/lib/pipelines/pcf/install-and-upgrade/tasks/create-pks-cluster-infrastructure/gcp/terraform
 
-terraform plan \
+terraform apply \
+    -auto-approve \
     automation/lib/pipelines/pcf/install-and-upgrade/tasks/create-pks-cluster-infrastructure/gcp/terraform
