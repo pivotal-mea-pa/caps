@@ -16,9 +16,9 @@ set -eu
 # Retrieve bosh credentials from Ops Manager API and set BOSH envrionment
 
 if [[ -n "$OPSMAN_USERNAME" ]]; then
-    opsman::login $OPSMAN_HOST $OPSMAN_USERNAME $OPSMAN_PASSWORD
+    opsman::login $OPSMAN_HOST $OPSMAN_USERNAME $OPSMAN_PASSWORD ''
 elif [[ -n "$OPSMAN_CLIENT_ID" ]]; then
-    opsman::login_client $OPSMAN_HOST $OPSMAN_CLIENT_ID $OPSMAN_CLIENT_SECRET
+    opsman::login_client $OPSMAN_HOST $OPSMAN_CLIENT_ID $OPSMAN_CLIENT_SECRET ''
 else
     echo "ERROR! Pivotal Operations Manager credentials were not provided."
     exit 1
