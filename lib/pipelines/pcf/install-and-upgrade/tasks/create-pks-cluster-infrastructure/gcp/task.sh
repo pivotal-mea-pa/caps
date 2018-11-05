@@ -63,7 +63,8 @@ export TF_VAR_cluster_instances="$cluster_instances }"
 
 terraform init \
     -backend-config="bucket=${TERRAFORM_STATE_BUCKET}" \
-    -backend-config="prefix=${GCP_RESOURCE_PREFIX}-k8s-clusters"
+    -backend-config="prefix=${GCP_RESOURCE_PREFIX}-k8s-clusters" \
+    automation/lib/pipelines/pcf/install-and-upgrade/tasks/create-pks-cluster-infrastructure/gcp/terraform
 
 terraform plan \
     automation/lib/pipelines/pcf/install-and-upgrade/tasks/create-pks-cluster-infrastructure/gcp/terraform
