@@ -4,14 +4,22 @@ source ~/scripts/opsman-func.sh
 source ~/scripts/bosh-func.sh
 root=$PWD
 
+[[ -n "$TRACE" ]] && set -x
+set -eu
+
 mv pks-release/pks-linux-amd64-* /usr/local/bin/pks
 chmod +x /usr/local/bin/pks
 
 mv pks-release/kubectl-linux-amd64-* /usr/local/bin/kubectl
 chmod +x /usr/local/bin/kubectl
 
-[[ -n "$TRACE" ]] && set -x
-set -eu
+# Save service key to a json file as Terraform GCS 
+# backend only accepts the credential from a file.
+echo "$GCP_SERVICE_ACCOUNT_KEY" > $root/gcp_service_account_key.json
+
+export GOOGLE_CREDENTIALS=$root/gcp_service_account_key.json
+export GOOGLE_PROJECT=${GCP_PROJECT_ID}
+export GOOGLE_REGION=${GCP_REGION}
 
 # Retrieve bosh credentials from Ops Manager API and set BOSH envrionment
 
