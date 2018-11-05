@@ -29,4 +29,4 @@ export BOSH_CA_CERT=$(opsman::download_bosh_ca_cert)
 export BOSH_CLIENT='ops_manager'
 export BOSH_CLIENT_SECRET=$(opsman::get_director_client_secret ops_manager)
 
-sleep 1800
+exit 1
