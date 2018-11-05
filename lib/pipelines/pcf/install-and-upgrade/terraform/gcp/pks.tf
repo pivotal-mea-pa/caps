@@ -59,97 +59,79 @@ resource "google_compute_firewall" "pks" {
   target_tags = ["${google_compute_target_pool.pks.name}"]
 }
 
-# // PKS Master Node services account
+// PKS Master Node services account
 
+resource "google_service_account" "pks-master" {
+  account_id   = "${replace(var.prefix, "-", "")}pksmaster"
+  display_name = "PKS Master Node Service Account for ${var.prefix}"
+}
 
-# resource "google_service_account" "pks-master-node" {
-#   account_id   = "${var.prefix}-pks-master-node"
-#   display_name = "PKS Master Node Service Account for ${var.prefix}"
-# }
+resource "google_project_iam_binding" "pks-master-iam-computeInstanceAdmin" {
+  project = "${data.terraform_remote_state.bootstrap.gcp_project}"
+  role    = "roles/compute.instanceAdmin"
 
+  members = [
+    "serviceAccount:${google_service_account.pks-master.email}",
+  ]
+}
 
-# resource "google_project_iam_binding" "pks-master-iam-computeInstanceAdmin" {
-#   project = "${data.terraform_remote_state.bootstrap.gcp_project}"
-#   role    = "roles/compute.instanceAdmin"
+resource "google_project_iam_binding" "pks-master-iam-computeNetworkAdmin" {
+  project = "${data.terraform_remote_state.bootstrap.gcp_project}"
+  role    = "roles/compute.networkAdmin"
 
+  members = [
+    "serviceAccount:${google_service_account.pks-master.email}",
+  ]
+}
 
-#   members = [
-#     "serviceAccount:${google_service_account.pks-master-node.email}",
-#   ]
-# }
+resource "google_project_iam_binding" "pks-master-iam-computeSecurityAdmin" {
+  project = "${data.terraform_remote_state.bootstrap.gcp_project}"
+  role    = "roles/compute.securityAdmin"
 
+  members = [
+    "serviceAccount:${google_service_account.pks-master.email}",
+  ]
+}
 
-# resource "google_project_iam_binding" "pks-master-iam-computeNetworkAdmin" {
-#   project = "${data.terraform_remote_state.bootstrap.gcp_project}"
-#   role    = "roles/compute.networkAdmin"
+resource "google_project_iam_binding" "pks-master-iam-computeStorageAdmin" {
+  project = "${data.terraform_remote_state.bootstrap.gcp_project}"
+  role    = "roles/compute.storageAdmin"
 
+  members = [
+    "serviceAccount:${google_service_account.pks-master.email}",
+  ]
+}
 
-#   members = [
-#     "serviceAccount:${google_service_account.pks-master-node.email}",
-#   ]
-# }
+resource "google_project_iam_binding" "pks-master-iam-computeViewer" {
+  project = "${data.terraform_remote_state.bootstrap.gcp_project}"
+  role    = "roles/compute.viewer"
 
+  members = [
+    "serviceAccount:${google_service_account.pks-master.email}",
+  ]
+}
 
-# resource "google_project_iam_binding" "pks-master-iam-computeSecurityAdmin" {
-#   project = "${data.terraform_remote_state.bootstrap.gcp_project}"
-#   role    = "roles/compute.securityAdmin"
+resource "google_project_iam_binding" "pks-master-iam-serviceAccountUser" {
+  project = "${data.terraform_remote_state.bootstrap.gcp_project}"
+  role    = "roles/iam.serviceAccountUser"
 
+  members = [
+    "serviceAccount:${google_service_account.pks-master.email}",
+  ]
+}
 
-#   members = [
-#     "serviceAccount:${google_service_account.pks-master-node.email}",
-#   ]
-# }
+// PKS Worker Node services account
 
+resource "google_service_account" "pks-worker" {
+  account_id   = "${replace(var.prefix, "-", "")}pksworker"
+  display_name = "PKS Worker Node Service Account for ${var.prefix}"
+}
 
-# resource "google_project_iam_binding" "pks-master-iam-computeStorageAdmin" {
-#   project = "${data.terraform_remote_state.bootstrap.gcp_project}"
-#   role    = "roles/compute.storageAdmin"
+resource "google_project_iam_binding" "pks-worker-iam-computeViewer" {
+  project = "${data.terraform_remote_state.bootstrap.gcp_project}"
+  role    = "roles/compute.viewer"
 
-
-#   members = [
-#     "serviceAccount:${google_service_account.pks-master-node.email}",
-#   ]
-# }
-
-
-# resource "google_project_iam_binding" "pks-master-iam-computeViewer" {
-#   project = "${data.terraform_remote_state.bootstrap.gcp_project}"
-#   role    = "roles/compute.viewer"
-
-
-#   members = [
-#     "serviceAccount:${google_service_account.pks-master-node.email}",
-#   ]
-# }
-
-
-# resource "google_project_iam_binding" "pks-master-iam-serviceAccountUser" {
-#   project = "${data.terraform_remote_state.bootstrap.gcp_project}"
-#   role    = "roles/iam.serviceAccountUser"
-
-
-#   members = [
-#     "serviceAccount:${google_service_account.pks-master-node.email}",
-#   ]
-# }
-
-
-# // PKS Worker Node services account
-
-
-# resource "google_service_account" "pks-worker-node" {
-#   account_id   = "${var.prefix}-pks-worker-node"
-#   display_name = "PKS Worker Node Service Account for ${var.prefix}"
-# }
-
-
-# resource "google_project_iam_binding" "pks-worker-iam-computeViewer" {
-#   project = "${data.terraform_remote_state.bootstrap.gcp_project}"
-#   role    = "roles/compute.viewer"
-
-
-#   members = [
-#     "serviceAccount:${google_service_account.pks-worker-node.email}",
-#   ]
-# }
-
+  members = [
+    "serviceAccount:${google_service_account.pks-worker.email}",
+  ]
+}

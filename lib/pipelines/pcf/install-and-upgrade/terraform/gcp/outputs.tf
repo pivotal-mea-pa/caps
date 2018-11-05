@@ -189,3 +189,11 @@ output "harbor_registry_cert" {
 output "harbor_registry_cert_key" {
   value = "${google_compute_ssl_certificate.lb-cert.private_key}"
 }
+
+output "gcp_master_service_account" {
+  value = "${google_service_account.pks-master.email}"
+}
+
+output "gcp_worker_service_account" {
+  value = "${google_service_account.pks-worker.email}"
+}
