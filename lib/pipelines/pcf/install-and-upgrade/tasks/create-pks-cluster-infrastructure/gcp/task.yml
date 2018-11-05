@@ -8,7 +8,7 @@ image_resource:
 
 inputs:
 - name: automation
-- name: automation-extensions
+- name: pks-release
 
 run:
   path: automation/lib/pipelines/pcf/install-and-upgrade/tasks/create-pks-cluster-infrastructure/gcp/task.sh
@@ -16,12 +16,11 @@ run:
 params:
   TRACE: Y
   
+  GCP_PROJECT_ID:
+  GCP_REGION:
   GCP_RESOURCE_PREFIX:
   GCP_SERVICE_ACCOUNT_KEY:
-  GOOGLE_PROJECT:
-  GOOGLE_REGION:
   TERRAFORM_STATE_BUCKET:
-  TEMPLATE_OVERRIDE_PATH:
 
   OPSMAN_HOST:
   OPSMAN_CLIENT_ID:
