@@ -40,7 +40,7 @@ for c in $pks_clusters; do
 
     info=$(pks cluster $c)
     status=$(echo "$info" | awk -F':' '/Last Action State/{ print $2 }' | sed -e 's/^[[:space:]]*//')
-    # if [[ "$status" != "ready" ]]; then
+    if [[ "$status" != "succeeded" ]]; then
 
         uuid=$(echo "$info" | awk '/UUID/{ print $ 2}')
 
@@ -54,7 +54,7 @@ for c in $pks_clusters; do
         done
 
         cluster_instances="$cluster_instances\","
-    # fi
+    fi
 done
 
 export TF_VAR_clusters="$clusters ]"
