@@ -70,8 +70,4 @@
 
 - type: replace
   path: /groups/name=Install & Upgrade Products/jobs?/-
-  value: ${product_name}-tile-regulator
-
-- type: replace
-  path: /groups/name=Install & Upgrade Products/jobs?/-
   value: upload-and-upgrade-${product_name}-tile
