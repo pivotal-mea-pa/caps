@@ -102,40 +102,13 @@ credhub_encryption_key_secret2: '' # Optional Secret 2
 credhub_encryption_key_name3: '' # Optional Name 3
 credhub_encryption_key_secret3: '' # Optional Secret 2
 
-# DB Creds
-# Usernames must be 16 characters or fewer
+# DB Creds this will apply to all databases across all tiles
 
-db_uaa_type: 'internal_mysql'
-db_uaa_username: 'pas_system'
-db_uaa_password: '${pas_system_dbpassword}'
+pas_db_type: 'internal'
+event_alerts_db_type: 'internal'
 
-db_credhub_type: 'internal_mysql'
-db_credhub_username: 'pas_system'
-db_credhub_password: '${pas_system_dbpassword}'
-
-db_type: 'internal_pxc'
-db_accountdb_username: 'pas_system'
-db_accountdb_password: '${pas_system_dbpassword}'
-db_app_usage_service_username: 'pas_system'
-db_app_usage_service_password: '${pas_system_dbpassword}'
-db_autoscale_username: 'pas_system'
-db_autoscale_password: '${pas_system_dbpassword}'
-db_ccdb_username: 'pas_system'
-db_ccdb_password: '${pas_system_dbpassword}'
-db_diego_username: 'pas_system'
-db_diego_password: '${pas_system_dbpassword}'
-db_locket_username: 'pas_system'
-db_locket_password: '${pas_system_dbpassword}'
-db_networkpolicyserverdb_username: 'pas_system'
-db_networkpolicyserverdb_password: '${pas_system_dbpassword}'
-db_nfsvolumedb_username: 'pas_system'
-db_nfsvolumedb_password: '${pas_system_dbpassword}'
-db_notifications_username: 'pas_system'
-db_notifications_password: '${pas_system_dbpassword}'
-db_routing_username: 'pas_system'
-db_routing_password: '${pas_system_dbpassword}'
-db_silk_username: 'pas_system'
-db_silk_password: '${pas_system_dbpassword}'
+db_username: 'pas_system'
+db_username: '${pas_system_dbpassword}'
 
 # Domain Names for ERT
 system_domain_prefix: 'sys'

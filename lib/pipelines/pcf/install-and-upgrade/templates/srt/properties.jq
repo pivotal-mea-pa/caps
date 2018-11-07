@@ -34,12 +34,6 @@
 #   --arg insecure_docker_registry_list "" \
 #   --arg saml_cert "$saml_cert" \
 #   --arg saml_cert_key "$saml_cert_key" \
-#   --arg db_uaa_type "internal_mysql" \\
-#   --arg db_uaa_username "cf_db_user" \
-#   --arg db_uaa_password "DbP@ssw0rd" \
-#   --arg db_credhub_type "internal_mysql" \\
-#   --arg db_credhub_username "cf_db_user" \
-#   --arg db_credhub_password "DbP@ssw0rd" \
 #   --arg credhub_primary_encryption_name "default" \
 #   --arg credhub_encryption_key_name1 "default" \
 #   --arg credhub_encryption_key_secret1 "" \
@@ -47,32 +41,12 @@
 #   --arg credhub_encryption_key_secret2 "" \
 #   --arg credhub_encryption_key_name3 "" \
 #   --arg credhub_encryption_key_secret3 "" \
-#   --arg db_type "internal_pxc" \
+#   --arg pas_db_type "internal" \
 #   --arg db_host "" \
 #   --arg db_port "3306" \
 #   --arg db_credhub_tls_ca "$DB_TLS_CA" \
-#   --arg db_app_usage_service_username "cf_db_user" \
-#   --arg db_app_usage_service_password "DbP@ssw0rd" \
-#   --arg db_autoscale_username "cf_db_user" \
-#   --arg db_autoscale_password "DbP@ssw0rd" \
-#   --arg db_diego_username "cf_db_user" \
-#   --arg db_diego_password "DbP@ssw0rd" \
-#   --arg db_notifications_username "cf_db_user" \
-#   --arg db_notifications_password "DbP@ssw0rd" \
-#   --arg db_routing_username "cf_db_user" \
-#   --arg db_routing_password "DbP@ssw0rd" \
-#   --arg db_ccdb_username "cf_db_user" \
-#   --arg db_ccdb_password "DbP@ssw0rd" \
-#   --arg db_accountdb_username "cf_db_user" \
-#   --arg db_accountdb_password "DbP@ssw0rd" \
-#   --arg db_networkpolicyserverdb_username "cf_db_user" \
-#   --arg db_networkpolicyserverdb_password "DbP@ssw0rd" \
-#   --arg db_nfsvolumedb_username "cf_db_user" \
-#   --arg db_nfsvolumedb_password "DbP@ssw0rd" \
-#   --arg db_locket_username "cf_db_user" \
-#   --arg db_locket_password "DbP@ssw0rd" \
-#   --arg db_silk_username "cf_db_user" \
-#   --arg db_silk_password "DbP@ssw0rd" \
+#   --arg db_username "cf_db_user" \
+#   --arg db_password "DbP@ssw0rd" \
 #   --arg mysql_proxy_static_ips "" \
 #   --arg mysql_monitor_recipient_email "admin@caps.cloud" \
 #   --arg company_name "Pivotal" \
@@ -196,17 +170,17 @@ end
 # UAA
 #
 +
-if $db_uaa_type == "external" then
+if $pas_db_type == "external" then
 {
-  ".properties.uaa_database": { "value": $db_uaa_type },
+  ".properties.uaa_database": { "value": "external" },
   ".properties.uaa_database.external.host": { "value": $db_host },
   ".properties.uaa_database.external.port": { "value": $db_port },
-  ".properties.uaa_database.external.uaa_username": { "value": $db_uaa_username },
-  ".properties.uaa_database.external.uaa_password": { "value": { "secret": $db_uaa_password } },
+  ".properties.uaa_database.external.uaa_username": { "value": $db_username },
+  ".properties.uaa_database.external.uaa_password": { "value": { "secret": $db_password } },
 }
 else
 {
-  ".properties.uaa_database": { "value": $db_uaa_type },
+  ".properties.uaa_database": { "value": "internal_mysql" },
 }
 end
 +
@@ -221,18 +195,18 @@ end
 
 # Credhub
 +
-if $db_credhub_type == "external" then
+if $pas_db_type == "external" then
 {
-  ".properties.credhub_database": { "value": $db_credhub_type },
+  ".properties.credhub_database": { "value": "external" },
   ".properties.credhub_database.external.host": { "value": $db_host },
   ".properties.credhub_database.external.port": { "value": $db_port },
-  ".properties.credhub_database.external.username": { "value": $db_credhub_username },
-  ".properties.credhub_database.external.password": { "value": { "secret": $db_credhub_password } },
+  ".properties.credhub_database.external.username": { "value": $db_username },
+  ".properties.credhub_database.external.password": { "value": { "secret": $db_password } },
   ".properties.credhub_database.external.tls_ca":  { "value": $db_credhub_tls_ca },
 }
 else
 {
-  ".properties.credhub_database": { "value": $db_credhub_type },
+  ".properties.credhub_database": { "value": "internal_mysql" },
 }
 end
 +
@@ -285,37 +259,37 @@ end
 # Databases
 #
 +
-if $db_type == "external" then
+if $pas_db_type == "external" then
 {
-  ".properties.system_database": { "value":  $db_type },
+  ".properties.system_database": { "value":  "external" },
   ".properties.system_database.external.host": { "value": $db_host },
   ".properties.system_database.external.port": { "value": $db_port },
-  ".properties.system_database.external.app_usage_service_username": { "value": $db_app_usage_service_username },
-  ".properties.system_database.external.app_usage_service_password": { "value": { "secret": $db_app_usage_service_password } },
-  ".properties.system_database.external.autoscale_username": { "value": $db_autoscale_username },
-  ".properties.system_database.external.autoscale_password": { "value": { "secret": $db_autoscale_password } },
-  ".properties.system_database.external.diego_username": { "value": $db_diego_username },
-  ".properties.system_database.external.diego_password": { "value": { "secret": $db_diego_password } },
-  ".properties.system_database.external.notifications_username": { "value": $db_notifications_username },
-  ".properties.system_database.external.notifications_password": { "value": { "secret": $db_notifications_password } },
-  ".properties.system_database.external.routing_username": { "value": $db_routing_username },
-  ".properties.system_database.external.routing_password": { "value": { "secret": $db_routing_password } },
-  ".properties.system_database.external.ccdb_username": { "value": $db_ccdb_username },
-  ".properties.system_database.external.ccdb_password": { "value": { "secret": $db_ccdb_password } },
-  ".properties.system_database.external.account_username": { "value": $db_accountdb_username },
-  ".properties.system_database.external.account_password": { "value": { "secret": $db_accountdb_password } },
-  ".properties.system_database.external.networkpolicyserver_username": { "value": $db_networkpolicyserverdb_username },
-  ".properties.system_database.external.networkpolicyserver_password": { "value": { "secret": $db_networkpolicyserverdb_password } },
-  ".properties.system_database.external.nfsvolume_username": { "value": $db_nfsvolumedb_username },
-  ".properties.system_database.external.nfsvolume_password": { "value": { "secret": $db_nfsvolumedb_password } },
-  ".properties.system_database.external.locket_username": { "value": $db_locket_username },
-  ".properties.system_database.external.locket_password": { "value": { "secret": $db_locket_password } },
-  ".properties.system_database.external.silk_username": { "value": $db_silk_username },
-  ".properties.system_database.external.silk_password": { "value": { "secret": $db_silk_password } }
+  ".properties.system_database.external.app_usage_service_username": { "value": $db_username },
+  ".properties.system_database.external.app_usage_service_password": { "value": { "secret": $db_password } },
+  ".properties.system_database.external.autoscale_username": { "value": $db_username },
+  ".properties.system_database.external.autoscale_password": { "value": { "secret": $db_password } },
+  ".properties.system_database.external.diego_username": { "value": $db_username },
+  ".properties.system_database.external.diego_password": { "value": { "secret": $db_password } },
+  ".properties.system_database.external.notifications_username": { "value": $db_username },
+  ".properties.system_database.external.notifications_password": { "value": { "secret": $db_password } },
+  ".properties.system_database.external.routing_username": { "value": $db_username },
+  ".properties.system_database.external.routing_password": { "value": { "secret": $db_password } },
+  ".properties.system_database.external.ccdb_username": { "value": $db_username },
+  ".properties.system_database.external.ccdb_password": { "value": { "secret": $db_password } },
+  ".properties.system_database.external.account_username": { "value": $db_username },
+  ".properties.system_database.external.account_password": { "value": { "secret": $db_password } },
+  ".properties.system_database.external.networkpolicyserver_username": { "value": $db_username },
+  ".properties.system_database.external.networkpolicyserver_password": { "value": { "secret": $db_password } },
+  ".properties.system_database.external.nfsvolume_username": { "value": $db_username },
+  ".properties.system_database.external.nfsvolume_password": { "value": { "secret": $db_password } },
+  ".properties.system_database.external.locket_username": { "value": $db_username },
+  ".properties.system_database.external.locket_password": { "value": { "secret": $db_password } },
+  ".properties.system_database.external.silk_username": { "value": $db_username },
+  ".properties.system_database.external.silk_password": { "value": { "secret": $db_password } }
 }
 else
 {
-  ".properties.system_database": { "value":  $db_type }
+  ".properties.system_database": { "value": "internal_pxc" }
 }
 end
 
