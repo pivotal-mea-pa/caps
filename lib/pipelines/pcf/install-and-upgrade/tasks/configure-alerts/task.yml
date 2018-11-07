@@ -49,4 +49,3 @@ params:
   SMTP_PORT: ''
   SMTP_USERNAME: ''
   SMTP_PASSWORD: ''
-s
