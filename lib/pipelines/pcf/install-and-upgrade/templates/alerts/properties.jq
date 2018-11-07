@@ -32,10 +32,11 @@ else
   ".properties.uaa_database": { "value": "MySQL Service" },
   ".properties.mysql.internal.plan_name": { "value": $db_internal_plan_name }
 }
+end
 
 # Configure SMTP
 +
-if $from_email_address != "" && $smtp_host != "" then
+if $from_email_address != "" and $smtp_host != "" then
 {
   ".properties.smtp_selector": { "value": "Enabled" },
   ".properties.smtp_selector.enabled.smtp_from": { "value": $from_email_address },
