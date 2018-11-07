@@ -131,8 +131,8 @@ resource "google_sql_database" "eventalerts" {
 }
 
 resource "google_sql_user" "diego" {
-  name     = "${var.db_diego_username}"
-  password = "${var.db_diego_password}"
+  name     = "${var.db_username}"
+  password = "${var.db_password}"
   instance = "${google_sql_database_instance.master.name}"
   host     = "%"
 }
