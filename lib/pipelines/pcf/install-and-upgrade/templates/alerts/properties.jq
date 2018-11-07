@@ -1,69 +1,55 @@
 #
 # jq -n \
-#   --arg db_event_alerts_type "internal" \
-#   --arg opsman_url "" \
-#   --arg boshtasks_uaa_client "" \
-#   --arg boshtasks_uaa_client_secret "" \
-#   --arg availability_zones "$AVAILABILITY_ZONES" \
+#   --arg event_alerts_db_type "internal" \
+#   --arg db_host "" \
+#   --arg db_port "3306" \
+#   --arg db_username "cf_db_user" \
+#   --arg db_password "DbP@ssw0rd" \
+#   --arg db_external_name "eventalerts" \
+#   --arg db_internal_plan_name "db-small" \
+#   --arg from_email_address "" \
+#   --arg smtp_host "" \
+#   --arg smtp_port "" \
+#   --arg smtp_username "" \
+#   --arg smtp_password "" \
 #   "$(cat properties.jq)"
 #
 
 #
 # Database
 #
-if $db_event_alerts_type == "external" then
+if $event_alerts_db_type == "external" then
 {
-  ".properties.uaa_database": { "value": $db_uaa_type },
-  ".properties.uaa_database.external.host": { "value": $db_host },
-  ".properties.uaa_database.external.port": { "value": $db_port },
-  ".properties.uaa_database.external.uaa_username": { "value": $db_uaa_username },
-  ".properties.uaa_database.external.uaa_password": { "value": { "secret": $db_uaa_password } },
+  ".properties.uaa_database": { "value": "External DB" },
+  ".properties.mysql.external.host": { "value": $db_host },
+  ".properties.mysql.external.port": { "value": $db_port },
+  ".properties.mysql.external.username": { "value": $db_username },
+  ".properties.mysql.external.password": { "value": { "secret": $db_password } },
+  ".properties.mysql.external.database": { "value": { "secret":  } }
 }
 else
 {
-  ".properties.uaa_database": { "value": $db_event_alerts_type },
+  ".properties.uaa_database": { "value": "MySQL Service" },
+  ".properties.mysql.internal.plan_name": { "value": $db_internal_plan_name }
 }
 
-# Configure Healthwatch
-{
-  ".healthwatch-forwarder.foundation_name": {
-    "value": $foundation_name
-  },
-  ".healthwatch-forwarder.health_check_az": {
-    "value": ($availability_zones | split(",") | .[0])
-  }
-}
+# Configure SMTP
 +
-if $opsman_url != "" then
+if $from_email_address != "" && $smtp_host != "" then
 {
-    ".properties.opsman.enable.url": {
-      "value": $opsman_url
+  ".properties.smtp_selector": { "value": "Enabled" },
+  ".properties.smtp_selector.enabled.smtp_from": { "value": $from_email_address },
+  ".properties.smtp_selector.enabled.smtp_address": { "value": $smtp_host },
+  ".properties.smtp_selector.enabled.smtp_port": { "value": $smtp_port },
+  ".properties.smtp_selector.enabled.smtp_credentials": {
+      "value": {
+        "identity": $smtp_username,
+        "password": $smtp_password
+      }
     }
 }
 else
 {
-  ".properties.opsman": {
-    "value": "disable"
-  }
-}
-end
-+
-if $boshtasks_uaa_client != "" then
-{
-  ".properties.boshtasks": {
-    "value": "enable"
-  },
-  ".properties.boshtasks.enable.bosh_taskcheck_username": {
-    "value": $boshtasks_uaa_client
-  },
-  ".properties.boshtasks.enable.bosh_taskcheck_password": {
-    "value": $boshtasks_uaa_client_secret
-  }
-}
-else
-{
-  ".properties.boshtasks": {
-      "value": "disable"
-  }
+  ".properties.smtp_selector": { "value": "Disabled" },
 }
 end

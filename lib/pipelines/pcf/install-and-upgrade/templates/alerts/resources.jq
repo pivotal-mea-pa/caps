@@ -5,13 +5,10 @@
 #
 
 {
-  "mysql": {
+  "deploy-pcf-event-alerts": {
     "internet_connected": $internet_connected
   },
-  "redis": {
-    "internet_connected": $internet_connected
-  },
-  "healthwatch-forwarder": {
+  "destroy-pcf-event-alerts": {
     "internet_connected": $internet_connected
   }
 }

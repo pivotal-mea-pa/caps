@@ -42,24 +42,25 @@
         OPSMAN_USERNAME: ((opsman_admin_username))
         OPSMAN_PASSWORD: ((opsman_admin_password))
         # Product configuration
-        PRODUCT_NAME: p-healthwatch
-        TEMPLATE_PATH: automation/lib/pipelines/pcf/install-and-upgrade/templates/healthwatch
-        TEMPLATE_OVERRIDE_PATH: automation-extensions/((pcf_tile_templates_path))/healthwatch
+        PRODUCT_NAME: p-event-alerts
+        TEMPLATE_PATH: automation/lib/pipelines/pcf/install-and-upgrade/templates/alerts
+        TEMPLATE_OVERRIDE_PATH: automation-extensions/((pcf_tile_templates_path))/alerts
         ERRANDS_TO_DISABLE: ${errands_to_enable}
         ERRANDS_TO_ENABLE: ${errands_to_disable}
         ERRAND_DEFAULT_IF_ENABLED: when-changed
         # Networking
         NETWORK_NAME: services
-        SERVICE_NETWORK_NAME: dynamic-services
         SINGLETON_AVAILABILITY_ZONE: # Sourced from terraform output
         AVAILABILITY_ZONES: # Sourced from terraform output
         # Resources
-        NUM_MYSQL_INSTANCES: 1
-        NUM_PROXY_INSTANCES: 1
         INTERNET_CONNECTED: false
         # Properties
-        FOUNDATION_NAME: ((gcp_resource_prefix))
-        OPSMAN_URL: https://((opsman_host))
+        EVENT_ALERTS_DB_TYPE: ((event_alerts_db_type))
+        DB_USERNAME: ((db_username))
+        DB_PASSWORD: ((db_password))
+        FROM_EMAIL_ADDRESS: ((automation_email))
+        SMTP_HOST: ((smtp_host))
+        SMTP_PORT: ((smtp_port))
 
 - type: replace
   path: /jobs/name=deploy/plan/0/aggregate/-
