@@ -1,0 +1,71 @@
+- type: replace
+  path: /jobs/-
+  value:
+    name: configure-${product_name}-tile
+    on_failure:
+      do:
+      - task: notify on configure-${product_name}-tile failure
+
+    serial: true
+    serial_groups: [configure]
+    plan:
+    - aggregate:
+      - get: automation
+      - get: automation-extensions
+      - get: terraform-output
+      - get: pivnet-product
+        resource: ${product_name}-tile
+        passed: [upload-${product_name}-tile]
+        trigger: true
+        params:
+          skip_download: 'true'
+
+    # Stage product tile
+    - task: stage-tile
+      file: automation/lib/tasks/opsman/stage-product/task.yml
+      params:
+        OPSMAN_HOST: ((opsman_host))
+        OPSMAN_CLIENT_ID: ((opsman_client_id))
+        OPSMAN_CLIENT_SECRET: ((opsman_client_secret))
+        OPSMAN_USERNAME: ((opsman_admin_username))
+        OPSMAN_PASSWORD: ((opsman_admin_password))
+        STAGE_AND_APPLY: false
+        ENABLE_ERRANDS: ((enable_errands))
+
+    # Configure product tile
+    - task: configure
+      file: automation/lib/pipelines/pcf/install-and-upgrade/tasks/configure-healthwatch/task.yml
+      params:
+        OPSMAN_HOST: ((opsman_host))
+        OPSMAN_CLIENT_ID: ((opsman_client_id))
+        OPSMAN_CLIENT_SECRET: ((opsman_client_secret))
+        OPSMAN_USERNAME: ((opsman_admin_username))
+        OPSMAN_PASSWORD: ((opsman_admin_password))
+        # Product configuration
+        PRODUCT_NAME: p-healthwatch
+        TEMPLATE_PATH: automation/lib/pipelines/pcf/install-and-upgrade/templates/healthwatch
+        TEMPLATE_OVERRIDE_PATH: automation-extensions/((pcf_tile_templates_path))/healthwatch
+        ERRANDS_TO_DISABLE: ${errands_to_enable}
+        ERRANDS_TO_ENABLE: ${errands_to_disable}
+        ERRAND_DEFAULT_IF_ENABLED: when-changed
+        # Networking
+        NETWORK_NAME: services
+        SERVICE_NETWORK_NAME: dynamic-services
+        SINGLETON_AVAILABILITY_ZONE: # Sourced from terraform output
+        AVAILABILITY_ZONES: # Sourced from terraform output
+        # Resources
+        NUM_MYSQL_INSTANCES: 1
+        NUM_PROXY_INSTANCES: 1
+        INTERNET_CONNECTED: false
+        # Properties
+        FOUNDATION_NAME: ((gcp_resource_prefix))
+        OPSMAN_URL: https://((opsman_host))
+
+- type: replace
+  path: /jobs/name=deploy/plan/0/aggregate/-
+  value:
+    get: ${product_name}-tile
+    passed: [configure-${product_name}-tile]
+    trigger: true
+    params:
+      skip_download: 'true'

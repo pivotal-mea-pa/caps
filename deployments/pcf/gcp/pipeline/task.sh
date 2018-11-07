@@ -168,6 +168,10 @@ for e in $ENVIRONMENTS; do
     -v "autos3_url=$AUTOS3_URL" \
     -v "autos3_access_key=$AUTOS3_ACCESS_KEY" \
     -v "autos3_secret_key=$AUTOS3_SECRET_KEY" \
+    -v "smtp_host=$SMTP_HOST" \
+    -v "smtp_port=$SMTP_PORT" \
+    -v "automation_email=$EMAIL_FROM" \
+    -v "notification_email=$EMAIL_TO" \
     -v "pipeline_automation_path=$PIPELINE_AUTOMATION_PATH" \
     -v "vpc_name=$VPC_NAME" >/dev/null
 
