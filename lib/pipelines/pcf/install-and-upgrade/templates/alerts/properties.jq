@@ -25,7 +25,7 @@ if $event_alerts_db_type == "external" then
   ".properties.mysql.external.port": { "value": $db_port },
   ".properties.mysql.external.username": { "value": $db_username },
   ".properties.mysql.external.password": { "value": { "secret": $db_password } },
-  ".properties.mysql.external.database": { "value": { "secret":  } }
+  ".properties.mysql.external.database": { "value": $db_external_name }
 }
 else
 {
