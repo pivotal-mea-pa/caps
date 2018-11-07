@@ -130,7 +130,7 @@ resource "google_sql_database" "eventalerts" {
   instance   = "${google_sql_database_instance.master.name}"
 }
 
-resource "google_sql_user" "diego" {
+resource "google_sql_user" "pas-db-user" {
   name     = "${var.db_username}"
   password = "${var.db_password}"
   instance = "${google_sql_database_instance.master.name}"
