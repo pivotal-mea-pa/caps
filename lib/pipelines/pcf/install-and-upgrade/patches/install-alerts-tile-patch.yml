@@ -34,7 +34,7 @@
 
     # Configure product tile
     - task: configure
-      file: automation/lib/pipelines/pcf/install-and-upgrade/tasks/configure-healthwatch/task.yml
+      file: automation/lib/pipelines/pcf/install-and-upgrade/tasks/configure-alerts/task.yml
       params:
         OPSMAN_HOST: ((opsman_host))
         OPSMAN_CLIENT_ID: ((opsman_client_id))
