@@ -20,7 +20,7 @@
 #
 if $event_alerts_db_type == "external" then
 {
-  ".properties.uaa_database": { "value": "External DB" },
+  ".properties.mysql": { "value": "External DB" },
   ".properties.mysql.external.host": { "value": $db_host },
   ".properties.mysql.external.port": { "value": $db_port },
   ".properties.mysql.external.username": { "value": $db_username },
@@ -29,7 +29,7 @@ if $event_alerts_db_type == "external" then
 }
 else
 {
-  ".properties.uaa_database": { "value": "MySQL Service" },
+  ".properties.mysql": { "value": "MySQL Service" },
   ".properties.mysql.internal.plan_name": { "value": $db_internal_plan_name }
 }
 end
