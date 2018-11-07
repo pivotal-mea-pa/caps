@@ -108,7 +108,7 @@ pas_db_type: 'internal'
 event_alerts_db_type: 'internal'
 
 db_username: 'pas_system'
-db_username: '${pas_system_dbpassword}'
+db_password: '${pas_system_dbpassword}'
 
 # Domain Names for ERT
 system_domain_prefix: 'sys'
