@@ -33,6 +33,8 @@ download_products_patches_path=automation/lib/pipelines/pcf/download-products/pa
 install_and_upgrade_pipeline_path=automation/lib/pipelines/pcf/install-and-upgrade/pipeline
 install_and_upgrade_patches_path=automation/lib/pipelines/pcf/install-and-upgrade/patches
 
+post_install_pipeline_path=automation/lib/pipelines/pcf/post-install
+
 backup_and_restore_pipeline_path=automation/lib/pipelines/pcf/backup-and-restore/pipeline
 backup_and_restore_patches_path=automation/lib/pipelines/pcf/backup-and-restore/patches
 
@@ -148,7 +150,7 @@ for e in $ENVIRONMENTS; do
       $bosh interpolate -o ${product_name}-patch.yml \
         install-pcf-pipeline$i.yml > install-pcf-pipeline$j.yml
 
-      i=$(($i+1)) && j=$(($j+1))
+      i=$(($i+1)) && j=$(($j+1))      
     done
 
   else
@@ -199,6 +201,51 @@ for e in $ENVIRONMENTS; do
   done
   set -e
 
+  # Setup post install pipelines
+
+  for p in $(echo -e "$PRODUCTS"); do 
+    product_name=$(echo $p | awk -F':' '{ print $1 }')
+    slug_and_version=$(echo $p | awk -F':' '{ print $2 }')
+    product_slug=${slug_and_version%/*}
+    product_version=${slug_and_version#*/}
+
+    if [[ -e $post_install_pipeline_path/$product_name/pipeline/pipeline.yml ]]
+
+      rm -fr .terraform/
+      rm terraform.tfstate
+
+      terraform init $terraform_params_path
+
+      terraform apply -auto-approve \
+        -var "bootstrap_state_bucket=$BOOTSTRAP_STATE_BUCKET" \
+        -var "bootstrap_state_prefix=$BOOTSTRAP_STATE_PREFIX" \
+        -var "params_template_file=$post_install_pipeline_path/$product_name/pipeline/params.yml" \
+        -var "params_file=post-install-params.yml" \
+        -var "environment=${e}" \
+        $terraform_params_path >/dev/null
+
+      $patch_job_notifications $post_install_pipeline_path/$product_name/pipeline/pipeline.yml > pipeline.yml
+
+      fly -t default set-pipeline -n \
+        -p ${env}_${product_name}_post-install \
+        -c pipeline.yml \
+        -l post-install-params.yml \
+        -v "trace=$TRACE" \
+        -v "concourse_url=$CONCOURSE_URL" \
+        -v "concourse_user=$CONCOURSE_USER" \
+        -v "concourse_password=$CONCOURSE_PASSWORD" \
+        -v "autos3_url=$AUTOS3_URL" \
+        -v "autos3_access_key=$AUTOS3_ACCESS_KEY" \
+        -v "autos3_secret_key=$AUTOS3_SECRET_KEY" \
+        -v "smtp_host=$SMTP_HOST" \
+        -v "smtp_port=$SMTP_PORT" \
+        -v "automation_email=$EMAIL_FROM" \
+        -v "notification_email=$EMAIL_TO" \
+        -v "pipeline_automation_path=$PIPELINE_AUTOMATION_PATH" \
+        -v "vpc_name=$VPC_NAME" >/dev/null
+    fi
+  done
+  
   # Setup backup and restore pipeline
 
   rm -fr .terraform/
