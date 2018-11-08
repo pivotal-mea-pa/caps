@@ -54,7 +54,6 @@ jobs:
       PKS_ADMIN_PASSWORD: ((pks_admin_password))
       PKS_ADMIN_EMAIL: ((automation_email))
 
-jobs:
 - name: create-pks-loadbalancers
   on_failure:
     do:
