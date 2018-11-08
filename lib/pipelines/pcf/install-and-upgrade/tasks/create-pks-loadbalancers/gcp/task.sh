@@ -72,8 +72,8 @@ export TF_VAR_cluster_instances="$cluster_instances }"
 terraform init \
     -backend-config="bucket=${TERRAFORM_STATE_BUCKET}" \
     -backend-config="prefix=${GCP_RESOURCE_PREFIX}-k8s-clusters" \
-    automation/lib/pipelines/pcf/install-and-upgrade/tasks/create-pks-cluster-infrastructure/gcp/terraform
+    automation/lib/pipelines/pcf/install-and-upgrade/tasks/create-pks-loadbalancers/gcp/terraform
 
 terraform apply \
     -auto-approve \
-    automation/lib/pipelines/pcf/install-and-upgrade/tasks/create-pks-cluster-infrastructure/gcp/terraform
+    automation/lib/pipelines/pcf/install-and-upgrade/tasks/create-pks-loadbalancers/gcp/terraform
