@@ -25,6 +25,10 @@ gcp_region: '${gcp_region}'
 # Terraform state location
 terraform_state_bucket: "${terraform_state_bucket}"
 
+# Environment identifiers
+gcp_resource_prefix: '${vpc_name}-${environment}'
+environment: '${environment}'
+
 #
 # Pivnet download and Ops Manager configuration
 #

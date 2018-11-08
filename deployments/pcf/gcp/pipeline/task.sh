@@ -242,6 +242,9 @@ for e in $ENVIRONMENTS; do
         -v "automation_email=$EMAIL_FROM" \
         -v "notification_email=$EMAIL_TO" \
         -v "pipeline_automation_path=$PIPELINE_AUTOMATION_PATH" \
+        -v "product_name=$product_name" \
+        -v "product_slug=$product_slug" \
+        -v "product_version=$product_version" \
         -v "vpc_name=$VPC_NAME" >/dev/null
     fi
   done
