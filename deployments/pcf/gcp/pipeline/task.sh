@@ -209,7 +209,7 @@ for e in $ENVIRONMENTS; do
     product_slug=${slug_and_version%/*}
     product_version=${slug_and_version#*/}
 
-    if [[ -e $post_install_pipeline_path/$product_name/pipeline/pipeline.yml ]]
+    if [[ -e $post_install_pipeline_path/$product_name/pipeline/pipeline.yml ]]; then
 
       rm -fr .terraform/
       rm terraform.tfstate
