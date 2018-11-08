@@ -4,13 +4,18 @@ source ~/scripts/opsman-func.sh
 source ~/scripts/bosh-func.sh
 root=$PWD
 
-[[ -n "$TRACE" ]] && set -x
-set -eu
+source automation/lib/scripts/utility/template-utils.sh
 
-mv pks-release/pks-linux-amd64-* /usr/local/bin/pks
+[[ -n "$TRACE" ]] && set -x
+set -eo pipefail
+
+# Source terraform output variables if available
+source_variables 'terraform-output/pcf-env-*.sh'
+
+mv pks-clis/pks-linux-amd64-* /usr/local/bin/pks
 chmod +x /usr/local/bin/pks
 
-mv pks-release/kubectl-linux-amd64-* /usr/local/bin/kubectl
+mv pks-clis/kubectl-linux-amd64-* /usr/local/bin/kubectl
 chmod +x /usr/local/bin/kubectl
 
 # Save service key to a json file as Terraform GCS 
@@ -37,7 +42,7 @@ export BOSH_CA_CERT=$(opsman::download_bosh_ca_cert)
 export BOSH_CLIENT='ops_manager'
 export BOSH_CLIENT_SECRET=$(opsman::get_director_client_secret ops_manager)
 
-pks login --skip-ssl-validation --api $PKS_API --username $PKS_USERNAME --password $PKS_PASSWORD
+pks login --skip-ssl-validation --api $PKS_URL --username $PKS_ADMIN_USERNAME --password $PKS_ADMIN_PASSWORD
 
 clusters='['
 cluster_ids='{'
@@ -76,4 +81,6 @@ terraform init \
 
 terraform apply \
     -auto-approve \
+    -var "terraform_state_bucket=${TERRAFORM_STATE_BUCKET}" \
+    -var "pcf_state_prefix=${GCP_RESOURCE_PREFIX}" \
     automation/lib/pipelines/pcf/install-and-upgrade/tasks/create-pks-loadbalancers/gcp/terraform

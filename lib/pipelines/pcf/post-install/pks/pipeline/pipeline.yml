@@ -1,0 +1,88 @@
+---
+resource_types:
+- name: pivnet
+  type: docker-image
+  source:
+    repository: pivotalcf/pivnet-resource
+    tag: latest-final
+
+resources:
+- name: automation
+  type: git
+  source:
+    uri: ((automation_pipelines_repo))
+    branch: ((automation_pipelines_branch))
+
+- name: pks-clis
+  type: pivnet
+  source:
+    api_token: ((pivnet_token))
+    product_slug: pivotal-container-service
+    product_version: ((pks_product_version))
+    sort_by: semver
+
+- name: terraform-output
+  type: s3
+  source:
+    bucket: pcf
+    endpoint: ((autos3_url))
+    access_key_id: ((autos3_access_key))
+    secret_access_key: ((autos3_secret_key))
+    regexp: terraform-output/pcf-env-(.*).sh
+
+jobs:
+- name: create-pks-admin-user
+  on_failure:
+    do:
+    - task: notify on create-pks-admin-user failure
+
+  serial: true
+  plan:
+  - aggregate:
+    - get: automation
+    - get: terraform-output
+
+  - task: create-pks-admin-user
+    file: automation/lib/pipelines/pcf/post-install/tasks/create-pks-admin-user/task.yml
+    params:
+      OPSMAN_HOST: ((opsman_host))
+      OPSMAN_USERNAME: ((opsman_admin_username))
+      OPSMAN_PASSWORD: ((opsman_admin_password))
+      OPSMAN_CLIENT_ID: ((opsman_client_id))
+      OPSMAN_CLIENT_SECRET: ((opsman_client_secret))
+      PKS_ADMIN_USERNAME: ((pks_admin_username))
+      PKS_ADMIN_PASSWORD: ((pks_admin_password))
+      PKS_ADMIN_EMAIL: ((automation_email))
+
+jobs:
+- name: create-pks-loadbalancers
+  on_failure:
+    do:
+    - task: notify on create-pks-loadbalancers failure
+
+  serial: true
+  plan:
+  - aggregate:
+    - get: automation
+    - get: terraform-output
+      passed: ["create-pks-admin-user"]
+    - get: pks-clis
+      params:
+        globs:
+        - '*-linux-amd64-*'
+
+  - task: create-pks-loadbalancers
+    file: automation/lib/pipelines/pcf/post-install/tasks/create-pks-loadbalancers/gcp/task.yml
+    params:
+      GCP_RESOURCE_PREFIX: ((gcp_resource_prefix))
+      GCP_SERVICE_ACCOUNT_KEY: ((gcp_service_account_key))
+      GCP_PROJECT_ID: ((gcp_project))
+      GCP_REGION: ((gcp_region))
+      TERRAFORM_STATE_BUCKET: ((terraform_state_bucket))
+      OPSMAN_HOST: ((opsman_host))
+      OPSMAN_USERNAME: ((opsman_admin_username))
+      OPSMAN_PASSWORD: ((opsman_admin_password))
+      OPSMAN_CLIENT_ID: ((opsman_client_id))
+      OPSMAN_CLIENT_SECRET: ((opsman_client_secret))
+      PKS_ADMIN_USERNAME: ((pks_admin_username))
+      PKS_ADMIN_PASSWORD: ((pks_admin_password))

@@ -5,15 +5,15 @@
 // PKS Kubernetes cluster external IPs
 resource "google_compute_address" "k8s" {
   count = "${length(var.clusters)}"
-  name  = "${var.vpc_name}-${var.clusters[count.index]}"
+  name  = "${data.terraform_remote_state.pcf.deployment_prefix}-${var.clusters[count.index]}"
 }
 
 // PKS Kubernetes cluster API DNS names
 resource "google_dns_record_set" "k8s" {
   count = "${length(var.clusters)}"
-  name  = "${var.clusters[count.index]}.${var.pks_domain}."
+  name  = "${var.clusters[count.index]}.${data.terraform_remote_state.pcf.env_domain}."
 
-  managed_zone = "${var.pks_dns_zone_name}"
+  managed_zone = "${data.terraform_remote_state.pcf.env_dns_zone_name}"
 
   type = "A"
   ttl  = 300
@@ -24,10 +24,10 @@ resource "google_dns_record_set" "k8s" {
 // PKS Kubernetes cluster API backend health check
 resource "google_compute_health_check" "k8s" {
   count = "${length(var.clusters)}"
-  name  = "${var.vpc_name}-${var.clusters[count.index]}"
+  name  = "${data.terraform_remote_state.pcf.deployment_prefix}-${var.clusters[count.index]}"
 
   https_health_check {
-    host         = "${var.clusters[count.index]}.${var.pks_domain}."
+    host         = "${var.clusters[count.index]}.${data.terraform_remote_state.pcf.env_domain}."
     port         = 8443
     request_path = "/healthz"
   }
@@ -41,7 +41,7 @@ resource "google_compute_health_check" "k8s" {
 // PKS Kubernetes cluster target pools
 resource "google_compute_target_pool" "k8s" {
   count = "${length(var.clusters)}"
-  name  = "${var.vpc_name}-${var.clusters[count.index]}-pool"
+  name  = "${data.terraform_remote_state.pcf.deployment_prefix}-${var.clusters[count.index]}-pool"
 
   # Only legacy health HTTP health checks are 
   # supported for now. Wait until this is fixed. 
@@ -56,7 +56,7 @@ resource "google_compute_target_pool" "k8s" {
 // PKS Kubernetes API tcp forwarding rule
 resource "google_compute_forwarding_rule" "k8s" {
   count = "${length(var.clusters)}"
-  name  = "${var.vpc_name}-${var.clusters[count.index]}-forward-rule"
+  name  = "${data.terraform_remote_state.pcf.deployment_prefix}-${var.clusters[count.index]}-forward-rule"
 
   target = "${element(google_compute_target_pool.k8s.*.self_link, count.index)}"
 
@@ -68,9 +68,9 @@ resource "google_compute_forwarding_rule" "k8s" {
 // Allow access to PKS resourcecs
 resource "google_compute_firewall" "k8s" {
   count = "${length(var.clusters)}"
-  name  = "${var.vpc_name}-${var.clusters[count.index]}-allow-k8s"
+  name  = "${data.terraform_remote_state.pcf.deployment_prefix}-${var.clusters[count.index]}-allow-k8s"
 
-  network = "${var.pks_network_name}"
+  network = "${data.terraform_remote_state.pcf.vpc_network_name}"
 
   allow {
     protocol = "tcp"
