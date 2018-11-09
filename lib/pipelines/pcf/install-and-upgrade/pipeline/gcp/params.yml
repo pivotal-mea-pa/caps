@@ -172,9 +172,15 @@ internet_connected: false
 num_diego_cells: ${num_diego_cells}
 
 #
-# Common variables for tile uploads
+# PKS tile settings
 #
 
+pks_admin_username: pks-admin
+pks_admin_password: '${common_admin_password}'
+
+#
+# Common variables for tile uploads
+#
 
 # Set to true to enable all errands for product tiles other than the pas tile, 
 # false to disable all or leave blank to keep states the same.
