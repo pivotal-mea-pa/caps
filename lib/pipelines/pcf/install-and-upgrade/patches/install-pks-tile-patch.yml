@@ -8,6 +8,15 @@
       tag: latest-final
 
 - type: replace
+  path: /resource_types/-
+  value:
+    name: bosh-deployment-event
+    type: docker-image
+    source:
+      repository: mevansam/bosh-deployment-event-resource
+      tag: latest
+
+- type: replace
   path: /resources/-
   value:
     name: pks-clis
@@ -17,6 +26,19 @@
       product_slug: ${product_slug}
       product_version: ${product_version}
       sort_by: semver
+
+- type: replace
+  path: /resources/-
+  value:
+    name: deployment-event
+    type: bosh-deployment-event
+    source:
+      opsman_host: ((opsman_host))
+      opsman_client_id: ((opsman_client_id))
+      opsman_client_secret: ((opsman_client_secret))
+      opsman_username: ((opsman_admin_username))
+      opsman_password: ((opsman_admin_password))
+      skip_ssl_validation: true
 
 - type: replace
   path: /jobs/-
@@ -117,9 +139,9 @@
     - aggregate:
       - get: automation
       - get: terraform-output
-
       - get: pks-tile
         passed: [deploy]
+        trigger: true
         params:
           skip_download: 'true'
 
@@ -147,6 +169,8 @@
     plan:
     - aggregate:
       - get: automation
+      - get: deployment-event
+        trigger: true
       - get: terraform-output
         passed: ["create-pks-admin-user"]
       - get: pks-clis
@@ -169,3 +193,11 @@
         OPSMAN_CLIENT_SECRET: ((opsman_client_secret))
         PKS_ADMIN_USERNAME: ((pks_admin_username))
         PKS_ADMIN_PASSWORD: ((pks_admin_password))
+
+- type: replace
+  path: /groups/name=Install & Upgrade Products/jobs?/-
+  value: create-pks-admin-user
+
+- type: replace
+  path: /groups/name=Install & Upgrade Products/jobs?/-
+  value: create-pks-loadbalancers
