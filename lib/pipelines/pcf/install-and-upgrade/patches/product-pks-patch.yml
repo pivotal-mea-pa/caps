@@ -186,7 +186,7 @@
         PKS_ADMIN_PASSWORD: ((pks_admin_password))
 
 - type: replace
-  path: /jobs/name=destroy-env/plan/0:after
+  path: /jobs/name=destroy-env/plan/1:after
   value:
     task: destroy-pks-loadbalancers
     file: automation/lib/pipelines/pcf/install-and-upgrade/tasks/destroy-pks-loadbalancers/gcp/task.yml

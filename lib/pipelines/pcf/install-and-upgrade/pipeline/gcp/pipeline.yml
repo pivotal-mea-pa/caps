@@ -60,6 +60,15 @@ jobs:
   - aggregate:
     - get: automation
     - get: automation-extensions
+  - task: set-stopped-state
+    file: automation/lib/inceptor/tasks/toggle-state/task.yml
+    params: 
+      OFF_STATE: started
+      ON_STATE: stopped
+      VERSION_INCREMENT: 0
+      AUTOS3_URL: ((autos3_url))
+      AUTOS3_ACCESS_KEY: ((autos3_access_key))
+      AUTOS3_SECRET_KEY: ((autos3_secret_key))
   - task: destroy
     file: automation/lib/pipelines/pcf/install-and-upgrade/tasks/destroy-infrastructure/gcp/task.yml
     params:
