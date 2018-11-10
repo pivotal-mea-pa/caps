@@ -33,8 +33,6 @@ download_products_patches_path=automation/lib/pipelines/pcf/download-products/pa
 install_and_upgrade_pipeline_path=automation/lib/pipelines/pcf/install-and-upgrade/pipeline
 install_and_upgrade_patches_path=automation/lib/pipelines/pcf/install-and-upgrade/patches
 
-post_install_pipeline_path=automation/lib/pipelines/pcf/post-install
-
 backup_and_restore_pipeline_path=automation/lib/pipelines/pcf/backup-and-restore/pipeline
 backup_and_restore_patches_path=automation/lib/pipelines/pcf/backup-and-restore/patches
 
@@ -102,29 +100,37 @@ for e in $ENVIRONMENTS; do
   env=$(echo $e | awk '{print toupper($0)}')
   echo "\n*** Configuring pipelines for ${env} ***\n"
 
-  rm -fr .terraform/
-  rm terraform.tfstate
-  
-  terraform init $terraform_params_path
-
-  terraform apply -auto-approve \
-    -var "bootstrap_state_bucket=$BOOTSTRAP_STATE_BUCKET" \
-    -var "bootstrap_state_prefix=$BOOTSTRAP_STATE_PREFIX" \
-    -var "params_template_file=$install_and_upgrade_pipeline_path/gcp/params.yml" \
-    -var "params_file=install-pcf-params.yml" \
-    -var "environment=${e}" \
-    $terraform_params_path >/dev/null
-
+  # Install and upgrade pipeline base
   eval "echo \"$(cat $install_and_upgrade_pipeline_path/gcp/pipeline.yml)\"" \
-    > install-pcf-pipeline0.yml
+    > install-and-upgrade-pipeline0.yml
   
+  # Backup and restore pipeline base
+  eval "echo \"$(cat $backup_and_restore_pipeline_path/gcp/pipeline.yml)\"" \
+    > backup_and_restore_pipeline0.yml
+
   if [[ -n $PRODUCTS ]]; then
 
-    eval "echo \"$(cat $install_and_upgrade_patches_path/product-install-patch.yml)\"" \
-        > product-install-patch.yml
+    #
+    # Apply any patching required if at least one product is specified
+    #
 
-    $bosh interpolate -o product-install-patch.yml \
-      install-pcf-pipeline0.yml > install-pcf-pipeline1.yml
+    # Patch install and upgrade pipeline
+    eval "echo \"$(cat $install_and_upgrade_patches_path/install-and-upgrade-patch.yml)\"" \
+      > install-and-upgrade-patch.yml
+
+    $bosh interpolate -o install-and-upgrade-patch.yml \
+      install-and-upgrade-pipeline0.yml > install-and-upgrade-pipeline1.yml
+
+    # Patch backup and restore pipeline
+    eval "echo \"$(cat $backup_and_restore_patches_path/backup-and-restore-patch.yml)\"" \
+      > backup-and-restore-patch.yml
+
+    $bosh interpolate -o backup-and-restore-patch.yml \
+      backup_and_restore_pipeline0.yml > backup_and_restore_pipeline1.yml
+
+    #
+    # Apply patches of all the speficied products
+    #
 
     i=1 && j=2
     for p in $(echo -e "$PRODUCTS"); do 
@@ -136,19 +142,35 @@ for e in $ENVIRONMENTS; do
       product_slug=${slug_and_version%/*}
       product_version=${slug_and_version#*/}
 
-      if [[ -e $install_and_upgrade_patches_path/install-${product_name}-tile-patch.yml ]]; then
+      # Patch install and upgrade pipeline
+      if [[ -e $install_and_upgrade_patches_path/product-${product_name}-patch.yml ]]; then
 
-        eval "echo \"$(cat $install_and_upgrade_patches_path/install-common-patch.yml)\"" \
-          > ${product_name}-patch.yml
-        eval "echo \"$(cat $install_and_upgrade_patches_path/install-${product_name}-tile-patch.yml)\"" \
-          >> ${product_name}-patch.yml
+        eval "echo \"$(cat $install_and_upgrade_patches_path/product-common-patch.yml)\"" \
+          > install-and-upgrade-${product_name}-patch.yml
+        eval "echo \"$(cat $install_and_upgrade_patches_path/product-${product_name}-patch.yml)\"" \
+          >> install-and-upgrade-${product_name}-patch.yml
       else
-        eval "echo \"$(cat $install_and_upgrade_patches_path/install-tile-patch.yml)\"" \
-          > ${product_name}-patch.yml
+        eval "echo \"$(cat $install_and_upgrade_patches_path/product-unknown-patch.yml)\"" \
+          > install-and-upgrade-${product_name}-patch.yml
       fi
 
-      $bosh interpolate -o ${product_name}-patch.yml \
-        install-pcf-pipeline$i.yml > install-pcf-pipeline$j.yml
+      $bosh interpolate -o install-and-upgrade-${product_name}-patch.yml \
+        install-and-upgrade-pipeline$i.yml > install-and-upgrade-pipeline$j.yml
+
+      # Patch backup and restore pipeline
+      if [[ -e $backup_and_restore_patches_path/product-${product_name}-patch.yml ]]; then
+
+        eval "echo \"$(cat $backup_and_restore_patches_path/product-common-patch.yml)\"" \
+          > backup-and-restore-${product_name}-patch.yml
+        eval "echo \"$(cat $backup_and_restore_patches_path/product-${product_name}-patch.yml)\"" \
+          >> backup-and-restore-${product_name}-patch.yml
+      else
+        eval "echo \"$(cat $backup_and_restore_patches_path/product-unknown-patch.yml)\"" \
+          > backup-and-restore-${product_name}-patch.yml
+      fi
+
+      $bosh interpolate -o backup-and-restore-${product_name}-patch.yml \
+        backup_and_restore_pipeline$i.yml > backup_and_restore_pipeline$j.yml
 
       i=$(($i+1)) && j=$(($j+1))      
     done
@@ -157,12 +179,33 @@ for e in $ENVIRONMENTS; do
     i=0
   fi
 
-  $patch_job_notifications install-pcf-pipeline$i.yml > pipeline.yml
+  # Patch notifications to install and upgrade pipeline
+  $patch_job_notifications install-and-upgrade-pipeline$i.yml > install-and-upgrade-pipeline.yml
+
+  # Patch notifications to backup and restore pipeline
+  $patch_job_notifications backup_and_restore_pipeline$i.yml > backup-and-restore-pipeline.yml
+
+  #
+  # Set install and upgrade pipeline
+  #
+
+  rm -fr .terraform/
+  rm terraform.tfstate
+  
+  terraform init $terraform_params_path
+
+  terraform apply -auto-approve \
+    -var "bootstrap_state_bucket=$BOOTSTRAP_STATE_BUCKET" \
+    -var "bootstrap_state_prefix=$BOOTSTRAP_STATE_PREFIX" \
+    -var "params_template_file=$install_and_upgrade_pipeline_path/gcp/params.yml" \
+    -var "params_file=install-and-upgrade-params.yml" \
+    -var "environment=${e}" \
+    $terraform_params_path >/dev/null
 
   fly -t default set-pipeline -n \
     -p ${env}_deployment \
-    -c pipeline.yml > bootstrap \
-    -l install-pcf-params.yml \
+    -c install-and-upgrade-pipeline.yml \
+    -l install-and-upgrade-params.yml \
     -v "trace=$TRACE" \
     -v "concourse_url=$CONCOURSE_URL" \
     -v "concourse_user=$CONCOURSE_USER" \
@@ -176,6 +219,45 @@ for e in $ENVIRONMENTS; do
     -v "notification_email=$EMAIL_TO" \
     -v "pipeline_automation_path=$PIPELINE_AUTOMATION_PATH" \
     -v "vpc_name=$VPC_NAME" >/dev/null
+
+  #
+  # Set backup and restore pipeline
+  #
+
+  rm -fr .terraform/
+  rm terraform.tfstate
+
+  terraform init $terraform_params_path
+
+  terraform apply -auto-approve \
+    -var "bootstrap_state_bucket=$BOOTSTRAP_STATE_BUCKET" \
+    -var "bootstrap_state_prefix=$BOOTSTRAP_STATE_PREFIX" \
+    -var "params_template_file=$backup_and_restore_pipeline_path/gcp/params.yml" \
+    -var "params_file=backup-and-restore-params.yml" \
+    -var "environment=${e}" \
+    $terraform_params_path >/dev/null
+
+  fly -t default set-pipeline -n \
+    -p ${env}_backup \
+    -c backup-and-restore-pipeline.yml \
+    -l backup-and-restore-params.yml \
+    -v "trace=$TRACE" \
+    -v "concourse_url=$CONCOURSE_URL" \
+    -v "concourse_user=$CONCOURSE_USER" \
+    -v "concourse_password=$CONCOURSE_PASSWORD" \
+    -v "autos3_url=$AUTOS3_URL" \
+    -v "autos3_access_key=$AUTOS3_ACCESS_KEY" \
+    -v "autos3_secret_key=$AUTOS3_SECRET_KEY" \
+    -v "smtp_host=$SMTP_HOST" \
+    -v "smtp_port=$SMTP_PORT" \
+    -v "automation_email=$EMAIL_FROM" \
+    -v "notification_email=$EMAIL_TO" \
+    -v "pipeline_automation_path=$PIPELINE_AUTOMATION_PATH" \
+    -v "vpc_name=$VPC_NAME" >/dev/null
+
+  #
+  # Wait for deployment to reach an initial state
+  #
 
   # Unpause the pipeline. The pipeline jobs will rerun in 
   # an idempotent manner if a prior installation is found.
@@ -201,40 +283,12 @@ for e in $ENVIRONMENTS; do
   done
   set -e
 
-  # Setup backup and restore pipeline
-
-  rm -fr .terraform/
-  rm terraform.tfstate
-
-  terraform init $terraform_params_path
-
-  terraform apply -auto-approve \
-    -var "bootstrap_state_bucket=$BOOTSTRAP_STATE_BUCKET" \
-    -var "bootstrap_state_prefix=$BOOTSTRAP_STATE_PREFIX" \
-    -var "params_template_file=$backup_and_restore_pipeline_path/gcp/params.yml" \
-    -var "params_file=backup-and-restore-params.yml" \
-    -var "environment=${e}" \
-    $terraform_params_path >/dev/null
-
-  $patch_job_notifications $backup_and_restore_pipeline_path/gcp/pipeline.yml > pipeline.yml
-
-  fly -t default set-pipeline -n \
-    -p ${env}_backup-and-restore \
-    -c pipeline.yml \
-    -l backup-and-restore-params.yml \
-    -v "trace=$TRACE" \
-    -v "concourse_url=$CONCOURSE_URL" \
-    -v "concourse_user=$CONCOURSE_USER" \
-    -v "concourse_password=$CONCOURSE_PASSWORD" \
-    -v "autos3_url=$AUTOS3_URL" \
-    -v "autos3_access_key=$AUTOS3_ACCESS_KEY" \
-    -v "autos3_secret_key=$AUTOS3_SECRET_KEY" \
-    -v "pipeline_automation_path=$PIPELINE_AUTOMATION_PATH" \
-    -v "vpc_name=$VPC_NAME" >/dev/null
-
+  # Unpause the backup and restore pipeline
   fly -t default unpause-pipeline -p ${env}_backup-and-restore
-
+  
+  #
   # Setup start and stop pipeline
+  #
 
   rm -fr .terraform/
   rm terraform.tfstate
