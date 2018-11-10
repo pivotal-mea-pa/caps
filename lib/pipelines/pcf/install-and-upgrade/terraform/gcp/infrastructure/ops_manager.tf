@@ -102,7 +102,7 @@ data "template_file" "export-installation" {
 }
 
 data "template_file" "import-installation" {
-  template = "${file("${path.module}/../../../../../scripts/opsman/import-installation.sh")}"
+  template = "${file("${path.module}/../../../../../../scripts/opsman/import-installation.sh")}"
 
   vars {
     opsman_dns_name       = "${local.opsman_dns_name}"
@@ -111,7 +111,7 @@ data "template_file" "import-installation" {
 }
 
 data "template_file" "mount-opsman-data-volume" {
-  template = "${file("${path.module}/../../../../../scripts/utility/mount-volume.sh")}"
+  template = "${file("${path.module}/../../../../../../scripts/utility/mount-volume.sh")}"
 
   vars {
     attached_device_name = "/dev/sdb"
