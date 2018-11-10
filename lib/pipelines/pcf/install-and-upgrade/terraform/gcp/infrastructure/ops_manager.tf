@@ -93,7 +93,7 @@ resource "null_resource" "ops-manager" {
 }
 
 data "template_file" "export-installation" {
-  template = "${file("${path.module}/../../../../../scripts/opsman/export-installation.sh")}"
+  template = "${file("${path.module}/../../../../../../scripts/opsman/export-installation.sh")}"
 
   vars {
     opsman_dns_name       = "${local.opsman_dns_name}"
