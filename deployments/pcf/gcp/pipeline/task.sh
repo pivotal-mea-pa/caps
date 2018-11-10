@@ -259,33 +259,36 @@ for e in $ENVIRONMENTS; do
   # Wait for deployment to reach an initial state
   #
 
-  # Unpause the pipeline. The pipeline jobs will rerun in 
+  # Unpause the pipelines. The pipeline jobs will rerun in 
   # an idempotent manner if a prior installation is found.
-  [[ $UNPAUSE_INSTALL_PIPELINE == "true" ]] && \
+  if [[ $UNPAUSE_INSTALL_PIPELINE == "true" ]]; then
     fly -t default unpause-pipeline -p ${env}_deployment
 
-  # Wait until the PCF Ops Manager director has been been successfully deployed.
-  set +e
+    if [[ -n $WAIT_ON_DEPLOYMENT_JOB ]]; then
 
-  b=1
-  while true; do
-    r=$(fly -t default watch -j ${env}_deployment/deploy-director -b $b 2>&1)
-    [[ $? -eq 0 ]] && break
+      # Wait until given job is complete.
+      set +e
 
-    s=$(echo "$r" | tail -1)
-    if [[ "$s" == "failed" ]]; then
-      echo -e "\n*** Job $${env}_deployment/deploy-director  FAILED! ***\n"
-      echo -e "$r\n"
-      b=$(($b+1))
+      b=1
+      while true; do
+        r=$(fly -t default watch -j ${env}_deployment/$WAIT_ON_DEPLOYMENT_JOB -b $b 2>&1)
+        [[ $? -eq 0 ]] && break
+
+        s=$(echo "$r" | tail -1)
+        if [[ "$s" == "failed" ]]; then
+          echo -e "\n*** Job ${env}_deployment/$WAIT_ON_DEPLOYMENT_JOB FAILED! ***\n"
+          echo -e "$r\n"
+          b=$(($b+1))
+        fi
+        echo "Waiting for job ${env}_deployment/$WAIT_ON_DEPLOYMENT_JOB build $b to complete..."
+        sleep 5
+      done
+      set -e
     fi
-    echo "Waiting for job ${env}_deployment/deploy-director  build $b to complete..."
-    sleep 5
-  done
-  set -e
 
-  # Unpause the backup and restore pipeline
-  fly -t default unpause-pipeline -p ${env}_backup-and-restore
-  
+    fly -t default unpause-pipeline -p ${env}_backup
+  fi
+
   #
   # Setup start and stop pipeline
   #
