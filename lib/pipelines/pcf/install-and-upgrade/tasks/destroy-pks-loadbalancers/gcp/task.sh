@@ -11,6 +11,10 @@ export GOOGLE_CREDENTIALS=$root/gcp_service_account_key.json
 export GOOGLE_PROJECT=${GCP_PROJECT_ID}
 export GOOGLE_REGION=${GCP_REGION}
 
+export TF_VAR_clusters="[]"
+export TF_VAR_cluster_ids="{}"
+export TF_VAR_cluster_instances="{}"
+
 terraform init \
     -backend-config="bucket=${TERRAFORM_STATE_BUCKET}" \
     -backend-config="prefix=${GCP_RESOURCE_PREFIX}-k8s-clusters" \
