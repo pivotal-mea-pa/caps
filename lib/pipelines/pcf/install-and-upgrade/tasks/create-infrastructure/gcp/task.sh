@@ -14,7 +14,7 @@ export GOOGLE_CREDENTIALS=$root/gcp_service_account_key.json
 export GOOGLE_PROJECT=${GCP_PROJECT_ID}
 export GOOGLE_REGION=${GCP_REGION}
 
-TERRAFORM_TEMPLATES_PATH=automation/lib/pipelines/pcf/install-and-upgrade/terraform/gcp
+TERRAFORM_TEMPLATES_PATH=automation/lib/pipelines/pcf/install-and-upgrade/terraform/gcp/infrastructure
 if [[ -n $TEMPLATE_OVERRIDE_PATH && -d $TEMPLATE_OVERRIDE_PATH ]]; then
   cp -r $TEMPLATE_OVERRIDE_PATH/ $TERRAFORM_TEMPLATES_PATH
 fi
