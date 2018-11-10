@@ -52,22 +52,18 @@ pks_clusters=$(pks clusters | awk '$1 != "Name" { print $1 }')
 for c in $pks_clusters; do
 
     info=$(pks cluster $c)
-    status=$(echo "$info" | awk -F':' '/Last Action State/{ print $2 }' | sed -e 's/^[[:space:]]*//')
-    if [[ "$status" == "succeeded" ]]; then
+    uuid=$(echo "$info" | awk '/UUID/{ print $ 2}')
 
-        uuid=$(echo "$info" | awk '/UUID/{ print $ 2}')
+    clusters="$clusters \"$c\","
+    cluster_ids="$cluster_ids \"$c\"=\"$uuid\","
+    cluster_instances="$cluster_instances \"$c\"=\""
 
-        clusters="$clusters \"$c\","
-        cluster_ids="$cluster_ids \"$c\"=\"$uuid\","
-        cluster_instances="$cluster_instances \"$c\"=\""
+    master_vms=$(bosh-cli -e $BOSH_HOST -d service-instance_$uuid vms | awk '/master\//{ print $3"/"$5 }')
+    for vm in $master_vms; do
+        cluster_instances="${cluster_instances}$vm,"
+    done
 
-        master_vms=$(bosh-cli -e $BOSH_HOST -d service-instance_$uuid vms | awk '/master\//{ print $3"/"$5 }')
-        for vm in $master_vms; do
-            cluster_instances="${cluster_instances}$vm,"
-        done
-
-        cluster_instances="$cluster_instances\","
-    fi
+    cluster_instances="$cluster_instances\","
 done
 
 export TF_VAR_clusters="$clusters ]"
