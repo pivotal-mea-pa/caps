@@ -82,13 +82,6 @@ jobs:
         <<: *backup-restore-common-params
         <<: *backup-restore-storage-params
 
-    - task: backup-pas-tile
-      privileged: true
-      file: automation/lib/tasks/bbr/backup-pas/task.yml
-      params: 
-        <<: *backup-restore-common-params
-        <<: *backup-restore-storage-params
-
   - task: cleanup
     privileged: true
     file: automation/lib/tasks/bbr/cleanup/task.yml
@@ -129,35 +122,6 @@ jobs:
     file: automation/lib/tasks/opsman/apply-changes/task.yml
     params: 
       <<: *backup-restore-common-params
-
-#
-# Restore Elastic Runtime
-#
-
-- name: restore-elastic-runtime
-  serial: true
-  serial_groups: [backups]
-  on_failure:
-    do:
-    - task: notify on restore-elastic-runtime failure
-  plan:
-
-  - aggregate:
-    - get: automation
-
-  - task: prepare-opsman-restore
-    privileged: true
-    file: automation/lib/pipelines/pcf/backup-and-restore/tasks/prepare-opsman-restore/task.yml
-    params: 
-      <<: *backup-restore-common-params
-      <<: *backup-restore-storage-params
-
-  - task: restore-pas
-    privileged: true
-    file: automation/lib/tasks/bbr/restore-pas/task.yml
-    params: 
-      <<: *backup-restore-common-params
-      <<: *backup-restore-storage-params
 
 resources:
 

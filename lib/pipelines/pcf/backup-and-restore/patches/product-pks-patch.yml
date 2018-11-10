@@ -1,0 +1,28 @@
+- type: replace
+  path: /jobs/name=backup-pcf/plan/3/-
+  value:
+    task: backup-pks-tile
+    privileged: true
+    file: automation/lib/tasks/bbr/backup-pks/task.yml
+    params: 
+      TRACE: ((trace))
+      SSH_KEY: ((ssh_key))
+      OPSMAN_HOST: ((opsman_host))
+      OPSMAN_USERNAME: ((opsman_username))
+      OPSMAN_PASSWORD: ((opsman_password))
+      OPSMAN_SSH_USER: ((opsman_ssh_user))
+      OPSMAN_SSH_PASSWD: ((opsman_ssh_passwd))
+      OPSMAN_DECRYPTION_KEY: ((opsman_pass_phrase))
+      OPSMAN_CLIENT_ID: ((pcfops_client))
+      OPSMAN_CLIENT_SECRET: ((pcfops_secret))
+
+      ## Backup storage backend type should be one of 'scp', 's3', 'gcs', 'swift'
+      BACKUP_TYPE: ((backup_storage_type))
+      BACKUP_TARGET: ((backup_target))
+      
+      ## Credentials for GCS access
+      GCP_SERVICE_ACCOUNT_KEY: ((gcp_service_account_key))
+      GCS_BUCKET_NAME: ((gcs_bucket_name))
+
+      ## GCS mount path
+      GCS_MOUNT: ((gcs_mount))
