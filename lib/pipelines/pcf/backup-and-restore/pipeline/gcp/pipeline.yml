@@ -49,7 +49,7 @@ jobs:
   # This task will wait until the 
   # environment is in a started state
   - task: wait-until-started
-    file: automation/lib/inceptor/tasks/wait-on-state/task.yml
+    file: automation/lib/inceptor/tasks/wait-for-state/task.yml
     params: 
       WAIT_FOR_STATE: started
       AUTOS3_URL: ((autos3_url))
