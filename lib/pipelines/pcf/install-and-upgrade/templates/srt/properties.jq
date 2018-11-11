@@ -41,6 +41,8 @@
 #   --arg credhub_encryption_key_secret2 "" \
 #   --arg credhub_encryption_key_name3 "" \
 #   --arg credhub_encryption_key_secret3 "" \
+#   --arg uaa_db_type "internal" \
+#   --arg credhub_db_type "internal" \
 #   --arg pas_db_type "internal" \
 #   --arg db_host "" \
 #   --arg db_port "3306" \
@@ -170,7 +172,7 @@ end
 # UAA
 #
 +
-if $pas_db_type == "external" then
+if $uaa_db_type == "external" then
 {
   ".properties.uaa_database": { "value": "external" },
   ".properties.uaa_database.external.host": { "value": $db_host },
@@ -195,7 +197,7 @@ end
 
 # Credhub
 +
-if $pas_db_type == "external" then
+if $credhub_db_type == "external" then
 {
   ".properties.credhub_database": { "value": "external" },
   ".properties.credhub_database.external.host": { "value": $db_host },

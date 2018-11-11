@@ -75,6 +75,8 @@
         CREDHUB_ENCRYPTION_KEY_SECRET2: ((credhub_encryption_key_secret2))
         CREDHUB_ENCRYPTION_KEY_NAME3: ((credhub_encryption_key_name3))
         CREDHUB_ENCRYPTION_KEY_SECRET3: ((credhub_encryption_key_secret3))
+        UAA_DB_TYPE: ((uaa_db_type))
+        CREDHUB_DB_TYPE: ((credhub_db_type))
         PAS_DB_TYPE: ((pas_db_type))
         DB_USERNAME: ((db_username))
         DB_PASSWORD: ((db_password))
