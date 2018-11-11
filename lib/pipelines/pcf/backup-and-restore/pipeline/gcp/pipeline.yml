@@ -2,17 +2,6 @@
 
 common:
 
-- &wait-if-stopped
-  # This task will block if the environment 
-  # has been put into stopped state
-  task: wait-if-stopped
-  file: automation/lib/inceptor/tasks/wait-on-state/task.yml
-  params: 
-    WAIT_ON_STATE: stopped
-    AUTOS3_URL: ((autos3_url))
-    AUTOS3_ACCESS_KEY: ((autos3_access_key))
-    AUTOS3_SECRET_KEY: ((autos3_secret_key))
-
 - &backup-restore-common-params
   TRACE: ((trace))
   SSH_KEY: ((ssh_key))
@@ -57,8 +46,16 @@ jobs:
     - get: daily
       trigger: true
 
-  - *wait-if-stopped
-  
+  # This task will wait until the 
+  # environment is in a started state
+  - task: wait-until-started
+    file: automation/lib/inceptor/tasks/wait-on-state/task.yml
+    params: 
+      WAIT_FOR_STATE: started
+      AUTOS3_URL: ((autos3_url))
+      AUTOS3_ACCESS_KEY: ((autos3_access_key))
+      AUTOS3_SECRET_KEY: ((autos3_secret_key))
+
   - task: prepare-backup
     privileged: true
     file: automation/lib/pipelines/pcf/backup-and-restore/tasks/prepare-opsman-backup/task.yml
