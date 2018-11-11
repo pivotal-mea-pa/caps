@@ -104,9 +104,9 @@ credhub_encryption_key_secret3: '' # Optional Secret 2
 
 # DB Creds this will apply to all databases across all tiles
 
-uaa_db_type: 'external'
+uaa_db_type: 'internal'
 credhub_db_type: 'internal'
-pas_db_type: 'external'
+pas_db_type: 'internal'
 event_alerts_db_type: 'external'
 
 db_username: 'pas_system'
