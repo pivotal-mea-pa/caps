@@ -248,7 +248,9 @@ else
       "value": "noop"
     },
     ".properties.backups_selector.scp.key": {
-      "value": "noop"
+      "value": {
+        "secret": "noop"
+      }
     },
     ".properties.backups_selector.scp.port": {
       "value": 22
