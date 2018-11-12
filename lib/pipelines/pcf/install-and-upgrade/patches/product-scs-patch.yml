@@ -79,7 +79,7 @@
         OPSMAN_CLIENT_ID: ((opsman_client_id))
         OPSMAN_CLIENT_SECRET: ((opsman_client_secret))
 
-    # Apply the changes to deploy the SRT
+    # Apply the changes to deploy the scs tile
     - task: apply-changes
       file: automation/lib/tasks/opsman/apply-changes/task.yml
       params:
