@@ -20,6 +20,16 @@
         params:
           skip_download: 'true'
 
+      - get: healthwatch-tile
+        passed: [deploy]
+        params:
+          skip_download: 'true'
+
+      - get: metrics-tile
+        passed: [deploy]
+        params:
+          skip_download: 'true'
+
     # Stage product tile
     - task: stage-tile
       file: automation/lib/tasks/opsman/stage-product/task.yml
