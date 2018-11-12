@@ -23,7 +23,7 @@
       "value": "db-small"
     },
     ".deploy-service-broker.message_bus_service": {
-      "value": "p.mysql"
+      "value": "p.rabbitmq"
     },
     ".deploy-service-broker.message_bus_service_plan": {
       "value": "single-node"
