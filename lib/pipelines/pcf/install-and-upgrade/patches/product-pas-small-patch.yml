@@ -34,7 +34,7 @@
 
     # Configure product tile
     - task: configure
-      file: automation/lib/pipelines/pcf/install-and-upgrade/tasks/configure-srt/task.yml
+      file: automation/lib/pipelines/pcf/install-and-upgrade/tasks/configure-pas-small/task.yml
       params:
         OPSMAN_HOST: ((opsman_host))
         OPSMAN_CLIENT_ID: ((opsman_client_id))
@@ -43,8 +43,8 @@
         OPSMAN_PASSWORD: ((opsman_admin_password))
         # Product configuration
         PRODUCT_NAME: cf
-        TEMPLATE_PATH: automation/lib/pipelines/pcf/install-and-upgrade/templates/srt
-        TEMPLATE_OVERRIDE_PATH: automation-extensions/((pcf_tile_templates_path))/srt
+        TEMPLATE_PATH: automation/lib/pipelines/pcf/install-and-upgrade/templates/pas-small
+        TEMPLATE_OVERRIDE_PATH: automation-extensions/((pcf_tile_templates_path))/pas-small
         ERRANDS_TO_DISABLE: ${errands_to_disable}
         ERRANDS_TO_ENABLE: ${errands_to_enable}
         ERRAND_DEFAULT_IF_ENABLED: when-changed
@@ -75,9 +75,7 @@
         CREDHUB_ENCRYPTION_KEY_SECRET2: ((credhub_encryption_key_secret2))
         CREDHUB_ENCRYPTION_KEY_NAME3: ((credhub_encryption_key_name3))
         CREDHUB_ENCRYPTION_KEY_SECRET3: ((credhub_encryption_key_secret3))
-        UAA_DB_TYPE: ((uaa_db_type))
-        CREDHUB_DB_TYPE: ((credhub_db_type))
-        PAS_DB_TYPE: ((pas_db_type))
+        DB_TYPE: ((pas_db_type))
         DB_USERNAME: ((db_username))
         DB_PASSWORD: ((db_password))
         MYSQL_MONITOR_RECIPIENT_EMAIL: ((mysql_monitor_recipient_email))

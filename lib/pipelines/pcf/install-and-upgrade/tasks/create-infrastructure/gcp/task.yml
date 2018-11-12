@@ -40,6 +40,8 @@ params:
   TF_VAR_apps_domain_prefix:
   TF_VAR_pcf_ert_ssl_cert:
   TF_VAR_pcf_ert_ssl_key:
+  TF_VAR_pas_db_type:
+  TF_VAR_event_alerts_db_type:
   TF_VAR_db_app_usage_service_username:
   TF_VAR_db_app_usage_service_password:
   TF_VAR_db_autoscale_username:

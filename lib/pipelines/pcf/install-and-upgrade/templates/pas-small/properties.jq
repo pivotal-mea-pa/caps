@@ -41,9 +41,7 @@
 #   --arg credhub_encryption_key_secret2 "" \
 #   --arg credhub_encryption_key_name3 "" \
 #   --arg credhub_encryption_key_secret3 "" \
-#   --arg uaa_db_type "internal" \
-#   --arg credhub_db_type "internal" \
-#   --arg pas_db_type "internal" \
+#   --arg db_type "internal" \
 #   --arg db_host "" \
 #   --arg db_port "3306" \
 #   --arg db_credhub_tls_ca "$DB_TLS_CA" \
@@ -172,7 +170,7 @@ end
 # UAA
 #
 +
-if $uaa_db_type == "external" then
+if $db_type == "external" then
 {
   ".properties.uaa_database": { "value": "external" },
   ".properties.uaa_database.external.host": { "value": $db_host },
@@ -197,7 +195,7 @@ end
 
 # Credhub
 +
-if $credhub_db_type == "external" then
+if $db_type == "external" then
 {
   ".properties.credhub_database": { "value": "external" },
   ".properties.credhub_database.external.host": { "value": $db_host },
@@ -261,7 +259,7 @@ end
 # Databases
 #
 +
-if $pas_db_type == "external" then
+if $db_type == "external" then
 {
   ".properties.system_database": { "value":  "external" },
   ".properties.system_database.external.host": { "value": $db_host },

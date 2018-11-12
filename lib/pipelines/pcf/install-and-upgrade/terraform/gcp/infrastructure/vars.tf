@@ -20,6 +20,8 @@ variable "apps_domain_prefix" {}
 
 # Database
 
+variable "pas_db_type" {}
+variable "event_alerts_db_type" {}
 variable "db_username" {}
 variable "db_password" {}
 
