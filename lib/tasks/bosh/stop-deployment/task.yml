@@ -21,7 +21,7 @@ params:
 
   # GCP Credentials
   GCP_SERVICE_ACCOUNT_KEY:
-  GCP_PROJECT_ID:
+  GCP_PROJECT:
 
   # A label to identify this environments instanes
   LABEL:

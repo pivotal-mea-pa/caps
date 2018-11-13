@@ -93,7 +93,7 @@
         PKS_API_URL: '' # Sourced from terraform output
         PKS_CERT: '' # Sourced from terraform output
         PKS_CERT_KEY: '' # Sourced from terraform output
-        CLOUD_PROVIDER: gcp
+        CLOUD_PROVIDER: ((iaas_type))
         VPC_NETWORK_NAME: '' # Sourced from terraform output
         PLAN1_WORKER_INSTANCES: 3
         PLAN1_ALLOW_PRIVILEGED_CONTAINERS: true
@@ -184,7 +184,7 @@
     task: destroy-pks-loadbalancers
     file: automation/lib/pipelines/pcf/install-and-upgrade/tasks/destroy-pks-loadbalancers/gcp/task.yml
     params:
-      DEPLOYMENT_PREFIX: ((gcp_resource_prefix))
+      DEPLOYMENT_PREFIX: ((deployment_prefix))
       GCP_CREDENTIALS: ((gcp_service_account_key))
       GCP_PROJECT: ((gcp_project))
       GCP_REGION: ((gcp_region))

@@ -3,7 +3,7 @@
 #    --arg pks_url "" \
 #    --arg pks_cert "" \
 #    --arg pks_cert_key "" \
-#    --arg cloud_provider "gcp" \
+#    --arg cloud_provider "google" \
 #    --arg gcp_master_service_account "" \
 #    --arg gcp_worker_service_account "" \
 #    --arg gcp_project "" \
@@ -102,7 +102,7 @@ end
 
 # Configure cloud provider
 +
-if $cloud_provider == "gcp" then
+if $cloud_provider == "google" then
 {
   ".properties.cloud_provider": { "value": "GCP" },
   ".properties.cloud_provider.gcp.master_service_account": { "value": $gcp_master_service_account },

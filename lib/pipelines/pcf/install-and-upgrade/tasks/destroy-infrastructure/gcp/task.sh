@@ -11,7 +11,7 @@ set -eu
 echo "$GCP_SERVICE_ACCOUNT_KEY" > $root/gcp_service_account_key.json
 
 export GOOGLE_CREDENTIALS=$root/gcp_service_account_key.json
-export GOOGLE_PROJECT=${GCP_PROJECT_ID}
+export GOOGLE_PROJECT=${GCP_PROJECT}
 export GOOGLE_REGION=${GCP_REGION}
 
 TERRAFORM_TEMPLATES_PATH=automation/lib/pipelines/pcf/install-and-upgrade/terraform/gcp/infrastructure
@@ -32,7 +32,7 @@ echo "Deleting provisioned infrastructure..."
 
 terraform init \
   -backend-config="bucket=${TERRAFORM_STATE_BUCKET}" \
-  -backend-config="prefix=${GCP_RESOURCE_PREFIX}" \
+  -backend-config="prefix=${DEPLOYMENT_PREFIX}" \
   ${TERRAFORM_TEMPLATES_PATH}
 
 backend_type=$(cat .terraform/terraform.tfstate | jq -r .backend.type)

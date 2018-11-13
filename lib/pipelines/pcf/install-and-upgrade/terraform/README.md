@@ -27,5 +27,5 @@ export TF_VAR_pcf_opsman_image_name=$(fly -t local watch -j $PIPELINE/upload-ops
 rm -fr .terraform
 terraform init \
   -backend-config="bucket=${TERRAFORM_STATE_BUCKET}" \
-  -backend-config="prefix=${GCP_RESOURCE_PREFIX}"
+  -backend-config="prefix=${DEPLOYMENT_PREFIX}"
 ```

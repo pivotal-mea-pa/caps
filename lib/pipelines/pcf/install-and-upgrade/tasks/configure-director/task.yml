@@ -24,10 +24,10 @@ params:
   # JQ configuration template overrides 
   TEMPLATE_OVERRIDE_PATH:
   # IAAS properties
+  DEPLOYMENT_PREFIX:
   GCP_SERVICE_ACCOUNT_KEY:
-  GCP_PROJECT_ID:
+  GCP_PROJECT:
   GCP_REGION:
-  GCP_RESOURCE_PREFIX:
   # Director properties
   NTP_SERVERS:
   RESURRECTOR_ENABLED:

@@ -31,7 +31,7 @@ terraform_state_bucket: "${terraform_state_bucket}"
 bootstrap_state_prefix: "${bootstrap_state_prefix}"
 
 # Environment identifiers
-gcp_resource_prefix: '${vpc_name}-${environment}'
+deployment_prefix: '${vpc_name}-${environment}'
 environment: '${environment}'
 
 # Templates overrides paths

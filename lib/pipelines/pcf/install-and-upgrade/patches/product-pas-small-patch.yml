@@ -55,7 +55,7 @@
         # Resources
         INTERNET_CONNECTED: ((internet_connected))
         # Properties
-        IAAS: gcp
+        IAAS: ((iaas_type))
         ROUTING_CUSTOM_CA_CERTIFICATES: ((routing_custom_ca_certificates))
         ROUTING_TLS_TERMINATION: ((routing_tls_termination))
         ROUTER_TLS_CIPHERS: ((router_tls_ciphers))

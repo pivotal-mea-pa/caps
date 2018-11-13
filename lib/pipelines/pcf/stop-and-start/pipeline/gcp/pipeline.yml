@@ -5,7 +5,7 @@ common:
 - &params
   TRACE: ((trace))
   IAAS: ((iaas))
-  GCP_PROJECT_ID: ((gcp_project_id))
+  GCP_PROJECT: ((gcp_project_id))
   GCP_SERVICE_ACCOUNT_KEY: ((gcp_service_account_key))
   LABEL: ((label))
   OPSMAN_HOST: ((opsman_host))

@@ -72,9 +72,9 @@ jobs:
   - task: destroy-infrastructure
     file: automation/lib/pipelines/pcf/install-and-upgrade/tasks/destroy-infrastructure/gcp/task.yml
     params:
-      GCP_RESOURCE_PREFIX: ((gcp_resource_prefix))
+      DEPLOYMENT_PREFIX: ((deployment_prefix))
       GCP_SERVICE_ACCOUNT_KEY: ((gcp_service_account_key))
-      GCP_PROJECT_ID: ((gcp_project))
+      GCP_PROJECT: ((gcp_project))
       GCP_REGION: ((gcp_region))
       TERRAFORM_STATE_BUCKET: ((terraform_state_bucket))
       TEMPLATE_OVERRIDE_PATH: automation-extensions/((pcf_terraform_templates_path))
@@ -101,7 +101,7 @@ jobs:
   - task: upload
     file: automation/lib/pipelines/pcf/install-and-upgrade/tasks/upload-opsman/gcp/task.yml
     params:
-      GCP_PROJECT_ID: ((gcp_project))
+      GCP_PROJECT: ((gcp_project))
       GCP_REGION: ((gcp_region))
       GCP_SERVICE_ACCOUNT_KEY: ((gcp_service_account_key))
 
@@ -150,9 +150,9 @@ jobs:
   - task: create-infrastructure
     file: automation/lib/pipelines/pcf/install-and-upgrade/tasks/create-infrastructure/gcp/task.yml
     params:
-      GCP_RESOURCE_PREFIX: ((gcp_resource_prefix))
+      DEPLOYMENT_PREFIX: ((deployment_prefix))
       GCP_SERVICE_ACCOUNT_KEY: ((gcp_service_account_key))
-      GCP_PROJECT_ID: ((gcp_project))
+      GCP_PROJECT: ((gcp_project))
       GCP_REGION: ((gcp_region))
       TERRAFORM_STATE_BUCKET: ((terraform_state_bucket))
       TEMPLATE_OVERRIDE_PATH: automation-extensions/((pcf_terraform_templates_path))
@@ -228,9 +228,9 @@ jobs:
       TEMPLATE_OVERRIDE_PATH: automation-extensions/((pcf_tile_templates_path))/director
       # IAAS properties
       GCP_SERVICE_ACCOUNT_KEY: ((gcp_service_account_key))
-      GCP_PROJECT_ID: ((gcp_project))
+      GCP_PROJECT: ((gcp_project))
       GCP_REGION: ((gcp_region))
-      GCP_RESOURCE_PREFIX: ((gcp_resource_prefix))
+      DEPLOYMENT_PREFIX: ((deployment_prefix))
       # Director properties
       NTP_SERVERS: ''                 # Default '0.pool.ntp.org,1.pool.ntp.org'
       RESURRECTOR_ENABLED: ''         # Default 'true'

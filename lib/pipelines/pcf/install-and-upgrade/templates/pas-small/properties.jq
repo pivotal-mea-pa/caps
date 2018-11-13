@@ -1,6 +1,6 @@
 #
 # jq -n \
-#   --arg iaas "gcp" \
+#   --arg iaas "google" \
 #   --arg s3_access_key "$AWS_ACCESS_KEY" \
 #   --arg s3_secret_key "$AWS_SECRET_KEY" \
 #   --arg s3_region "$AWS_DEFAULT_REGION" \
@@ -320,7 +320,7 @@ if $iaas == "aws" then
     ".properties.system_blobstore.external.region": { "value": $s3_region },
     ".properties.system_blobstore.external.endpoint": { "value": $s3_endpoint }
   }
-elif $iaas == "gcp" then
+elif $iaas == "google" then
   if $gcp_project != "" and $gcp_service_account_email != "" and $gcp_credentials != "" then
     {
       ".properties.system_blobstore": { "value": "external_gcs_service_account" },
