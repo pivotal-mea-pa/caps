@@ -107,7 +107,7 @@ if $cloud_provider == "gcp" then
   ".properties.cloud_provider": { "value": "GCP" },
   ".properties.cloud_provider.gcp.master_service_account": { "value": $gcp_master_service_account },
   ".properties.cloud_provider.gcp.worker_service_account": { "value": $gcp_worker_service_account },
-  ".properties.cloud_provider.gcp.project_id": { "value": $gcp_project_id },
+  ".properties.cloud_provider.gcp.project_id": { "value": $gcp_project },
   ".properties.cloud_provider.gcp.network": { "value": $vpc_network_name },
 }
 elif $cloud_provider == "vsphere" then
