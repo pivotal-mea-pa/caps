@@ -1,6 +1,6 @@
 // Go Router Health check
 resource "google_compute_http_health_check" "cf-gorouter" {
-  name                = "${var.prefix}-gorouter"
+  name                = "${local.prefix}-gorouter"
   port                = 8080
   request_path        = "/health"
   check_interval_sec  = 30
@@ -11,7 +11,7 @@ resource "google_compute_http_health_check" "cf-gorouter" {
 
 // TCP Router Health check
 resource "google_compute_http_health_check" "cf-tcp" {
-  name                = "${var.prefix}-tcp-lb"
+  name                = "${local.prefix}-tcp-lb"
   host                = "tcp.${local.system_domain}."
   port                = 80
   request_path        = "/health"
@@ -23,7 +23,7 @@ resource "google_compute_http_health_check" "cf-tcp" {
 
 // GoRouter target pool
 resource "google_compute_target_pool" "cf-gorouter" {
-  name = "${var.prefix}-wss-logs"
+  name = "${local.prefix}-wss-logs"
 
   health_checks = [
     "${google_compute_http_health_check.cf-gorouter.name}",
@@ -32,7 +32,7 @@ resource "google_compute_target_pool" "cf-gorouter" {
 
 // TCP Router target pool
 resource "google_compute_target_pool" "cf-tcp" {
-  name = "${var.prefix}-cf-tcp-lb"
+  name = "${local.prefix}-cf-tcp-lb"
 
   health_checks = [
     "${google_compute_http_health_check.cf-tcp.name}",
@@ -41,12 +41,12 @@ resource "google_compute_target_pool" "cf-tcp" {
 
 // SSH-Proxy target pool
 resource "google_compute_target_pool" "cf-ssh" {
-  name = "${var.prefix}-ssh-proxy"
+  name = "${local.prefix}-ssh-proxy"
 }
 
 // Doppler forwarding rule
 resource "google_compute_forwarding_rule" "cf-gorouter-wss" {
-  name        = "${var.prefix}-gorouter-wss-lb"
+  name        = "${local.prefix}-gorouter-wss-lb"
   target      = "${google_compute_target_pool.cf-gorouter.self_link}"
   port_range  = "443"
   ip_protocol = "TCP"
@@ -55,7 +55,7 @@ resource "google_compute_forwarding_rule" "cf-gorouter-wss" {
 
 // SSH Proxy forwarding rule
 resource "google_compute_forwarding_rule" "cf-ssh" {
-  name        = "${var.prefix}-ssh-proxy"
+  name        = "${local.prefix}-ssh-proxy"
   target      = "${google_compute_target_pool.cf-ssh.self_link}"
   port_range  = "2222"
   ip_protocol = "TCP"
@@ -64,7 +64,7 @@ resource "google_compute_forwarding_rule" "cf-ssh" {
 
 // TCP forwarding rule
 resource "google_compute_forwarding_rule" "cf-tcp" {
-  name        = "${var.prefix}-cf-tcp-lb"
+  name        = "${local.prefix}-cf-tcp-lb"
   target      = "${google_compute_target_pool.cf-tcp.self_link}"
   port_range  = "1024-65535"
   ip_protocol = "TCP"

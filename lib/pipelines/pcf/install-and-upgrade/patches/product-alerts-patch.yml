@@ -60,8 +60,8 @@
         ERRAND_DEFAULT_IF_ENABLED: when-changed
         # Networking
         NETWORK_NAME: services
-        SINGLETON_AVAILABILITY_ZONE: # Sourced from terraform output
-        AVAILABILITY_ZONES: # Sourced from terraform output
+        SINGLETON_AVAILABILITY_ZONE: '' # Sourced from terraform output
+        AVAILABILITY_ZONES: '' # Sourced from terraform output
         # Resources
         INTERNET_CONNECTED: false
         # Properties

@@ -19,7 +19,11 @@ output "root_ca_cert" {
 #
 
 output "gcp_project" {
-  value = "${var.gcp_project}"
+  value = "${data.external.gcp_credentials.result.project_id}"
+}
+
+output "gcp_service_account_email" {
+  value = "${data.external.gcp_credentials.result.client_email}"
 }
 
 output "gcp_credentials" {

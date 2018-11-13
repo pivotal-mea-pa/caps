@@ -109,7 +109,7 @@ module "bootstrap" {
   bootstrap_pipeline_vars = <<PIPELINE_VARS
 trace: ${var.trace}
 
-google_project: ${var.gcp_project}
+google_project: ${data.external.gcp_credentials.result.project_id}
 google_region: ${var.gcp_region}
 
 google_credentials_json: |

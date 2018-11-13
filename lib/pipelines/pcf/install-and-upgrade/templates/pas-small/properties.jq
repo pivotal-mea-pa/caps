@@ -7,6 +7,9 @@
 #   --arg s3_endpoint "" \
 #   --arg gcp_storage_access_key "$GCS_STORAGE_ACCESS_KEY" \
 #   --arg gcp_storage_secret_key "$GCS_STORAGE_SECRET_KEY" \
+#   --arg gcp_project "" \
+#   --arg gcp_service_account_email "" \
+#   --arg gcp_credentials "" \
 #   --arg terraform_prefix "" \
 #   --arg system_domain "$system_domain" \
 #   --arg apps_domain "$apps_domain" \
@@ -318,15 +321,28 @@ if $iaas == "aws" then
     ".properties.system_blobstore.external.endpoint": { "value": $s3_endpoint }
   }
 elif $iaas == "gcp" then
-  {
-    ".properties.system_blobstore": { "value": "external_gcs" },
-    ".properties.system_blobstore.external_gcs.buildpacks_bucket": { "value": "\($terraform_prefix)-buildpacks" },
-    ".properties.system_blobstore.external_gcs.droplets_bucket": { "value": "\($terraform_prefix)-droplets" },
-    ".properties.system_blobstore.external_gcs.packages_bucket": { "value": "\($terraform_prefix)-packages" },
-    ".properties.system_blobstore.external_gcs.resources_bucket": { "value": "\($terraform_prefix)-resources" },
-    ".properties.system_blobstore.external_gcs.access_key": { "value": $gcp_storage_access_key },
-    ".properties.system_blobstore.external_gcs.secret_key": { "value": { "secret": $gcp_storage_secret_key } }
-  }
+  if $gcp_project != "" and $gcp_service_account_email != "" and $gcp_credentials != "" then
+    {
+      ".properties.system_blobstore": { "value": "external_gcs_service_account" },
+      ".properties.system_blobstore.external_gcs_service_account.project_id": { "value", $gcp_project },
+      ".properties.system_blobstore.external_gcs_service_account.service_account_email": { "value", $gcp_service_account_email },
+      ".properties.system_blobstore.external_gcs_service_account.service_account_json_key": { "value", $gcp_credentials },
+      ".properties.system_blobstore.external_gcs_service_account.buildpacks_bucket": { "value": "\($terraform_prefix)-buildpacks" },
+      ".properties.system_blobstore.external_gcs_service_account.droplets_bucket": { "value": "\($terraform_prefix)-droplets" },
+      ".properties.system_blobstore.external_gcs_service_account.packages_bucket": { "value": "\($terraform_prefix)-packages" },
+      ".properties.system_blobstore.external_gcs_service_account.resources_bucket": { "value": "\($terraform_prefix)-resources" },
+    }
+  else
+    {
+      ".properties.system_blobstore": { "value": "external_gcs" },
+      ".properties.system_blobstore.external_gcs.buildpacks_bucket": { "value": "\($terraform_prefix)-buildpacks" },
+      ".properties.system_blobstore.external_gcs.droplets_bucket": { "value": "\($terraform_prefix)-droplets" },
+      ".properties.system_blobstore.external_gcs.packages_bucket": { "value": "\($terraform_prefix)-packages" },
+      ".properties.system_blobstore.external_gcs.resources_bucket": { "value": "\($terraform_prefix)-resources" },
+      ".properties.system_blobstore.external_gcs.access_key": { "value": $gcp_storage_access_key },
+      ".properties.system_blobstore.external_gcs.secret_key": { "value": { "secret": $gcp_storage_secret_key } }
+    }
+  end
 else
   .
 end

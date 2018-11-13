@@ -3,11 +3,11 @@
 #
 
 resource "google_compute_instance" "ops-manager" {
-  name = "${var.prefix}-ops-manager"
+  name = "${local.prefix}-ops-manager"
 
-  tags = ["${var.prefix}", "${var.prefix}-opsman"]
+  tags = ["${local.prefix}", "${local.prefix}-opsman"]
 
-  zone         = "${var.gcp_zone_1}"
+  zone         = "${data.google_compute_zones.available.names[0]}"
   machine_type = "n1-standard-2"
 
   boot_disk {
@@ -121,14 +121,14 @@ data "template_file" "mount-opsman-data-volume" {
 }
 
 resource "google_compute_disk" "opsman-data-disk" {
-  name = "${var.prefix}-opsman-data-disk"
+  name = "${local.prefix}-opsman-data-disk"
   type = "pd-standard"
-  zone = "${var.gcp_zone_1}"
+  zone = "${data.google_compute_zones.available.names[count.index]}"
   size = "100"
 }
 
 resource "google_storage_bucket" "director" {
-  name          = "${var.prefix}-director"
-  location      = "${var.gcp_storage_bucket_location}"
+  name          = "${local.prefix}-director"
+  location      = "${data.terraform_remote_state.bootstrap.gcp_region}"
   force_destroy = true
 }

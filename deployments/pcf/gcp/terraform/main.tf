@@ -6,9 +6,15 @@ terraform {
 }
 
 #
+# Read GCP access credentials from service account key file
+#
+data "external" "gcp_credentials" {
+  program = ["cat", "${var.gcp_credentials}"]
+}
+
+#
 # Availability zones within deployment region
 #
-
 data "google_compute_zones" "zones" {
   region = "${var.gcp_region}"
 }

@@ -51,19 +51,16 @@
         # Networking
         NETWORK_NAME: services
         SERVICE_NETWORK_NAME: dynamic-services
-        SINGLETON_AVAILABILITY_ZONE: # Sourced from terraform output
-        AVAILABILITY_ZONES: # Sourced from terraform output
+        SINGLETON_AVAILABILITY_ZONE: '' # Sourced from terraform output
+        AVAILABILITY_ZONES: '' # Sourced from terraform output
         # Resources
         INTERNET_CONNECTED: false
         # Properties
         REDIS_SHARED_MAXMEMORY: 512MB
         REDIS_SHARED_INSTANCE_LIMIT: 5
         REDIS_ON_DEMAND_INSTANCE_LIMIT: 20
-        SMALL_PLAN_AZ: ((gcp_zone_1))
         SMALL_PLAN_INSTANCE_LIMIT: 20
-        MEDIUM_PLAN_AZ: ((gcp_zone_2))
         MEDIUM_PLAN_INSTANCE_LIMIT: 20
-        LARGE_PLAN_AZ: ((gcp_zone_3))
         LARGE_PLAN_INSTANCE_LIMI: 0
         SYSLOG_ADDRESS: ''
         SYSLOG_PORT: null

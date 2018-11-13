@@ -1,13 +1,13 @@
 #
 # jq -n \
-#    --arg pks_url "pks.pcfenv1.pocs.pcfs.io" \
-#    --arg pks_cert "$pks_cert" \
-#    --arg pks_cert_key "$pks_cert_key" \
+#    --arg pks_url "" \
+#    --arg pks_cert "" \
+#    --arg pks_cert_key "" \
 #    --arg cloud_provider "gcp" \
-#    --arg gcp_master_service_account "pks_master@myproject.iam.gserviceaccount.com" \
-#    --arg gcp_worker_service_account "pks_worker@myproject.iam.gserviceaccount.com" \
-#    --arg gcp_project_id "$GCP_PROJECT_ID" \
-#    --arg vpc_network_name "${TF_VAR_prefix}-virt-net" \
+#    --arg gcp_master_service_account "" \
+#    --arg gcp_worker_service_account "" \
+#    --arg gcp_project "" \
+#    --arg vpc_network_name "" \
 #    --argjson plan1_worker_instances 3 \
 #    --argjson plan1_allow_privileged_containers false \
 #    --arg plan1_az_placement "$AVAILABILITY_ZONES" \

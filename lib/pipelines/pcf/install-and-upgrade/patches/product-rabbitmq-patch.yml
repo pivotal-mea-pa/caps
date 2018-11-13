@@ -52,8 +52,8 @@
         # Networking
         NETWORK_NAME: services
         SERVICE_NETWORK_NAME: dynamic-services
-        SINGLETON_AVAILABILITY_ZONE: # Sourced from terraform output
-        AVAILABILITY_ZONES: # Sourced from terraform output
+        SINGLETON_AVAILABILITY_ZONE: '' # Sourced from terraform output
+        AVAILABILITY_ZONES: '' # Sourced from terraform output
         # Resources
         # RABBITMQ_LB_NAME:
         INTERNET_CONNECTED: false

@@ -1,6 +1,6 @@
 #
 # jq -n \
-#   --arg foundation_name "pcf-poc-1" \
+#   --arg deployment_prefix "" \
 #   --arg opsman_url "" \
 #   --arg boshtasks_uaa_client "" \
 #   --arg boshtasks_uaa_client_secret "" \
@@ -11,7 +11,7 @@
 # Configure Healthwatch
 {
   ".healthwatch-forwarder.foundation_name": {
-    "value": $foundation_name
+    "value": $deployment_prefix
   },
   ".healthwatch-forwarder.health_check_az": {
     "value": ($availability_zones | split(",") | .[0])

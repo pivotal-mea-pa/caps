@@ -21,9 +21,6 @@ data "template_file" "params" {
     gcp_project     = "${data.terraform_remote_state.bootstrap.gcp_project}"
     gcp_credentials = "${indent(2, data.terraform_remote_state.bootstrap.gcp_credentials)}"
     gcp_region      = "${data.terraform_remote_state.bootstrap.gcp_region}"
-    gcp_zone_1      = "${data.google_compute_zones.zones.names[0]}"
-    gcp_zone_2      = "${data.google_compute_zones.zones.names[1]}"
-    gcp_zone_3      = "${data.google_compute_zones.zones.names[2]}"
 
     gcp_storage_access_key = "${data.terraform_remote_state.bootstrap.gcp_storage_access_key}"
     gcp_storage_secret_key = "${data.terraform_remote_state.bootstrap.gcp_storage_secret_key}"

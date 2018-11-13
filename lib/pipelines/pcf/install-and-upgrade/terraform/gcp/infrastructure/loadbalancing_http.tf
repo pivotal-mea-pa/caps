@@ -1,8 +1,8 @@
 resource "google_compute_instance_group" "ert-http-lb" {
   count       = 3
-  name        = "${var.prefix}-http-lb"
+  name        = "${local.prefix}-http-lb"
   description = "terraform generated pcf instance group that is multi-zone for http/https load balancing"
-  zone        = "${element(list(var.gcp_zone_1,var.gcp_zone_2,var.gcp_zone_3), count.index)}"
+  zone        = "${element(data.google_compute_zones.available.names, count.index)}"
 
   named_port {
     name = "http"
@@ -11,7 +11,7 @@ resource "google_compute_instance_group" "ert-http-lb" {
 }
 
 resource "google_compute_backend_service" "ert_http_lb_backend_service" {
-  name        = "${var.prefix}-http-lb-backend"
+  name        = "${local.prefix}-http-lb-backend"
   port_name   = "http"
   protocol    = "HTTP"
   timeout_sec = 30
@@ -33,25 +33,25 @@ resource "google_compute_backend_service" "ert_http_lb_backend_service" {
 }
 
 resource "google_compute_url_map" "https_lb_url_map" {
-  name            = "${var.prefix}-global-pcf"
+  name            = "${local.prefix}-global-pcf"
   default_service = "${google_compute_backend_service.ert_http_lb_backend_service.self_link}"
 }
 
 resource "google_compute_target_http_proxy" "http_lb_proxy" {
-  name        = "${var.prefix}-http-proxy"
+  name        = "${local.prefix}-http-proxy"
   description = "Load balancing front end http"
   url_map     = "${google_compute_url_map.https_lb_url_map.self_link}"
 }
 
 resource "google_compute_target_https_proxy" "https_lb_proxy" {
-  name             = "${var.prefix}-https-proxy"
+  name             = "${local.prefix}-https-proxy"
   description      = "Load balancing front end https"
   url_map          = "${google_compute_url_map.https_lb_url_map.self_link}"
   ssl_certificates = ["${google_compute_ssl_certificate.lb-cert.self_link}"]
 }
 
 resource "google_compute_http_health_check" "cf" {
-  name = "${var.prefix}-cf-public"
+  name = "${local.prefix}-cf-public"
 
   port                = 8080
   request_path        = "/health"
@@ -62,14 +62,14 @@ resource "google_compute_http_health_check" "cf" {
 }
 
 resource "google_compute_global_forwarding_rule" "cf-http" {
-  name       = "${var.prefix}-cf-lb-http"
+  name       = "${local.prefix}-cf-lb-http"
   ip_address = "${google_compute_global_address.pcf.address}"
   target     = "${google_compute_target_http_proxy.http_lb_proxy.self_link}"
   port_range = "80"
 }
 
 resource "google_compute_global_forwarding_rule" "cf-https" {
-  name       = "${var.prefix}-cf-lb-https"
+  name       = "${local.prefix}-cf-lb-https"
   ip_address = "${google_compute_global_address.pcf.address}"
   target     = "${google_compute_target_https_proxy.https_lb_proxy.self_link}"
   port_range = "443"

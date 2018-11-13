@@ -4,7 +4,7 @@
 
 // Harbor external IP
 resource "google_compute_address" "harbor" {
-  name = "${var.prefix}-harbor"
+  name = "${local.prefix}-harbor"
 }
 
 // Harbor DNS
@@ -20,12 +20,12 @@ resource "google_dns_record_set" "harbor" {
 
 // Harbor target pool
 resource "google_compute_target_pool" "harbor" {
-  name = "${var.prefix}-harbor"
+  name = "${local.prefix}-harbor"
 }
 
 // Harbor tcp forwarding rule
 resource "google_compute_forwarding_rule" "harbor" {
-  name        = "${var.prefix}-harbor-lb"
+  name        = "${local.prefix}-harbor-lb"
   target      = "${google_compute_target_pool.harbor.self_link}"
   port_range  = "443"
   ip_protocol = "TCP"
@@ -34,7 +34,7 @@ resource "google_compute_forwarding_rule" "harbor" {
 
 // Allow access to Harbor resources
 resource "google_compute_firewall" "harbor" {
-  name    = "${var.prefix}-allow-harbor"
+  name    = "${local.prefix}-allow-harbor"
   network = "${google_compute_network.pcf.name}"
 
   allow {

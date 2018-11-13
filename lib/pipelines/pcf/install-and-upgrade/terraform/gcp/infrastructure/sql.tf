@@ -2,10 +2,19 @@ resource "random_pet" "sql_db" {
   length = 1
 }
 
+resource "null_resource" "authorized_networks" {
+  count = "${local.num_azs}"
+
+  triggers {
+    name  = "${element(google_compute_instance.nat-gateway.*.name, count.index)}"
+    value = "${element(google_compute_instance.nat-gateway.*.network_interface.0.access_config.0.nat_ip, count.index)}"
+  }
+}
+
 resource "google_sql_database_instance" "master" {
-  region           = "${var.gcp_region}"
+  region           = "${data.terraform_remote_state.bootstrap.gcp_region}"
   database_version = "MYSQL_5_6"
-  name             = "${var.prefix}-${random_pet.sql_db.id}"
+  name             = "${local.prefix}-${random_pet.sql_db.id}"
 
   timeouts {
     # GCP Takes a long time to create SQL instances.
@@ -19,24 +28,7 @@ resource "google_sql_database_instance" "master" {
     ip_configuration = {
       ipv4_enabled = true
 
-      authorized_networks = [
-        {
-          name  = "nat-1"
-          value = "${google_compute_address.nat-primary.address}"
-        },
-        {
-          name  = "nat-2"
-          value = "${google_compute_address.nat-secondary.address}"
-        },
-        {
-          name  = "nat-3"
-          value = "${google_compute_address.nat-tertiary.address}"
-        },
-        {
-          name  = "all"
-          value = "0.0.0.0/0"
-        },
-      ]
+      authorized_networks = ["${null_resource.authorized_networks.*.triggers}"]
     }
   }
 }

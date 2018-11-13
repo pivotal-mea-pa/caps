@@ -14,10 +14,6 @@ variable "autostart_deployment_pipelines" {
 # GCP credentials
 #
 
-variable "gcp_project" {
-  type = "string"
-}
-
 variable "gcp_credentials" {
   type = "string"
 }

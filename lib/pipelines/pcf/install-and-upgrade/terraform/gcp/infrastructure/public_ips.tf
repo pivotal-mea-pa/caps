@@ -1,24 +1,24 @@
 // Global IP for PCF API & Apps
 resource "google_compute_global_address" "pcf" {
-  name = "${var.prefix}-global-pcf"
+  name = "${local.prefix}-global-pcf"
 }
 
 // Static IP address for forwarding rule for doppler
 resource "google_compute_address" "cf-gorouter-wss" {
-  name = "${var.prefix}-gorouter-wss"
+  name = "${local.prefix}-gorouter-wss"
 }
 
 // Static IP address for forwarding rule for sshproxy
 resource "google_compute_address" "cf-ssh" {
-  name = "${var.prefix}-ssh-proxy"
+  name = "${local.prefix}-ssh-proxy"
 }
 
 // Static IP address for forwarding rule for TCP LB
 resource "google_compute_address" "cf-tcp" {
-  name = "${var.prefix}-tcp-lb"
+  name = "${local.prefix}-tcp-lb"
 }
 
 // Static IP address for OpsManager
 resource "google_compute_address" "opsman" {
-  name = "${var.prefix}-opsman"
+  name = "${local.prefix}-opsman"
 }

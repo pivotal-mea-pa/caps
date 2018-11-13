@@ -50,15 +50,15 @@
         ERRAND_DEFAULT_IF_ENABLED: when-changed
         # Networking
         NETWORK_NAME: services
-        SINGLETON_AVAILABILITY_ZONE: # Sourced from terraform output
-        AVAILABILITY_ZONES: # Sourced from terraform output
+        SINGLETON_AVAILABILITY_ZONE: '' # Sourced from terraform output
+        AVAILABILITY_ZONES: '' # Sourced from terraform output
         # Resources
         INTERNET_CONNECTED: false
         # Properties
-        HARBOR_REGISTRY_FQDN: # Sourced from terraform output
-        HARBOR_REGISTRY_CERTIFICATE: # Sourced from terraform output
-        HARBOR_REGISTRY_CERTIFICATE_KEY: # Sourced from terraform output
-        CA_CERTS: # Sourced from terraform output
+        HARBOR_REGISTRY_FQDN: '' # Sourced from terraform output
+        HARBOR_REGISTRY_CERTIFICATE: '' # Sourced from terraform output
+        HARBOR_REGISTRY_CERTIFICATE_KEY: '' # Sourced from terraform output
+        CA_CERTS: '' # Sourced from terraform output
         ADMIN_PASSWORD: ((common_admin_password))
         AUTH_MODE: uaa_auth_pks
         REGISTRY_STORAGE: filesystem

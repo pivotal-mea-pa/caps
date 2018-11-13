@@ -27,42 +27,17 @@ params:
   TERRAFORM_STATE_BUCKET:
   TEMPLATE_OVERRIDE_PATH:
   # Inputs to PCF PAS infrastructure Terraform templates
-  TF_VAR_gcp_region:
-  TF_VAR_gcp_zone_1:
-  TF_VAR_gcp_zone_2:
-  TF_VAR_gcp_zone_3:
-  TF_VAR_prefix:
-  TF_VAR_gcp_storage_bucket_location:
+  TF_VAR_environment:
   TF_VAR_bootstrap_state_bucket:
   TF_VAR_bootstrap_state_prefix:
-  TF_VAR_pas_env_domain_prefix:
   TF_VAR_system_domain_prefix:
+  TF_VAR_apps_domain_prefix:
   TF_VAR_apps_domain_prefix:
   TF_VAR_pcf_ert_ssl_cert:
   TF_VAR_pcf_ert_ssl_key:
+  TF_VAR_pcf_saml_ssl_cert:
+  TF_VAR_pcf_saml_ssl_key:
   TF_VAR_pas_db_type:
   TF_VAR_event_alerts_db_type:
-  TF_VAR_db_app_usage_service_username:
-  TF_VAR_db_app_usage_service_password:
-  TF_VAR_db_autoscale_username:
-  TF_VAR_db_autoscale_password:
-  TF_VAR_db_diego_username:
-  TF_VAR_db_diego_password:
-  TF_VAR_db_notifications_username:
-  TF_VAR_db_notifications_password:
-  TF_VAR_db_routing_username:
-  TF_VAR_db_routing_password:
-  TF_VAR_db_uaa_username:
-  TF_VAR_db_uaa_password:
-  TF_VAR_db_ccdb_username:
-  TF_VAR_db_ccdb_password:
-  TF_VAR_db_accountdb_username:
-  TF_VAR_db_accountdb_password:
-  TF_VAR_db_networkpolicyserverdb_username:
-  TF_VAR_db_networkpolicyserverdb_password:
-  TF_VAR_db_nfsvolumedb_username:
-  TF_VAR_db_nfsvolumedb_password:
-  TF_VAR_db_locket_username:
-  TF_VAR_db_locket_password:
-  TF_VAR_db_silk_username:
-  TF_VAR_db_silk_password:
+  TF_VAR_db_username:
+  TF_VAR_db_password:

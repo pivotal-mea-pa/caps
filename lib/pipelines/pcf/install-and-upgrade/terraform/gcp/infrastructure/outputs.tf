@@ -5,11 +5,31 @@ output "company_name" {
 }
 
 output "deployment_prefix" {
-  value = "${var.prefix}"
+  value = "${local.prefix}"
 }
 
-output "region" {
-  value = "${var.gcp_region}"
+output "gcp_project" {
+  value = "${data.terraform_remote_state.bootstrap.gcp_project}"
+}
+
+output "gcp_service_account_email" {
+  value = "${data.terraform_remote_state.bootstrap.gcp_service_account_email}"
+}
+
+output "gcp_credentials" {
+  value = "${data.terraform_remote_state.bootstrap.gcp_credentials}"
+}
+
+output "gcp_region" {
+  value = "${data.terraform_remote_state.bootstrap.gcp_region}"
+}
+
+output "gcp_storage_access_key" {
+  value = "${data.terraform_remote_state.bootstrap.gcp_storage_access_key}"
+}
+
+output "gcp_storage_secret_key" {
+  value = "${data.terraform_remote_state.bootstrap.gcp_storage_secret_key}"
 }
 
 // DNS Output
@@ -59,7 +79,7 @@ output "singleton_availability_zone" {
 }
 
 output "availability_zones" {
-  value = "${join(",", data.google_compute_zones.zones.names)}"
+  value = "${join(",", data.google_compute_zones.available.names)}"
 }
 
 // Network Output

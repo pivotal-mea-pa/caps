@@ -15,8 +15,11 @@ run:
 params:
   TRACE: Y
   
-  GCP_RESOURCE_PREFIX:
-  GCP_SERVICE_ACCOUNT_KEY:
-  GCP_PROJECT_ID:
+  # The following variables should be
+  # exported from the terraform output
+  DEPLOYMENT_PREFIX:
+  GCP_CREDENTIALS:
+  GCP_PROJECT:
   GCP_REGION:
+
   TERRAFORM_STATE_BUCKET:

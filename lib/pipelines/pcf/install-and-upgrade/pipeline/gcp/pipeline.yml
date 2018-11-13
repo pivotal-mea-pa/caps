@@ -158,13 +158,7 @@ jobs:
       TERRAFORM_STATE_BUCKET: ((terraform_state_bucket))
       TEMPLATE_OVERRIDE_PATH: automation-extensions/((pcf_terraform_templates_path))
       # Inputs to PCF PAS infrastructure Terraform templates
-      TF_VAR_gcp_region: ((gcp_region))
-      TF_VAR_gcp_zone_1: ((gcp_zone_1))
-      TF_VAR_gcp_zone_2: ((gcp_zone_2))
-      TF_VAR_gcp_zone_3: ((gcp_zone_3))
       TF_VAR_environment: ((environment))
-      TF_VAR_prefix: ((gcp_resource_prefix))
-      TF_VAR_gcp_storage_bucket_location: ((gcp_storage_bucket_location))
       TF_VAR_terraform_state_bucket: ((terraform_state_bucket))
       TF_VAR_bootstrap_state_prefix: ((bootstrap_state_prefix))
       TF_VAR_system_domain_prefix: ((system_domain_prefix))

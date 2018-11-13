@@ -46,6 +46,15 @@ jobs:
     - get: daily
       trigger: true
 
+  # Wait for director to be in a ready state
+  - task: wait-for-director-to-be-ready
+    file: automation/lib/inceptor/tasks/wait-for-state/task.yml
+    params: 
+      WAIT_FOR_STATE: director_ready
+      AUTOS3_URL: ((autos3_url))
+      AUTOS3_ACCESS_KEY: ((autos3_access_key))
+      AUTOS3_SECRET_KEY: ((autos3_secret_key))
+  
   # This task will wait until the 
   # environment is in a started state
   - task: wait-until-started
@@ -55,6 +64,12 @@ jobs:
       AUTOS3_URL: ((autos3_url))
       AUTOS3_ACCESS_KEY: ((autos3_access_key))
       AUTOS3_SECRET_KEY: ((autos3_secret_key))
+
+  # Wait if an opsman is currently in the process of applying a change
+  - task: wait-if-apply-in-progress
+    file: automation/lib/tasks/opsman/wait-opsman/task.yml
+    params:
+      <<: *backup-restore-common-params
 
   - task: prepare-backup
     privileged: true

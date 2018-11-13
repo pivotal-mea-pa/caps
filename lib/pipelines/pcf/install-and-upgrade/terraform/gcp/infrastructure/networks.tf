@@ -11,23 +11,23 @@ locals {
 
   subnets = "${zipmap(local.subnet_names, google_compute_subnetwork.pcf.*.name)}"
 
-  singleton_zone            = "${data.google_compute_zones.zones.names[0]}"
-  infrastructure_subnetwork = "${var.prefix}-subnet-infrastructure"
+  singleton_zone            = "${data.google_compute_zones.available.names[0]}"
+  infrastructure_subnetwork = "${local.prefix}-subnet-infrastructure"
 }
 
-data "google_compute_zones" "zones" {
-  region = "${var.gcp_region}"
+data "google_compute_zones" "available" {
+  region = "${data.terraform_remote_state.bootstrap.gcp_region}"
 }
 
 resource "google_compute_network" "pcf" {
-  name                    = "${var.prefix}-network"
+  name                    = "${local.prefix}-network"
   auto_create_subnetworks = false
 }
 
 resource "google_compute_subnetwork" "pcf" {
   count = "${length(local.subnet_names)}"
 
-  name          = "${var.prefix}-subnet-${local.subnet_names[count.index]}"
+  name          = "${local.prefix}-subnet-${local.subnet_names[count.index]}"
   ip_cidr_range = "${local.subnet_cidrs[local.subnet_names[count.index]]}"
   network       = "${google_compute_network.pcf.self_link}"
 }
@@ -41,7 +41,7 @@ data "external" "pcf-network-info" {
 {
   "network_name": "${replace(local.subnet_names[count.index], "/-[0-9]+$/", "")}",
   "is_service_network": "${contains(local.service_networks, replace(local.subnet_names[count.index], "/-[0-9]+$/", ""))}",
-  "iaas_identifier": "${google_compute_network.pcf.name}/${local.subnets[local.subnet_names[count.index]]}/${var.gcp_region}",
+  "iaas_identifier": "${google_compute_network.pcf.name}/${local.subnets[local.subnet_names[count.index]]}/${data.terraform_remote_state.bootstrap.gcp_region}",
   "cidr": "${local.subnet_cidrs[local.subnet_names[count.index]]}",
   "gateway": "${cidrhost(local.subnet_cidrs[local.subnet_names[count.index]], 1)}",
   "reserved_ip_ranges": "${
@@ -50,7 +50,7 @@ data "external" "pcf-network-info" {
     cidrhost(local.subnet_cidrs[local.subnet_names[count.index]], -2)}-${
     cidrhost(local.subnet_cidrs[local.subnet_names[count.index]], -1)}",
   "dns": "${data.terraform_remote_state.bootstrap.pcf_network_dns}",
-  "availability_zone_names": "${join(",", data.google_compute_zones.zones.names)}"
+  "availability_zone_names": "${join(",", data.google_compute_zones.available.names)}"
 }
 RESULT
     ,
@@ -62,13 +62,13 @@ RESULT
 #
 
 resource "google_compute_network_peering" "pcf-admin" {
-  name         = "${var.prefix}-pcf-admin"
+  name         = "${local.prefix}-pcf-admin"
   network      = "${google_compute_network.pcf.self_link}"
   peer_network = "${data.terraform_remote_state.bootstrap.admin_network}"
 }
 
 resource "google_compute_network_peering" "admin-pcf" {
-  name         = "${var.prefix}-admin-pcf"
+  name         = "${local.prefix}-admin-pcf"
   network      = "${data.terraform_remote_state.bootstrap.admin_network}"
   peer_network = "${google_compute_network.pcf.self_link}"
 }
@@ -79,11 +79,11 @@ resource "google_compute_network_peering" "admin-pcf" {
 
 data "google_compute_subnetwork" "admin" {
   name   = "${basename(data.terraform_remote_state.bootstrap.admin_subnetwork)}"
-  region = "${var.gcp_region}"
+  region = "${data.terraform_remote_state.bootstrap.gcp_region}"
 }
 
 resource "google_compute_firewall" "admin-to-pcf-allow-all" {
-  name = "${var.prefix}-admin-to-pcf-allow-all"
+  name = "${local.prefix}-admin-to-pcf-allow-all"
 
   network = "${google_compute_network.pcf.name}"
 
@@ -94,5 +94,5 @@ resource "google_compute_firewall" "admin-to-pcf-allow-all" {
   direction = "INGRESS"
 
   source_ranges = ["${data.google_compute_subnetwork.admin.ip_cidr_range}"]
-  target_tags   = ["${var.prefix}", "${var.prefix}-opsman"]
+  target_tags   = ["${local.prefix}", "${local.prefix}-opsman"]
 }

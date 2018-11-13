@@ -1,15 +1,16 @@
-variable "prefix" {}
+#
+# Local Variables
+#
+locals {
+  prefix  = "${data.terraform_remote_state.bootstrap.vpc_name}-${var.environment}"
+  num_azs = "${min(data.terraform_remote_state.bootstrap.max_azs, length(data.google_compute_zones.available.names))}"
+}
+
+#
+# External Variables
+#
+
 variable "environment" {}
-
-variable "gcp_region" {}
-
-variable "gcp_zone_1" {}
-
-variable "gcp_zone_2" {}
-
-variable "gcp_zone_3" {}
-
-variable "gcp_storage_bucket_location" {}
 
 variable "pcf_opsman_image_name" {}
 

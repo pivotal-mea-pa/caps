@@ -22,11 +22,6 @@ gcp_project: '${gcp_project}'
 # Region to create the infrastructure in
 gcp_region: '${gcp_region}'
 
-# GCP Zones
-gcp_zone_1: '${gcp_zone_1}'
-gcp_zone_2: '${gcp_zone_2}'
-gcp_zone_3: '${gcp_zone_3}'
-
 # GCP Interopable storage access key: https://console.cloud.google.com/storage/settings
 gcp_storage_access_key: '${gcp_storage_access_key}'
 gcp_storage_secret_key: '${gcp_storage_secret_key}'
@@ -34,9 +29,6 @@ gcp_storage_secret_key: '${gcp_storage_secret_key}'
 # Terraform state location
 terraform_state_bucket: "${terraform_state_bucket}"
 bootstrap_state_prefix: "${bootstrap_state_prefix}"
-
-# Storage Location
-gcp_storage_bucket_location: '${gcp_region}'
 
 # Environment identifiers
 gcp_resource_prefix: '${vpc_name}-${environment}'

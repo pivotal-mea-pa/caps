@@ -4,7 +4,7 @@
 
 // PKS external IP
 resource "google_compute_address" "pks" {
-  name = "${var.prefix}-pks"
+  name = "${local.prefix}-pks"
 }
 
 // PKS API DNS
@@ -20,12 +20,12 @@ resource "google_dns_record_set" "pks" {
 
 // PKS target pool
 resource "google_compute_target_pool" "pks" {
-  name = "${var.prefix}-pks"
+  name = "${local.prefix}-pks"
 }
 
 // PKS API tcp forwarding rule
 resource "google_compute_forwarding_rule" "pks-api" {
-  name        = "${var.prefix}-pks-api-lb"
+  name        = "${local.prefix}-pks-api-lb"
   target      = "${google_compute_target_pool.pks.self_link}"
   port_range  = "9021"
   ip_protocol = "TCP"
@@ -34,7 +34,7 @@ resource "google_compute_forwarding_rule" "pks-api" {
 
 // PKS UAA tcp forwarding rule
 resource "google_compute_forwarding_rule" "pks-uaa" {
-  name        = "${var.prefix}-pks-uaa-lb"
+  name        = "${local.prefix}-pks-uaa-lb"
   target      = "${google_compute_target_pool.pks.self_link}"
   port_range  = "8443"
   ip_protocol = "TCP"
@@ -43,7 +43,7 @@ resource "google_compute_forwarding_rule" "pks-uaa" {
 
 // Allow access to PKS resourcecs
 resource "google_compute_firewall" "pks" {
-  name    = "${var.prefix}-allow-pks"
+  name    = "${local.prefix}-allow-pks"
   network = "${google_compute_network.pcf.name}"
 
   allow {
@@ -62,8 +62,8 @@ resource "google_compute_firewall" "pks" {
 // PKS Master Node services account
 
 resource "google_service_account" "pks-master" {
-  account_id   = "${replace(var.prefix, "-", "")}pksmaster"
-  display_name = "PKS Master Node Service Account for ${var.prefix}"
+  account_id   = "${replace(local.prefix, "-", "")}pksmaster"
+  display_name = "PKS Master Node Service Account for ${local.prefix}"
 }
 
 resource "google_project_iam_binding" "pks-master-iam-computeInstanceAdmin" {
@@ -123,8 +123,8 @@ resource "google_project_iam_binding" "pks-master-iam-serviceAccountUser" {
 // PKS Worker Node services account
 
 resource "google_service_account" "pks-worker" {
-  account_id   = "${replace(var.prefix, "-", "")}pksworker"
-  display_name = "PKS Worker Node Service Account for ${var.prefix}"
+  account_id   = "${replace(local.prefix, "-", "")}pksworker"
+  display_name = "PKS Worker Node Service Account for ${local.prefix}"
 }
 
 resource "google_project_iam_binding" "pks-worker-iam-computeViewer" {

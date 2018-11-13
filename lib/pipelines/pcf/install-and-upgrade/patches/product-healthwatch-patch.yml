@@ -51,14 +51,14 @@
         # Networking
         NETWORK_NAME: services
         SERVICE_NETWORK_NAME: dynamic-services
-        SINGLETON_AVAILABILITY_ZONE: # Sourced from terraform output
-        AVAILABILITY_ZONES: # Sourced from terraform output
+        SINGLETON_AVAILABILITY_ZONE: '' # Sourced from terraform output
+        AVAILABILITY_ZONES: '' # Sourced from terraform output
         # Resources
         NUM_MYSQL_INSTANCES: 1
         NUM_PROXY_INSTANCES: 1
         INTERNET_CONNECTED: false
         # Properties
-        FOUNDATION_NAME: ((gcp_resource_prefix))
+        DEPLOYMENT_PREFIX: '' # Sourced from terraform output
         OPSMAN_URL: https://((opsman_host))
 
 - type: replace
