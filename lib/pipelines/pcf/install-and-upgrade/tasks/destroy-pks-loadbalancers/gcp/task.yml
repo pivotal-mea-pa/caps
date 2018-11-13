@@ -15,8 +15,6 @@ run:
 params:
   TRACE: Y
   
-  # The following variables should be
-  # exported from the terraform output
   DEPLOYMENT_PREFIX:
   GCP_CREDENTIALS:
   GCP_PROJECT:

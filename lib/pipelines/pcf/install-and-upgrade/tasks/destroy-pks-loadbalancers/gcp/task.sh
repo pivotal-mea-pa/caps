@@ -1,12 +1,7 @@
 #!/bin/bash
 
-source automation/lib/scripts/utility/template-utils.sh
-
 [[ -n "$TRACE" ]] && set -x
 set -eo pipefail
-
-# Source terraform output variables if available
-source_variables 'terraform-output/pcf-env-*.sh'
 
 # Save service key to a json file as Terraform GCS 
 # backend only accepts the credential from a file.
