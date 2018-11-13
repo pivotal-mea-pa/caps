@@ -324,9 +324,9 @@ elif $iaas == "gcp" then
   if $gcp_project != "" and $gcp_service_account_email != "" and $gcp_credentials != "" then
     {
       ".properties.system_blobstore": { "value": "external_gcs_service_account" },
-      ".properties.system_blobstore.external_gcs_service_account.project_id": { "value", $gcp_project },
-      ".properties.system_blobstore.external_gcs_service_account.service_account_email": { "value", $gcp_service_account_email },
-      ".properties.system_blobstore.external_gcs_service_account.service_account_json_key": { "value", $gcp_credentials },
+      ".properties.system_blobstore.external_gcs_service_account.project_id": { "value": $gcp_project },
+      ".properties.system_blobstore.external_gcs_service_account.service_account_email": { "value": $gcp_service_account_email },
+      ".properties.system_blobstore.external_gcs_service_account.service_account_json_key": { "value": $gcp_credentials },
       ".properties.system_blobstore.external_gcs_service_account.buildpacks_bucket": { "value": "\($terraform_prefix)-buildpacks" },
       ".properties.system_blobstore.external_gcs_service_account.droplets_bucket": { "value": "\($terraform_prefix)-droplets" },
       ".properties.system_blobstore.external_gcs_service_account.packages_bucket": { "value": "\($terraform_prefix)-packages" },
