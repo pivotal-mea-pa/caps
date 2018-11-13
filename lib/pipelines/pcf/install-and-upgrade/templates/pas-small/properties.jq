@@ -10,7 +10,7 @@
 #   --arg gcp_project "" \
 #   --arg gcp_service_account_email "" \
 #   --arg gcp_credentials "" \
-#   --arg terraform_prefix "" \
+#   --arg deployment_prefix "" \
 #   --arg system_domain "$system_domain" \
 #   --arg apps_domain "$apps_domain" \
 #   --arg router_static_ips "" \
@@ -310,10 +310,10 @@ end
 if $iaas == "aws" then
   {
     ".properties.system_blobstore": { "value": "external" },
-    ".properties.system_blobstore.external.buildpacks_bucket": { "value": "\($terraform_prefix)-buildpacks" },
-    ".properties.system_blobstore.external.droplets_bucket": { "value": "\($terraform_prefix)-droplets" },
-    ".properties.system_blobstore.external.packages_bucket": { "value": "\($terraform_prefix)-packages" },
-    ".properties.system_blobstore.external.resources_bucket": { "value": "\($terraform_prefix)-resources" },
+    ".properties.system_blobstore.external.buildpacks_bucket": { "value": "\($deployment_prefix)-buildpacks" },
+    ".properties.system_blobstore.external.droplets_bucket": { "value": "\($deployment_prefix)-droplets" },
+    ".properties.system_blobstore.external.packages_bucket": { "value": "\($deployment_prefix)-packages" },
+    ".properties.system_blobstore.external.resources_bucket": { "value": "\($deployment_prefix)-resources" },
     ".properties.system_blobstore.external.access_key": { "value": $s3_access_key },
     ".properties.system_blobstore.external.secret_key": { "value": { "secret": $s3_secret_key } },
     ".properties.system_blobstore.external.signature_version.value": { "value": "4" },
@@ -327,18 +327,18 @@ elif $iaas == "gcp" then
       ".properties.system_blobstore.external_gcs_service_account.project_id": { "value": $gcp_project },
       ".properties.system_blobstore.external_gcs_service_account.service_account_email": { "value": $gcp_service_account_email },
       ".properties.system_blobstore.external_gcs_service_account.service_account_json_key": { "value": $gcp_credentials },
-      ".properties.system_blobstore.external_gcs_service_account.buildpacks_bucket": { "value": "\($terraform_prefix)-buildpacks" },
-      ".properties.system_blobstore.external_gcs_service_account.droplets_bucket": { "value": "\($terraform_prefix)-droplets" },
-      ".properties.system_blobstore.external_gcs_service_account.packages_bucket": { "value": "\($terraform_prefix)-packages" },
-      ".properties.system_blobstore.external_gcs_service_account.resources_bucket": { "value": "\($terraform_prefix)-resources" },
+      ".properties.system_blobstore.external_gcs_service_account.buildpacks_bucket": { "value": "\($deployment_prefix)-buildpacks" },
+      ".properties.system_blobstore.external_gcs_service_account.droplets_bucket": { "value": "\($deployment_prefix)-droplets" },
+      ".properties.system_blobstore.external_gcs_service_account.packages_bucket": { "value": "\($deployment_prefix)-packages" },
+      ".properties.system_blobstore.external_gcs_service_account.resources_bucket": { "value": "\($deployment_prefix)-resources" },
     }
   else
     {
       ".properties.system_blobstore": { "value": "external_gcs" },
-      ".properties.system_blobstore.external_gcs.buildpacks_bucket": { "value": "\($terraform_prefix)-buildpacks" },
-      ".properties.system_blobstore.external_gcs.droplets_bucket": { "value": "\($terraform_prefix)-droplets" },
-      ".properties.system_blobstore.external_gcs.packages_bucket": { "value": "\($terraform_prefix)-packages" },
-      ".properties.system_blobstore.external_gcs.resources_bucket": { "value": "\($terraform_prefix)-resources" },
+      ".properties.system_blobstore.external_gcs.buildpacks_bucket": { "value": "\($deployment_prefix)-buildpacks" },
+      ".properties.system_blobstore.external_gcs.droplets_bucket": { "value": "\($deployment_prefix)-droplets" },
+      ".properties.system_blobstore.external_gcs.packages_bucket": { "value": "\($deployment_prefix)-packages" },
+      ".properties.system_blobstore.external_gcs.resources_bucket": { "value": "\($deployment_prefix)-resources" },
       ".properties.system_blobstore.external_gcs.access_key": { "value": $gcp_storage_access_key },
       ".properties.system_blobstore.external_gcs.secret_key": { "value": { "secret": $gcp_storage_secret_key } }
     }

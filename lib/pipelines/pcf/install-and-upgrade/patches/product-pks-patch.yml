@@ -94,8 +94,6 @@
         PKS_CERT: '' # Sourced from terraform output
         PKS_CERT_KEY: '' # Sourced from terraform output
         CLOUD_PROVIDER: gcp
-        GCP_MASTER_SERVICE_ACCOUNT_KEY: ((gcp_service_account_key))
-        GCP_WORKER_SERVICE_ACCOUNT_KEY: ((gcp_service_account_key))
         VPC_NETWORK_NAME: '' # Sourced from terraform output
         PLAN1_WORKER_INSTANCES: 3
         PLAN1_ALLOW_PRIVILEGED_CONTAINERS: true

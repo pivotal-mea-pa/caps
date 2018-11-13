@@ -56,9 +56,6 @@
         INTERNET_CONNECTED: ((internet_connected))
         # Properties
         IAAS: gcp
-        GCP_STORAGE_ACCESS_KEY: ((gcp_storage_access_key))
-        GCP_STORAGE_SECRET_KEY: ((gcp_storage_secret_key))
-        TERRAFORM_PREFIX: ((gcp_resource_prefix))
         ROUTING_CUSTOM_CA_CERTIFICATES: ((routing_custom_ca_certificates))
         ROUTING_TLS_TERMINATION: ((routing_tls_termination))
         ROUTER_TLS_CIPHERS: ((router_tls_ciphers))
