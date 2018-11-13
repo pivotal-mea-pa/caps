@@ -81,7 +81,6 @@ jobs:
       OPSMAN_HOST: ((opsman_host))
       OPSMAN_USERNAME: ((opsman_admin_username))
       OPSMAN_PASSWORD: ((opsman_admin_password))
-      OPSMAN_ZONE: ((gcp_zone_1))
 
 - name: upload-opsman-image
   on_failure:
