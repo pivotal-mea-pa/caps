@@ -47,6 +47,10 @@ iptables -t nat -A POSTROUTING -o $itf -j MASQUERADE
 apt-get update
 apt-get upgrade
 EOF
+
+  depends_on = [
+    "google_compute_subnetwork.pcf",
+  ]
 }
 
 resource "google_compute_route" "nat-route" {
