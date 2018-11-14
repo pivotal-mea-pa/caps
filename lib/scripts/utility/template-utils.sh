@@ -6,7 +6,8 @@ function source_variables() {
   local var_file_path=$(dirname $var_file_glob)
 
   if [[ -e $var_file_path ]]; then
-    eval "$(cat $var_file_glob | awk -F '=' '{ if ($2 != "") print toupper($1)"="$2; else print $0 }')"
+    eval "$(cat $var_file_glob \
+      | awk -F '=' '{ if ($1 ~ /^[a-zA-Z].*/ && $2 != "") print toupper($1)"="$2; else print $0 }')"
   fi
 }
 
