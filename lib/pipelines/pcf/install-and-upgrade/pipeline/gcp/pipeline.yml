@@ -76,7 +76,6 @@ jobs:
       GCP_SERVICE_ACCOUNT_KEY: ((gcp_service_account_key))
       GCP_PROJECT: ((gcp_project))
       GCP_REGION: ((gcp_region))
-      TERRAFORM_STATE_BUCKET: ((terraform_state_bucket))
       TEMPLATE_OVERRIDE_PATH: automation-extensions/((pcf_terraform_templates_path))
       OPSMAN_HOST: ((opsman_host))
       OPSMAN_USERNAME: ((opsman_admin_username))
