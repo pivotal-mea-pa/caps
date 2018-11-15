@@ -1,20 +1,11 @@
-resource "random_pet" "sql_db" {
-  length = 1
-}
-
-resource "null_resource" "authorized_networks" {
-  count = "${local.num_azs}"
-
-  triggers {
-    name  = "${element(google_compute_instance.nat-gateway.*.name, count.index)}"
-    value = "${element(google_compute_instance.nat-gateway.*.network_interface.0.access_config.0.nat_ip, count.index)}"
-  }
-}
+#
+# External GCP SQL database instance for PCF services
+#
 
 resource "google_sql_database_instance" "master" {
   region           = "${data.terraform_remote_state.bootstrap.gcp_region}"
   database_version = "MYSQL_5_6"
-  name             = "${local.prefix}-${random_pet.sql_db.id}"
+  name             = "${local.prefix}-${uuid()}"
 
   timeouts {
     # GCP Takes a long time to create SQL instances.
@@ -30,6 +21,15 @@ resource "google_sql_database_instance" "master" {
 
       authorized_networks = ["${null_resource.authorized_networks.*.triggers}"]
     }
+  }
+}
+
+resource "null_resource" "authorized_networks" {
+  count = "${local.num_azs}"
+
+  triggers {
+    name  = "${element(google_compute_instance.nat-gateway.*.name, count.index)}"
+    value = "${element(google_compute_instance.nat-gateway.*.network_interface.0.access_config.0.nat_ip, count.index)}"
   }
 }
 
