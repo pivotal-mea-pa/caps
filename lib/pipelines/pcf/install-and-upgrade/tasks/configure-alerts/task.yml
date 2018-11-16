@@ -43,7 +43,7 @@ params:
   DB_USERNAME: ''
   DB_PASSWORD: ''
   DB_EXTERNAL_NAME: 'eventalerts'
-  DB_INTERNAL_PLAN_NAME: 'db_small'
+  DB_INTERNAL_PLAN_NAME: 'db-small'
   FROM_EMAIL_ADDRESS: ''
   SMTP_HOST: ''
   SMTP_PORT: ''
