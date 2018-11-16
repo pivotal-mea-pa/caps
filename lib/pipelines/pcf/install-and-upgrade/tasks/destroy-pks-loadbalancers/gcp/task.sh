@@ -22,6 +22,6 @@ terraform init \
 
 terraform destroy \
     -auto-approve \
-    -var "terraform_state_bucket=${TERRAFORM_STATE_BUCKET}" \
-    -var "pcf_state_prefix=${DEPLOYMENT_PREFIX}" \
+    -var "infrastructure_state_bucket=${TERRAFORM_STATE_BUCKET}" \
+    -var "infrastructure_state_prefix=${DEPLOYMENT_PREFIX}" \
     automation/lib/pipelines/pcf/install-and-upgrade/terraform/gcp/pks-loadbalancers
