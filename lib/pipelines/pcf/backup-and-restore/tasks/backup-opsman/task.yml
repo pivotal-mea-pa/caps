@@ -17,6 +17,9 @@ run:
 params:
   TRACE: Y
 
+  ## SSH private key used to access cloud resources
+  SSH_KEY:
+  
   ## Ops Manager credentials
   OPSMAN_HOST:
   OPSMAN_USERNAME:
