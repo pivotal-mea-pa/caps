@@ -99,7 +99,7 @@ credhub_encryption_key_secret3: '' # Optional Secret 2
 # PAS system databases need to be internal until 2.5
 # See: https://github.com/pivotal-cf/docs-pcf-install/issues/554
 pas_db_type: 'internal'
-event_alerts_db_type: 'external'
+event_alerts_db_type: 'internal'
 
 db_username: 'pas_system'
 db_password: '${pas_system_dbpassword}'
