@@ -5,7 +5,7 @@
 resource "google_sql_database_instance" "master" {
   region           = "${data.terraform_remote_state.bootstrap.gcp_region}"
   database_version = "MYSQL_5_6"
-  name             = "${local.prefix}-${random_string.db_instance_name_postfix.result}"
+  name             = "${local.prefix}-${lower(random_string.db_instance_name_postfix.result)}"
 
   timeouts {
     # GCP Takes a long time to create SQL instances.
