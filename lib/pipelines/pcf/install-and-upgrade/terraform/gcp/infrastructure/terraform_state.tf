@@ -9,7 +9,7 @@ terraform {
 # Retrieve the bootstrap state.
 #
 
-variable "terraform_state_bucket" {
+variable "bootstrap_state_bucket" {
   type = "string"
 }
 
