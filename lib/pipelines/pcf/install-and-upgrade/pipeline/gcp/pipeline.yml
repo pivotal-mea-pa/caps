@@ -167,7 +167,7 @@ jobs:
       TF_VAR_pcf_saml_ssl_cert: ((saml_ssl_cert1))
       TF_VAR_pcf_saml_ssl_key: ((saml_ssl_key1))
       TF_VAR_pas_db_type: ((pas_db_type))
-      TF_VAR_event_alerts_db_type: ((pas_db_type))
+      TF_VAR_event_alerts_db_type: ((event_alerts_db_type))
       TF_VAR_db_username: ((db_username))
       TF_VAR_db_password: ((db_password))
 
