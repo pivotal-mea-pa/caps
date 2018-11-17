@@ -67,7 +67,7 @@ params:
   GCS_BUCKET_NAME:
   GCS_MOUNT:
 
-  GCSFUSE_DEBUG: yes
+  GCSFUSE_DEBUG:
 
   ## Cloudfuse mount path
   CLOUDFUSE_MOUNT:
