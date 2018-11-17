@@ -4,9 +4,6 @@ source ~/scripts/iaas-func.sh
 source ~/scripts/bosh-func.sh
 iaas::initialize
 
-echo "DEBUG: sleeping for 5 mins"
-sleep 300
-
 if [[ -n "$TRACE" ]]; then
     set -x
     debug_bbr="--debug"
