@@ -58,6 +58,8 @@ fi
 cat <<EOF > job-session/env
 #!/bin/bash
 
+export BACKUP_TIMESTAMP=$TIMESTAMP
+
 source ~/scripts/opsman-func.sh
 
 opsman_url='$opsman_url'
