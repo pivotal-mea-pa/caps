@@ -20,9 +20,9 @@
     plan:
     - aggregate:
       - get: automation
-      - get: backup-session
       - get: schedule
         passed: [backup-regulator]
+      - get: backup-session
         trigger: true
 
     - task: backup-${product_name}-tile
