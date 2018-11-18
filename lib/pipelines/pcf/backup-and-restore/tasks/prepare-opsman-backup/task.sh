@@ -65,7 +65,7 @@ source ~/scripts/opsman-func.sh
 opsman_url='$opsman_url'
 opsman_token='$opsman_token'
 
-export BOSH_HOST=''\$(opsman::get_installation | jq -r \
+export BOSH_HOST=''\$(opsman::get_installation | jq -r \\
     '.products[] | select(.installation_name == "p-bosh") | .director_configuration.allocated_director_ips[0]')''
 
 if [[ -z "\$BOSH_HOST" ]]; then
