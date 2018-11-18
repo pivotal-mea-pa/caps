@@ -8,8 +8,7 @@ image_resource:
 
 inputs:
 - name: automation
-- name: backup-timestamp
-- name: job-session
+- name: backup-session
 
 run:
   path: automation/lib/pipelines/pcf/backup-and-restore/tasks/backup-opsman/task.sh

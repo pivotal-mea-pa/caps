@@ -12,7 +12,7 @@ if [[ -n "$OPSMAN_SSH_PASSWD" ]]; then
     ssh_pass="sshpass -p$OPSMAN_SSH_PASSWD"
 fi
 
-source job-session/env*.sh
+source backup-session/env*.sh
 
 opsman_backup_path=$(pwd)/$backup_path/$BACKUP_TIMESTAMP/opsman
 mkdir -p $opsman_backup_path

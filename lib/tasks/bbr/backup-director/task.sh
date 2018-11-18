@@ -10,7 +10,7 @@ if [[ -n "$TRACE" ]]; then
 fi
 set -euo pipefail
 
-source job-session/env*.sh
+source backup-session/env*.sh
 
 echo "Backing up Bosh Director via BBR utility..."
 
