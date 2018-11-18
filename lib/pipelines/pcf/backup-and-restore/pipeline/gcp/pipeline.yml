@@ -134,7 +134,7 @@ jobs:
     - get: backup-opsman-timestamp
       passed: [backup-opsman]
 
-  - task: prepare-opsman-restore
+  - task: prepare-restore
     privileged: true
     file: automation/lib/pipelines/pcf/backup-and-restore/tasks/prepare-opsman-restore/task.yml
     params: 
