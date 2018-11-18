@@ -2,9 +2,9 @@
 
 ## Overview
 
-This repository contains deployment automation pipelines that can help launch scaled out production ready environments in the cloud. The automation tooling consist of [Terraform](https://www.terraform.io/) as the orchestrator and control plane for infrastructure services and [Concourse](http://concourse-ci.org/) for implementing operational workflows. Pipeline jobs may use a combination of configuration management tools to achieve their objective, but the primary configuration management tool used by the automation pipelines is [Bosh](http://bosh.io/).
+This repository contains deployment automation pipelines that launch scaled out production ready environments in the cloud. The automation tooling consist of [Terraform](https://www.terraform.io/) as the orchestrator and control plane for infrastructure services and [Concourse](http://concourse-ci.org/) for implementing operational workflows. Pipeline jobs may use a combination of configuration management tools to achieve their objective, but the primary configuration management tool used by the automation pipelines is [Bosh](http://bosh.io/).
 
-A collection of utility scripts is provided in the `bin` folder to help manage multiple environments. Along with these scripts this repository is organized as follows. 
+A collection of utility scripts are provided in the `bin` folder to help manage multiple environments. Along with these scripts this repository is organized as follows. 
 
 ```
 .
@@ -16,7 +16,7 @@ A collection of utility scripts is provided in the `bin` folder to help manage m
 └── README.md
 ```
 
-Each environment is bootstrapped by an inception Virtual Private Cloud (VPC), which sets up optional infrastructure that will secure access to internal resources built via automation pipelines. This repository also provides a set of reference deployments which can be extended as required.
+Each environment is bootstrapped by an inception Virtual Private Cloud (VPC), which sets up infrastructure that secure access to internal resources built via automation pipelines. This repository provides a set of reference deployments which can be extended as required.
 
 ## Usage
 
