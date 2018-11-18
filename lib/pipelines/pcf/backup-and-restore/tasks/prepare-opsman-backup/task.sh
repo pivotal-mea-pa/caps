@@ -5,7 +5,7 @@ source ~/scripts/opsman-func.sh
 iaas::initialize
 
 [[ -n "$TRACE" ]] && set -x
-set -euo pipefail
+set -eo pipefail
 
 TIMESTAMP=$(date +%Y%m%d%H%M%S)
 
