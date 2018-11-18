@@ -19,8 +19,7 @@ run:
   path: automation/lib/pipelines/pcf/backup-and-restore/tasks/prepare-opsman-backup/task.sh
 
 outputs:
-- name: backup-timestamp
-- name: job-session
+- name: backup-session
 
 params:
   TRACE:

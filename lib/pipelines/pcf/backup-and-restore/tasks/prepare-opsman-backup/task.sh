@@ -7,19 +7,6 @@ iaas::initialize
 [[ -n "$TRACE" ]] && set -x
 set -euo pipefail
 
-if [[ -d backup-metadata ]]; then
-    cp -r backup-metadata/* backup-timestamp/
-elif [[ $backup_mounted == yes ]]; then
-    if [[ -e $backup_path/metadata ]]; then
-        cp $backup_path/metadata backup-timestamp/
-    else
-        touch backup-timestamp/metadata
-    fi
-else
-    echo "ERROR! Unable to locate backup metadata."
-    exit 1
-fi
-
 TIMESTAMP=$(date +%Y%m%d%H%M%S)
 grep -q "^BACKUP_TIMESTAMP=" backup-timestamp/metadata && \
     sed -i "s|^BACKUP_TIMESTAMP=.*$|BACKUP_TIMESTAMP=$TIMESTAMP|" backup-timestamp/metadata || \
@@ -55,7 +42,7 @@ fi
 
 # Create script to source environment for downstream jobs/tasks
 
-cat <<EOF > job-session/env.sh
+cat <<EOF > backup-session/env.sh
 #!/bin/bash
 
 export BACKUP_TIMESTAMP=$TIMESTAMP

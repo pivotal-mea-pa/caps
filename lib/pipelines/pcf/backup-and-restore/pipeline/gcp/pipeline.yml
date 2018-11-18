@@ -70,7 +70,7 @@ jobs:
     privileged: true
     file: automation/lib/pipelines/pcf/backup-and-restore/tasks/prepare-opsman-backup/task.yml
     output_mapping: 
-      job-session: upload_path
+      backup-session: upload_path
     params: 
       <<: *backup-restore-common-params
       <<: *backup-restore-storage-params
