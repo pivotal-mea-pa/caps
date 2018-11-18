@@ -18,7 +18,7 @@ common:
 
   ## Backup storage backend type should be one of 'scp', 's3', 'gcs', 'swift'
   BACKUP_TYPE: ((backup_storage_type))
-  BACKUP_TARGET: ((backup_target))
+  BACKUP_TARGET: ((backup_target))/opsman
   
   ## Credentials for GCS access
   GCP_SERVICE_ACCOUNT_KEY: ((gcp_service_account_key))
@@ -30,21 +30,13 @@ common:
 jobs:
 
 #
-# Backup Pivotal Ops Manager and Cloud Foundry
+# Backup regulator
 #
 
-- name: backup-pcf
-  serial: true
-  serial_groups: [backups]
-  on_failure:
-    do:
-    - task: notify on backup-pcf failure
+- name: backup-regulator
   plan:
-
-  - aggregate:
-    - get: automation
-    - get: daily
-      trigger: true
+  - get: schedule
+    trigger: true
 
   # Wait for director to be in a ready state
   - task: wait-for-director-to-be-ready
@@ -71,12 +63,22 @@ jobs:
     params:
       <<: *backup-restore-common-params
 
-  - task: prepare-backup
-    privileged: true
-    file: automation/lib/pipelines/pcf/backup-and-restore/tasks/prepare-opsman-backup/task.yml
-    params: 
-      <<: *backup-restore-common-params
-      <<: *backup-restore-storage-params
+#
+# Backup Pivotal Ops Manager
+#
+
+- name: backup-opsman
+  serial: true
+  serial_groups: [opsman]
+  on_failure:
+    do:
+    - task: notify on backup-opsman failure
+  plan:
+  - aggregate:
+    - get: automation
+    - get: schedule
+      passed: [backup-regulator]
+      trigger: true
 
   - aggregate:
 
@@ -91,7 +93,8 @@ jobs:
       privileged: true
       file: automation/lib/tasks/bbr/backup-director/task.yml
       params: 
-        <<: *backup-restore-common-params
+        TRACE: ((trace))
+        SSH_KEY: ((ssh_key))
         <<: *backup-restore-storage-params
 
   - task: cleanup
@@ -101,20 +104,35 @@ jobs:
       <<: *backup-restore-common-params
       <<: *backup-restore-storage-params
 
+  - put: backup-opsman-timestamp
+    params:
+      file: backup-timestamp/metadata
+
 #
 # Restore Ops Manager by importing backed up installation export 
 # archive followed by director before apply all changes
 #
 
-- name: restore-ops-manager
+- name: restore-opsman
   serial: true
-  serial_groups: [backups]
+  serial_groups: [opsman]
+  on_failure:
+    do:
+    - task: notify on restore-opsman failure
   plan:
-
   - aggregate:
     - get: automation
+    - get: backup-opsman-timestamp
+      passed: [backup-opsman]
 
-  - task: import-ops-manager-backup
+  - task: prepare-opsman-restore
+    privileged: true
+    file: automation/lib/pipelines/pcf/backup-and-restore/tasks/prepare-opsman-restore/task.yml
+    params: 
+      <<: *backup-restore-common-params
+      <<: *backup-restore-storage-params
+
+  - task: import-opsman-backup
     privileged: true
     file: automation/lib/pipelines/pcf/backup-and-restore/tasks/restore-opsman/task.yml
     params: 
@@ -126,7 +144,8 @@ jobs:
     privileged: true
     file: automation/lib/tasks/bbr/restore-director/task.yml
     params: 
-      <<: *backup-restore-common-params
+      TRACE: ((trace))
+      SSH_KEY: ((ssh_key))
       <<: *backup-restore-storage-params
 
   - task: apply-changes
@@ -143,10 +162,20 @@ resources:
     uri: ((automation_pipelines_repo))
     branch: ((automation_pipelines_branch))
 
-- name: daily
+- name: schedule
   type: time
   source:
     interval: ((backup_interval))
     location: ((locale))
     start: ((backup_interval_start))
     stop: ((backup_interval_stop))
+
+- name: backup-opsman-timestamp
+  type: keyval
+
+resource_types:
+
+- name: keyval
+  type: docker-image
+  source:
+    repository: swce/keyval-resource
