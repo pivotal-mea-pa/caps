@@ -16,6 +16,7 @@ run:
 
 params:
   TRACE: Y
+  SSH_KEY:
 
   ## BBR Credentials 
   BBR_SSH_KEY:

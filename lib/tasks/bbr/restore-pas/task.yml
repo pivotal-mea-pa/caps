@@ -16,6 +16,7 @@ run:
 
 params:
   TRACE: Y
+  SSH_KEY:
 
   RESTORE_TIMESTAMP:
 

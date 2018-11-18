@@ -18,6 +18,7 @@ outputs:
 
 params:
   TRACE: Y
+  SSH_KEY:
 
   BACKUP_TIMESTAMP:
 
