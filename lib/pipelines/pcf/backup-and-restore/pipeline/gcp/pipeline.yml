@@ -59,12 +59,6 @@ jobs:
       AUTOS3_ACCESS_KEY: ((autos3_access_key))
       AUTOS3_SECRET_KEY: ((autos3_secret_key))
 
-  # Wait if an opsman is currently in the process of applying a change
-  - task: wait-if-apply-in-progress
-    file: automation/lib/tasks/opsman/wait-opsman/task.yml
-    params:
-      <<: *backup-restore-common-params
-
   # Create a backup job session which will be shared across backup jobs
   - task: prepare-backup
     privileged: true
