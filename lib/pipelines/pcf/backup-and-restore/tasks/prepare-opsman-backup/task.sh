@@ -8,9 +8,6 @@ iaas::initialize
 set -euo pipefail
 
 TIMESTAMP=$(date +%Y%m%d%H%M%S)
-grep -q "^BACKUP_TIMESTAMP=" backup-timestamp/metadata && \
-    sed -i "s|^BACKUP_TIMESTAMP=.*$|BACKUP_TIMESTAMP=$TIMESTAMP|" backup-timestamp/metadata || \
-    echo "BACKUP_TIMESTAMP=$TIMESTAMP" >> backup-timestamp/metadata
 
 # Wait for any current apply jobs to finish
 
