@@ -8,10 +8,9 @@ if [[ -n "$TRACE" ]]; then
     set -x
     debug_bbr="--debug"
 fi
-set -e
+set -eo pipefail
 
-source backup-timestamp/metadata
-source job-session/env
+source backup-session/env*.sh
 bosh_client_creds
 
 bosh::login_client "$CA_CERT" "$BOSH_HOST" "$BOSH_CLIENT" "$BOSH_CLIENT_SECRET"
