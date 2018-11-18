@@ -21,7 +21,7 @@
     - aggregate:
       - get: automation
       - get: schedule
-        ${product_name}sed: [backup-regulator]
+        pased: [backup-regulator]
         trigger: true
 
     - task: prepare-backup
@@ -115,7 +115,7 @@
     - aggregate:
       - get: automation
       - get: backup-${product_name}-timestamp
-        ${product_name}sed: [backup-${product_name}]
+        pased: [backup-${product_name}]
 
     - task: prepare-restore
       privileged: true
