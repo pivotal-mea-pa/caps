@@ -119,7 +119,8 @@ jobs:
     privileged: true
     file: automation/lib/tasks/bbr/cleanup/task.yml
     params: 
-      <<: *backup-restore-common-params
+      TRACE: ((trace))
+      SSH_KEY: ((ssh_key))
       <<: *backup-restore-storage-params
 
   - put: backup-opsman-timestamp
