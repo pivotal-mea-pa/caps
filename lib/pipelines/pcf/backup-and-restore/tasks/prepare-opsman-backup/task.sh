@@ -55,7 +55,7 @@ fi
 
 # Create script to source environment for downstream jobs/tasks
 
-cat <<EOF > job-session/env
+cat <<EOF > job-session/env.sh
 #!/bin/bash
 
 export BACKUP_TIMESTAMP=$TIMESTAMP
