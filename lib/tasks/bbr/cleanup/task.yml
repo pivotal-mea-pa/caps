@@ -8,7 +8,7 @@ image_resource:
 
 inputs:
 - name: automation
-- name: backup-timestamp
+- name: backup-session
 
 run:
   path: automation/lib/tasks/bbr/cleanup/task.sh

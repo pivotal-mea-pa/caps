@@ -4,9 +4,9 @@ source ~/scripts/iaas-func.sh
 iaas::initialize
 
 [[ -n "$TRACE" ]] && set -x
-set -e
+set -eo pipefail
 
-source backup-timestamp/metadata
+source backup-session/env*.sh
 
 grep -q "^RESTORE_TIMESTAMP=" backup-timestamp/metadata && \
     sed -i "s|^RESTORE_TIMESTAMP=.*$|RESTORE_TIMESTAMP=$BACKUP_TIMESTAMP|" backup-timestamp/metadata || \
