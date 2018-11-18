@@ -8,19 +8,19 @@ set -eo pipefail
 
 source backup-session/env*.sh
 
-if [[ -d restore-timestamp ]]; then
-    metadata_file=restore-timestamp/metadata
-elif [[ $backup_mounted == yes ]]; then
+if [[ $backup_mounted == yes ]]; then
     mkdir -p $backup_path/
     metadata_file=$backup_path/metadata
+    touch $metadata_file
 else
-    echo "ERROR! Unable determine destination for backup metadata."
-    exit 1
+    metadata_file=./metadata
 fi
 
 grep -q "^RESTORE_TIMESTAMP=" $metadata_file && \
     sed -i "s|^RESTORE_TIMESTAMP=.*$|RESTORE_TIMESTAMP=$BACKUP_TIMESTAMP|" $metadata_file || \
     echo "RESTORE_TIMESTAMP=$BACKUP_TIMESTAMP" >> $metadata_file
+
+cp $metadata_file ./restore-timestamp
 
 [[ -n $BACKUP_AGE ]] || BACKUP_AGE=7
 backup::cleanup "$BACKUP_AGE" "$BACKUP_TYPE" "$BACKUP_TARGET"

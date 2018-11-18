@@ -63,7 +63,7 @@
 
     - put: backup-${product_name}-timestamp
       params:
-        file: backup-timestamp/metadata
+        file: restore-timestamp/metadata
 
 #
 # Restore product

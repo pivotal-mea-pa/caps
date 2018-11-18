@@ -125,7 +125,7 @@ jobs:
 
   - put: backup-opsman-timestamp
     params:
-      file: backup-timestamp/metadata
+      file: restore-timestamp/metadata
 
 #
 # Restore Ops Manager by importing backed up installation export 
