@@ -35,8 +35,10 @@ jobs:
 
 - name: backup-regulator
   plan:
-  - get: schedule
-    trigger: true
+  - aggregate:
+    - get: automation
+    - get: schedule
+      trigger: true
 
   # Wait for director to be in a ready state
   - task: wait-for-director-to-be-ready
