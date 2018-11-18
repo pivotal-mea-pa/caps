@@ -104,18 +104,13 @@ jobs:
       passed: [backup-regulator]
       trigger: true
 
-  - task: prepare-backup
-    privileged: true
-    file: automation/lib/pipelines/pcf/backup-and-restore/tasks/prepare-opsman-backup/task.yml
-    params: 
-      <<: *backup-restore-common-params
-      <<: *backup-restore-storage-params
-
   - aggregate:
 
     - task: backup-opsman
       privileged: true
       file: automation/lib/pipelines/pcf/backup-and-restore/tasks/backup-opsman/task.yml
+      input_mapping: 
+        backup-session: job-session
       params: 
         <<: *backup-restore-common-params
         <<: *backup-restore-storage-params
@@ -123,6 +118,8 @@ jobs:
     - task: backup-director
       privileged: true
       file: automation/lib/tasks/bbr/backup-director/task.yml
+      input_mapping: 
+        backup-session: job-session
       params: 
         TRACE: ((trace))
         SSH_KEY: ((ssh_key))

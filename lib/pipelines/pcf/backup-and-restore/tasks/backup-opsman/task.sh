@@ -6,14 +6,13 @@ source ~/scripts/bosh-func.sh
 iaas::initialize
 
 [[ -n "$TRACE" ]] && set -x
-set -e
+set -euo pipefail
 
 if [[ -n "$OPSMAN_SSH_PASSWD" ]]; then
     ssh_pass="sshpass -p$OPSMAN_SSH_PASSWD"
 fi
 
-source backup-timestamp/metadata
-source job-session/env
+source job-session/env*.sh
 
 opsman_backup_path=$(pwd)/$backup_path/$BACKUP_TIMESTAMP/opsman
 mkdir -p $opsman_backup_path

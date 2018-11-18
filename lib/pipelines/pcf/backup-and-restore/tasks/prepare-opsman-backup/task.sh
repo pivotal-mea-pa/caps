@@ -5,7 +5,7 @@ source ~/scripts/opsman-func.sh
 iaas::initialize
 
 [[ -n "$TRACE" ]] && set -x
-set -e
+set -euo pipefail
 
 if [[ -d backup-metadata ]]; then
     cp -r backup-metadata/* backup-timestamp/
