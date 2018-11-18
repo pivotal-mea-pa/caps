@@ -70,7 +70,7 @@ jobs:
       <<: *backup-restore-storage-params
 
   # Clean up backup session
-  - task: clean-up-backup-session
+  - task: clean-up-old-backup-session
     file: automation/lib/inceptor/tasks/upload-object/task.yml
     params: 
       BUCKET: pcf
@@ -84,7 +84,7 @@ jobs:
   # Save backup session so it can be referenced by product backup jobs
   - put: backup-session
     params:
-      file: upload_object/env-(.*).sh
+      file: upload_object/env-*.sh
 
 #
 # Backup Pivotal Ops Manager
