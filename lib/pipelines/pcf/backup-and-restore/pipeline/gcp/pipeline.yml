@@ -99,6 +99,7 @@ jobs:
   plan:
   - aggregate:
     - get: automation
+    - get: backup-session
     - get: schedule
       passed: [backup-regulator]
       trigger: true
@@ -199,6 +200,15 @@ resources:
     location: ((locale))
     start: ((backup_interval_start))
     stop: ((backup_interval_stop))
+
+- name: backup-session
+  type: s3
+  source:
+    bucket: pcf
+    endpoint: ((autos3_url))
+    access_key_id: ((autos3_access_key))
+    secret_access_key: ((autos3_secret_key))
+    regexp: backup-session/env-(.*).sh
 
 - name: backup-opsman-timestamp
   type: keyval
