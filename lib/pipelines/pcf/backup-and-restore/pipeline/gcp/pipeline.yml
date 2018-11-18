@@ -69,8 +69,8 @@ jobs:
       <<: *backup-restore-common-params
       <<: *backup-restore-storage-params
 
-  # Save backup session output so it can be referenced by product backup jobs
-  - task: save-backup-session
+  # Clean up backup session
+  - task: clean-up-backup-session
     file: automation/lib/inceptor/tasks/upload-object/task.yml
     params: 
       BUCKET: pcf
@@ -79,6 +79,12 @@ jobs:
       AUTOS3_URL: ((autos3_url))
       AUTOS3_ACCESS_KEY: ((autos3_access_key))
       AUTOS3_SECRET_KEY: ((autos3_secret_key))
+      CLEAN_UP_OLD_VERSIONS_ONLY: yes
+
+  # Save backup session so it can be referenced by product backup jobs
+  - put: backup-session
+    params:
+      file: upload_object/env-(.*).sh
 
 #
 # Backup Pivotal Ops Manager
@@ -93,9 +99,9 @@ jobs:
   plan:
   - aggregate:
     - get: automation
-    - get: schedule
-      passed: [backup-regulator]
+    - get: schedule      
     - get: backup-session
+      passed: [backup-regulator]
       trigger: true
 
   - aggregate:

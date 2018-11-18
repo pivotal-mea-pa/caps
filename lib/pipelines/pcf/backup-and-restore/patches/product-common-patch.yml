@@ -21,8 +21,8 @@
     - aggregate:
       - get: automation
       - get: schedule
-        passed: [backup-regulator]
       - get: backup-session
+        passed: [backup-regulator]
         trigger: true
 
     - task: backup-${product_name}-tile
