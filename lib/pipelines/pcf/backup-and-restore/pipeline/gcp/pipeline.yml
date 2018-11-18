@@ -65,6 +65,27 @@ jobs:
     params:
       <<: *backup-restore-common-params
 
+  # Create a backup job session which will be shared across backup jobs
+  - task: prepare-backup
+    privileged: true
+    file: automation/lib/pipelines/pcf/backup-and-restore/tasks/prepare-opsman-backup/task.yml
+    output_mapping: 
+      job-session: upload_path
+    params: 
+      <<: *backup-restore-common-params
+      <<: *backup-restore-storage-params
+
+  # Save backup session output so it can be referenced by product backup jobs
+  - task: save-backup-session
+    file: automation/lib/inceptor/tasks/upload-object/task.yml
+    params: 
+      BUCKET: pcf
+      UPLOAD_PATH: backup-session
+      OBJECT_NAME: env
+      AUTOS3_URL: ((autos3_url))
+      AUTOS3_ACCESS_KEY: ((autos3_access_key))
+      AUTOS3_SECRET_KEY: ((autos3_secret_key))
+
 #
 # Backup Pivotal Ops Manager
 #
