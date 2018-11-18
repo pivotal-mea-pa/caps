@@ -8,7 +8,7 @@ if [[ -n "$TRACE" ]]; then
     set -x
     debug_bbr="--debug"
 fi
-set -euo pipefail
+set -eo pipefail
 
 source backup-session/env*.sh
 

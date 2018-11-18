@@ -6,7 +6,7 @@ source ~/scripts/bosh-func.sh
 iaas::initialize
 
 [[ -n "$TRACE" ]] && set -x
-set -euo pipefail
+set -eo pipefail
 
 if [[ -n "$OPSMAN_SSH_PASSWD" ]]; then
     ssh_pass="sshpass -p$OPSMAN_SSH_PASSWD"
