@@ -12,7 +12,7 @@ inputs:
 
 run:
   path: automation/lib/tasks/bbr/common/restore-deployment.sh
-  args: ["cf-.*", "ert"]
+  args: ["cf-.*", "pas"]
 
 params:
   TRACE: Y
