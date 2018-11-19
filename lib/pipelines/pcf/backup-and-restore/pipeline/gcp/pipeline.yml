@@ -26,6 +26,7 @@ common:
 
   ## GCS mount path
   GCS_MOUNT: ((gcs_mount))
+  GCSFUSE_OPTIONS: '--limit-ops-per-sec 0.25'
 
 jobs:
 
