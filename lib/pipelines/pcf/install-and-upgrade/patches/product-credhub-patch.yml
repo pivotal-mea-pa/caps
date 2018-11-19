@@ -25,16 +25,6 @@
         params:
           skip_download: 'true'
 
-      - get: mysql-tile
-        passed: [deploy]
-        params:
-          skip_download: 'true'
-
-      - get: rabbitmq-tile
-        passed: [deploy]
-        params:
-          skip_download: 'true'
-
     # Stage product tile
     - task: stage-tile
       file: automation/lib/tasks/opsman/stage-product/task.yml
@@ -57,34 +47,16 @@
         OPSMAN_USERNAME: ((opsman_admin_username))
         OPSMAN_PASSWORD: ((opsman_admin_password))
         # Product configuration
-        PRODUCT_NAME: p-spring-cloud-services
-        TEMPLATE_PATH: automation/lib/pipelines/pcf/install-and-upgrade/templates/scs
-        TEMPLATE_OVERRIDE_PATH: automation-extensions/((pcf_tile_templates_path))/scs
-        # ERRANDS_TO_DISABLE: ${errands_to_disable}
-        # ERRANDS_TO_ENABLE: ${errands_to_enable}
-
-        #
-        # Disable smoke test errand as it causes failures due to a 
-        # hard-coded dependency p-circuit-breaker-dashboard has in 
-        # shared RMQ service the.
-        #
-        # https://community.pivotal.io/s/question/0D50e00005BEGuuCAH/failed-to-provision-a-circuitbreakerdashboard-from-spring-cloud-services-202
-        # Remove the following once the issue has been fixed
-        #
-        ERRANDS_TO_DISABLE: 'run-smoke-tests,smoke-tests'
-        ERRANDS_TO_ENABLE: ''
-
-        ERRAND_DEFAULT_IF_ENABLED: when-changed
+        TEMPLATE_OVERRIDE_PATH: automation-extensions/((pcf_tile_templates_path))/credhub
+        ERRANDS_TO_DISABLE: ${errands_to_disable}
+        ERRANDS_TO_ENABLE: ${errands_to_enable}
         # Networking
         NETWORK_NAME: services
         SINGLETON_AVAILABILITY_ZONE: '' # Sourced from terraform output
         AVAILABILITY_ZONES: '' # Sourced from terraform output
         # Resources
         INTERNET_CONNECTED: false
-        # Properties
-        ENABLE_GLOBAL_ACCESS: true
-        DISABLE_CERT_CHECK: true
-        SECURE_CREDENTIALS: false
+        # Properties - accept defaults
 
     # Wait if an opsman is currently in the process of applying a change
     - task: wait-if-apply-in-progress
@@ -105,4 +77,4 @@
         OPSMAN_PASSWORD: ((opsman_admin_password))
         OPSMAN_CLIENT_ID: ((opsman_client_id))
         OPSMAN_CLIENT_SECRET: ((opsman_client_secret))
-        PRODUCT_NAME: p-spring-cloud-services
+        PRODUCT_NAME: credhub-service-broker
