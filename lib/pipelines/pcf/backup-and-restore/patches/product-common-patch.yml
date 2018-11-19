@@ -43,6 +43,7 @@
         ## GCS mount path
         GCS_MOUNT: ((gcs_mount))
         GCSFUSE_OPTIONS: '--limit-ops-per-sec -1'
+        GCSFUSE_DEBUG: y
 
     - task: cleanup
       privileged: true
