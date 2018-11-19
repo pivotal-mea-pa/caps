@@ -13,8 +13,7 @@
   value:
     name: backup-${product_name}
     serial: true
-    # serial_groups: [${product_name}]
-    serial_groups: [backup]
+    serial_groups: [${product_name}]
     on_failure:
       do:
       - task: notify on backup-${product_name} failure

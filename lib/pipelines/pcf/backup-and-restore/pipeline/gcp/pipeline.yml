@@ -92,8 +92,7 @@ jobs:
 
 - name: backup-opsman
   serial: true
-  # serial_groups: [opsman]
-  serial_groups: [backup]
+  serial_groups: [opsman]
   on_failure:
     do:
     - task: notify on backup-opsman failure
