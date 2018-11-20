@@ -46,6 +46,8 @@
         OPSMAN_CLIENT_SECRET: ((opsman_client_secret))
         OPSMAN_USERNAME: ((opsman_admin_username))
         OPSMAN_PASSWORD: ((opsman_admin_password))
+        # The IAAS to configure for
+        IAAS: ((iaas_type))
         # Product configuration
         TEMPLATE_OVERRIDE_PATH: automation-extensions/((pcf_tile_templates_path))/sso
         ERRANDS_TO_DISABLE: ${errands_to_disable}
