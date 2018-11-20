@@ -70,7 +70,7 @@ jobs:
       AUTOS3_ACCESS_KEY: ((autos3_access_key))
       AUTOS3_SECRET_KEY: ((autos3_secret_key))
   - task: destroy-infrastructure
-    file: automation/lib/pipelines/pcf/install-and-upgrade/tasks/destroy-infrastructure/gcp/task.yml
+    file: automation/lib/pipelines/pcf/install-and-upgrade/tasks/destroy-infrastructure/google/task.yml
     params:
       DEPLOYMENT_PREFIX: ((deployment_prefix))
       GCP_SERVICE_ACCOUNT_KEY: ((gcp_service_account_key))
@@ -99,7 +99,7 @@ jobs:
 
   # Upload new Ops Manager image to the IAAS
   - task: upload
-    file: automation/lib/pipelines/pcf/install-and-upgrade/tasks/upload-opsman/gcp/task.yml
+    file: automation/lib/pipelines/pcf/install-and-upgrade/tasks/upload-opsman/google/task.yml
     params:
       GCP_PROJECT: ((gcp_project))
       GCP_REGION: ((gcp_region))
@@ -148,7 +148,7 @@ jobs:
 
   # Prepare the IaaS for PCF (e.g. DNS, network, etc.)
   - task: create-infrastructure
-    file: automation/lib/pipelines/pcf/install-and-upgrade/tasks/create-infrastructure/gcp/task.yml
+    file: automation/lib/pipelines/pcf/install-and-upgrade/tasks/create-infrastructure/google/task.yml
     params:
       DEPLOYMENT_PREFIX: ((deployment_prefix))
       GCP_SERVICE_ACCOUNT_KEY: ((gcp_service_account_key))

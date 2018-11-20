@@ -19,7 +19,7 @@ jobs:
     - get: automation
       trigger: true
   - task: configure
-    file: automation/deployments/pcf/gcp/pipeline/task.yml
+    file: automation/deployments/pcf/google/pipeline/task.yml
     params:
       TRACE: ((trace))
       CONCOURSE_URL: ((concourse_url))
@@ -35,7 +35,6 @@ jobs:
       GOOGLE_PROJECT: ((google_project))
       GOOGLE_CREDENTIALS_JSON: ((google_credentials_json))
       GOOGLE_REGION: ((google_region))
-      PIPELINE_AUTOMATION_PATH: ((pipeline_automation_path))
       BOOTSTRAP_STATE_BUCKET: ((bootstrap_state_bucket))
       BOOTSTRAP_STATE_PREFIX: ((bootstrap_state_prefix))
       VPC_NAME: ((vpc_name))

@@ -10,7 +10,7 @@ inputs:
 - name: automation
 
 run:
-  path: automation/deployments/pcf/gcp/pipeline/task.sh
+  path: automation/deployments/pcf/google/pipeline/task.sh
 
 params:
   TRACE: Y
@@ -26,6 +26,10 @@ params:
   SMTP_PORT:
   EMAIL_FROM:
   EMAIL_TO:
+
+  # The path to common automation 
+  # tasks in the inceptor library
+  PIPELINE_AUTOMATION_PATH:
   
   # Target IaaS type which is propogated
   # to all downstream deployment and 
@@ -46,13 +50,16 @@ params:
   GOOGLE_CREDENTIALS_JSON:
   GOOGLE_REGION:
 
-  PIPELINE_AUTOMATION_PATH:
+  # Terraform bootstrap state
   BOOTSTRAP_STATE_BUCKET:
   BOOTSTRAP_STATE_PREFIX:
+
   VPC_NAME:
   VPC_DNS_ZONE:
+
   ENVIRONMENTS:
   PRODUCTS:
+
   UNPAUSE_INSTALL_PIPELINE:
   WAIT_ON_DEPLOYMENT_JOB:
   SET_START_STOP_SCHEDULE:

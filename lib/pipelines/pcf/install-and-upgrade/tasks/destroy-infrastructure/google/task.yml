@@ -25,4 +25,4 @@ params:
   TEMPLATE_OVERRIDE_PATH:
 
 run:
-  path: automation/lib/pipelines/pcf/install-and-upgrade/tasks/destroy-infrastructure/gcp/task.sh
+  path: automation/lib/pipelines/pcf/install-and-upgrade/tasks/destroy-infrastructure/google/task.sh
