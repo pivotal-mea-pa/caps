@@ -44,12 +44,9 @@
         # The IAAS to configure for
         IAAS: ((iaas_type))
         # Product configuration
-        PRODUCT_NAME: cf
-        TEMPLATE_PATH: automation/lib/pipelines/pcf/install-and-upgrade/templates/pas-small
         TEMPLATE_OVERRIDE_PATH: automation-extensions/((pcf_tile_templates_path))/pas-small
         ERRANDS_TO_DISABLE: ${errands_to_disable}
         ERRANDS_TO_ENABLE: ${errands_to_enable}
-        ERRAND_DEFAULT_IF_ENABLED: when-changed
         # Networking
         NETWORK_NAME: pas
         SINGLETON_AVAILABILITY_ZONE: '' # Sourced from terraform output

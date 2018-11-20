@@ -57,8 +57,6 @@
         OPSMAN_USERNAME: ((opsman_admin_username))
         OPSMAN_PASSWORD: ((opsman_admin_password))
         # Product configuration
-        PRODUCT_NAME: p-spring-cloud-services
-        TEMPLATE_PATH: automation/lib/pipelines/pcf/install-and-upgrade/templates/scs
         TEMPLATE_OVERRIDE_PATH: automation-extensions/((pcf_tile_templates_path))/scs
         # ERRANDS_TO_DISABLE: ${errands_to_disable}
         # ERRANDS_TO_ENABLE: ${errands_to_enable}
@@ -73,8 +71,6 @@
         #
         ERRANDS_TO_DISABLE: 'run-smoke-tests,smoke-tests'
         ERRANDS_TO_ENABLE: ''
-
-        ERRAND_DEFAULT_IF_ENABLED: when-changed
         # Networking
         NETWORK_NAME: services
         SINGLETON_AVAILABILITY_ZONE: '' # Sourced from terraform output

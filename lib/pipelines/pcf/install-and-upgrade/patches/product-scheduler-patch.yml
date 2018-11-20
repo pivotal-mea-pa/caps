@@ -53,6 +53,8 @@
         OPSMAN_PASSWORD: ((opsman_admin_password))
         # Product configuration
         TEMPLATE_OVERRIDE_PATH: automation-extensions/((pcf_tile_templates_path))/scheduler
+        ERRANDS_TO_DISABLE: ${errands_to_disable}
+        ERRANDS_TO_ENABLE: ${errands_to_enable}
         # Networking
         NETWORK_NAME: services
         SINGLETON_AVAILABILITY_ZONE: '' # Sourced from terraform output
