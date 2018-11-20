@@ -8,8 +8,6 @@ set -eo pipefail
 # Source terraform output variables if available
 source_variables 'terraform-output/pcf-env-*.sh'
 
-TEMPLATE_OVERRIDE_PATH=automation-extensions/$TEMPLATE_OVERRIDE_PATH
-
 # NEW_VERSION=$(cat pivnet-product/version | cut -d'#' -f1)
 # INSTALLED_VERSION=$(om \
 #   --skip-ssl-validation \

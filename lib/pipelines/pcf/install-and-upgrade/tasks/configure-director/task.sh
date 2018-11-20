@@ -8,9 +8,6 @@ set -eo pipefail
 # Source terraform output variables if available
 source_variables 'terraform-output/pcf-env-*.sh'
 
-TEMPLATE_PATH=automation/lib/pipelines/pcf/install-and-upgrade/templates/director
-TEMPLATE_OVERRIDE_PATH=automation-extensions/$TEMPLATE_OVERRIDE_PATH
-
 # Retrieve configured AZs if any which will be passed 
 # as a json arg to the az_configuration template as their 
 # GUIDs need to be cross-referenced by the template.
