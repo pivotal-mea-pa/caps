@@ -44,7 +44,7 @@
 
     # Configure product tile
     - task: configure
-      file: automation/lib/pipelines/pcf/install-and-upgrade/tasks/configure-scs/task.yml
+      file: automation/lib/pipelines/pcf/install-and-upgrade/tasks/configure-scheduler/task.yml
       params:
         OPSMAN_HOST: ((opsman_host))
         OPSMAN_CLIENT_ID: ((opsman_client_id))
