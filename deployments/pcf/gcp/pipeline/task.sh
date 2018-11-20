@@ -24,7 +24,7 @@ fly -t default sync
 # Setup pipeline paths
 #
 
-terraform_params_path=automation/deployments/pcf/gcp/params
+terraform_params_path=automation/deployments/pcf/${IAAS}/params
 patch_job_notifications=automation/lib/inceptor/tasks/patches/patch_job_notifications.sh
 
 download_products_pipeline_path=automation/lib/pipelines/pcf/download-products/pipeline
@@ -48,12 +48,12 @@ terraform init $terraform_params_path
 terraform apply -auto-approve \
   -var "bootstrap_state_bucket=$BOOTSTRAP_STATE_BUCKET" \
   -var "bootstrap_state_prefix=$BOOTSTRAP_STATE_PREFIX" \
-  -var "params_template_file=$download_products_pipeline_path/gcp/params.yml" \
+  -var "params_template_file=$download_products_pipeline_path/${IAAS}/params.yml" \
   -var "params_file=download-products-params.yml" \
   -var "environment=" \
   $terraform_params_path >/dev/null
 
-eval "echo \"$(cat $download_products_pipeline_path/gcp/pipeline.yml)\"" \
+eval "echo \"$(cat $download_products_pipeline_path/${IAAS}/pipeline.yml)\"" \
   > download-products-pipeline0.yml
 
 i=0 && j=1
@@ -87,6 +87,7 @@ fly -t default set-pipeline -n \
   -v "autos3_access_key=$AUTOS3_ACCESS_KEY" \
   -v "autos3_secret_key=$AUTOS3_SECRET_KEY" \
   -v "pipeline_automation_path=$PIPELINE_AUTOMATION_PATH" \
+  -v "iaas_type=$IAAS" \
   -v "vpc_name=$VPC_NAME" >/dev/null
 
 fly -t default unpause-pipeline -p download-products
@@ -101,11 +102,11 @@ for e in $ENVIRONMENTS; do
   echo "\n*** Configuring pipelines for ${env} ***\n"
 
   # Install and upgrade pipeline base
-  eval "echo \"$(cat $install_and_upgrade_pipeline_path/gcp/pipeline.yml)\"" \
+  eval "echo \"$(cat $install_and_upgrade_pipeline_path/${IAAS}/pipeline.yml)\"" \
     > install-and-upgrade-pipeline0.yml
   
   # Backup and restore pipeline base
-  eval "echo \"$(cat $backup_and_restore_pipeline_path/gcp/pipeline.yml)\"" \
+  eval "echo \"$(cat $backup_and_restore_pipeline_path/${IAAS}/pipeline.yml)\"" \
     > backup_and_restore_pipeline0.yml
 
   if [[ -n $PRODUCTS ]]; then
@@ -197,7 +198,7 @@ for e in $ENVIRONMENTS; do
   terraform apply -auto-approve \
     -var "bootstrap_state_bucket=$BOOTSTRAP_STATE_BUCKET" \
     -var "bootstrap_state_prefix=$BOOTSTRAP_STATE_PREFIX" \
-    -var "params_template_file=$install_and_upgrade_pipeline_path/gcp/params.yml" \
+    -var "params_template_file=$install_and_upgrade_pipeline_path/${IAAS}/params.yml" \
     -var "params_file=install-and-upgrade-params.yml" \
     -var "environment=${e}" \
     $terraform_params_path >/dev/null
@@ -218,6 +219,7 @@ for e in $ENVIRONMENTS; do
     -v "automation_email=$EMAIL_FROM" \
     -v "notification_email=$EMAIL_TO" \
     -v "pipeline_automation_path=$PIPELINE_AUTOMATION_PATH" \
+    -v "iaas_type=$IAAS" \
     -v "vpc_name=$VPC_NAME" >/dev/null
 
   #
@@ -232,7 +234,7 @@ for e in $ENVIRONMENTS; do
   terraform apply -auto-approve \
     -var "bootstrap_state_bucket=$BOOTSTRAP_STATE_BUCKET" \
     -var "bootstrap_state_prefix=$BOOTSTRAP_STATE_PREFIX" \
-    -var "params_template_file=$backup_and_restore_pipeline_path/gcp/params.yml" \
+    -var "params_template_file=$backup_and_restore_pipeline_path/${IAAS}/params.yml" \
     -var "params_file=backup-and-restore-params.yml" \
     -var "environment=${e}" \
     $terraform_params_path >/dev/null
@@ -253,6 +255,7 @@ for e in $ENVIRONMENTS; do
     -v "automation_email=$EMAIL_FROM" \
     -v "notification_email=$EMAIL_TO" \
     -v "pipeline_automation_path=$PIPELINE_AUTOMATION_PATH" \
+    -v "iaas_type=$IAAS" \
     -v "vpc_name=$VPC_NAME" >/dev/null
 
   #
@@ -301,7 +304,7 @@ for e in $ENVIRONMENTS; do
   terraform apply -auto-approve \
     -var "bootstrap_state_bucket=$BOOTSTRAP_STATE_BUCKET" \
     -var "bootstrap_state_prefix=$BOOTSTRAP_STATE_PREFIX" \
-    -var "params_template_file=$start_and_stop_pipeline_path/gcp/params.yml" \
+    -var "params_template_file=$start_and_stop_pipeline_path/${IAAS}/params.yml" \
     -var "params_file=stop-and-start-params.yml" \
     -var "environment=${e}" \
     $terraform_params_path >/dev/null
@@ -309,9 +312,9 @@ for e in $ENVIRONMENTS; do
   if [[ $SET_START_STOP_SCHEDULE == true ]]; then
 
     $bosh interpolate -o $start_and_stop_patches_path/start-stop-schedule.yml \
-      $start_and_stop_pipeline_path/gcp/pipeline.yml > stop-and-start-pipeline.yml
+      $start_and_stop_pipeline_path/${IAAS}/pipeline.yml > stop-and-start-pipeline.yml
   else
-    cp $start_and_stop_pipeline_path/gcp/pipeline.yml stop-and-start-pipeline.yml
+    cp $start_and_stop_pipeline_path/${IAAS}/pipeline.yml stop-and-start-pipeline.yml
   fi
 
   $patch_job_notifications stop-and-start-pipeline.yml > pipeline.yml
@@ -328,6 +331,7 @@ for e in $ENVIRONMENTS; do
     -v "autos3_access_key=$AUTOS3_ACCESS_KEY" \
     -v "autos3_secret_key=$AUTOS3_SECRET_KEY" \
     -v "pipeline_automation_path=$PIPELINE_AUTOMATION_PATH" \
+    -v "iaas_type=$IAAS" \
     -v "vpc_name=$VPC_NAME" >/dev/null
     
   fly -t default unpause-pipeline -p ${env}_stop-and-start

@@ -1,7 +1,12 @@
 ---
+#
+# Automation repo details
+#
+automation_pipelines_repo: '${automation_pipelines_repo}'
+automation_pipelines_branch: '${automation_pipelines_branch}'
 
-# The underlying IAAS
-iaas: 'gcp'
+automation_extensions_repo: '${automation_extensions_repo}'
+automation_extensions_branch: '${automation_extensions_branch}'
 
 # GCP project
 gcp_project_id: '${gcp_project}'
@@ -14,10 +19,6 @@ gcp_service_account_key: |
 # searching for instances in deployment
 # to start or stop
 label: '${vpc_name}-pcf'
-
-# The automation repository
-automation_pipelines_repo: '${automation_pipelines_repo}'
-automation_pipelines_branch: '${automation_pipelines_branch}'
 
 # Pivotal Ops Manager host and credentials
 opsman_host: 'opsman.${environment}.${vpc_dns_zone}'

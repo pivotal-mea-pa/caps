@@ -14,6 +14,8 @@ run:
 
 params:
   TRACE: Y
+
+  # Inceptor services environment
   CONCOURSE_URL:
   CONCOURSE_USER:
   CONCOURSE_PASSWORD:
@@ -24,9 +26,26 @@ params:
   SMTP_PORT:
   EMAIL_FROM:
   EMAIL_TO:
+  
+  # Target IaaS type which is propogated
+  # to all downstream deployment and 
+  # operational configurations.
+  # 
+  # This must be one (in lowercase):
+  #
+  #   - vsphere
+  #   - openstack
+  #   - aws"
+  #   - azure
+  #   - google
+  #
+  IAAS: google
+
+  # Google Cloud Platform credentials
   GOOGLE_PROJECT:
   GOOGLE_CREDENTIALS_JSON:
   GOOGLE_REGION:
+
   PIPELINE_AUTOMATION_PATH:
   BOOTSTRAP_STATE_BUCKET:
   BOOTSTRAP_STATE_PREFIX:
