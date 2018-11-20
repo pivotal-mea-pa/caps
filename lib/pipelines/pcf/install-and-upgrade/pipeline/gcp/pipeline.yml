@@ -222,8 +222,8 @@ jobs:
       OPSMAN_CLIENT_SECRET: ((opsman_client_secret))
       OPSMAN_USERNAME: ((opsman_admin_username))
       OPSMAN_PASSWORD: ((opsman_admin_password))
-      # The IAAS specific templates to configure
-      IAAS: gcp
+      # The IAAS to configure for
+      IAAS: ((google))
       # JQ configuration template overrides 
       TEMPLATE_OVERRIDE_PATH: automation-extensions/((pcf_tile_templates_path))/director
       # IAAS properties
