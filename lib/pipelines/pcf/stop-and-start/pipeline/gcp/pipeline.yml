@@ -4,7 +4,7 @@ common:
 
 - &params
   TRACE: ((trace))
-  IAAS: ((iaas))
+  IAAS: ((iaas_type))
   GCP_PROJECT: ((gcp_project_id))
   GCP_SERVICE_ACCOUNT_KEY: ((gcp_service_account_key))
   LABEL: ((label))
