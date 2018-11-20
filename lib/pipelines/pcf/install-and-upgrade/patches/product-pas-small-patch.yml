@@ -41,6 +41,8 @@
         OPSMAN_CLIENT_SECRET: ((opsman_client_secret))
         OPSMAN_USERNAME: ((opsman_admin_username))
         OPSMAN_PASSWORD: ((opsman_admin_password))
+        # The IAAS to configure for
+        IAAS: ((iaas_type))
         # Product configuration
         PRODUCT_NAME: cf
         TEMPLATE_PATH: automation/lib/pipelines/pcf/install-and-upgrade/templates/pas-small
@@ -55,7 +57,6 @@
         # Resources
         INTERNET_CONNECTED: ((internet_connected))
         # Properties
-        IAAS: ((iaas_type))
         ROUTING_CUSTOM_CA_CERTIFICATES: ((routing_custom_ca_certificates))
         ROUTING_TLS_TERMINATION: ((routing_tls_termination))
         ROUTER_TLS_CIPHERS: ((router_tls_ciphers))

@@ -22,6 +22,8 @@ params:
   OPSMAN_CLIENT_SECRET:
   OPSMAN_USERNAME:
   OPSMAN_PASSWORD:
+  # The IAAS to configure for
+  IAAS: 
   # Product configuration
   PRODUCT_NAME: cf
   TEMPLATE_PATH: automation/lib/pipelines/pcf/install-and-upgrade/templates/pas-small
@@ -29,18 +31,17 @@ params:
   ERRANDS_TO_DISABLE:
   ERRANDS_TO_ENABLE:
   ERRAND_DEFAULT_IF_ENABLED: when-changed
-  # srt networking
+  # Networking
   NETWORK_NAME:
   SINGLETON_AVAILABILITY_ZONE:
   AVAILABILITY_ZONES:
-  # srt resources
+  # Resources
   INTERNET_CONNECTED: false
   PAS_HTTP_LB_NAME:
   PAS_TCP_LB_NAME:
   PAS_SSH_LB_NAME:
   PAS_DOPPLER_LB_NAME:
-  # srt properties
-  IAAS:
+  # Properties
   S3_ACCESS_KEY:
   S3_SECRET_KEY:
   S3_REGION:

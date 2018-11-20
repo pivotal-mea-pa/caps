@@ -23,6 +23,8 @@ params:
   OPSMAN_CLIENT_SECRET:
   OPSMAN_USERNAME:
   OPSMAN_PASSWORD:
+  # The IAAS to configure for
+  IAAS: 
   # Product configuration
   PRODUCT_NAME: p-healthwatch
   TEMPLATE_PATH: automation/lib/pipelines/pcf/install-and-upgrade/templates/healthwatch
