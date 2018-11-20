@@ -7,7 +7,7 @@ locals {
 }
 
 module "bootstrap" {
-  source = "../../../../lib/inceptor/modules/bootstrap-automation/gcp"
+  source = "../../../../lib/inceptor/modules/bootstrap-automation/google"
 
   #
   # Company information used in certificate creation
