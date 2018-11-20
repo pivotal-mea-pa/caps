@@ -43,8 +43,6 @@ jobs:
       ENVIRONMENTS: ((environments))
       PRODUCTS: ((products))
       UNPAUSE_INSTALL_PIPELINE: ((unpause_install_pipeline))
-      OPSMAN_USERNAME: ((opsman_admin_username))
-      OPSMAN_PASSWORD: ((opsman_admin_password))
       SET_START_STOP_SCHEDULE: ((set_start_stop_schedule))
 
 resources:

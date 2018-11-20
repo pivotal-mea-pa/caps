@@ -129,9 +129,6 @@ products: '${var.products}'
 
 unpause_install_pipeline: ${var.autostart_deployment_pipelines}
 
-opsman_admin_username: admin
-opsman_admin_password: ${random_string.opsman-admin-password.result}
-
 set_start_stop_schedule: ${var.pcf_stop_at != "0" ? "true" : "false"}
 
 PIPELINE_VARS
