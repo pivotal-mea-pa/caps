@@ -27,8 +27,8 @@ params:
   EMAIL_FROM:
   EMAIL_TO:
 
-  # The path to common automation 
-  # tasks in the inceptor library
+  # Path to common automation tasks
+  # in the inceptor library module
   PIPELINE_AUTOMATION_PATH:
   
   # Target IaaS type which is propogated
@@ -50,13 +50,13 @@ params:
   GOOGLE_CREDENTIALS_JSON:
   GOOGLE_REGION:
 
-  # Terraform bootstrap state
+  # Terraform bootstrap state location
   BOOTSTRAP_STATE_BUCKET:
   BOOTSTRAP_STATE_PREFIX:
 
+  # VPC and environment details
   VPC_NAME:
   VPC_DNS_ZONE:
-
   ENVIRONMENTS:
   PRODUCTS:
 
