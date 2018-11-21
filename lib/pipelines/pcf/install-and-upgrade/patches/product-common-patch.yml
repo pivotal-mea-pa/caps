@@ -46,9 +46,9 @@
         OPSMAN_PASSWORD: ((opsman_admin_password))
 
 - type: replace
-  path: /groups/name=Install & Upgrade Products/jobs?/-
+  path: /groups/name=Install & Upgrade Products/jobs?/0:before
   value: upload-${product_name}-tile
 
 - type: replace
-  path: /groups/name=Install & Upgrade Products/jobs?/-
+  path: /groups/name=Install & Upgrade Products/jobs?/0:before
   value: configure-${product_name}-tile

@@ -1,10 +1,10 @@
 - type: replace
   path: /jobs/-
   value:
-    name: configure-${product_name}-tile
+    name: configure-scheduler-tile
     on_failure:
       do:
-      - task: notify on configure-${product_name}-tile failure
+      - task: notify on configure-scheduler-tile failure
 
     serial: true
     serial_groups: [configure]
@@ -20,7 +20,7 @@
         params:
           skip_download: 'true'
 
-      - get: pas-small-tile
+      - get: pas-tile
         passed: [deploy]
         params:
           skip_download: 'true'

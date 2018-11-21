@@ -1,10 +1,10 @@
 - type: replace
   path: /jobs/-
   value:
-    name: configure-${product_name}-tile
+    name: configure-mysql-tile
     on_failure:
       do:
-      - task: notify on configure-${product_name}-tile failure
+      - task: notify on configure-mysql-tile failure
 
     serial: true
     serial_groups: [configure]
@@ -97,7 +97,7 @@
   path: /jobs/name=deploy/plan/0/aggregate/-
   value:
     get: ${product_name}-tile
-    passed: [configure-${product_name}-tile]
+    passed: [configure-mysql-tile]
     trigger: true
     params:
       skip_download: 'true'
