@@ -77,7 +77,7 @@ jobs:
       GCP_PROJECT: ((gcp_project))
       GCP_REGION: ((gcp_region))
       TERRAFORM_STATE_BUCKET: ((terraform_state_bucket))
-      TEMPLATE_OVERRIDE_PATH: automation-extensions/((pcf_terraform_templates_path))/((environment))
+      TEMPLATE_OVERRIDE_PATH: automation-extensions/((pcf_terraform_templates_path))/((environment))/infrastructure
       OPSMAN_HOST: ((opsman_host))
       OPSMAN_USERNAME: ((opsman_admin_username))
       OPSMAN_PASSWORD: ((opsman_admin_password))
@@ -155,7 +155,7 @@ jobs:
       GCP_PROJECT: ((gcp_project))
       GCP_REGION: ((gcp_region))
       TERRAFORM_STATE_BUCKET: ((terraform_state_bucket))
-      TEMPLATE_OVERRIDE_PATH: automation-extensions/((pcf_terraform_templates_path))/((environment))
+      TEMPLATE_OVERRIDE_PATH: automation-extensions/((pcf_terraform_templates_path))/((environment))/infrastructure
       # Inputs to PCF PAS infrastructure Terraform templates
       TF_VAR_environment: ((environment))
       TF_VAR_bootstrap_state_bucket: ((terraform_state_bucket))
