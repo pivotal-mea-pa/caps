@@ -32,5 +32,5 @@ for env in $(echo $pcf_environments | tr '["],' ' '); do
   echo -e "  User:                admin"
   echo -e "  Password:            $opsman_admin_password\n"
 
-  echo -e "  System admin password: $common_admin_password"
+  echo -e "  System admin password: $common_admin_password\n"
 done
