@@ -20,7 +20,7 @@
         params:
           skip_download: 'true'
 
-      - get: pas-small-tile
+      - get: pas-tile
         passed: [deploy]
         params:
           skip_download: 'true'
