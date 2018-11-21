@@ -2,13 +2,13 @@
 # jq -n \
 #   --arg plan_1_multi_node_deployment true \
 #   --arg plan_1_service_plan_access "enable" \
-#   --arg plan_1_instance_limit 5 \
+#   --arg plan_1_instance_limit 20 \
 #   --arg plan_2_multi_node_deployment true \
 #   --arg plan_2_service_plan_access "enable" \
-#   --arg plan_2_instance_limit 5 \
+#   --arg plan_2_instance_limit 20 \
 #   --arg plan_3_multi_node_deployment true \
 #   --arg plan_3_service_plan_access "enable" \
-#   --arg plan_3_instance_limit 5 \
+#   --arg plan_3_instance_limit 20 \
 #   --arg s3_backup_access_key_id "" \
 #   --arg s3_backup_secret_access_key "" \
 #   --arg s3_backup_endpoint_url "" \
