@@ -45,12 +45,13 @@ data "template_file" "params" {
     pcf_terraform_templates_path = "${data.terraform_remote_state.bootstrap.pcf_terraform_templates_path}"
     pcf_tile_templates_path      = "${data.terraform_remote_state.bootstrap.pcf_tile_templates_path}"
 
+    vpc_dns_zone = "${data.terraform_remote_state.bootstrap.vpc_dns_zone}"
+
     pivnet_token           = "${data.terraform_remote_state.bootstrap.pivnet_token}"
     opsman_admin_password  = "${data.terraform_remote_state.bootstrap.opsman_admin_password}"
-    vpc_dns_zone           = "${data.terraform_remote_state.bootstrap.vpc_dns_zone}"
-    credhub_encryption_key = "${data.terraform_remote_state.bootstrap.credhub_encryption_key}"
-    pas_system_dbpassword  = "${data.terraform_remote_state.bootstrap.pas_system_dbpassword}"
     common_admin_password  = "${data.terraform_remote_state.bootstrap.common_admin_password}"
+    pas_system_dbpassword  = "${data.terraform_remote_state.bootstrap.pas_system_dbpassword}"
+    credhub_encryption_key = "${data.terraform_remote_state.bootstrap.credhub_encryption_key}"
 
     opsman_major_minor_version = "${data.terraform_remote_state.bootstrap.opsman_major_minor_version}"
 

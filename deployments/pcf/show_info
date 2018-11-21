@@ -4,6 +4,7 @@ vpc_dns_zone=$(echo -e "$tf_output" | awk '/vpc_dns_zone =/{ print $3 }')
 bastion_fqdn=$(echo -e "$tf_output" | awk '/bastion_fqdn =/{ print $3 }')
 bastion_admin_password=$(echo -e "$tf_output" | awk '/bastion_admin_password =/{ print $3 }')
 opsman_admin_password=$(echo -e "$tf_output" | awk '/opsman_admin_password =/{ print $3 }')
+common_admin_password=$(echo -e "$tf_output" | awk '/common_admin_password =/{ print $3 }')
 
 [[ -z $vpc_dns_zone ]] && exit
 
@@ -30,4 +31,6 @@ for env in $(echo $pcf_environments | tr '["],' ' '); do
   echo -e "${GREEN}  URL:                 https://opsman.$env.$vpc_dns_zone"
   echo -e "  User:                admin"
   echo -e "  Password:            $opsman_admin_password\n"
+
+  echo -e "  System admin password: $common_admin_password"
 done
