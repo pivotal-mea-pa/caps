@@ -152,6 +152,9 @@
         DB_USERNAME: ((db_username))
         DB_PASSWORD: ((db_password))
         MYSQL_MONITOR_RECIPIENT_EMAIL: ((mysql_monitor_recipient_email))
+        NOTIFICATIONS_SMTP_FROM: ((automation_email))
+        NOTIFICATIONS_SMTP_ADDRESS: ((smtp_host))
+        NOTIFICATIONS_SMTP_PORT: ((smtp_port))
         NUM_DIEGO_CELLS: ((num_diego_cells))
 
 - type: replace

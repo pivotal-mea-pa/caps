@@ -52,6 +52,10 @@
 #   --arg db_password "DbP@ssw0rd" \
 #   --arg mysql_proxy_static_ips "" \
 #   --arg mysql_monitor_recipient_email "admin@caps.cloud" \
+#   --arg notifications_smtp_from "" \
+#   --arg notifications_smtp_address "" \
+#   --arg notifications_smtp_port "" \
+#   --argjson notifications_smtp_tls_auto true \
 #   --arg company_name "Pivotal" \
 #   "$(cat properties.jq)"
 #
@@ -196,7 +200,9 @@ end
   }
 }
 
+#
 # Credhub
+#
 +
 if $db_type == "external" then
 {
@@ -305,7 +311,9 @@ end
   ".mysql_monitor.recipient_email": { "value" : $mysql_monitor_recipient_email }
 }
 
+#
 # File Storage
+#
 +
 if $iaas == "aws" then
   {
@@ -347,26 +355,48 @@ else
   .
 end
 
+#
 # System Logging
+#
 +
 {
   ".cloud_controller.security_event_logging_enabled": { "value": true },
 }
 
+#
 # Custom Branding
+#
 
+#
 # Apps Manager
+#
 +
 {
   ".properties.push_apps_manager_company_name": { "value": $company_name },
 }
 
+#
 # Email Notifications
-
+#
++
+{
+  ".properties.smtp_from": { "value": $notifications_smtp_from },
+  ".properties.smtp_address": {"value": $notifications_smtp_address },
+  ".properties.smtp_port": {"value": $notifications_smtp_port },
+  ".properties.smtp_enable_starttls_auto": { "value": $notifications_smtp_tls_auto }
+}
+#
 # App Autoscaler
+#
 
+#
 # Cloud Controller
+#
 
+#
 # Smoke Tests
+#
 
+#
 # Advanced Features
+#
