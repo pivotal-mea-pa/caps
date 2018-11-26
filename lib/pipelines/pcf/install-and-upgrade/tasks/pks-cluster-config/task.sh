@@ -63,7 +63,7 @@ if [[ $? -eq 0 ]]; then
       cluster_instances="${cluster_instances}$vm,"
     done
 
-    cluster_instances="$cluster_instances\","
+    cluster_instances="${cluster_instances:0:-1}\","
   done
 
   export TF_VAR_clusters="${clusters:0:-1} ]"
