@@ -66,16 +66,16 @@ if [[ $? -eq 0 ]]; then
     cluster_instances="$cluster_instances\","
   done
 
-  export TF_VAR_clusters="$clusters ]"
-  export TF_VAR_cluster_ids="$cluster_ids }"
-  export TF_VAR_cluster_instances="$cluster_instances }"
+  export TF_VAR_clusters="${clusters:0:-1} ]"
+  export TF_VAR_cluster_ids="${cluster_ids:0:-1} }"
+  export TF_VAR_cluster_instances="${cluster_instances:0:-1} }"
 else
   set -e
   export TF_VAR_clusters="[]"
   export TF_VAR_cluster_ids="{}"
   export TF_VAR_cluster_instances="{}"
 fi
-
+exit 0
 # Run IAAS specific cluster configuration
 if [[ -e automation/lib/pipelines/pcf/install-and-upgrade/tasks/pks-cluster-config/${IAAS}/task.sh ]]; then
   automation/lib/pipelines/pcf/install-and-upgrade/tasks/pks-cluster-config/${IAAS}/task.sh 
