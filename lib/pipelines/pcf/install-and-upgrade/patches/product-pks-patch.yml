@@ -126,6 +126,7 @@
     plan:
     - aggregate:
       - get: automation
+      - get: automation-extensions
       - get: terraform-output
       - get: pks-tile
         passed: [deploy]
@@ -162,6 +163,7 @@
     plan:
     - aggregate:
       - get: automation
+      - get: automation-extensions
       - get: deployment-event
         trigger: true
       - get: terraform-output
