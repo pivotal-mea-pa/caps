@@ -30,6 +30,7 @@
       opsman_username: ((opsman_admin_username))
       opsman_password: ((opsman_admin_password))
       skip_ssl_validation: true
+      event_source: "pivotal-container-service-.*"
 
 - type: replace
   path: /jobs/-
@@ -116,10 +117,10 @@
 - type: replace
   path: /jobs/-
   value:
-    name: create-pks-admin-user
+    name: configure-pks-runtime
     on_failure:
       do:
-      - task: notify on create-pks-admin-user failure
+      - task: notify on configure-pks-runtime failure
 
     serial: true
     plan:
@@ -132,25 +133,30 @@
         params:
           skip_download: 'true'
 
-    - task: create-pks-admin-user
-      file: automation/lib/pipelines/pcf/install-and-upgrade/tasks/create-pks-admin-user/task.yml
+    - task: pks-runtime-config
+      file: automation/lib/pipelines/pcf/install-and-upgrade/tasks/pks-runtime-config/task.yml
       params:
+        GCP_CREDENTIALS: ((gcp_service_account_key))
+        GCP_PROJECT: ((gcp_project))
+        GCP_REGION: ((gcp_region))
+        DEPLOYMENT_PREFIX: ((deployment_prefix))
+        TERRAFORM_STATE_BUCKET: ((terraform_state_bucket))
         OPSMAN_HOST: ((opsman_host))
         OPSMAN_USERNAME: ((opsman_admin_username))
         OPSMAN_PASSWORD: ((opsman_admin_password))
         OPSMAN_CLIENT_ID: ((opsman_client_id))
         OPSMAN_CLIENT_SECRET: ((opsman_client_secret))
-        PKS_ADMIN_USERNAME: ((pks_admin_username))
-        PKS_ADMIN_PASSWORD: ((pks_admin_password))
-        PKS_ADMIN_EMAIL: ((automation_email))
+        TF_VAR_pks_admin_username: ((pks_admin_username))
+        TF_VAR_pks_admin_password: ((pks_admin_password))
+        TF_VAR_pks_admin_email: ((automation_email))
 
 - type: replace
   path: /jobs/-
   value:
-    name: create-pks-loadbalancers
+    name: configure-pks-clusters
     on_failure:
       do:
-      - task: notify on create-pks-loadbalancers failure
+      - task: notify on configure-pks-clusters failure
 
     serial: true
     plan:
@@ -159,7 +165,7 @@
       - get: deployment-event
         trigger: true
       - get: terraform-output
-        passed: ["create-pks-admin-user"]
+        passed: ["configure-pks-runtime"]
       - get: pks-clis
         params:
           globs:
