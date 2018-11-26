@@ -197,8 +197,8 @@
 
 - type: replace
   path: /groups/name=Install & Upgrade Products/jobs?/-
-  value: create-pks-admin-user
+  value: configure-pks-runtime
 
 - type: replace
   path: /groups/name=Install & Upgrade Products/jobs?/-
-  value: create-pks-loadbalancers
+  value: configure-pks-clusters
