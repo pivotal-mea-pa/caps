@@ -8,7 +8,9 @@ if [[ -n "$TRACE" ]]; then
     set -x
     debug_bbr="--debug"
 fi
-set -e
+set -eo pipefail
+
+bosh::set_bosh_cli
 
 source job-session/env
 bosh_client_creds
@@ -28,7 +30,7 @@ bbr director $debug_bbr \
 bosh::login_client "$CA_CERT" "$BOSH_HOST" "$BOSH_CLIENT" "$BOSH_CLIENT_SECRET"
 
 for d in $(bosh::deployment .*); do 
-    bosh-cli -e default -d $d -n cck \
+    $bosh -e default -d $d -n cck \
         --resolution delete_disk_reference \
         --resolution delete_vm_reference
 done

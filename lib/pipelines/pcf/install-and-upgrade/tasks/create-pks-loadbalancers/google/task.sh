@@ -9,6 +9,8 @@ source automation/lib/scripts/utility/template-utils.sh
 [[ -n "$TRACE" ]] && set -x
 set -eo pipefail
 
+bosh::set_bosh_cli
+
 # Source terraform output variables if available
 source_variables 'terraform-output/pcf-env-*.sh'
 
@@ -61,7 +63,7 @@ if [[ $? -eq 0 ]]; then
         cluster_ids="$cluster_ids \"$c\"=\"$uuid\","
         cluster_instances="$cluster_instances \"$c\"=\""
 
-        master_vms=$(bosh-cli -e $BOSH_HOST -d service-instance_$uuid vms | awk '/master\//{ print $3"/"$5 }')
+        master_vms=$($bosh -e $BOSH_HOST -d service-instance_$uuid vms | awk '/master\//{ print $3"/"$5 }')
         for vm in $master_vms; do
             cluster_instances="${cluster_instances}$vm,"
         done
