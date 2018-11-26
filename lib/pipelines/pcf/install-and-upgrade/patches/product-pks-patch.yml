@@ -173,9 +173,10 @@
           globs:
           - '*-linux-amd64-*'
 
-    - task: create-pks-loadbalancers
-      file: automation/lib/pipelines/pcf/install-and-upgrade/tasks/create-pks-loadbalancers/google/task.yml
+    - task: pks-cluster-config
+      file: automation/lib/pipelines/pcf/install-and-upgrade/tasks/pks-cluster-config/task.yml
       params:
+        IAAS: ((iaas_type))
         TERRAFORM_STATE_BUCKET: ((terraform_state_bucket))
         OPSMAN_HOST: ((opsman_host))
         OPSMAN_USERNAME: ((opsman_admin_username))
