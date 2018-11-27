@@ -318,8 +318,6 @@ Every environment needs to be bootstraped. The bootstrap step paves the IaaS wit
 
 ## Tearing down the environment
 
-### `destroy-env`
-
 To tear down an environments first run the `destroy-env` job in all the `<ENVIRONMENT>_deployment` pipeline.
 
 Once the PCF environments have been destroyed you can tear down the resources created via the bootstrapping process by running the `caps-tf destroy`. 
