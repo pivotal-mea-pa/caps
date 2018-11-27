@@ -314,20 +314,4 @@ Advance users can extend the framework to override the default reference network
 
 ## Bootstrapping Approach
 
-Every environment needs to be bootstraped. The bootstrap step paves the IaaS with the necessary services required for secured access to a logical Virtual Data Center (VDC) created for the environment. Bootstrapping is achieved via Terraform templates. This initial template contains all the required parameters that setup the rest of the automation workflows. Bootstrapping is done by applying a Terraform template that launches an inception Virtual Private Cloud which also acts as the DMZ layer for the rest of the deployed infrastructure.
-
-### Bootstrap Image
-
-The framework depends on a pre-configured cloud image that bootstraps the environment. The instance launched using this image can have multiple roles and these roles can be combined into a single instance or scaled out based on the environment needs. The image can be configured to have one or more of the following service roles.
-
-* Concourse Automation Service
-
-  Once the initial IaaS infrastructure has been bootrstapped this service will be configured with a bootstrap pipeline that is responsible for setting up the required automation to complete the build of the environment. To ensure that the configurations which these pipelines orchestrate are idempotant this pipelines use Terraform as the control plane and Bosh as the runtime state. The state for both Terraform and Bosh is saved to an IaaS provided object store. This ensures that if the instance hosting this service is rebuilt it will rediscover the current state.
-
-  > An S3 store which is backed by a persistent volume is provided as a alternate storage capability natively. This can be used for environments that do not have access to an IaaS provided object store.
-
-* VPN Service
-* HTTP Proxy Service
-* *DNS (TBD)*
-* *SMTP Service (TBD)*
-
+Every environment needs to be bootstraped. The bootstrap step paves the IaaS with the necessary services required for secured access to a logical Virtual Data Center (VDC) created for the environment. Bootstrapping is achieved via Terraform templates. This initial template contains all the required parameters that setup the rest of the automation workflows. Bootstrapping is done by applying a Terraform template that launches an inception Virtual Private Cloud which also acts as the DMZ layer for the rest of the deployed infrastructure. More detail on the underlying automation services that enable bootstrapping an environment can be found in the [cloud-inceptor](https://github.com/mevansam/cloud-inceptor) project.
