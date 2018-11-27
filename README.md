@@ -315,3 +315,11 @@ Advance users can extend the framework to override the default reference network
 ## Bootstrapping Approach
 
 Every environment needs to be bootstraped. The bootstrap step paves the IaaS with the necessary services required for secured access to a logical Virtual Data Center (VDC) created for the environment. Bootstrapping is achieved via Terraform templates. This initial template contains all the required parameters that setup the rest of the automation workflows. Bootstrapping is done by applying a Terraform template that launches an inception Virtual Private Cloud which also acts as the DMZ layer for the rest of the deployed infrastructure. More detail on the underlying automation services that enable bootstrapping an environment can be found in the [cloud-inceptor](https://github.com/mevansam/cloud-inceptor) project.
+
+## Tearing down the environment
+
+### `destroy-env`
+
+To tear down an environments first run the `destroy-env` job in all the `<ENVIRONMENT>_deployment` pipeline.
+
+Once the PCF environments have been destroyed you can tear down the resources created via the bootstrapping process by running the `caps-tf destroy`. 
