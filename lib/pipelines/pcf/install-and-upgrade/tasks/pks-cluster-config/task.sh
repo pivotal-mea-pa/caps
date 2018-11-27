@@ -36,6 +36,25 @@ export BOSH_CLIENT_SECRET=$(opsman::get_director_client_secret ops_manager)
 
 bosh::login_client "$BOSH_CA_CERT" "$BOSH_ENVIRONMENT" "$BOSH_CLIENT" "$BOSH_CLIENT_SECRET"
 
+# Patch worker vms of newly created clusters so that
+# docker is restarted with harbor configured as an
+# insecure registry
+
+for d in $(cat deployment-event/created); do
+  
+  $bosh -d $d ssh worker -c \
+"sudo su -l -c '
+  
+  export PATH=/var/vcap/bosh/bin:\$PATH
+
+  cd /var/vcap/jobs/docker/bin
+
+  sed -i \"s|^case|export DOCKER_INSECURE_REGISTRIES=\\\"--insecure-registry $HARBOR_REGISTRY_FQDN\\\"\\ncase|\" ctl
+  monit restart docker
+'"
+
+done
+
 # Retrive PKS cluster details into variables that can 
 # be passed to IAAS specific terraform templates
 
