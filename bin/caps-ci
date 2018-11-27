@@ -58,7 +58,7 @@ if [[ -z $host || -z $password ]]; then
     exit 1
 fi
 
-echo -e "\nThe Concourse UI is available via the following URL: http://localhost:8080\n"
+echo -e "\nThe Concourse UI is available via the following URL: http://127.0.0.1:8080\n"
 echo -e "user: admin\npassword: $password\n"
 
 if [[ $action == login ]]; then
@@ -70,10 +70,10 @@ if [[ $action == login ]]; then
 
     echo -e "  ...Logging in and synchronizing using the fly CLI."
 
-    sleep 2
+    sleep 5
 
     set +e
-    flyout=$(fly -t local login -k -c http://localhost:8080 -u admin -p $password >/dev/null)
+    flyout=$(fly -t local login -k -c http://127.0.0.1:8080 -u admin -p $password >/dev/null)
     if [[ $? -ne 0 ]]; then
         echo -e "\nERROR! Unable to login to Concourse using the fly CLI:\n${flyout}\n"
         exit 1

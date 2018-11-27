@@ -5,25 +5,9 @@ source ~/scripts/opsman-func.sh
 iaas::initialize
 
 [[ -n "$TRACE" ]] && set -x
-set -e
-
-if [[ -d backup-metadata ]]; then
-    cp -r backup-metadata/* backup-timestamp/
-elif [[ $backup_mounted == yes ]]; then
-    if [[ -e $backup_path/metadata ]]; then
-        cp $backup_path/metadata backup-timestamp/
-    else
-        touch backup-timestamp/metadata
-    fi
-else
-    echo "ERROR! Unable to locate backup metadata."
-    exit 1
-fi
+set -eo pipefail
 
 TIMESTAMP=$(date +%Y%m%d%H%M%S)
-grep -q "^BACKUP_TIMESTAMP=" backup-timestamp/metadata && \
-    sed -i "s|^BACKUP_TIMESTAMP=.*$|BACKUP_TIMESTAMP=$TIMESTAMP|" backup-timestamp/metadata || \
-    echo "BACKUP_TIMESTAMP=$TIMESTAMP" >> backup-timestamp/metadata
 
 # Wait for any current apply jobs to finish
 
@@ -55,15 +39,17 @@ fi
 
 # Create script to source environment for downstream jobs/tasks
 
-cat <<EOF > job-session/env
+cat <<EOF > backup-session/env.sh
 #!/bin/bash
+
+export BACKUP_TIMESTAMP=$TIMESTAMP
 
 source ~/scripts/opsman-func.sh
 
 opsman_url='$opsman_url'
 opsman_token='$opsman_token'
 
-export BOSH_HOST=''\$(opsman::get_installation | jq -r \
+export BOSH_HOST=''\$(opsman::get_installation | jq -r \\
     '.products[] | select(.installation_name == "p-bosh") | .director_configuration.allocated_director_ips[0]')''
 
 if [[ -z "\$BOSH_HOST" ]]; then

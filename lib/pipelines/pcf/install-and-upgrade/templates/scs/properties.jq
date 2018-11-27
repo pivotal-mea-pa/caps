@@ -21,5 +21,11 @@
     },
     ".deploy-service-broker.persistence_store_service_plan": {
       "value": "db-small"
+    },
+    ".deploy-service-broker.message_bus_service": {
+      "value": "p.rabbitmq"
+    },
+    ".deploy-service-broker.message_bus_service_plan": {
+      "value": "single-node"
     }
 }

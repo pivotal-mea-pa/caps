@@ -1,0 +1,65 @@
+---
+platform: linux
+
+image_resource:
+  type: docker-image
+  source:
+    repository: appbricks/automation-tools
+
+inputs:
+- name: automation
+
+run:
+  path: automation/deployments/pcf/google/pipeline/task.sh
+
+params:
+  TRACE: Y
+
+  # Inceptor services environment
+  CONCOURSE_URL:
+  CONCOURSE_USER:
+  CONCOURSE_PASSWORD:
+  AUTOS3_URL:
+  AUTOS3_ACCESS_KEY:
+  AUTOS3_SECRET_KEY:
+  SMTP_HOST:
+  SMTP_PORT:
+  EMAIL_FROM:
+  EMAIL_TO:
+
+  # Path to common automation tasks
+  # in the inceptor library module
+  PIPELINE_AUTOMATION_PATH:
+  
+  # Target IaaS type which is propogated
+  # to all downstream deployment and 
+  # operational configurations.
+  # 
+  # This must be one (in lowercase):
+  #
+  #   - vsphere
+  #   - openstack
+  #   - aws"
+  #   - azure
+  #   - google
+  #
+  IAAS: google
+
+  # Google Cloud Platform credentials
+  GOOGLE_PROJECT:
+  GOOGLE_CREDENTIALS_JSON:
+  GOOGLE_REGION:
+
+  # Terraform bootstrap state location
+  BOOTSTRAP_STATE_BUCKET:
+  BOOTSTRAP_STATE_PREFIX:
+
+  # VPC and environment details
+  VPC_NAME:
+  VPC_DNS_ZONE:
+  ENVIRONMENTS:
+  PRODUCTS:
+
+  UNPAUSE_INSTALL_PIPELINE:
+  WAIT_ON_DEPLOYMENT_JOB:
+  SET_START_STOP_SCHEDULE:

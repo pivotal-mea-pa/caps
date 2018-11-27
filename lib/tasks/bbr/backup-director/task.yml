@@ -8,14 +8,14 @@ image_resource:
 
 inputs:
 - name: automation
-- name: backup-timestamp
-- name: job-session
+- name: backup-session
 
 run:
   path: automation/lib/tasks/bbr/backup-director/task.sh
 
 params:
   TRACE: Y
+  SSH_KEY:
 
   ## BBR Credentials 
   BBR_SSH_KEY:
@@ -56,13 +56,17 @@ params:
   ## S3FS mount path
   S3FS_MOUNT:
   S3FS_USE_PATH_REQUEST_STYLE:
+  S3FS_DEBUG:
 
   ## GCS mount bucker and path
   GCS_BUCKET_NAME:
   GCS_MOUNT:
-  
+  GCSFUSE_OPTIONS:
+  GCSFUSE_DEBUG:
+
   ## Cloudfuse mount path
   CLOUDFUSE_MOUNT:
+  CLOUDFUSE_DEBUG:
 
   ## NFS mount path
   NFS_MOUNT:

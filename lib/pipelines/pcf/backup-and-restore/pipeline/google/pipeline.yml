@@ -1,0 +1,216 @@
+---
+
+common:
+
+- &backup-restore-common-params
+  TRACE: ((trace))
+  SSH_KEY: ((ssh_key))
+  OPSMAN_HOST: ((opsman_host))
+  OPSMAN_USERNAME: ((opsman_username))
+  OPSMAN_PASSWORD: ((opsman_password))
+  OPSMAN_SSH_USER: ((opsman_ssh_user))
+  OPSMAN_SSH_PASSWD: ((opsman_ssh_passwd))
+  OPSMAN_DECRYPTION_KEY: ((opsman_pass_phrase))
+  OPSMAN_CLIENT_ID: ((pcfops_client))
+  OPSMAN_CLIENT_SECRET: ((pcfops_secret))
+
+- &backup-restore-storage-params
+
+  ## Backup storage backend type should be one of 'scp', 's3', 'gcs', 'swift'
+  BACKUP_TYPE: ((backup_storage_type))
+  BACKUP_TARGET: ((backup_target))/opsman
+  
+  ## Credentials for GCS access
+  GCP_SERVICE_ACCOUNT_KEY: ((gcp_service_account_key))
+  GCS_BUCKET_NAME: ((gcs_bucket_name))
+
+  ## GCS mount path
+  GCS_MOUNT: ((gcs_mount))
+  GCSFUSE_OPTIONS: '--limit-ops-per-sec 0.25'
+
+jobs:
+
+#
+# Backup regulator
+#
+
+- name: backup-regulator
+  plan:
+  - aggregate:
+    - get: automation
+    - get: schedule
+      trigger: true
+
+  # Wait for director to be in a ready state
+  - task: wait-for-director-to-be-ready
+    file: automation/lib/inceptor/tasks/wait-for-state/task.yml
+    params: 
+      WAIT_FOR_STATE: director_ready
+      AUTOS3_URL: ((autos3_url))
+      AUTOS3_ACCESS_KEY: ((autos3_access_key))
+      AUTOS3_SECRET_KEY: ((autos3_secret_key))
+  
+  # This task will wait until the 
+  # environment is in a started state
+  - task: wait-until-started
+    file: automation/lib/inceptor/tasks/wait-for-state/task.yml
+    params: 
+      WAIT_FOR_STATE: started
+      AUTOS3_URL: ((autos3_url))
+      AUTOS3_ACCESS_KEY: ((autos3_access_key))
+      AUTOS3_SECRET_KEY: ((autos3_secret_key))
+
+  # Create a backup job session which will be shared across backup jobs
+  - task: prepare-backup
+    privileged: true
+    file: automation/lib/pipelines/pcf/backup-and-restore/tasks/prepare-opsman-backup/task.yml
+    output_mapping: 
+      backup-session: upload_path
+    params: 
+      <<: *backup-restore-common-params
+      <<: *backup-restore-storage-params
+
+  # Clean up backup session
+  - task: clean-up-old-backup-session
+    file: automation/lib/inceptor/tasks/upload-object/task.yml
+    params: 
+      BUCKET: pcf
+      UPLOAD_PATH: backup-session
+      OBJECT_NAME: env.sh
+      AUTOS3_URL: ((autos3_url))
+      AUTOS3_ACCESS_KEY: ((autos3_access_key))
+      AUTOS3_SECRET_KEY: ((autos3_secret_key))
+      CLEAN_UP_OLD_VERSIONS_ONLY: yes
+
+  # Save backup session so it can be referenced by product backup jobs
+  - put: backup-session
+    params:
+      file: upload_object/env-*.sh
+
+#
+# Backup Pivotal Ops Manager
+#
+
+- name: backup-opsman
+  serial: true
+  serial_groups: [opsman]
+  on_failure:
+    do:
+    - task: notify on backup-opsman failure
+  plan:
+  - aggregate:
+    - get: automation
+    - get: schedule      
+    - get: backup-session
+      passed: [backup-regulator]
+      trigger: true
+
+  - aggregate:
+
+    - task: backup-opsman
+      privileged: true
+      file: automation/lib/pipelines/pcf/backup-and-restore/tasks/backup-opsman/task.yml
+      params: 
+        <<: *backup-restore-common-params
+        <<: *backup-restore-storage-params
+
+    - task: backup-director
+      privileged: true
+      file: automation/lib/tasks/bbr/backup-director/task.yml
+      params: 
+        TRACE: ((trace))
+        SSH_KEY: ((ssh_key))
+        <<: *backup-restore-storage-params
+
+  - task: cleanup
+    privileged: true
+    file: automation/lib/tasks/bbr/cleanup/task.yml
+    params: 
+      TRACE: ((trace))
+      SSH_KEY: ((ssh_key))
+      <<: *backup-restore-storage-params
+
+  - put: backup-opsman-timestamp
+    params:
+      file: restore-timestamp/metadata
+
+#
+# Restore Ops Manager by importing backed up installation export 
+# archive followed by director before apply all changes
+#
+
+- name: restore-opsman
+  serial: true
+  serial_groups: [opsman]
+  on_failure:
+    do:
+    - task: notify on restore-opsman failure
+  plan:
+  - aggregate:
+    - get: automation
+    - get: backup-opsman-timestamp
+      passed: [backup-opsman]
+
+  - task: prepare-restore
+    privileged: true
+    file: automation/lib/pipelines/pcf/backup-and-restore/tasks/prepare-opsman-restore/task.yml
+    params: 
+      <<: *backup-restore-common-params
+      <<: *backup-restore-storage-params
+
+  - task: import-opsman-backup
+    privileged: true
+    file: automation/lib/pipelines/pcf/backup-and-restore/tasks/restore-opsman/task.yml
+    params: 
+      <<: *backup-restore-common-params
+      <<: *backup-restore-storage-params
+      PIVNET_API_TOKEN: ((pivnet_api_token))
+
+  - task: restore-director
+    privileged: true
+    file: automation/lib/tasks/bbr/restore-director/task.yml
+    params: 
+      TRACE: ((trace))
+      SSH_KEY: ((ssh_key))
+      <<: *backup-restore-storage-params
+
+  - task: apply-changes
+    privileged: true
+    file: automation/lib/tasks/opsman/apply-changes/task.yml
+    params: 
+      <<: *backup-restore-common-params
+
+resources:
+
+- name: automation
+  type: git
+  source:
+    uri: ((automation_pipelines_repo))
+    branch: ((automation_pipelines_branch))
+
+- name: schedule
+  type: time
+  source:
+    interval: ((backup_interval))
+    location: ((locale))
+    start: ((backup_interval_start))
+    stop: ((backup_interval_stop))
+
+- name: backup-session
+  type: s3
+  source:
+    bucket: pcf
+    endpoint: ((autos3_url))
+    access_key_id: ((autos3_access_key))
+    secret_access_key: ((autos3_secret_key))
+    regexp: backup-session/env-(.*).sh
+
+- name: backup-opsman-timestamp
+  type: keyval
+
+resource_types:
+
+- name: keyval
+  type: docker-image
+  source:
+    repository: swce/keyval-resource

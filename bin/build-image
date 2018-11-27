@@ -45,7 +45,7 @@ else
     done
 fi
 
-if [[ ! -e $root_dir/lib/inceptor/images/build-${iaas_provider}-image.sh ]]; then
+if [[ ! -e $root_dir/lib/inceptor/images/build/build-${iaas_provider}-image.sh ]]; then
     echo -e "\nERROR! IAAS '$iaas_provider' is not supported. The supported IAAS' are:\n"
     ls -l $root_dir/lib/inceptor/images/ | awk '/^[-d].*-image.sh/{ print "    "$9 }' | sed 's|\(.*\)build-\(.*\)-image.sh|\1\2|'
     echo
@@ -55,6 +55,4 @@ fi
 export build_log_dir=$root_dir/log
 mkdir -p $build_log_dir
 
-cd $root_dir/lib/inceptor/images/
-$root_dir/lib/inceptor/images/build-${iaas_provider}-image.sh $region_list
-cd - >/dev/null 2>&1
+$root_dir/lib/inceptor/images/build/build-${iaas_provider}-image.sh $region_list

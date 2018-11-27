@@ -1,0 +1,103 @@
+- type: replace
+  path: /jobs/-
+  value:
+    name: configure-mysql-tile
+    on_failure:
+      do:
+      - task: notify on configure-mysql-tile failure
+
+    serial: true
+    serial_groups: [configure]
+    plan:
+    - aggregate:
+      - get: automation
+      - get: automation-extensions
+      - get: terraform-output
+      - get: pivnet-product
+        resource: ${product_name}-tile
+        passed: [upload-${product_name}-tile]
+        trigger: true
+        params:
+          skip_download: 'true'
+
+    # Stage product tile
+    - task: stage-tile
+      file: automation/lib/tasks/opsman/stage-product/task.yml
+      params:
+        OPSMAN_HOST: ((opsman_host))
+        OPSMAN_CLIENT_ID: ((opsman_client_id))
+        OPSMAN_CLIENT_SECRET: ((opsman_client_secret))
+        OPSMAN_USERNAME: ((opsman_admin_username))
+        OPSMAN_PASSWORD: ((opsman_admin_password))
+        STAGE_AND_APPLY: false
+        ENABLE_ERRANDS: ((enable_errands))
+
+    # Configure product tile
+    - task: configure
+      file: automation/lib/pipelines/pcf/install-and-upgrade/tasks/configure-mysql/task.yml
+      params:
+        OPSMAN_HOST: ((opsman_host))
+        OPSMAN_CLIENT_ID: ((opsman_client_id))
+        OPSMAN_CLIENT_SECRET: ((opsman_client_secret))
+        OPSMAN_USERNAME: ((opsman_admin_username))
+        OPSMAN_PASSWORD: ((opsman_admin_password))
+        # The IAAS to configure for
+        IAAS: ((iaas_type))
+        # Product configuration
+        TEMPLATE_OVERRIDE_PATH: automation-extensions/((pcf_tile_templates_path))/mysql/((environment))
+        ERRANDS_TO_DISABLE: ${errands_to_disable}
+        ERRANDS_TO_ENABLE: ${errands_to_enable}
+        # Networking
+        NETWORK_NAME: services
+        SERVICE_NETWORK_NAME: dynamic-services
+        SINGLETON_AVAILABILITY_ZONE: '' # Sourced from terraform output
+        AVAILABILITY_ZONES: '' # Sourced from terraform output
+        # Resources
+        INTERNET_CONNECTED: false
+        # Properties
+        PLAN_1_MULTI_NODE_DEPLOYMENT: true
+        PLAN_1_SERVICE_PLAN_ACCESS: "enable"
+        PLAN_1_INSTANCE_LIMIT: 20
+        PLAN_2_MULTI_NODE_DEPLOYMENT: true
+        PLAN_2_SERVICE_PLAN_ACCESS: "enable"
+        PLAN_2_INSTANCE_LIMIT: 20
+        PLAN_3_MULTI_NODE_DEPLOYMENT: true
+        PLAN_3_SERVICE_PLAN_ACCESS: "enable"
+        PLAN_3_INSTANCE_LIMIT: 20
+        S3_BACKUP_ACCESS_KEY_ID: ''
+        S3_BACKUP_SECRET_ACCESS_KEY: ''
+        S3_BACKUP_ENDPOINT_URL: ''
+        S3_BACKUP_REGION: ''
+        S3_BACKUP_BUCKET_NAME: ''
+        S3_BACKUP_PATH: ''
+        SCP_BACKUP_USER: ''
+        SCP_BACKUP_SERVER: ''
+        SCP_BACKUP_DESTINATION: ''
+        SCP_BACKUP_FINGERPRINT: ''
+        SCP_BACKUP_KEY: ''
+        SCP_BACKUP_PORT: null
+        GCS_BACKUP_PROJECT_ID: ''
+        GCS_BACKUP_BUCKET_NAME: ''
+        GCS_BACKUP_SERVICE_ACCOUNT_JSON: ''
+        AZURE_BACKUP_ACCOUNT: ''
+        AZURE_BACKUP_STORAGE_ACCESS_KEY: ''
+        AZURE_BACKUP_PATH: ''
+        AZURE_BACKUP_CONTAINER: ''
+        AZURE_BACKUP_BLOB_STORE_BASE_URL: ''
+        BACKUP_CRON_SCHEDULE: "0 */8 * * *"
+        ENABLE_BACKUP_EMAIL_ALERTS: false
+        SYSLOG_ADDRESS: ''
+        SYSLOG_PORT: null
+        SYSLOG_TRANSPORT: "tcp"
+        SYSLOG_TLS: false
+        SYSLOG_PERMITTED_PEER: ''
+        SYSLOG_CA_CERT: ''
+
+- type: replace
+  path: /jobs/name=deploy/plan/0/aggregate/-
+  value:
+    get: ${product_name}-tile
+    passed: [configure-mysql-tile]
+    trigger: true
+    params:
+      skip_download: 'true'

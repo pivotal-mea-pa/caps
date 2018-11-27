@@ -2,13 +2,13 @@
 # jq -n \
 #   --arg plan_1_multi_node_deployment true \
 #   --arg plan_1_service_plan_access "enable" \
-#   --arg plan_1_instance_limit 5 \
+#   --arg plan_1_instance_limit 20 \
 #   --arg plan_2_multi_node_deployment true \
 #   --arg plan_2_service_plan_access "enable" \
-#   --arg plan_2_instance_limit 5 \
+#   --arg plan_2_instance_limit 20 \
 #   --arg plan_3_multi_node_deployment true \
 #   --arg plan_3_service_plan_access "enable" \
-#   --arg plan_3_instance_limit 5 \
+#   --arg plan_3_instance_limit 20 \
 #   --arg s3_backup_access_key_id "" \
 #   --arg s3_backup_secret_access_key "" \
 #   --arg s3_backup_endpoint_url "" \
@@ -37,7 +37,7 @@
 #   --argjson syslog_tls false \
 #   --arg syslog_permitted_peer "" \
 #   --arg syslog_ca_cert "" \
-#   --arg availability_zones "europe-west1-b,europe-west1-c,europe-west1-d" \
+#   --arg availability_zones "$AVAILABILITY_ZONES" \
 #   "$(cat properties.jq)"
 #
 
@@ -248,7 +248,9 @@ else
       "value": "noop"
     },
     ".properties.backups_selector.scp.key": {
-      "value": "noop"
+      "value": {
+        "secret": "noop"
+      }
     },
     ".properties.backups_selector.scp.port": {
       "value": 22

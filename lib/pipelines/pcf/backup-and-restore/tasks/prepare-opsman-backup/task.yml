@@ -19,11 +19,13 @@ run:
   path: automation/lib/pipelines/pcf/backup-and-restore/tasks/prepare-opsman-backup/task.sh
 
 outputs:
-- name: backup-timestamp
-- name: job-session
+- name: backup-session
 
 params:
   TRACE:
+
+  ## SSH private key used to access cloud resources
+  SSH_KEY:
 
   ## Ops Manager credentials
   OPSMAN_HOST:
@@ -69,13 +71,17 @@ params:
   ## S3FS mount path
   S3FS_MOUNT:
   S3FS_USE_PATH_REQUEST_STYLE:
+  S3FS_DEBUG:
 
   ## GCS mount bucker and path
   GCS_BUCKET_NAME:
   GCS_MOUNT:
+  GCSFUSE_OPTIONS:
+  GCSFUSE_DEBUG:
 
   ## Cloudfuse mount path
   CLOUDFUSE_MOUNT:
+  CLOUDFUSE_DEBUG:
 
   ## NFS mount path
   NFS_MOUNT:

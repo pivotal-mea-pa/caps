@@ -1,0 +1,23 @@
+---
+platform: linux
+
+image_resource:
+  type: docker-image
+  source:
+    repository: appbricks/automation-tools
+
+inputs:
+- name: automation
+
+run:
+  path: automation/lib/pipelines/pcf/install-and-upgrade/tasks/destroy-pks-loadbalancers/google/task.sh
+
+params:
+  TRACE: Y
+  
+  DEPLOYMENT_PREFIX:
+  GCP_CREDENTIALS:
+  GCP_PROJECT:
+  GCP_REGION:
+
+  TERRAFORM_STATE_BUCKET:

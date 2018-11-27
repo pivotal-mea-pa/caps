@@ -18,6 +18,9 @@ outputs:
 params:
   TRACE: Y
 
+  ## SSH private key used to access cloud resources
+  SSH_KEY:
+  
   ## Ops Manager credentials
   OPSMAN_HOST:
   OPSMAN_USERNAME:
@@ -62,13 +65,17 @@ params:
   ## S3FS mount path
   S3FS_MOUNT:
   S3FS_USE_PATH_REQUEST_STYLE:
+  S3FS_DEBUG:
 
   ## GCS mount bucker and path
   GCS_BUCKET_NAME:
   GCS_MOUNT:
+  GCSFUSE_OPTIONS:
+  GCSFUSE_DEBUG:
 
   ## Cloudfuse mount path
   CLOUDFUSE_MOUNT:
+  CLOUDFUSE_DEBUG:
 
   ## NFS mount path
   NFS_MOUNT:

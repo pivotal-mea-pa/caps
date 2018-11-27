@@ -147,8 +147,11 @@ while IFS='' read -r line || [[ -n "$line" ]]; do
             bastion_admin_user)
                 echo "export TF_VAR_$curr_var=bastion-admin" >>$working_dir/.caps-env_$name
                 ;;
-            bastion_allow_public_ssh)
+            bastion_setup_vpn)
                 echo "export TF_VAR_$curr_var=false" >>$working_dir/.caps-env_$name
+                ;;
+            bastion_allow_public_ssh)
+                echo "export TF_VAR_$curr_var=true" >>$working_dir/.caps-env_$name
                 ;;
             ssh_key_file_path)
                 echo "#export TF_VAR_$curr_var=$workspace_path" >>$working_dir/.caps-env_$name

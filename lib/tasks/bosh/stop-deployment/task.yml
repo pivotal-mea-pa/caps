@@ -14,14 +14,14 @@ run:
   path: automation/lib/tasks/bosh/stop-deployment/task.sh
 
 params:
-  TRACE:
+  TRACE: Y
 
   # The IAAS where the instances are deployed
   IAAS:
 
   # GCP Credentials
   GCP_SERVICE_ACCOUNT_KEY:
-  GCP_PROJECT_ID:
+  GCP_PROJECT:
 
   # A label to identify this environments instanes
   LABEL:

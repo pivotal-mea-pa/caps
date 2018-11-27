@@ -1,0 +1,54 @@
+- type: replace
+  path: /resources/-
+  value:
+    name: ${product_name}-tile
+    type: s3
+    source:
+      bucket: pcf
+      endpoint: ((autos3_url))
+      access_key_id: ((autos3_access_key))
+      secret_access_key: ((autos3_secret_key))
+      regexp: downloads/${product_slug}_(.*).tgz
+
+- type: replace
+  path: /jobs/-
+  value:
+    name: upload-${product_name}-tile
+    on_failure:
+      do:
+      - task: notify on upload-${product_name}-tile failure
+
+    serial: true
+    plan:
+    - aggregate:
+      - get: automation
+      - get: pivnet-download
+        resource: ${product_name}-tile
+        trigger: true
+
+    # Wait for director to be in a ready state
+    - task: wait-for-director-to-be-ready
+      file: automation/lib/inceptor/tasks/wait-for-state/task.yml
+      params: 
+        WAIT_FOR_STATE: director_ready
+        AUTOS3_URL: ((autos3_url))
+        AUTOS3_ACCESS_KEY: ((autos3_access_key))
+        AUTOS3_SECRET_KEY: ((autos3_secret_key))
+
+    # Upload product tile and its stemcell
+    - task: upload-tile
+      file: automation/lib/tasks/opsman/upload-product-and-stemcell/task.yml
+      params:
+        OPSMAN_HOST: ((opsman_host))
+        OPSMAN_CLIENT_ID: ((opsman_client_id))
+        OPSMAN_CLIENT_SECRET: ((opsman_client_secret))
+        OPSMAN_USERNAME: ((opsman_admin_username))
+        OPSMAN_PASSWORD: ((opsman_admin_password))
+
+- type: replace
+  path: /groups/name=Install & Upgrade Products/jobs?/0:before
+  value: upload-${product_name}-tile
+
+- type: replace
+  path: /groups/name=Install & Upgrade Products/jobs?/0:before
+  value: configure-${product_name}-tile

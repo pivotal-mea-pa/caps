@@ -8,10 +8,9 @@ if [[ -n "$TRACE" ]]; then
     set -x
     debug_bbr="--debug"
 fi
-set -e
+set -eo pipefail
 
-source backup-timestamp/metadata
-source job-session/env
+source backup-session/env*.sh
 
 echo "Backing up Bosh Director via BBR utility..."
 

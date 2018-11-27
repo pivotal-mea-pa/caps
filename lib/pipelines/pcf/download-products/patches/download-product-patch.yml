@@ -1,0 +1,57 @@
+- type: replace
+  path: /resources?/-
+  value:
+    name: ${product_name}-download
+    type: pivnet
+    source:
+      api_token: ((pivnet_token))
+      product_slug: ${product_slug}
+      product_version: ${product_version}
+      sort_by: semver
+
+- type: replace
+  path: /jobs?/-
+  value:
+    name: ${product_name}-download-regulator
+    plan:
+    - get: schedule
+      trigger: true
+    - get: ${product_name}-download
+      params: {globs: []}
+
+- type: replace
+  path: /jobs?/-
+  value:
+    name: download-${product_name}
+    on_failure:
+      do:
+      - task: notify on download-${product_name} failure
+
+    serial: true
+    plan:
+    - aggregate:
+      - get: automation
+      - get: pivnet-product 
+        resource: ${product_name}-download
+        passed: [${product_name}-download-regulator]
+        trigger: true
+        params:
+          globs:
+          - ${product_glob}
+
+    # Download product tile and its stemcell to local repository
+    - task: download-to-local-repo
+      file: automation/lib/pipelines/pcf/download-products/tasks/download-product/task.yml
+      params:
+        IAAS: ((iaas_type))
+        OPSMAN_HOST: ((opsman_host))
+        OPSMAN_CLIENT_ID: ((opsman_client_id))
+        OPSMAN_CLIENT_SECRET: ((opsman_client_secret))
+        OPSMAN_USERNAME: ((opsman_admin_username))
+        OPSMAN_PASSWORD: ((opsman_admin_password))
+        PIVNET_API_TOKEN: ((pivnet_token))
+        NAME: ${product_slug}
+        AUTOS3_URL: ((autos3_url))
+        AUTOS3_ACCESS_KEY: ((autos3_access_key))
+        AUTOS3_SECRET_KEY: ((autos3_secret_key))
+        BUCKET: pcf

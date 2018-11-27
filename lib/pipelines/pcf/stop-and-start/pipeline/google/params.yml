@@ -1,0 +1,46 @@
+---
+#
+# Automation repo details
+#
+automation_pipelines_repo: '${automation_pipelines_repo}'
+automation_pipelines_branch: '${automation_pipelines_branch}'
+
+automation_extensions_repo: '${automation_extensions_repo}'
+automation_extensions_branch: '${automation_extensions_branch}'
+
+# GCP project
+gcp_project_id: '${gcp_project}'
+
+# GCP service account json
+gcp_service_account_key: |
+  ${gcp_credentials}
+
+# IAAS instance tag to use for when 
+# searching for instances in deployment
+# to start or stop
+label: '${vpc_name}-pcf'
+
+# Pivotal Ops Manager host and credentials
+opsman_host: 'opsman.${environment}.${vpc_dns_zone}'
+opsman_username: 'admin'
+opsman_password: '${opsman_admin_password}'
+opsman_ssh_user: 'ubuntu'
+opsman_ssh_passwd: ''
+opsman_pass_phrase: '${opsman_admin_password}'
+pcfops_client: ''
+pcfops_secret: ''
+
+# Locale to use for timer resources
+locale: ${locale}
+
+# Time period during which the stop 
+# schedule will trigger a stop event
+stop_trigger_start: '${pcf_stop_trigger_start}'
+stop_trigger_stop: '${pcf_stop_trigger_stop}'
+stop_trigger_days: ${pcf_stop_trigger_days}
+
+# Time period during which the start 
+# schedule will trigger a stop event
+start_trigger_start: '${pcf_start_trigger_start}'
+start_trigger_stop: '${pcf_start_trigger_stop}'
+start_trigger_days: ${pcf_start_trigger_days}

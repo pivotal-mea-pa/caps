@@ -122,7 +122,7 @@ case $tf_action in
             terraform taint \
                 -state=$workspace_path/.terraform/terraform.tfstate \
                 -module=bootstrap \
-                google_compute_disk.bastion-data-volume            
+                google_compute_disk.bastion-data-disk       
         fi
 
         $0 plan

@@ -16,12 +16,15 @@ run:
   path: automation/lib/pipelines/pcf/install-and-upgrade/tasks/common/configure-product.sh
 
 params:
-  TRACE:
+  TRACE: Y
+  
   OPSMAN_HOST:
   OPSMAN_CLIENT_ID:
   OPSMAN_CLIENT_SECRET:
   OPSMAN_USERNAME:
   OPSMAN_PASSWORD:
+  # The IAAS to configure for
+  IAAS: 
   # Product configuration
   PRODUCT_NAME: p-spring-cloud-services
   TEMPLATE_PATH: automation/lib/pipelines/pcf/install-and-upgrade/templates/scs

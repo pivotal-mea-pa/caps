@@ -3,11 +3,9 @@
 #   --arg redis_shared_maxmemory "512MB" \
 #   --argjson redis_shared_instance_limit 5 \
 #   --argjson redis_on_demand_instance_limit 20 \
-#   --arg small_plan_az "europe-west1-b" \
+#   --arg availability_zones "$AVAILABILITY_ZONES" \
 #   --argjson small_plan_instance_limit 20 \
-#   --arg medium_plan_az "europe-west1-c" \
 #   --argjson medium_plan_instance_limit 20 \
-#   --arg large_plan_az "europe-west1-d" \
 #   --argjson large_plan_instance_limit 0 \
 #   --arg syslog_address "" \
 #   --argjson syslog_port null \
@@ -30,7 +28,7 @@ if $small_plan_instance_limit > 0 then
 {
   ".properties.small_plan_selector": { "value": "Plan Active" },
   ".properties.small_plan_selector.active.cf_service_access": { "value": "enable" },
-  ".properties.small_plan_selector.active.az_single_select": { "value": $small_plan_az },
+  ".properties.small_plan_selector.active.az_single_select": { "value": ($availability_zones | split(",") | .[0]) },
   ".properties.small_plan_selector.active.instance_limit": { "value": $small_plan_instance_limit }
 }
 else
@@ -43,7 +41,7 @@ if $medium_plan_instance_limit > 0 then
 {
   ".properties.medium_plan_selector": { "value": "Plan Active" },
   ".properties.medium_plan_selector.active.cf_service_access": { "value": "enable" },
-  ".properties.medium_plan_selector.active.az_single_select": { "value": $medium_plan_az },
+  ".properties.medium_plan_selector.active.az_single_select": { "value": ($availability_zones | split(",") | .[1]) },
   ".properties.medium_plan_selector.active.instance_limit": { "value": $medium_plan_instance_limit }
 }
 else
@@ -56,7 +54,7 @@ if $large_plan_instance_limit > 0 then
 {
   ".properties.large_plan_selector": { "value": "Plan Active" },
   ".properties.large_plan_selector.active.cf_service_access": { "value": "enable" },
-  ".properties.large_plan_selector.active.az_single_select": { "value": $large_plan_az },
+  ".properties.large_plan_selector.active.az_single_select": { "value": ($availability_zones | split(",") | .[2]) },
   ".properties.large_plan_selector.active.instance_limit": { "value": $large_plan_instance_limit }
 }
 else

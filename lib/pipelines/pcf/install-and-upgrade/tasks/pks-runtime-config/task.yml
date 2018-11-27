@@ -1,0 +1,38 @@
+---
+platform: linux
+
+image_resource:
+  type: docker-image
+  source:
+    repository: appbricks/automation-tools
+
+inputs:
+- name: automation
+- name: automation-extensions
+- name: terraform-output
+
+run:
+  path: automation/lib/pipelines/pcf/install-and-upgrade/tasks/pks-runtime-config/task.sh
+
+params:
+  TRACE: Y
+  
+  # The following variables should be
+  # exported from the terraform output
+  GCP_CREDENTIALS:
+  GCP_PROJECT:
+  GCP_REGION:
+
+  DEPLOYMENT_PREFIX:
+  TERRAFORM_STATE_BUCKET:
+
+  # Ops Manager Credentials
+  OPSMAN_HOST:
+  OPSMAN_CLIENT_ID:
+  OPSMAN_CLIENT_SECRET:
+  OPSMAN_USERNAME:
+  OPSMAN_PASSWORD:
+
+  TF_VAR_pks_admin_username:
+  TF_VAR_pks_admin_password:
+  TF_VAR_pks_admin_email:

@@ -1,0 +1,72 @@
+- type: replace
+  path: /jobs/-
+  value:
+    name: configure-harbor-tile
+    on_failure:
+      do:
+      - task: notify on configure-harbor-tile failure
+
+    serial: true
+    serial_groups: [configure]
+    plan:
+    - aggregate:
+      - get: automation
+      - get: automation-extensions
+      - get: terraform-output
+      - get: pivnet-product
+        resource: ${product_name}-tile
+        passed: [upload-${product_name}-tile]
+        trigger: true
+        params:
+          skip_download: 'true'
+
+    # Stage product tile
+    - task: stage-tile
+      file: automation/lib/tasks/opsman/stage-product/task.yml
+      params:
+        OPSMAN_HOST: ((opsman_host))
+        OPSMAN_CLIENT_ID: ((opsman_client_id))
+        OPSMAN_CLIENT_SECRET: ((opsman_client_secret))
+        OPSMAN_USERNAME: ((opsman_admin_username))
+        OPSMAN_PASSWORD: ((opsman_admin_password))
+        STAGE_AND_APPLY: false
+        ENABLE_ERRANDS: ((enable_errands))
+
+    # Configure product tile
+    - task: configure
+      file: automation/lib/pipelines/pcf/install-and-upgrade/tasks/configure-harbor/task.yml
+      params:
+        OPSMAN_HOST: ((opsman_host))
+        OPSMAN_CLIENT_ID: ((opsman_client_id))
+        OPSMAN_CLIENT_SECRET: ((opsman_client_secret))
+        OPSMAN_USERNAME: ((opsman_admin_username))
+        OPSMAN_PASSWORD: ((opsman_admin_password))
+        # The IAAS to configure for
+        IAAS: ((iaas_type))
+        # Product configuration
+        TEMPLATE_OVERRIDE_PATH: automation-extensions/((pcf_tile_templates_path))/harbor/((environment))
+        ERRANDS_TO_DISABLE: ${errands_to_disable}
+        ERRANDS_TO_ENABLE: ${errands_to_enable}
+        # Networking
+        NETWORK_NAME: services
+        SINGLETON_AVAILABILITY_ZONE: '' # Sourced from terraform output
+        AVAILABILITY_ZONES: '' # Sourced from terraform output
+        # Resources
+        INTERNET_CONNECTED: false
+        # Properties
+        HARBOR_REGISTRY_FQDN: '' # Sourced from terraform output
+        HARBOR_REGISTRY_CERTIFICATE: '' # Sourced from terraform output
+        HARBOR_REGISTRY_CERTIFICATE_KEY: '' # Sourced from terraform output
+        CA_CERTS: '' # Sourced from terraform output
+        ADMIN_PASSWORD: ((common_admin_password))
+        AUTH_MODE: uaa_auth_pks
+        REGISTRY_STORAGE: filesystem
+
+- type: replace
+  path: /jobs/name=deploy/plan/0/aggregate/-
+  value:
+    get: ${product_name}-tile
+    passed: [configure-harbor-tile]
+    trigger: true
+    params:
+      skip_download: 'true'

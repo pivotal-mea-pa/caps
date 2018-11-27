@@ -1,0 +1,61 @@
+- type: replace
+  path: /jobs/-
+  value:
+    name: deploy
+    serial_groups: [opsman]
+    on_success:
+      do:
+      - task: notify on deploy success
+    on_failure:
+      do:
+      - task: notify on deploy failure
+
+    plan:
+    - aggregate:
+      - get: automation
+
+    # This task will block if the environment 
+    # has been put into stopped state
+    - task: wait-if-stopped
+      file: automation/lib/inceptor/tasks/wait-on-state/task.yml
+      params: 
+        WAIT_ON_STATE: stopped
+        AUTOS3_URL: ((autos3_url))
+        AUTOS3_ACCESS_KEY: ((autos3_access_key))
+        AUTOS3_SECRET_KEY: ((autos3_secret_key))
+
+    # Wait if an opsman is currently in the process of applying a change
+    - task: wait-if-apply-in-progress
+      file: automation/lib/tasks/opsman/wait-opsman/task.yml
+      params:
+        OPSMAN_HOST: ((opsman_host))
+        OPSMAN_USERNAME: ((opsman_admin_username))
+        OPSMAN_PASSWORD: ((opsman_admin_password))
+        OPSMAN_CLIENT_ID: ((opsman_client_id))
+        OPSMAN_CLIENT_SECRET: ((opsman_client_secret))
+
+    # Apply the changes to deploy the SRT
+    - task: apply-changes
+      file: automation/lib/tasks/opsman/apply-changes/task.yml
+      params:
+        OPSMAN_HOST: ((opsman_host))
+        OPSMAN_USERNAME: ((opsman_admin_username))
+        OPSMAN_PASSWORD: ((opsman_admin_password))
+        OPSMAN_CLIENT_ID: ((opsman_client_id))
+        OPSMAN_CLIENT_SECRET: ((opsman_client_secret))
+        DIRECTOR_ONLY:
+        DISABLE_ERRANDS:
+
+    # Toggle the environment state to started
+    - task: set-started-state
+      file: automation/lib/inceptor/tasks/toggle-state/task.yml
+      params: 
+        OFF_STATE: stopped
+        ON_STATE: started
+        AUTOS3_URL: ((autos3_url))
+        AUTOS3_ACCESS_KEY: ((autos3_access_key))
+        AUTOS3_SECRET_KEY: ((autos3_secret_key))
+
+- type: replace
+  path: /groups/name=Install & Upgrade Products/jobs?/-
+  value: deploy

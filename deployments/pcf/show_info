@@ -4,6 +4,7 @@ vpc_dns_zone=$(echo -e "$tf_output" | awk '/vpc_dns_zone =/{ print $3 }')
 bastion_fqdn=$(echo -e "$tf_output" | awk '/bastion_fqdn =/{ print $3 }')
 bastion_admin_password=$(echo -e "$tf_output" | awk '/bastion_admin_password =/{ print $3 }')
 opsman_admin_password=$(echo -e "$tf_output" | awk '/opsman_admin_password =/{ print $3 }')
+common_admin_password=$(echo -e "$tf_output" | awk '/common_admin_password =/{ print $3 }')
 
 [[ -z $vpc_dns_zone ]] && exit
 
@@ -11,7 +12,7 @@ echo -e "${GREEN}Primary domain:      $vpc_dns_zone"
 echo -e "VPN server URL:      https://$bastion_fqdn"
 echo -e "VPN admin password:  $bastion_admin_password\n"
 
-pcf_environments=${TF_VAR_pcf_environments:-["pcf"]}
+pcf_environments=${TF_VAR_pcf_environments:-["sandbox"]}
 
 for env in $(echo $pcf_environments | tr '["],' ' '); do
 
@@ -30,4 +31,6 @@ for env in $(echo $pcf_environments | tr '["],' ' '); do
   echo -e "${GREEN}  URL:                 https://opsman.$env.$vpc_dns_zone"
   echo -e "  User:                admin"
   echo -e "  Password:            $opsman_admin_password\n"
+
+  echo -e "  System admin password: $common_admin_password\n"
 done

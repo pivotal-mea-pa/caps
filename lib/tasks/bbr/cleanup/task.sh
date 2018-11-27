@@ -4,23 +4,23 @@ source ~/scripts/iaas-func.sh
 iaas::initialize
 
 [[ -n "$TRACE" ]] && set -x
-set -e
+set -eo pipefail
 
-source backup-timestamp/metadata
+source backup-session/env*.sh
 
-grep -q "^RESTORE_TIMESTAMP=" backup-timestamp/metadata && \
-    sed -i "s|^RESTORE_TIMESTAMP=.*$|RESTORE_TIMESTAMP=$BACKUP_TIMESTAMP|" backup-timestamp/metadata || \
-    echo "RESTORE_TIMESTAMP=$BACKUP_TIMESTAMP" >> backup-timestamp/metadata
-
-if [[ -d restore-timestamp ]]; then
-    cp -r backup-timestamp/* restore-timestamp/
-elif [[ $backup_mounted == yes ]]; then
+if [[ $backup_mounted == yes ]]; then
     mkdir -p $backup_path/
-    cp -f backup-timestamp/metadata $backup_path/
+    metadata_file=$backup_path/metadata
+    touch $metadata_file
 else
-    echo "ERROR! Unable determine destination for backup metadata."
-    exit 1
+    metadata_file=./metadata
 fi
+
+grep -q "^RESTORE_TIMESTAMP=" $metadata_file && \
+    sed -i "s|^RESTORE_TIMESTAMP=.*$|RESTORE_TIMESTAMP=$BACKUP_TIMESTAMP|" $metadata_file || \
+    echo "RESTORE_TIMESTAMP=$BACKUP_TIMESTAMP" >> $metadata_file
+
+cp $metadata_file ./restore-timestamp
 
 [[ -n $BACKUP_AGE ]] || BACKUP_AGE=7
 backup::cleanup "$BACKUP_AGE" "$BACKUP_TYPE" "$BACKUP_TARGET"

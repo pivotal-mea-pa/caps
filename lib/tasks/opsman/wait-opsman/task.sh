@@ -1,6 +1,9 @@
 #!/bin/bash
 
-set +e
+[[ -n "$TRACE" ]] && set -x
+set -o pipefail
+
+[[ "$(opsman::check_available "https://$OPSMAN_HOST")" == "available" ]] || exit 0
 
 start_time=$(date +%s)
 while [[ true ]]; do

@@ -1,0 +1,60 @@
+---
+groups:
+- name: Automate
+  jobs:
+  - bootstrap
+- name: Notify
+  jobs:
+  - notifications
+
+jobs:
+- name: bootstrap
+  public: false
+  serial: true
+  on_failure:
+    do:
+    - task: notify on bootstrap failure
+  plan:
+  - aggregate:
+    - get: automation
+      trigger: true
+  - task: configure
+    file: automation/deployments/pcf/google/pipeline/task.yml
+    params:
+      TRACE: ((trace))
+      # Inceptor services environment
+      CONCOURSE_URL: ((concourse_url))
+      CONCOURSE_USER: ((concourse_user))
+      CONCOURSE_PASSWORD: ((concourse_password))
+      AUTOS3_URL: ((autos3_url))
+      AUTOS3_ACCESS_KEY: ((autos3_access_key))
+      AUTOS3_SECRET_KEY: ((autos3_secret_key))
+      SMTP_HOST: ((smtp_host))
+      SMTP_PORT: ((smtp_port))
+      EMAIL_FROM: ((automation_email))
+      EMAIL_TO: ((notification_email))
+      # Path to common automation tasks
+      # in the inceptor library module
+      PIPELINE_AUTOMATION_PATH: ((pipeline_automation_path))
+      # Google Cloud Platform credentials
+      GOOGLE_PROJECT: ((google_project))
+      GOOGLE_CREDENTIALS_JSON: ((google_credentials_json))
+      GOOGLE_REGION: ((google_region))
+      # Terraform bootstrap state location
+      BOOTSTRAP_STATE_BUCKET: ((bootstrap_state_bucket))
+      BOOTSTRAP_STATE_PREFIX: ((bootstrap_state_prefix))
+      # VPC and environment details
+      VPC_NAME: ((vpc_name))
+      VPC_DNS_ZONE: ((vpc_dns_zone))
+      ENVIRONMENTS: ((environments))
+      PRODUCTS: ((products))
+      UNPAUSE_INSTALL_PIPELINE: ((unpause_install_pipeline))
+      SET_START_STOP_SCHEDULE: ((set_start_stop_schedule))
+
+resources:
+
+- name: automation
+  type: git
+  source:
+    uri: ((automation_pipelines_repo))
+    branch: ((automation_pipelines_branch))

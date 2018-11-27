@@ -25,30 +25,12 @@
 #   --arg plan_1_cluster_strategy "pause_minority" \
 #   --arg plan_1_vm_type "large" \
 #   --arg plan_1_persistent_disk_type "30720" \
-#   --arg availability_zones "europe-west1-b,europe-west1-c,europe-west1-d" \
+#   --arg availability_zones "$AVAILABILITY_ZONES" \
 #   "$(cat properties.jq)"
 #
 
 # RabbitMQ Configuration
 {
-  ".rabbitmq-server.server_admin_credentials": {
-    "value": {
-      "identity": "admin",
-      "password": $admin_password
-    },
-  },
-  ".rabbitmq-server.plugins": {
-    "value": ($server_plugins | split(","))
-  },
-  ".rabbitmq-server.ssl_cacert": {
-    "value": $ssl_cacert
-  },
-  ".rabbitmq-broker.dns_host": {
-    "value": $external_dns_name
-  },
-  ".properties.disk_alarm_threshold": {
-    "value": $disk_alarm_threshold
-  },
   ".rabbitmq-haproxy.static_ips": {
     "value": $haproxy_static_ips,
   },

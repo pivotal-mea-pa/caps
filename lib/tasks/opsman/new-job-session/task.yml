@@ -16,7 +16,7 @@ outputs:
 - name: job-session
 
 params:
-  TRACE:
+  TRACE: Y
 
   ## Ops Manager credentials
   OPSMAN_HOST:

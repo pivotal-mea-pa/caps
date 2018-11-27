@@ -1,0 +1,30 @@
+---
+#
+# Automation repo details
+#
+automation_pipelines_repo: '${automation_pipelines_repo}'
+automation_pipelines_branch: '${automation_pipelines_branch}'
+
+automation_extensions_repo: '${automation_extensions_repo}'
+automation_extensions_branch: '${automation_extensions_branch}'
+
+#
+# Pivnet download and Ops Manager configuration
+#
+
+# Pivnet token for downloading resources from Pivnet. Find this 
+# token at https://network.pivotal.io/users/dashboard/edit-profile
+pivnet_token: '${pivnet_token}'
+
+# This should be your pcf_ert_domain with "opsman." as a prefix
+opsman_host: 'opsman.${environment}.${vpc_dns_zone}'
+
+# Operations Manager credentials to set
+# opsman_admin_username/opsman_admin_password needs to be specified
+opsman_admin_username: 'admin'
+opsman_admin_password: '${opsman_admin_password}'
+opsman_client_id: ''
+opsman_client_secret: ''
+
+# PCF Ops Manager minor version to track
+opsman_major_minor_version: '${opsman_major_minor_version}'

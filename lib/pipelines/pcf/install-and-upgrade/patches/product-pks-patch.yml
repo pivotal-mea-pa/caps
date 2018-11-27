@@ -1,0 +1,207 @@
+- type: replace
+  path: /resource_types/-
+  value:
+    name: bosh-deployment-event
+    type: docker-image
+    source:
+      repository: mevansam/bosh-deployment-event-resource
+      tag: latest
+
+- type: replace
+  path: /resources/-
+  value:
+    name: pks-clis
+    type: pivnet
+    source:
+      api_token: ((pivnet_token))
+      product_slug: ${product_slug}
+      product_version: ${product_version}
+      sort_by: semver
+
+- type: replace
+  path: /resources/-
+  value:
+    name: deployment-event
+    type: bosh-deployment-event
+    source:
+      opsman_host: ((opsman_host))
+      opsman_client_id: ((opsman_client_id))
+      opsman_client_secret: ((opsman_client_secret))
+      opsman_username: ((opsman_admin_username))
+      opsman_password: ((opsman_admin_password))
+      skip_ssl_validation: true
+      event_source: "pivotal-container-service-.*"
+
+- type: replace
+  path: /jobs/-
+  value:
+    name: configure-pks-tile
+    on_failure:
+      do:
+      - task: notify on configure-pks-tile failure
+
+    serial: true
+    serial_groups: [configure]
+    plan:
+    - aggregate:
+      - get: automation
+      - get: automation-extensions
+      - get: terraform-output
+      - get: pivnet-product
+        resource: ${product_name}-tile
+        passed: [upload-${product_name}-tile]
+        trigger: true
+        params:
+          skip_download: 'true'
+
+    # Stage product tile
+    - task: stage-tile
+      file: automation/lib/tasks/opsman/stage-product/task.yml
+      params:
+        OPSMAN_HOST: ((opsman_host))
+        OPSMAN_CLIENT_ID: ((opsman_client_id))
+        OPSMAN_CLIENT_SECRET: ((opsman_client_secret))
+        OPSMAN_USERNAME: ((opsman_admin_username))
+        OPSMAN_PASSWORD: ((opsman_admin_password))
+        STAGE_AND_APPLY: false
+        ENABLE_ERRANDS: ((enable_errands))
+
+    # Configure product tile
+    - task: configure
+      file: automation/lib/pipelines/pcf/install-and-upgrade/tasks/configure-pks/task.yml
+      params:
+        OPSMAN_HOST: ((opsman_host))
+        OPSMAN_CLIENT_ID: ((opsman_client_id))
+        OPSMAN_CLIENT_SECRET: ((opsman_client_secret))
+        OPSMAN_USERNAME: ((opsman_admin_username))
+        OPSMAN_PASSWORD: ((opsman_admin_password))
+        # The IAAS to configure for
+        IAAS: ((iaas_type))
+        # Product configuration
+        TEMPLATE_OVERRIDE_PATH: automation-extensions/((pcf_tile_templates_path))/pks/((environment))
+        ERRANDS_TO_DISABLE: ${errands_to_disable}
+        ERRANDS_TO_ENABLE: ${errands_to_enable}
+        # Networking
+        NETWORK_NAME: services
+        SERVICE_NETWORK_NAME: dynamic-services
+        SINGLETON_AVAILABILITY_ZONE: '' # Sourced from terraform output
+        AVAILABILITY_ZONES: '' # Sourced from terraform output
+        # Resources
+        INTERNET_CONNECTED: false
+        PKS_API_LB_NAME:
+        # Properties
+        PKS_API_URL: '' # Sourced from terraform output
+        PKS_CERT: '' # Sourced from terraform output
+        PKS_CERT_KEY: '' # Sourced from terraform output
+        CLOUD_PROVIDER: ((iaas_type))
+        VPC_NETWORK_NAME: '' # Sourced from terraform output
+        PLAN1_WORKER_INSTANCES: 3
+        PLAN1_ALLOW_PRIVILEGED_CONTAINERS: true
+        PLAN1_AZ_PLACEMENT: '' # Sourced from terraform output
+        PLAN2_WORKER_INSTANCES: 5
+        PLAN2_ALLOW_PRIVILEGED_CONTAINERS: true
+        PLAN2_AZ_PLACEMENT: '' # Sourced from terraform output
+        PLAN3_WORKER_INSTANCES: 0
+        PLAN3_ALLOW_PRIVILEGED_CONTAINERS: true
+        PLAN3_AZ_PLACEMENT: '' # Sourced from terraform output
+
+- type: replace
+  path: /jobs/name=deploy/plan/0/aggregate/-
+  value:
+    get: ${product_name}-tile
+    passed: [configure-pks-tile]
+    trigger: true
+    params:
+      skip_download: 'true'
+
+- type: replace
+  path: /jobs/-
+  value:
+    name: configure-pks-runtime
+    on_failure:
+      do:
+      - task: notify on configure-pks-runtime failure
+
+    serial: true
+    plan:
+    - aggregate:
+      - get: automation
+      - get: automation-extensions
+      - get: terraform-output
+      - get: pks-tile
+        passed: [deploy]
+        trigger: true
+        params:
+          skip_download: 'true'
+
+    - task: pks-runtime-config
+      file: automation/lib/pipelines/pcf/install-and-upgrade/tasks/pks-runtime-config/task.yml
+      params:
+        GCP_CREDENTIALS: ((gcp_service_account_key))
+        GCP_PROJECT: ((gcp_project))
+        GCP_REGION: ((gcp_region))
+        DEPLOYMENT_PREFIX: ((deployment_prefix))
+        TERRAFORM_STATE_BUCKET: ((terraform_state_bucket))
+        OPSMAN_HOST: ((opsman_host))
+        OPSMAN_USERNAME: ((opsman_admin_username))
+        OPSMAN_PASSWORD: ((opsman_admin_password))
+        OPSMAN_CLIENT_ID: ((opsman_client_id))
+        OPSMAN_CLIENT_SECRET: ((opsman_client_secret))
+        TF_VAR_pks_admin_username: ((pks_admin_username))
+        TF_VAR_pks_admin_password: ((pks_admin_password))
+        TF_VAR_pks_admin_email: ((automation_email))
+
+- type: replace
+  path: /jobs/-
+  value:
+    name: configure-pks-clusters
+    on_failure:
+      do:
+      - task: notify on configure-pks-clusters failure
+
+    serial: true
+    plan:
+    - aggregate:
+      - get: automation
+      - get: automation-extensions
+      - get: deployment-event
+        trigger: true
+      - get: terraform-output
+        passed: ["configure-pks-runtime"]
+      - get: pks-clis
+        params:
+          globs:
+          - '*-linux-amd64-*'
+
+    - task: pks-cluster-config
+      file: automation/lib/pipelines/pcf/install-and-upgrade/tasks/pks-cluster-config/task.yml
+      params:
+        IAAS: ((iaas_type))
+        TERRAFORM_STATE_BUCKET: ((terraform_state_bucket))
+        OPSMAN_HOST: ((opsman_host))
+        OPSMAN_USERNAME: ((opsman_admin_username))
+        OPSMAN_PASSWORD: ((opsman_admin_password))
+        OPSMAN_CLIENT_ID: ((opsman_client_id))
+        OPSMAN_CLIENT_SECRET: ((opsman_client_secret))
+        PKS_ADMIN_USERNAME: ((pks_admin_username))
+        PKS_ADMIN_PASSWORD: ((pks_admin_password))
+
+- type: replace
+  path: /jobs/name=destroy-env/plan/1:after
+  value:
+    task: destroy-pks-loadbalancers
+    file: automation/lib/pipelines/pcf/install-and-upgrade/tasks/destroy-pks-loadbalancers/google/task.yml
+    params:
+      DEPLOYMENT_PREFIX: ((deployment_prefix))
+      GCP_CREDENTIALS: ((gcp_service_account_key))
+      GCP_PROJECT: ((gcp_project))
+      GCP_REGION: ((gcp_region))
+      TERRAFORM_STATE_BUCKET: ((terraform_state_bucket))
+
+- type: replace
+  path: /groups/name=Install & Upgrade Products/jobs?/-
+  value: configure-pks-runtime
+
+- type: replace
+  path: /groups/name=Install & Upgrade Products/jobs?/-
+  value: configure-pks-clusters

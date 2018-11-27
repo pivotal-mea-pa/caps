@@ -13,6 +13,8 @@ run:
   path: automation/lib/tasks/opsman/apply-changes/task.sh
 
 params:
+  TRACE: Y
+
   OPSMAN_HOST:
   OPSMAN_USERNAME:
   OPSMAN_PASSWORD:
@@ -20,3 +22,4 @@ params:
   OPSMAN_CLIENT_SECRET:
   DIRECTOR_ONLY:
   DISABLE_ERRANDS:
+  PRODUCT_NAME:

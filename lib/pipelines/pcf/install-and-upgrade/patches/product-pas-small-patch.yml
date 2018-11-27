@@ -1,0 +1,167 @@
+# Delete jobs created in common patch as 
+# PAS small tile needs to be renamed same 
+# as PAS standard tile in order to handle
+# dependencies consistently.
+
+- type: remove
+  path: /resources/name=pas-small-tile
+
+- type: remove
+  path: /jobs/name=upload-pas-small-tile
+
+- type: remove
+  path: /groups/name=Install & Upgrade Products/jobs/0
+
+- type: remove
+  path: /groups/name=Install & Upgrade Products/jobs/0
+
+# Re-create jobs tile upload jobs for PAS small tile
+# but renamed as "pas" to be consistent with PAS 
+# standard jobs.
+
+- type: replace
+  path: /resources/-
+  value:
+    name: pas-tile
+    type: s3
+    source:
+      bucket: pcf
+      endpoint: ((autos3_url))
+      access_key_id: ((autos3_access_key))
+      secret_access_key: ((autos3_secret_key))
+      regexp: downloads/${product_slug}_(.*).tgz
+
+- type: replace
+  path: /jobs/-
+  value:
+    name: upload-pas-tile
+    on_failure:
+      do:
+      - task: notify on upload-pas-tile failure
+
+    serial: true
+    plan:
+    - aggregate:
+      - get: automation
+      - get: pivnet-download
+        resource: pas-tile
+        trigger: true
+
+    # Wait for director to be in a ready state
+    - task: wait-for-director-to-be-ready
+      file: automation/lib/inceptor/tasks/wait-for-state/task.yml
+      params: 
+        WAIT_FOR_STATE: director_ready
+        AUTOS3_URL: ((autos3_url))
+        AUTOS3_ACCESS_KEY: ((autos3_access_key))
+        AUTOS3_SECRET_KEY: ((autos3_secret_key))
+
+    # Upload product tile and its stemcell
+    - task: upload-tile
+      file: automation/lib/tasks/opsman/upload-product-and-stemcell/task.yml
+      params:
+        OPSMAN_HOST: ((opsman_host))
+        OPSMAN_CLIENT_ID: ((opsman_client_id))
+        OPSMAN_CLIENT_SECRET: ((opsman_client_secret))
+        OPSMAN_USERNAME: ((opsman_admin_username))
+        OPSMAN_PASSWORD: ((opsman_admin_password))
+
+- type: replace
+  path: /groups/name=Install & Upgrade Products/jobs?/0:before
+  value: upload-pas-tile
+
+- type: replace
+  path: /groups/name=Install & Upgrade Products/jobs?/0:before
+  value: configure-pas-tile
+
+# Add jobs to configure PAS small tile
+
+- type: replace
+  path: /jobs/-
+  value:
+    name: configure-pas-tile
+    on_failure:
+      do:
+      - task: notify on configure-pas-tile failure
+
+    serial: true
+    serial_groups: [configure]
+    plan:
+    - aggregate:
+      - get: automation
+      - get: automation-extensions
+      - get: terraform-output
+      - get: pivnet-product
+        resource: pas-tile
+        passed: [upload-pas-tile]
+        trigger: true
+        params:
+          skip_download: 'true'
+
+    # Stage product tile
+    - task: stage-tile
+      file: automation/lib/tasks/opsman/stage-product/task.yml
+      params:
+        OPSMAN_HOST: ((opsman_host))
+        OPSMAN_CLIENT_ID: ((opsman_client_id))
+        OPSMAN_CLIENT_SECRET: ((opsman_client_secret))
+        OPSMAN_USERNAME: ((opsman_admin_username))
+        OPSMAN_PASSWORD: ((opsman_admin_password))
+        STAGE_AND_APPLY: false
+        ENABLE_ERRANDS: ((enable_errands))
+
+    # Configure product tile
+    - task: configure
+      file: automation/lib/pipelines/pcf/install-and-upgrade/tasks/configure-pas-small/task.yml
+      params:
+        OPSMAN_HOST: ((opsman_host))
+        OPSMAN_CLIENT_ID: ((opsman_client_id))
+        OPSMAN_CLIENT_SECRET: ((opsman_client_secret))
+        OPSMAN_USERNAME: ((opsman_admin_username))
+        OPSMAN_PASSWORD: ((opsman_admin_password))
+        # The IAAS to configure for
+        IAAS: ((iaas_type))
+        # Product configuration
+        TEMPLATE_OVERRIDE_PATH: automation-extensions/((pcf_tile_templates_path))/pas-small/((environment))
+        ERRANDS_TO_DISABLE: ${errands_to_disable}
+        ERRANDS_TO_ENABLE: ${errands_to_enable}
+        # Networking
+        NETWORK_NAME: pas
+        SINGLETON_AVAILABILITY_ZONE: '' # Sourced from terraform output
+        AVAILABILITY_ZONES: '' # Sourced from terraform output
+        # Resources
+        INTERNET_CONNECTED: ((internet_connected))
+        # Properties
+        ROUTING_CUSTOM_CA_CERTIFICATES: ((routing_custom_ca_certificates))
+        ROUTING_TLS_TERMINATION: ((routing_tls_termination))
+        ROUTER_TLS_CIPHERS: ((router_tls_ciphers))
+        HAPROXY_TLS_CIPHERS: ((haproxy_tls_ciphers))
+        HAPROXY_FORWARD_TLS: ((haproxy_forward_tls))
+        HAPROXY_BACKEND_CA: ((haproxy_backend_ca))
+        ROUTING_DISABLE_HTTP: ((routing_disable_http))
+        CONTAINER_NETWORKING_NETWORK_CIDR: ((container_networking_nw_cidr))
+        SECURITY_ACKNOWLEDGEMENT: ((security_acknowledgement))
+        CREDHUB_PRIMARY_ENCRYPTION_NAME: ((credhub_primary_encryption_name))
+        CREDHUB_ENCRYPTION_KEY_NAME1: ((credhub_encryption_key_name1))
+        CREDHUB_ENCRYPTION_KEY_SECRET1: ((credhub_encryption_key_secret1))
+        CREDHUB_ENCRYPTION_KEY_NAME2: ((credhub_encryption_key_name2))
+        CREDHUB_ENCRYPTION_KEY_SECRET2: ((credhub_encryption_key_secret2))
+        CREDHUB_ENCRYPTION_KEY_NAME3: ((credhub_encryption_key_name3))
+        CREDHUB_ENCRYPTION_KEY_SECRET3: ((credhub_encryption_key_secret3))
+        DB_TYPE: ((pas_db_type))
+        DB_USERNAME: ((db_username))
+        DB_PASSWORD: ((db_password))
+        MYSQL_MONITOR_RECIPIENT_EMAIL: ((mysql_monitor_recipient_email))
+        NOTIFICATIONS_SMTP_FROM: ((automation_email))
+        NOTIFICATIONS_SMTP_ADDRESS: ((smtp_host))
+        NOTIFICATIONS_SMTP_PORT: ((smtp_port))
+        NUM_DIEGO_CELLS: ((num_diego_cells))
+
+- type: replace
+  path: /jobs/name=deploy/plan/0/aggregate/-
+  value:
+    get: pas-tile
+    passed: [configure-pas-tile]
+    trigger: true
+    params:
+      skip_download: 'true'
