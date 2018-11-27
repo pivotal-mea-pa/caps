@@ -28,10 +28,22 @@ The IaaS credentials for the IaaS on which an environment should be launched sho
 
 > You should also add the `<caps repository home>/bin` folder to your path so you can run `caps-*` scripts without providing an explicit absolute or relative path.
 
+Currently CAPs support creating Pivotal Cloud Foundry environments in the following IaaS environments.
 
-The following IaaS specific environment variables are required by the bootstrap Terraform template.
+* Google Cloud Platform (GCP)
 
-* GCP
+  CAPs requires a GCP service account with the correct permissions in order to create the necessary cloud infrastructure for the environment being bootstrapped. The service account must have the following permissions:
+
+  - Cloud SQL Admin
+  - Compute Admin
+  - DNS Administrator
+  - Service Account Admin
+  - Service Account User
+  - Project IAM Admin
+  - Storage Admin
+  - Storage Object Admin
+
+  Download you service account key file and save it to some path within your user file-system and reference it via the `GOOGLE_CREDENTIALS` variable as shown in the `.envrc` environment file snippet below.
 
   ```
   export GOOGLE_PROJECT=****
@@ -42,53 +54,16 @@ The following IaaS specific environment variables are required by the bootstrap 
   export GCS_STORAGE_ACCESS_KEY=****
   export GCS_STORAGE_SECRET_KEY=****
 
+  #
+  # Token for downloading Pivotal products
+  #
+  export PIVNET_TOKEN=****
+
+  #
+  # SendGrid API Key`
+  #
+  export SENDGRID_API_KEY=****
   ```
-
-  > For GCP download you service account key file and save to some path within your user file-system and reference it via the `GOOGLE_CREDENTIALS` variable.
-
-* AWS
-
-    ```
-    export AWS_ACCESS_KEY=****
-    export AWS_SECRET_KEY=****
-    export AWS_DEFAULT_REGION=us-east-1
-    ```
-
-* Azure
-
-  TBD
-
-A sample `.envrc` file is below.
-
-```
-PATH_add $(pwd)/bin
-
-#
-# Terraform AWS Cloud provider environment
-#
-
-export AWS_ACCESS_KEY=****
-export AWS_SECRET_KEY=****
-export AWS_DEFAULT_REGION=us-east-1
-
-#
-# Terraform Google Cloud provider environment
-#
-
-export GOOGLE_PROJECT=****
-export GOOGLE_CREDENTIALS=<path to your service account key file>
-export GOOGLE_REGION=europe-west1
-export GOOGLE_ZONE=$GOOGLE_REGION-b
-
-export GCS_STORAGE_ACCESS_KEY=****
-export GCS_STORAGE_SECRET_KEY=****
-
-#
-# Token for downloading Pivotal products
-#
-
-export PIVNET_TOKEN=****
-```
 
 #### `build-image`
 
