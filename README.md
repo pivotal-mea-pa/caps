@@ -101,7 +101,7 @@ USAGE: caps-init <NAME> -d|--deployment <DEPLOYMENT_NAME> -i|--iaas <IAAS_PROVID
 
 Control files are environment scripts and have the name format `.caps-env_<NAME>`. They will be placed within the root of this repository. You should keep all IAAS credentials out of this file and reference them as environment variables that have been exported via another mechanism such the [direnv](https://direnv.net/) utility. The control files contain all externalized variables that customize the Terraform templates for the bootstrap infrastructure as well as any configuration that needs to be passed to the operations automation pipelines.
 
-Below is a sample control file for an environment named *pcf-poc1* deployed to *GCP*.
+Below is a sample control file for an environment named *pcf-demo-1* deployed to *GCP*.
 
 ```
 #!/bin/bash
@@ -111,14 +111,27 @@ Below is a sample control file for an environment named *pcf-poc1* deployed to *
 # to bootstrap and install the PCF environment
 #
 
-export TF_VAR_gcp_project=$GOOGLE_PROJECT
 export TF_VAR_gcp_credentials=$GOOGLE_CREDENTIALS
 export TF_VAR_gcp_region=$GOOGLE_REGION
 
 export TF_VAR_gcp_storage_access_key=$GCS_STORAGE_ACCESS_KEY
 export TF_VAR_gcp_storage_secret_key=$GCS_STORAGE_SECRET_KEY
 
-export TF_VAR_mysql_monitor_recipient_email=$OPS_EMAIL
+export TF_VAR_smtp_relay_host=smtp.sendgrid.net
+export TF_VAR_smtp_relay_port=2525
+export TF_VAR_smtp_relay_api_key=$SENDGRID_API_KEY
+
+export TF_VAR_notification_email=$OPS_EMAIL
+
+#
+# Automation extensions git repository
+#
+
+export TF_VAR_automation_extensions_repo=https://github.com/mevansam/pcf-environments.git
+export TF_VAR_automation_extensions_repo_branch=master
+
+export TF_VAR_pcf_terraform_templates_path=demo-1/terraform
+export TF_VAR_pcf_tile_templates_path=demo-1/pcf/tile-config
 
 # Pivnet Token for downloading pivotal releases
 export TF_VAR_pivnet_token=$PIVNET_TOKEN
@@ -127,8 +140,8 @@ export TF_VAR_pivnet_token=$PIVNET_TOKEN
 
 # PoC #1 Environment
 
-export TF_VAR_vpc_name=pcf-poc1
-export TF_VAR_vpc_dns_zone=pcfenv1.pocs.pcfs.io
+export TF_VAR_vpc_name=pcf-demo-1
+export TF_VAR_vpc_dns_zone=demo1.pocs.pcfs.io
 export TF_VAR_vpc_parent_dns_zone_name=pocs-pcfs-io
 
 export TF_VAR_terraform_state_bucket=tfstate-${GOOGLE_REGION}
@@ -136,26 +149,58 @@ export TF_VAR_terraform_state_bucket=tfstate-${GOOGLE_REGION}
 export TF_VAR_locale=Asia/Dubai
 export TF_VAR_automation_pipelines_branch=dev
 
+export TF_VAR_bastion_instance_type=n1-standard-8
+export TF_VAR_bastion_data_disk_size=300
+
 export TF_VAR_bastion_admin_user=bastion-admin
-export TF_VAR_bastion_setup_vpn=false
+export TF_VAR_bastion_setup_vpn=true
 export TF_VAR_bastion_allow_public_ssh=true
 
-export TF_VAR_opsman_major_minor_version=2\\.1\\.[0-9]+$
-export TF_VAR_ert_major_minor_version=2\\.1\\.[0-9]+$
+# Network
+
+export TF_VAR_pcf_environments='["sandbox"]'
+
+export TF_VAR_pcf_networks='{
+  sandbox = {
+    service_networks    = "services,dynamic-services"
+    subnet_config_order = "infrastructure,pas-1,services-1,dynamic-services-1,monitoring"
+  }
+}'
+
+export TF_VAR_pcf_network_subnets='{
+  sandbox = {
+    infrastructure     = "192.168.101.0/26"
+    pas-1              = "192.168.4.0/22"
+    services-1         = "192.168.8.0/22"
+    dynamic-services-1 = "192.168.12.0/22"
+    monitoring         = "192.168.101.64/26"
+  }
+}'
+
+# PCF Product
+
+export TF_VAR_opsman_major_minor_version=2\\.3\\.[0-9]+$
 
 export TF_VAR_products='
-    metrics:apm/^1\\.4\\..*$
-    mysql:pivotal-mysql/^2\\.2\\..*$
-    rabbitmq:p-rabbitmq/^1\\.11\\..*$
-    redis:p-redis/^1\\.11\\..*$
-    pks:pivotal-container-service/^1\\.0\\..*$
-    harbor:harbor-container-registry/^1\\.4\\..*$
-    scs:p-spring-cloud-services/^1\\.5\\..*$'
+    pas-small:elastic-runtime/^2\\.3\\.[0-9]+$:srt*.pivotal::
+    pks:pivotal-container-service/^1\\.2\\.[0-9]+$:*.pivotal::
+    harbor:harbor-container-registry/^1\\.6\\.[0-9]+$:*.pivotal::
+    healthwatch:p-healthwatch/^1\\.3\\.[0-9]+$:*.pivotal::
+    metrics:apm/^1\\.4\\.[0-9]+$:*.pivotal::
+    mysql:pivotal-mysql/^2\\.4\\.[0-9]+$:*.pivotal::
+    rabbitmq:p-rabbitmq/^1\\.14\\.[0-9]+$:*.pivotal::
+    redis:p-redis/^1\\.14\\.[0-9]+$:*.pivotal::
+    alerts:p-event-alerts/^1\\.2\\.[0-9]+$:*.pivotal::
+    scs:p-spring-cloud-services/^2\\.0\\.[0-9]+$:*.pivotal::
+    scdf:p-dataflow/^1\\.2\\.[0-9]+$:*.pivotal::
+    scheduler:p-scheduler/^1\\.2\\.[0-9]+$:*.pivotal::
+    credhub:credhub-service-broker/^1\\.1\\.[0-9]+$:*.pivotal::
+    sso:pivotal_single_sign-on_service/^1\\.7\\.[0-9]+$:*.pivotal::'
+    
+export TF_VAR_num_diego_cells=5
 
-export TF_VAR_num_diego_cells=2
-
-export TF_VAR_pcf_stop_at=15:00
-export TF_VAR_pcf_start_at=09:00
+# export TF_VAR_pcf_stop_at=15:00
+# export TF_VAR_pcf_start_at=09:00
 ```
 
 #### `caps-tf`
