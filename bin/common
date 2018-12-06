@@ -29,12 +29,8 @@ function common::set_working_dir() {
     done
 
     if [[ $working_dir == / ]]; then
-        if [[ -e $root_dir/.workspace ]]; then
-            working_dir=$root_dir
-        else
-            working_dir=$(pwd)
-            mkdir -p $working_dir/.workspace    
-        fi
+        working_dir=$(pwd)
+        mkdir -p $working_dir/.workspace    
     fi
 }
 
