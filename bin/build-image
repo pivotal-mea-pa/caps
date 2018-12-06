@@ -1,14 +1,20 @@
 #!/bin/bash
 
 usage () {
-    echo -e "\nUSAGE: build-image -i|--iaas <IAAS_PROVIDER> [ -r|--regions <REGIONS> ]\n"
+    echo -e "\nUSAGE: build-image -i|--iaas <IAAS_PROVIDER> [ -r|--regions <REGIONS> ] [ -u|--upload_ova ]\n"
     echo -e "    -i|--iaas <IAAS_PROVIDER>  The iaas provider for which images will be built.\n"
     echo -e "    -r|--regions <REGIONS>     Comma separated list of the iaas provider's regions for which"
     echo -e "                               images will be built. This does not apply to all providers and"
     echo -e "                               will be ignored where appropriate.\n"
+    echo -e "    -t|--type <TYPE>           Name of image type to build. Default is to build the inception"
+    echo -e "                               image. Additional images types may be available for the IaaS."
+    echo -e "    -u|--upload                Upload the built image to the VMware IaaS. This is applicable"
+    echo -e "                               only when image has been downloaded as it was not built in the"
+    echo -e "                               same IaaS environment where it will be deployed.\n"
 }
 
 root_dir=$(cd $(dirname $BASH_SOURCE)/.. && pwd)
+action=build
 
 if [[ $# -eq 0 ]]; then
     usage
@@ -22,19 +28,18 @@ else
                 ;;
             -i|--iaas)
                 iaas_provider=$2
-                if [[ -z $iaas_provider ]]; then
-                    echo -e "\nERROR! IAAS provider name missing.\n"
-                    exit 1
-                fi
                 shift
                 ;;
             -r|--regions)
-                region_list=$2
-                if [[ -z $iaas_provider ]]; then
-                    echo -e "\nERROR! IAAS provider region names missing.\n"
-                    exit 1
-                fi
+                build_arg=$2
                 shift
+                ;;
+            -t|--type)
+                build_arg=$2
+                shift
+                ;;
+            -u|--upload)
+                action=upload
                 ;;
             *)
                 usage
@@ -45,9 +50,17 @@ else
     done
 fi
 
-if [[ ! -e $root_dir/lib/inceptor/images/build/build-${iaas_provider}-image.sh ]]; then
-    echo -e "\nERROR! IAAS '$iaas_provider' is not supported. The supported IAAS' are:\n"
-    ls -l $root_dir/lib/inceptor/images/ | awk '/^[-d].*-image.sh/{ print "    "$9 }' | sed 's|\(.*\)build-\(.*\)-image.sh|\1\2|'
+if [[ -z $iaas_provider ]]; then
+    echo -e "\nERROR! IAAS provider is required.\n"
+    exit 1
+fi
+
+if [[ ! -e $root_dir/lib/inceptor/images/build/${action}-${iaas_provider}-image.sh ]]; then
+
+    echo -e "\nERROR! IAAS '$iaas_provider' is not supported for '${action}'. The supported IAAS's are:\n"
+    ls -l $root_dir/lib/inceptor/images/build/${action}-* \
+        | awk '/^[-d].*-image.sh/{ print "    "$9 }' \
+        | sed "s|\(.*\)${action}-\(.*\)-image.sh|\2|"
     echo
     exit 1
 fi
@@ -55,4 +68,4 @@ fi
 export build_log_dir=$root_dir/log
 mkdir -p $build_log_dir
 
-$root_dir/lib/inceptor/images/build/build-${iaas_provider}-image.sh $region_list
+$root_dir/lib/inceptor/images/build/${action}-${iaas_provider}-image.sh $build_arg
