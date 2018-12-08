@@ -1,33 +1,33 @@
 #
-# Automation bootstrap
+# Externalized Variables
 #
 
 variable "trace" {
   default = "true"
 }
 
-variable "unpause_deployment_pipeline" {
+variable "autostart_deployment_pipelines" {
   default = "true"
 }
 
-variable "set_start_stop_schedule" {
-  default = "false"
-}
-
 #
-# GCP credentials
+# vCenter IaaS Environment
 #
 
-variable "gcp_credentials" {
+variable "vmw_datacenter" {
   type = "string"
 }
 
-variable "gcp_region" {
-  type = "string"
+variable "vmw_clusters" {
+  type = "list"
 }
 
-variable "gcp_storage_access_key" {
-  type = "string"
+variable "vmw_ephemeral_datastores" {
+  type = "list"
+}
+
+variable "vmw_persistant_datastores" {
+  type = "list"
 }
 
 variable "gcp_storage_secret_key" {
@@ -69,9 +69,6 @@ variable "country" {
 # VPC configuration
 #
 
-# This value should match the name of your caps init environment.
-# It is set when you run "caps-init first time and should not be 
-# changed.
 variable "vpc_name" {
   type = "string"
 }
@@ -153,7 +150,7 @@ variable "smtp_relay_api_key" {
   default = ""
 }
 
-# Email to send notifications to
+# Email to forward notifications to
 variable "notification_email" {
   type = "string"
 }
@@ -181,9 +178,10 @@ variable "jumpbox_data_disk_size" {
 # Concourse Automation common attributes
 #
 
-#
-# Cloud Automation Pipelines (CAPs) repository
-#
+# Locale to use for time resources
+variable "locale" {
+  type = "string"
+}
 
 variable "automation_pipelines_repo" {
   default = "https://github.com/mevansam/caps.git"
@@ -191,22 +189,6 @@ variable "automation_pipelines_repo" {
 
 variable "automation_pipelines_branch" {
   default = "master"
-}
-
-#
-# Environment configuration repository
-#
-
-variable "env_config_repo" {
-  type = "string"
-}
-
-variable "env_config_repo_branch" {
-  default = "master"
-}
-
-variable "env_config_path" {
-  type = "string"
 }
 
 #
@@ -307,4 +289,69 @@ variable "pcf_network_dns" {
 
 variable "pivnet_token" {
   type = "string"
+}
+
+# PCF Ops Manager minor version to track
+variable "opsman_major_minor_version" {
+  type = "string"
+}
+
+# List of products to install. This should be a space 
+# separated list of:
+#
+# product_name:product_slug/product_version_regex[:errands_to_disable[:errands_to_enable]]
+#
+# The 'errands_to_disable' and 'errands_to_enable' fields 
+# should consist of comma separated errand names.
+variable "products" {
+  type = "string"
+}
+
+# Number of Diego Cells to deploy
+variable "num_diego_cells" {
+  default = "1"
+}
+
+#
+# Backup / Restore pipeline params
+#
+
+variable "backup_interval" {
+  default = "1h"
+}
+
+variable "backup_interval_start" {
+  default = "02:00 AM"
+}
+
+variable "backup_interval_stop" {
+  default = "02:30 AM"
+}
+
+variable "backup_age" {
+  default = "2"
+}
+
+#
+# Stop / Start event pipeline trigger time periods
+#
+
+# Time in 24h format (HH:MM) when deployments in the
+# PCF environment should be stopped and VMs shutdown
+variable "pcf_stop_at" {
+  default = "0"
+}
+
+variable "pcf_stop_trigger_days" {
+  default = "[Sunday, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday]"
+}
+
+# Time in 24h format (HH:MM) when deployments
+# in the PCF environment should be started
+variable "pcf_start_at" {
+  default = "0"
+}
+
+variable "pcf_start_trigger_days" {
+  default = "[Sunday, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday]"
 }
