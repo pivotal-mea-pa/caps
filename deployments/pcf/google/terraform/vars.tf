@@ -10,6 +10,10 @@ variable "unpause_deployment_pipeline" {
   default = "true"
 }
 
+variable "set_start_stop_schedule" {
+  default = "false"
+}
+
 #
 # GCP credentials
 #

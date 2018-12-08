@@ -130,6 +130,7 @@ env_config_path: ${var.env_config_path}
 environments: '${join(" ", var.pcf_environments)}'
 
 unpause_deployment_pipeline: ${var.unpause_deployment_pipeline}
+set_start_stop_schedule: ${var.set_start_stop_schedule}
 
 PIPELINE_VARS
 }
