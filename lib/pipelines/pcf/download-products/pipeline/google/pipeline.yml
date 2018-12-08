@@ -20,5 +20,5 @@ resources:
     interval: 30m
     start: "12:00 AM"
     stop: "11:59 PM"
-    location: America/Los_Angeles
+    location: ((locale))
     days: [Sunday, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday]
