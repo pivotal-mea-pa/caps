@@ -79,6 +79,24 @@ if [[ -e $working_dir/.caps-env_$name ]]; then
     exit 0
 fi
 
+git remote -v >/dev/null 2>&1
+if [[ $? -ne 0 ]]; then
+    echo -e "\n${RED}ERROR: CAPs context should be initialized from within the"
+    echo -e "${RED}       root of your environment configuration repository.\n"
+    exit 1
+fi
+
+env_config_git_repo=$(git remote -v | awk '/(fetch)/{ print $2 }')
+env_config_git_branch=$(git branch | awk '{ print $2 }')
+
+mkdir -p $name/config
+mkdir -p $name/templates/terraform
+mkdir -p $name/templates/tile
+
+cp $root_dir/deployments/$deployment_name/$iaas_provider/_init-tpl_/* $name/config
+touch $name/templates/terraform/.keep
+touch $name/templates/tile/.keep
+
 #
 # Create a control file for the new environment.
 #
@@ -175,5 +193,11 @@ while IFS='' read -r line || [[ -n "$line" ]]; do
     fi
     
 done < "$vars_file"
+
+git add $name/config/*
+git add --force $name/templates/terraform/.keep
+git add --force $name/templates/tile/.keep
+git add --force .caps-env_$name
+git commit -m "created new caps environment $name"
 
 echo -e "${GREEN}CAPs context initialized to $name."
