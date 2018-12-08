@@ -96,7 +96,7 @@ variable "bastion_instance_type" {
 }
 
 variable "bastion_data_disk_size" {
-  default = 250
+  default = "250"
 }
 
 #
@@ -198,7 +198,7 @@ variable "automation_pipelines_branch" {
 #
 
 variable "env_config_repo" {
-  type = "string"
+  default = "https://github.com/mevansam/caps.git"
 }
 
 variable "env_config_repo_branch" {
@@ -206,7 +206,7 @@ variable "env_config_repo_branch" {
 }
 
 variable "env_config_path" {
-  type = "string"
+  default = "deployments/pcf/google/config"
 }
 
 #
