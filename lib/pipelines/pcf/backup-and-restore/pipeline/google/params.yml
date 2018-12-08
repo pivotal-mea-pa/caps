@@ -11,9 +11,6 @@ automation_extensions_branch: '${automation_extensions_branch}'
 pcf_terraform_templates_path: '${pcf_terraform_templates_path}'
 pcf_tile_templates_path: '${pcf_tile_templates_path}'
 
-# Locale to use for timer resources
-locale: '${locale}'
-
 # SSH Key to inject into the image to allow SSH to remote 
 # instances containing resources that need to be accessible
 ssh_key: ''

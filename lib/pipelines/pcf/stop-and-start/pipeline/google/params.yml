@@ -32,6 +32,3 @@ opsman_ssh_passwd: ''
 opsman_pass_phrase: '${opsman_admin_password}'
 pcfops_client: ''
 pcfops_secret: ''
-
-# Locale to use for timer resources
-locale: ${locale}
