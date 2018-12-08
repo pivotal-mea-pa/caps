@@ -8,6 +8,9 @@ automation_pipelines_branch: '${automation_pipelines_branch}'
 automation_extensions_repo: '${automation_extensions_repo}'
 automation_extensions_branch: '${automation_extensions_branch}'
 
+pcf_terraform_templates_path: '${pcf_terraform_templates_path}'
+pcf_tile_templates_path: '${pcf_tile_templates_path}'
+
 # Locale to use for timer resources
 locale: '${locale}'
 
@@ -28,14 +31,6 @@ opsman_ssh_passwd: ''
 opsman_pass_phrase: '${opsman_admin_password}'
 pcfops_client: ''
 pcfops_secret: ''
-
-# Backup time and interval
-backup_interval: '${backup_interval}'
-backup_interval_start: '${backup_interval_start}'
-backup_interval_stop: '${backup_interval_stop}'
-
-# Backups older than this age will be cleaned up
-backup_age: '${backup_age}'
 
 # Type of backup storage backend 
 backup_storage_type: 'gcs'

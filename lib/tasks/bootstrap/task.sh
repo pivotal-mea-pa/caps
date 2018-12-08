@@ -7,14 +7,51 @@ set -euo pipefail
 
 bosh::set_bosh_cli
 
+# Injects the keys from a YAML file as environment.
+# The keys will be capitalized when exported to the
+# environment.
+function yaml_to_env() {
+
+  yaml_file=$1
+
+  eval $(python <<EOL
+import yaml, sys 
+vars=yaml.load(open('$yaml_file', 'r'))
+for k,v in vars.items():
+    print("export {}='{}'".format(k.upper(), v))
+EOL
+)
+}
+
+# Adds time in minutes to the given RFC 3339 date
+# returns the updated date using RFC 3339 format.
+function add_time() {
+
+  time=$1
+  minutes=$2
+
+  python <<EOL
+import dateutil.parser, datetime, sys
+
+d = (dateutil.parser.parse('2000-01-01T${time}:00Z') 
+  + datetime.timedelta(minutes=$minutes))
+
+print(d.strftime('%Y-%m-%dT%H:%M:%S%z')[11:16])
+EOL
+}
+
+# Source the environment configuration
+deployment_config=env-config/$VPC_NAME/config/deployment.yml
+yaml_to_env $deployment_config
+
 echo "$GOOGLE_CREDENTIALS_JSON" > .gcp-service-account.json
 export GOOGLE_CREDENTIALS=$(pwd)/.gcp-service-account.json
 gcloud auth activate-service-account --key-file=$GOOGLE_CREDENTIALS
 
 # Create a local s3 bucket for pcf automation data
 mc config host add auto $AUTOS3_URL $AUTOS3_ACCESS_KEY $AUTOS3_SECRET_KEY
-[[ "$(mc ls auto/ | awk '/pcf\/$/{ print $5 }')" == "pcf/" ]] || \
-  mc mb auto/pcf
+[[ $(mc ls auto/ | awk "/$DEPLOYMENT\/$/{ print \$5 }") == $DEPLOYMENT/ ]] || \
+  mc mb auto/$DEPLOYMENT
 
 # Login to concourse
 fly -t default login -c $CONCOURSE_URL -u ''$CONCOURSE_USER'' -p ''$CONCOURSE_PASSWORD''
@@ -24,20 +61,20 @@ fly -t default sync
 # Setup pipeline paths
 #
 
-terraform_params_path=automation/deployments/pcf/${IAAS}/params
+terraform_params_path=automation/deployments/$DEPLOYMENT/${IAAS}/params
 patch_job_notifications=automation/lib/inceptor/tasks/patches/patch_job_notifications.sh
 
-download_products_pipeline_path=automation/lib/pipelines/pcf/download-products/pipeline
-download_products_patches_path=automation/lib/pipelines/pcf/download-products/patches
+download_products_pipeline_path=automation/lib/pipelines/$DEPLOYMENT/download-products/pipeline
+download_products_patches_path=automation/lib/pipelines/$DEPLOYMENT/download-products/patches
 
-install_and_upgrade_pipeline_path=automation/lib/pipelines/pcf/install-and-upgrade/pipeline
-install_and_upgrade_patches_path=automation/lib/pipelines/pcf/install-and-upgrade/patches
+install_and_upgrade_pipeline_path=automation/lib/pipelines/$DEPLOYMENT/install-and-upgrade/pipeline
+install_and_upgrade_patches_path=automation/lib/pipelines/$DEPLOYMENT/install-and-upgrade/patches
 
-backup_and_restore_pipeline_path=automation/lib/pipelines/pcf/backup-and-restore/pipeline
-backup_and_restore_patches_path=automation/lib/pipelines/pcf/backup-and-restore/patches
+backup_and_restore_pipeline_path=automation/lib/pipelines/$DEPLOYMENT/backup-and-restore/pipeline
+backup_and_restore_patches_path=automation/lib/pipelines/$DEPLOYMENT/backup-and-restore/patches
 
-start_and_stop_pipeline_path=automation/lib/pipelines/pcf/stop-and-start/pipeline
-start_and_stop_patches_path=automation/lib/pipelines/pcf/stop-and-start/patches
+start_and_stop_pipeline_path=automation/lib/pipelines/$DEPLOYMENT/stop-and-start/pipeline
+start_and_stop_patches_path=automation/lib/pipelines/$DEPLOYMENT/stop-and-start/patches
 
 #
 # Configure pipeline for downloading products
@@ -79,6 +116,7 @@ fly -t default set-pipeline -n \
   -p download-products \
   -c download-products-pipeline.yml \
   -l download-products-params.yml \
+  -l $deployment_config \
   -v "trace=$TRACE" \
   -v "concourse_url=$CONCOURSE_URL" \
   -v "concourse_user=$CONCOURSE_USER" \
@@ -207,6 +245,7 @@ for e in $ENVIRONMENTS; do
     -p ${env}_deployment \
     -c install-and-upgrade-pipeline.yml \
     -l install-and-upgrade-params.yml \
+    -l $deployment_config \
     -v "trace=$TRACE" \
     -v "concourse_url=$CONCOURSE_URL" \
     -v "concourse_user=$CONCOURSE_USER" \
@@ -243,6 +282,7 @@ for e in $ENVIRONMENTS; do
     -p ${env}_backup \
     -c backup-and-restore-pipeline.yml \
     -l backup-and-restore-params.yml \
+    -l $deployment_config \
     -v "trace=$TRACE" \
     -v "concourse_url=$CONCOURSE_URL" \
     -v "concourse_user=$CONCOURSE_USER" \
@@ -264,7 +304,7 @@ for e in $ENVIRONMENTS; do
 
   # Unpause the pipelines. The pipeline jobs will rerun in 
   # an idempotent manner if a prior installation is found.
-  if [[ $UNPAUSE_INSTALL_PIPELINE == "true" ]]; then
+  if [[ $UNPAUSE_DEPLOYMENT_PIPELINE == "true" ]]; then
     fly -t default unpause-pipeline -p ${env}_deployment
 
     if [[ -n $WAIT_ON_DEPLOYMENT_JOB ]]; then
@@ -319,10 +359,19 @@ for e in $ENVIRONMENTS; do
 
   $patch_job_notifications stop-and-start-pipeline.yml > pipeline.yml
 
+  pcf_stop_trigger_start=${PCF_STOP_AT:-00:00}
+  pcf_stop_trigger_stop=$(add_time $pcf_stop_trigger_start 1)
+  pcf_stop_trigger_days=${PCF_STOP_TRIGGER_DAYS:-'[Sunday, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday]'}
+
+  pcf_start_trigger_start=${PCF_START_AT:-00:00}
+  pcf_start_trigger_stop=$(add_time $pcf_start_trigger_start 1)
+  pcf_start_trigger_days=${PCF_START_TRIGGER_DAYS:-'[Sunday, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday]'}
+
   fly -t default set-pipeline -n \
     -p ${env}_stop-and-start \
     -c pipeline.yml \
     -l stop-and-start-params.yml \
+    -l $deployment_config \
     -v "trace=$TRACE" \
     -v "concourse_url=$CONCOURSE_URL" \
     -v "concourse_user=$CONCOURSE_USER" \
@@ -332,8 +381,14 @@ for e in $ENVIRONMENTS; do
     -v "autos3_secret_key=$AUTOS3_SECRET_KEY" \
     -v "pipeline_automation_path=$PIPELINE_AUTOMATION_PATH" \
     -v "iaas_type=$IAAS" \
+    -v "stop_trigger_start='${pcf_stop_trigger_start}'" \
+    -v "stop_trigger_stop='${pcf_stop_trigger_stop}'" \
+    -v "stop_trigger_days='${pcf_stop_trigger_days}'" \
+    -v "start_trigger_start='${pcf_start_trigger_start}'" \
+    -v "start_trigger_stop='${pcf_start_trigger_stop}'" \
+    -v "start_trigger_days='${pcf_start_trigger_days}'" \
     -v "vpc_name=$VPC_NAME" >/dev/null
-    
+
   fly -t default unpause-pipeline -p ${env}_stop-and-start
 
 done

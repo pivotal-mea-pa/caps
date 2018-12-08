@@ -84,7 +84,7 @@
         AZURE_BACKUP_PATH: ''
         AZURE_BACKUP_CONTAINER: ''
         AZURE_BACKUP_BLOB_STORE_BASE_URL: ''
-        BACKUP_CRON_SCHEDULE: "0 */8 * * *"
+        BACKUP_CRON_SCHEDULE: '0 */8 * * *'
         ENABLE_BACKUP_EMAIL_ALERTS: false
         SYSLOG_ADDRESS: ''
         SYSLOG_PORT: null

@@ -8,9 +8,10 @@ image_resource:
 
 inputs:
 - name: automation
+- name: env-config
 
 run:
-  path: automation/deployments/pcf/google/pipeline/task.sh
+  path: automation/lib/tasks/bootstrap/task.sh
 
 params:
   TRACE: Y
@@ -58,8 +59,10 @@ params:
   VPC_NAME:
   VPC_DNS_ZONE:
   ENVIRONMENTS:
-  PRODUCTS:
 
-  UNPAUSE_INSTALL_PIPELINE:
+  # The name of the deployment
+  DEPLOYMENT:
+
+  UNPAUSE_DEPLOYMENT_PIPELINE:
   WAIT_ON_DEPLOYMENT_JOB:
   SET_START_STOP_SCHEDULE:

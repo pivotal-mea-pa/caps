@@ -151,7 +151,7 @@
         DB_TYPE: ((pas_db_type))
         DB_USERNAME: ((db_username))
         DB_PASSWORD: ((db_password))
-        MYSQL_MONITOR_RECIPIENT_EMAIL: ((mysql_monitor_recipient_email))
+        MYSQL_MONITOR_RECIPIENT_EMAIL: ((notification_email))
         NOTIFICATIONS_SMTP_FROM: ((automation_email))
         NOTIFICATIONS_SMTP_ADDRESS: ((smtp_host))
         NOTIFICATIONS_SMTP_PORT: ((smtp_port))

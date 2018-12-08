@@ -104,10 +104,6 @@ output "vpc_dns_zone_name" {
 # Concourse Automation common attributes
 #
 
-output "locale" {
-  value = "${var.locale}"
-}
-
 output "automation_pipelines_repo" {
   value = "${var.automation_pipelines_repo}"
 }
@@ -187,16 +183,8 @@ output "credhub_encryption_key" {
   sensitive = true
 }
 
-output "opsman_major_minor_version" {
-  value = "${var.opsman_major_minor_version}"
-}
-
 output "notification_email" {
   value = "${var.notification_email}"
-}
-
-output "num_diego_cells" {
-  value = "${var.num_diego_cells}"
 }
 
 #
@@ -205,42 +193,6 @@ output "num_diego_cells" {
 
 output "backups_bucket" {
   value = "${google_storage_bucket.backups.name}"
-}
-
-output "backup_interval" {
-  value = "${var.backup_interval}"
-}
-
-output "backup_interval_start" {
-  value = "${var.backup_interval_start}"
-}
-
-output "backup_interval_stop" {
-  value = "${var.backup_interval_stop}"
-}
-
-output "backup_age" {
-  value = "${var.backup_age}"
-}
-
-#
-# Stop / Start pipeline event trigger time periods
-#
-
-output "pcf_stop_at" {
-  value = "${var.pcf_stop_at}"
-}
-
-output "pcf_stop_trigger_days" {
-  value = "${var.pcf_stop_trigger_days}"
-}
-
-output "pcf_start_at" {
-  value = "${var.pcf_start_at}"
-}
-
-output "pcf_start_trigger_days" {
-  value = "${var.pcf_start_trigger_days}"
 }
 
 #

@@ -96,7 +96,7 @@ module "bootstrap" {
   #
   bootstrap_pipeline_file = "${path.module}/../pipeline/pipeline.yml"
 
-  # Email to send pipeline otifications to
+  # Email to send pipeline notifications to
   notification_email = "${var.notification_email}"
 
   # Path to cloud-inceptor scripts 
@@ -115,19 +115,21 @@ google_region: ${var.gcp_region}
 google_credentials_json: |
   ${indent(2, file(var.gcp_credentials))}
 
+vpc_dns_zone: ${var.vpc_dns_zone}
+
 bootstrap_state_bucket: ${var.terraform_state_bucket}
 bootstrap_state_prefix: ${local.bootstrap_state_prefix}
 
 automation_pipelines_repo: ${var.automation_pipelines_repo}
 automation_pipelines_branch: ${var.automation_pipelines_branch}
 
-vpc_dns_zone: ${var.vpc_dns_zone}
+env_config_repo: ${var.env_config_repo}
+env_config_repo_branch: ${var.env_config_repo_branch}
+env_config_path: ${var.env_config_path}
 
 environments: '${join(" ", var.pcf_environments)}'
-products: '${var.products}'
 
-unpause_install_pipeline: ${var.autostart_deployment_pipelines}
-set_start_stop_schedule: ${var.pcf_stop_at != "0" ? "true" : "false"}
+unpause_deployment_pipeline: ${var.unpause_deployment_pipeline}
 
 PIPELINE_VARS
 }
