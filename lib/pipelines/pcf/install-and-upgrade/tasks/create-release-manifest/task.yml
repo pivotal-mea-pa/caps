@@ -9,12 +9,13 @@ image_resource:
 inputs:
 - name: automation
 - name: versions
+- name: input_files
 
 outputs:
-- name: install_manifest
+- name: output_files
 
 run:
-  path: automation/lib/pipelines/pcf/install-and-upgrade/tasks/create-install-manifest/task.sh
+  path: automation/lib/pipelines/pcf/install-and-upgrade/tasks/create-release-manifest/task.sh
 
 params:
   TRACE: Y

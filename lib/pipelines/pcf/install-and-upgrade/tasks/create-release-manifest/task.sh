@@ -3,6 +3,8 @@
 [[ -n "$TRACE" ]] && set -x
 set -eu
 
+cp input_files/* output_files
+
 #
 # Login to concourse and retrieve the token
 #
@@ -36,7 +38,7 @@ manifest_table='
 </tr>
 '
 
-echo "" > install_manifest/versions
+echo "" > output_files/versions
 
 for r in $resources; do
 
@@ -64,7 +66,7 @@ for r in $resources; do
     [[ $? -eq 0 ]] && row_style="style='$VERSION_ROW_STYLE'"
   fi
 
-  echo "$product|$version" >> install_manifest/versions
+  echo "$product|$version" >> output_files/versions
 
   read -r -d "" product_release <<EOV
 <tr ${row_style}>
@@ -112,14 +114,14 @@ EOV
 done
 
 echo "${manifest_table}</table>" > releases.html
-iconv -c -f utf-8 -t ascii releases.html > install_manifest/releases.html
+iconv -c -f utf-8 -t ascii releases.html > output_files/releases.html
 
-python <<EOL > install_manifest/manifest.html
+python <<EOL > output_files/manifest.html
 import string, sys 
 
 with open('automation/lib/pipelines/pcf/install-and-upgrade/tasks/create-install-manifest/manifest.html', 'r') as f:
     manifest_html=f.read()
-with open('install_manifest/releases.html', 'r') as f:
+with open('output_files/releases.html', 'r') as f:
     release_table=f.read()
 
 t = string.Template(manifest_html)
