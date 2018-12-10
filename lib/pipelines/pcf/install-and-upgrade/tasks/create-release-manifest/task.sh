@@ -3,7 +3,8 @@
 [[ -n "$TRACE" ]] && set -x
 set -eu
 
-cp input_files/* output_files
+# Ensure all input is passed thruough to output
+cp -r input-files/* output-files 2>/dev/null || :
 
 #
 # Login to concourse and retrieve the token
@@ -29,6 +30,21 @@ resources=$(curl -s $CONCOURSE_URL/api/v1/teams/$team_name/pipelines/$pipeline_n
   | sort)
 
 manifest_table='
+<style type="text/css">
+  table,
+  th,
+  td {
+    border-collapse: collapse;
+  }
+
+  .manifest table,
+  .manifest th,
+  .manifest td {
+    border: 1px solid black;
+    border-collapse: collapse;
+  }
+</style>
+<h2>Product Release Manifest</h2>
 <table width="100%" cellpadding="5" class="manifest">
 <tr>
   <th width="12%">Product</th>
@@ -38,7 +54,7 @@ manifest_table='
 </tr>
 '
 
-echo "" > output_files/versions
+echo "" > output-files/versions
 
 for r in $resources; do
 
@@ -66,7 +82,7 @@ for r in $resources; do
     [[ $? -eq 0 ]] && row_style="style='$VERSION_ROW_STYLE'"
   fi
 
-  echo "$product|$version" >> output_files/versions
+  echo "$product|$version" >> output-files/versions
 
   read -r -d "" product_release <<EOV
 <tr ${row_style}>
@@ -113,15 +129,15 @@ EOV
   set -eu
 done
 
-echo "${manifest_table}</table>" > releases.html
-iconv -c -f utf-8 -t ascii releases.html > output_files/releases.html
+echo "${manifest_table}</table>" > job_message
+iconv -c -f utf-8 -t ascii job_message > output-files/job_message
 
-python <<EOL > output_files/manifest.html
+python <<EOL > output-files/manifest.html
 import string, sys 
 
-with open('automation/lib/pipelines/pcf/install-and-upgrade/tasks/create-install-manifest/manifest.html', 'r') as f:
+with open('automation/lib/pipelines/pcf/install-and-upgrade/tasks/create-release-manifest/manifest.html', 'r') as f:
     manifest_html=f.read()
-with open('output_files/releases.html', 'r') as f:
+with open('output-files/job_message', 'r') as f:
     release_table=f.read()
 
 t = string.Template(manifest_html)
