@@ -6,6 +6,8 @@ set -eu
 # Ensure all input is passed thruough to output
 cp -r input-files/* output-files 2>/dev/null || :
 
+environment=$(echo $ENVIRONMENT | awk '{print toupper($0)}')
+
 #
 # Login to concourse and retrieve the token
 #
@@ -21,10 +23,17 @@ PYTHON
 
 # Retrieve all tile download resource names from download pipeline
 
-team_name=main
-pipeline_name=download-products
+installed_products=$(om \
+  --skip-ssl-validation \
+  --target "https://${OPSMAN_HOST}" \
+  --client-id "${OPSMAN_CLIENT_ID}" \
+  --client-secret "${OPSMAN_CLIENT_SECRET}" \
+  --username "${OPSMAN_USERNAME}" \
+  --password "${OPSMAN_PASSWORD}" \
+  deployed-products \
+  --format json)
 
-resources=$(curl -s $CONCOURSE_URL/api/v1/teams/$team_name/pipelines/$pipeline_name/resources \
+resources=$(curl -s $CONCOURSE_URL/api/v1/teams/main/pipelines/download-products/resources \
   -X GET -H "Authorization: Bearer $concourse_auth_token" \
   | jq -r '.[] | select(.name | match(".*-download")) | .name' \
   | sort)
@@ -44,37 +53,70 @@ manifest_table='
     border-collapse: collapse;
   }
 </style>
-<h2>Product Release Manifest</h2>
-<table width="100%" cellpadding="5" class="manifest">
-<tr>
-  <th width="12%">Product</th>
-  <th width="12%">Version</th>
-  <th width="18%">Release Date</th>
-  <th>Release Highlights</th>
-</tr>
-'
+<table cellspacing="0" cellpadding="0" border="0" style="min-width:800px; max-width:1280px; width:100%;">
+  <tr><td style="padding-left:10px;"><h2>Product Release Manifest</h2></td></tr>
+  <tr>
+    <td align="center" valign="top" style="padding:10px;">
+      <table width="100%" cellpadding="5" class="manifest">
+        <tr>
+          <th colspan="2" />
+          <th colspan="3" align="center">Versions</th>
+          <th />
+        </tr>
+        <tr>
+          <th width="10%">Product</th>
+          <th width="8%">Last Update</th>
+          <th width="8%">Downloaded</th>
+          <th width="8%">Available</th>
+          <th width="8%">Installed</th>
+          <th>Release Highlights</th>
+        </tr>'
 
 echo "" > output-files/versions
 
 for r in $resources; do
 
-  release=$(curl -s $CONCOURSE_URL/api/v1/teams/$team_name/pipelines/$pipeline_name/resources/$r/versions \
+  set +eu
+
+  p=${r%-download}
+
+  # Special case where products pas-small and pas are the same
+  [[ $p != "pas-small" ]] || p="pas"
+
+  product=$(echo $p | awk '{print toupper($0)}')
+
+  release=$(curl -s $CONCOURSE_URL/api/v1/teams/main/pipelines/download-products/resources/$r/versions \
     -X GET -H "Authorization: Bearer $concourse_auth_token" \
     | jq '
       [ 
         .[].metadata | select(. != null)
         | map( { (.name): .value } ) 
         | add 
-        | with_entries(select([.key] 
-        | inside(["version", "release_date", "description", "release_notes_url"]))) 
+        | with_entries(select([.key] | inside(["version", "release_date", "description", "release_notes_url"]))) 
       ] 
       | sort_by(.release_date) | last')
 
-  set +eu
-
-  product=$(echo ${r%-download} | awk '{print toupper($0)}')
   version=$(echo $release | jq -r .version)
   release_date=$(echo $release | jq -r .release_date)
+
+  available_release=$(curl -s $CONCOURSE_URL/api/v1/teams/main/pipelines/${environment}_deployment/resources/$p-tile/versions \
+    -X GET -H "Authorization: Bearer $concourse_auth_token" \
+    | jq -r '
+      [ 
+        .[].metadata | select(. != null)
+        | map( { (.name): .value } ) 
+        | add 
+      ] 
+      | first | .filename')
+
+  available_version=$(echo $available_release | sed -e 's|.*_\([0-9]*.[0-9]*.[0-9]*\)_.*|\1|')
+
+  name=${available_release%.tgz}
+  om_product=${name#*_${available_version}_}
+
+  om_version=$(echo $installed_products \
+    | jq -r '.[] | select(.name | match("'$om_product'";"i")) | .version')
+  installed_version=${om_version%-*}
 
   row_style="style='$NEW_VERSION_ROW_STYLE'"
   if [[ -e versions/versions ]]; then
@@ -87,8 +129,10 @@ for r in $resources; do
   read -r -d "" product_release <<EOV
 <tr ${row_style}>
   <td style="font-weight:bold;">${product}</td>
-  <td align="center">${version}</td>
   <td align="center">${release_date}</td>
+  <td align="center">${version}</td>
+  <td align="center">${available_version}</td>
+  <td align="center">${installed_version}</td>
   <td>
 EOV
 
@@ -129,7 +173,12 @@ EOV
   set -eu
 done
 
-echo "${manifest_table}</table>" > job_message
+echo "${manifest_table}"'
+      </table>
+    </td>
+  </tr>
+</table>' > job_message
+
 iconv -c -f utf-8 -t ascii job_message > output-files/job_message
 
 python <<EOL > output-files/manifest.html
