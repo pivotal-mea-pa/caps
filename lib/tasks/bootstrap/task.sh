@@ -191,7 +191,7 @@ for e in $ENVIRONMENTS; do
         eval "echo \"$(cat $install_and_upgrade_patches_path/product-common-post-patch.yml)\"" \
           >> install-and-upgrade-${product_name}-patch.yml
       elif [[ -e $install_and_upgrade_patches_path/product-${product_name}-so-patch.yml ]]; then
-        val "echo \"$(cat $install_and_upgrade_patches_path/product-${product_name}-so-patch.yml)\"" \
+        eval "echo \"$(cat $install_and_upgrade_patches_path/product-${product_name}-so-patch.yml)\"" \
           > install-and-upgrade-${product_name}-patch.yml
       else
         eval "echo \"$(cat $install_and_upgrade_patches_path/product-unknown-patch.yml)\"" \
