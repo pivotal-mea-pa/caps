@@ -1,24 +1,3 @@
-# Delete jobs created in common patch as 
-# PAS small tile needs to be renamed same 
-# as PAS standard tile in order to handle
-# dependencies consistently.
-
-- type: remove
-  path: /resources/name=pas-small-tile
-
-- type: remove
-  path: /jobs/name=upload-pas-small-tile
-
-- type: remove
-  path: /groups/name=Install & Upgrade Products/jobs/0
-
-- type: remove
-  path: /groups/name=Install & Upgrade Products/jobs/0
-
-# Re-create jobs tile upload jobs for PAS small tile
-# but renamed as "pas" to be consistent with PAS 
-# standard jobs.
-
 - type: replace
   path: /resources/-
   value:
@@ -97,6 +76,31 @@
         trigger: true
         params:
           skip_download: 'true'
+
+    # This task will create a release manifest which will
+    # be included with any failure or success notifications.
+    - task: create-release-manifest
+      file: automation/lib/pipelines/pcf/install-and-upgrade/tasks/create-release-manifest/task.yml
+      input_mapping:
+        versions: configure-pas-tile-job-info
+        input-files: configure-pas-tile-job-info
+      output_mapping: 
+        output-files: configure-pas-tile-job-info
+      params:
+        CONCOURSE_URL: ((concourse_url))
+        CONCOURSE_USER: ((concourse_user))
+        CONCOURSE_PASSWORD: ((concourse_password))
+        AUTOS3_URL: ((autos3_url))
+        AUTOS3_ACCESS_KEY: ((autos3_access_key))
+        AUTOS3_SECRET_KEY: ((autos3_secret_key))
+        OPSMAN_HOST: ((opsman_host))
+        OPSMAN_USERNAME: ((opsman_admin_username))
+        OPSMAN_PASSWORD: ((opsman_admin_password))
+        OPSMAN_CLIENT_ID: ((opsman_client_id))
+        OPSMAN_CLIENT_SECRET: ((opsman_client_secret))
+        ENVIRONMENT: ((environment))
+        VERSION_ROW_STYLE: 'color:silver;'
+        NEW_VERSION_ROW_STYLE: 'color:black;'
 
     # Stage product tile
     - task: stage-tile
