@@ -184,9 +184,11 @@ for e in $ENVIRONMENTS; do
       # Patch install and upgrade pipeline
       if [[ -e $install_and_upgrade_patches_path/product-${product_name}-patch.yml ]]; then
 
-        eval "echo \"$(cat $install_and_upgrade_patches_path/product-common-patch.yml)\"" \
+        eval "echo \"$(cat $install_and_upgrade_patches_path/product-common-pre-patch.yml)\"" \
           > install-and-upgrade-${product_name}-patch.yml
         eval "echo \"$(cat $install_and_upgrade_patches_path/product-${product_name}-patch.yml)\"" \
+          >> install-and-upgrade-${product_name}-patch.yml
+        eval "echo \"$(cat $install_and_upgrade_patches_path/product-common-post-patch.yml)\"" \
           >> install-and-upgrade-${product_name}-patch.yml
       else
         eval "echo \"$(cat $install_and_upgrade_patches_path/product-unknown-patch.yml)\"" \
@@ -199,9 +201,11 @@ for e in $ENVIRONMENTS; do
       # Patch backup and restore pipeline
       if [[ -e $backup_and_restore_patches_path/product-${product_name}-patch.yml ]]; then
 
-        eval "echo \"$(cat $backup_and_restore_patches_path/product-common-patch.yml)\"" \
+        eval "echo \"$(cat $backup_and_restore_patches_path/product-common-pre-patch.yml)\"" \
           > backup-and-restore-${product_name}-patch.yml
         eval "echo \"$(cat $backup_and_restore_patches_path/product-${product_name}-patch.yml)\"" \
+          >> backup-and-restore-${product_name}-patch.yml
+        eval "echo \"$(cat $backup_and_restore_patches_path/product-common-post-patch.yml)\"" \
           >> backup-and-restore-${product_name}-patch.yml
       else
         eval "echo \"$(cat $backup_and_restore_patches_path/product-unknown-patch.yml)\"" \
