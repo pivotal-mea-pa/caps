@@ -5,28 +5,6 @@
     serial_groups: [opsman]
     on_success:
       do:
-      - task: create-release-manifest
-        file: automation/lib/pipelines/pcf/install-and-upgrade/tasks/create-release-manifest/task.yml
-        input_mapping:
-          versions: deploy-job-info
-          input-files: deploy-job-info
-        output_mapping: 
-          output-files: deploy-job-info
-        params:
-          CONCOURSE_URL: ((concourse_url))
-          CONCOURSE_USER: ((concourse_user))
-          CONCOURSE_PASSWORD: ((concourse_password))
-          AUTOS3_URL: ((autos3_url))
-          AUTOS3_ACCESS_KEY: ((autos3_access_key))
-          AUTOS3_SECRET_KEY: ((autos3_secret_key))
-          OPSMAN_HOST: ((opsman_host))
-          OPSMAN_USERNAME: ((opsman_admin_username))
-          OPSMAN_PASSWORD: ((opsman_admin_password))
-          OPSMAN_CLIENT_ID: ((opsman_client_id))
-          OPSMAN_CLIENT_SECRET: ((opsman_client_secret))
-          ENVIRONMENT: ((environment))
-          VERSION_ROW_STYLE: 'color:silver;'
-          NEW_VERSION_ROW_STYLE: 'color:black;'
       - task: notify on deploy success
     on_failure:
       do:
@@ -35,6 +13,31 @@
     plan:
     - aggregate:
       - get: automation
+
+    # This task will create a release manifest which will
+    # be included with any failure or success notifications.
+    - task: create-release-manifest
+      file: automation/lib/pipelines/pcf/install-and-upgrade/tasks/create-release-manifest/task.yml
+      input_mapping:
+        versions: deploy-job-info
+        input-files: deploy-job-info
+      output_mapping: 
+        output-files: deploy-job-info
+      params:
+        CONCOURSE_URL: ((concourse_url))
+        CONCOURSE_USER: ((concourse_user))
+        CONCOURSE_PASSWORD: ((concourse_password))
+        AUTOS3_URL: ((autos3_url))
+        AUTOS3_ACCESS_KEY: ((autos3_access_key))
+        AUTOS3_SECRET_KEY: ((autos3_secret_key))
+        OPSMAN_HOST: ((opsman_host))
+        OPSMAN_USERNAME: ((opsman_admin_username))
+        OPSMAN_PASSWORD: ((opsman_admin_password))
+        OPSMAN_CLIENT_ID: ((opsman_client_id))
+        OPSMAN_CLIENT_SECRET: ((opsman_client_secret))
+        ENVIRONMENT: ((environment))
+        VERSION_ROW_STYLE: 'color:silver;'
+        NEW_VERSION_ROW_STYLE: 'color:black;'
 
     # This task will block if the environment 
     # has been put into stopped state
