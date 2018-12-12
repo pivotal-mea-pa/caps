@@ -32,7 +32,19 @@ Currently CAPs supports creating Pivotal Cloud Foundry environments in the follo
 
 #### Google Cloud Platform (GCP)
 
-CAPs requires a GCP service account with the correct permissions in order to create the necessary cloud infrastructure for the environment being bootstrapped. The service account must have the following permissions:
+CAPs requires certain Google APIs to be enabled. You will need to login to your Google Cloud Platform account via SSO and then run the following command via gcloud or enable each API idividually via the GCP Cloud Console.
+
+```
+gcloud auth login --project <PROJECT ID>
+
+gcloud services enable compute.googleapis.com && \
+gcloud services enable iam.googleapis.com && \
+gcloud services enable cloudresourcemanager.googleapis.com && \
+gcloud services enable dns.googleapis.com && \
+gcloud services enable sqladmin.googleapis.com
+```
+
+CAPs also requires a GCP service account with the correct permissions in order to create the necessary cloud infrastructure for the environment being bootstrapped. The service account must have the following permissions:
 
 - Cloud SQL Admin
 - Compute Admin
