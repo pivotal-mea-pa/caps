@@ -5,13 +5,10 @@ set -eu
 
 # Ensure all input is passed thruough to output
 cp -r input-files/* output-files 2>/dev/null || :
-cp versions/versions* output-files 2>/dev/null || :
 
-versions_file=output-files/$(basename output-files/versions*)
-if [[ ! -e $versions_file ]]; then
-  versions_file=output-files/versions
-  touch $versions_file
-fi
+versions_file=output-files/versions
+cp versions/versions* $versions_file 2>/dev/null || :
+[[ -e $versions_file ]] || touch $versions_file
 
 environment=$(echo $ENVIRONMENT | awk '{print toupper($0)}')
 
