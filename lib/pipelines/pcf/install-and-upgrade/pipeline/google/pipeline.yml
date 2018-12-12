@@ -342,6 +342,8 @@ jobs:
   # manifest is created
   - task: save-product-versions
     file: automation/lib/inceptor/tasks/upload-object/task.yml
+    input-mapping:
+      upload_path: deploy-director-job-info
     params: 
       BUCKET: pcf
       UPLOAD_PATH: downloads
