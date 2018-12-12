@@ -5,6 +5,13 @@ set -eu
 
 # Ensure all input is passed thruough to output
 cp -r input-files/* output-files 2>/dev/null || :
+cp versions/versions* output-files 2>/dev/null || :
+
+versions_file=output-files/$(basename output-files/versions*)
+if [[ ! -e $versions_file ]]; then
+  versions_file=output-files/versions
+  touch $versions_file
+fi
 
 environment=$(echo $ENVIRONMENT | awk '{print toupper($0)}')
 
@@ -72,8 +79,6 @@ manifest_table='
           <th>Release Highlights</th>
         </tr>'
 
-echo "" > output-files/versions
-
 for r in $resources; do
 
   set +eu
@@ -118,13 +123,15 @@ for r in $resources; do
     | jq -r '.[] | select(.name | match("'$om_product'";"i")) | .version')
   installed_version=${om_version%-*}
 
-  row_style="style='$NEW_VERSION_ROW_STYLE'"
-  if [[ -e versions/versions ]]; then
-    grep "$product|$version" versions/versions
-    [[ $? -eq 0 ]] && row_style="style='$VERSION_ROW_STYLE'"
+  grep "$product|$version" $versions_file
+  if [[ $? -eq 0 ]]; then
+    row_style="style='$VERSION_ROW_STYLE'"
+  else
+    row_style="style='$NEW_VERSION_ROW_STYLE'"
+    grep "$product|" $versions_file  \
+      && sed -i "s|$product\|.*|$product\|$version|" $versions_file \
+      || echo "$product|$version" >> $versions_file
   fi
-
-  echo "$product|$version" >> output-files/versions
 
   read -r -d "" product_release <<EOV
 <tr ${row_style}>
