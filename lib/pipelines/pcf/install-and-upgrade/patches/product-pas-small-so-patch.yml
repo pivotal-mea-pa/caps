@@ -70,6 +70,7 @@
       - get: automation
       - get: automation-extensions
       - get: terraform-output
+      - get: product-versions
       - get: pivnet-product
         resource: pas-tile
         passed: [upload-pas-tile]
@@ -82,7 +83,7 @@
     - task: create-release-manifest
       file: automation/lib/pipelines/pcf/install-and-upgrade/tasks/create-release-manifest/task.yml
       input_mapping:
-        versions: configure-pas-tile-job-info
+        versions: product-versions
         input-files: configure-pas-tile-job-info
       output_mapping: 
         output-files: configure-pas-tile-job-info

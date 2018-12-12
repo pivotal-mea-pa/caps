@@ -8,7 +8,7 @@
     task: create-release-manifest
     file: automation/lib/pipelines/pcf/install-and-upgrade/tasks/create-release-manifest/task.yml
     input_mapping:
-      versions: configure-${product_name}-tile-job-info
+      versions: product-versions
       input-files: configure-${product_name}-tile-job-info
     output_mapping: 
       output-files: configure-${product_name}-tile-job-info
