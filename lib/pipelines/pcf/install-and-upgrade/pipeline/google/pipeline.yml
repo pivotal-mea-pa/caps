@@ -51,6 +51,15 @@ resources:
     product_version: ((opsman_major_minor_version))
     sort_by: semver
 
+# - name: product-versions
+#   type: s3
+#   source:
+#     bucket: pcf
+#     endpoint: ((autos3_url))
+#     access_key_id: ((autos3_access_key))
+#     secret_access_key: ((autos3_secret_key))
+#     regexp: downloads/versions-(.*)
+
 jobs:
 
 - name: destroy-env
@@ -314,7 +323,7 @@ jobs:
       OPSMAN_CLIENT_SECRET: ((opsman_client_id))
       OPSMAN_USERNAME: ((opsman_admin_username))
       OPSMAN_PASSWORD: ((opsman_admin_password))
-      DIRECTOR_ONLY: true
+      DIRECTOR_ONLY:
       DISABLE_ERRANDS:
 
   # Sets the director ready state which will 
@@ -325,6 +334,18 @@ jobs:
     params: 
       OFF_STATE: director_not_ready
       ON_STATE: director_ready
+      AUTOS3_URL: ((autos3_url))
+      AUTOS3_ACCESS_KEY: ((autos3_access_key))
+      AUTOS3_SECRET_KEY: ((autos3_secret_key))
+
+  # Update product versions determined when release
+  # manifest is created
+  - task: save-product-versions
+    file: automation/lib/inceptor/tasks/upload-object/task.yml
+    params: 
+      BUCKET: pcf
+      UPLOAD_PATH: downloads
+      OBJECT_NAME: versions
       AUTOS3_URL: ((autos3_url))
       AUTOS3_ACCESS_KEY: ((autos3_access_key))
       AUTOS3_SECRET_KEY: ((autos3_secret_key))
