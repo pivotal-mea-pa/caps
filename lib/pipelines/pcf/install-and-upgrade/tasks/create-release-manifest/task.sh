@@ -42,6 +42,20 @@ resources=$(curl -s $CONCOURSE_URL/api/v1/teams/main/pipelines/download-products
   | jq -r '.[] | select(.name | match(".*-download")) | .name' \
   | sort)
 
+if [[ -n "$JOB_NAME" ]]; then
+
+  products=$(curl -s $CONCOURSE_URL/api/v1/teams/main/pipelines/${environment}_deployment/jobs/$JOB_NAME \
+    -X GET -H "Authorization: Bearer $concourse_auth_token" \
+    | jq -r '.inputs[] | select(.name | match("pivnet-product")) | .resource | split("-") | .[0] | ascii_upcase')
+
+  if [ -z $products ]; then
+
+    products=$(curl -s $CONCOURSE_URL/api/v1/teams/main/pipelines/${environment}_deployment/jobs/$JOB_NAME \
+      -X GET -H "Authorization: Bearer $concourse_auth_token" \
+      | jq -r '.inputs[] | select(.name | match(".*-tile")) | .name | split("-") | .[0] | ascii_upcase')
+  fi
+fi
+
 manifest_table='
 <style type="text/css">
   table,
@@ -82,15 +96,15 @@ for r in $resources; do
 
   p=${r%-download}
 
-  if [[ -n $PRODUCTS ]]; then
-    echo "$PRODUCTS" | grep -e "$p\(,\|$\)"
-    [[ $? -eq 0 ]] || continue
-  fi
-
   # Special case where products pas-small and pas are the same
   [[ $p != "pas-small" ]] || p="pas"
 
   product=$(echo $p | awk '{print toupper($0)}')
+
+  if [[ -n $products ]]; then
+    echo "$products" | grep -e "^$product$"
+    [[ $? -eq 0 ]] || continue
+  fi
 
   release=$(curl -s $CONCOURSE_URL/api/v1/teams/main/pipelines/download-products/resources/$r/versions \
     -X GET -H "Authorization: Bearer $concourse_auth_token" \

@@ -39,6 +39,7 @@
         ENVIRONMENT: ((environment))
         VERSION_ROW_STYLE: 'color:silver;'
         NEW_VERSION_ROW_STYLE: 'color:black;'
+        JOB_NAME: deploy
 
     # This task will block if the environment 
     # has been put into stopped state

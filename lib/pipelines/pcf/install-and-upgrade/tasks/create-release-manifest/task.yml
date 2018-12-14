@@ -36,7 +36,9 @@ params:
   OPSMAN_PASSWORD:
 
   ENVIRONMENT:
-  PRODUCTS:
-
+  
   VERSION_ROW_STYLE:
   NEW_VERSION_ROW_STYLE:
+
+  # Name of job to filter products inputs
+  JOB_NAME:

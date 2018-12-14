@@ -27,3 +27,4 @@
       ENVIRONMENT: ((environment))
       VERSION_ROW_STYLE: 'color:silver;'
       NEW_VERSION_ROW_STYLE: 'color:black;'
+      JOB_NAME: configure-${product_name}-tile
