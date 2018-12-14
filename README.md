@@ -60,7 +60,7 @@ CAPs also requires a GCP service account with the correct permissions in order t
 Download you service account key file and save it to some path within your user file-system and reference it via the `GOOGLE_CREDENTIALS` variable as shown in the `.envrc` environment file snippet below.
 
 ```
-PATH_add <PATH TO CLONED CAPS REPOSITORY>/bin
+PATH_add <caps repository home>/bin
 
 export GOOGLE_PROJECT=****
 export GOOGLE_CREDENTIALS=<path to your service account key file>
@@ -139,7 +139,23 @@ export TF_VAR_smtp_relay_host=smtp.sendgrid.net
 export TF_VAR_smtp_relay_port=2525
 export TF_VAR_smtp_relay_api_key=$SENDGRID_API_KEY
 
-export TF_VAR_notification_email=$OPS_EMAIL
+# Email to send notifications to
+
+export TF_VAR_notification_email=mevan.samaratunga@caps.io
+
+#
+# Cloud Automation Pipelines (CAPs) repository
+#
+
+export TF_VAR_automation_pipelines_branch=refactor_bootstrap
+
+#
+# Environment configuration repository
+#
+
+export TF_VAR_env_config_repo=https://github.com/mevansam/pcf-environments.git
+export TF_VAR_env_config_repo_branch=master
+export TF_VAR_env_config_path=pcf-demo-1/config
 
 #
 # Automation extensions git repository
@@ -148,24 +164,19 @@ export TF_VAR_notification_email=$OPS_EMAIL
 export TF_VAR_automation_extensions_repo=https://github.com/mevansam/pcf-environments.git
 export TF_VAR_automation_extensions_repo_branch=master
 
-export TF_VAR_pcf_terraform_templates_path=demo-1/terraform
-export TF_VAR_pcf_tile_templates_path=demo-1/pcf/tile-config
+export TF_VAR_pcf_terraform_templates_path=pcf-demo-1/templates/terraform
+export TF_VAR_pcf_tile_templates_path=pcf-demo-1/templates/tile
 
 # Pivnet Token for downloading pivotal releases
 export TF_VAR_pivnet_token=$PIVNET_TOKEN
 
 # VPC configurations
 
-# PoC #1 Environment
-
 export TF_VAR_vpc_name=pcf-demo-1
 export TF_VAR_vpc_dns_zone=demo1.pocs.pcfs.io
 export TF_VAR_vpc_parent_dns_zone_name=pocs-pcfs-io
 
 export TF_VAR_terraform_state_bucket=tfstate-${GOOGLE_REGION}
-
-export TF_VAR_locale=Asia/Dubai
-export TF_VAR_automation_pipelines_branch=dev
 
 export TF_VAR_bastion_instance_type=n1-standard-8
 export TF_VAR_bastion_data_disk_size=300
@@ -194,31 +205,6 @@ export TF_VAR_pcf_network_subnets='{
     monitoring         = "192.168.101.64/26"
   }
 }'
-
-# PCF Product
-
-export TF_VAR_opsman_major_minor_version=2\\.3\\.[0-9]+$
-
-export TF_VAR_products='
-    pas-small:elastic-runtime/^2\\.3\\.[0-9]+$:srt*.pivotal::
-    pks:pivotal-container-service/^1\\.2\\.[0-9]+$:*.pivotal::
-    harbor:harbor-container-registry/^1\\.6\\.[0-9]+$:*.pivotal::
-    healthwatch:p-healthwatch/^1\\.3\\.[0-9]+$:*.pivotal::
-    metrics:apm/^1\\.4\\.[0-9]+$:*.pivotal::
-    mysql:pivotal-mysql/^2\\.4\\.[0-9]+$:*.pivotal::
-    rabbitmq:p-rabbitmq/^1\\.14\\.[0-9]+$:*.pivotal::
-    redis:p-redis/^1\\.14\\.[0-9]+$:*.pivotal::
-    alerts:p-event-alerts/^1\\.2\\.[0-9]+$:*.pivotal::
-    scs:p-spring-cloud-services/^2\\.0\\.[0-9]+$:*.pivotal::
-    scdf:p-dataflow/^1\\.2\\.[0-9]+$:*.pivotal::
-    scheduler:p-scheduler/^1\\.2\\.[0-9]+$:*.pivotal::
-    credhub:credhub-service-broker/^1\\.1\\.[0-9]+$:*.pivotal::
-    sso:pivotal_single_sign-on_service/^1\\.7\\.[0-9]+$:*.pivotal::'
-    
-export TF_VAR_num_diego_cells=5
-
-# export TF_VAR_pcf_stop_at=15:00
-# export TF_VAR_pcf_start_at=09:00
 ```
 
 #### `caps-tf`
