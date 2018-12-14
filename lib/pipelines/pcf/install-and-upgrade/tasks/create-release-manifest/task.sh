@@ -82,6 +82,11 @@ for r in $resources; do
 
   p=${r%-download}
 
+  if [[ -n $PRODUCTS ]]; then
+    echo "$PRODUCTS" | grep -e "$p\(,\|$\)"
+    [[ $? -eq 0 ]] || continue
+  fi
+
   # Special case where products pas-small and pas are the same
   [[ $p != "pas-small" ]] || p="pas"
 
