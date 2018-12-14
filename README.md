@@ -37,11 +37,13 @@ CAPs requires certain Google APIs to be enabled. You will need to login to your 
 ```
 gcloud auth login --project <PROJECT ID>
 
-gcloud services enable compute.googleapis.com && \
-gcloud services enable iam.googleapis.com && \
-gcloud services enable cloudresourcemanager.googleapis.com && \
-gcloud services enable dns.googleapis.com && \
+gcloud services enable cloudresourcemanager.googleapis.com
+gcloud services enable compute.googleapis.com
+gcloud services enable storage-api.googleapis.com
+gcloud services enable storage-component.googleapis.com 
+gcloud services enable dns.googleapis.com
 gcloud services enable sqladmin.googleapis.com
+gcloud services enable iam.googleapis.com
 ```
 
 CAPs also requires a GCP service account with the correct permissions in order to create the necessary cloud infrastructure for the environment being bootstrapped. The service account must have the following permissions:
@@ -58,6 +60,8 @@ CAPs also requires a GCP service account with the correct permissions in order t
 Download you service account key file and save it to some path within your user file-system and reference it via the `GOOGLE_CREDENTIALS` variable as shown in the `.envrc` environment file snippet below.
 
 ```
+PATH_add <PATH TO CLONED CAPS REPOSITORY>/bin
+
 export GOOGLE_PROJECT=****
 export GOOGLE_CREDENTIALS=<path to your service account key file>
 export GOOGLE_REGION=europe-west1
@@ -76,6 +80,8 @@ export PIVNET_TOKEN=****
 #
 export SENDGRID_API_KEY=****
 ```
+
+Before you can apply the bootstrap configuration you will need to ensure a Google Cloud Storage bucket is created for the remote  Terraform state for the bootstrap configuration. The name of this bucket should be provided to CAPs via the `TF_VAR_terraform_state_bucket` environment control variable (in the examples below the name is assumed to be `tfstate-${GOOGLE_REGION}`).
 
 #### `build-image`
 
