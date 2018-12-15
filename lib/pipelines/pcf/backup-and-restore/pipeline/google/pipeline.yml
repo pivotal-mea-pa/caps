@@ -65,6 +65,8 @@ jobs:
     privileged: true
     file: automation/lib/pipelines/pcf/backup-and-restore/tasks/prepare-opsman-backup/task.yml
     output_mapping: 
+      # Map to 'upload_path' input of 
+      # 'clean-up-old-backup-session' task
       backup-session: upload_path
     params: 
       <<: *backup-restore-common-params
@@ -75,6 +77,13 @@ jobs:
     file: automation/lib/inceptor/tasks/upload-object/task.yml
     params: 
       BUCKET: pcf
+      # Path in Minio where session is saved 
+      # required to determine new version number.
+      # However the new session file will not be
+      # uploaded to this path as only old versions
+      # will be cleaned up and new versions 
+      # uploaded via the 'backup-session' s3 put
+      # task below.
       UPLOAD_PATH: backup-session
       OBJECT_NAME: env.sh
       AUTOS3_URL: ((autos3_url))

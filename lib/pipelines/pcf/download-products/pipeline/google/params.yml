@@ -8,6 +8,9 @@ automation_pipelines_branch: '${automation_pipelines_branch}'
 automation_extensions_repo: '${automation_extensions_repo}'
 automation_extensions_branch: '${automation_extensions_branch}'
 
+pcf_terraform_templates_path: '${pcf_terraform_templates_path}'
+pcf_tile_templates_path: '${pcf_tile_templates_path}'
+
 #
 # Pivnet download and Ops Manager configuration
 #
@@ -25,6 +28,3 @@ opsman_admin_username: 'admin'
 opsman_admin_password: '${opsman_admin_password}'
 opsman_client_id: ''
 opsman_client_secret: ''
-
-# PCF Ops Manager minor version to track
-opsman_major_minor_version: '${opsman_major_minor_version}'

@@ -79,6 +79,23 @@ if [[ -e $working_dir/.caps-env_$name ]]; then
     exit 0
 fi
 
+if [[ -e $working_dir/.git ]]; then
+
+    git remote -v >/dev/null 2>&1
+    if [[ $? -eq 0 ]]; then
+        env_config_git_repo=$(git remote -v | awk '/(fetch)/{ print $2 }')
+        env_config_git_branch=$(git branch | awk '{ print $2 }')
+
+        mkdir -p $working_dir/$name/config
+        mkdir -p $working_dir/$name/templates/terraform
+        mkdir -p $working_dir/$name/templates/tile
+
+        cp $root_dir/deployments/$deployment_name/$iaas_provider/config/* $working_dir/$name/config
+        touch $working_dir/$name/templates/terraform/.keep
+        touch $working_dir/$name/templates/tile/.keep
+    fi
+fi
+
 #
 # Create a control file for the new environment.
 #
@@ -141,6 +158,8 @@ while IFS='' read -r line || [[ -n "$line" ]]; do
         vnl=false
 
         case $curr_var in
+            '')
+                ;;
             vpc_name)
                 echo "export TF_VAR_$curr_var=$name" >>$working_dir/.caps-env_$name
                 ;;
@@ -158,10 +177,38 @@ while IFS='' read -r line || [[ -n "$line" ]]; do
                 ;;
             *)
                 if [[ $var_type != "list" && $var_type != "map" ]]; then
-                    if [[ -n $curr_var && -n $def_val ]]; then
-                        echo "#export TF_VAR_$curr_var=$def_val" >>$working_dir/.caps-env_$name
+
+                    if [[ -n $env_config_git_repo ]]; then
+
+                        case $curr_var in
+                            automation_extensions_repo|env_config_repo)
+                                echo "export TF_VAR_$curr_var=$env_config_git_repo" >>$working_dir/.caps-env_$name
+                                ;;
+                            automation_extensions_repo_branch|env_config_repo_branch)
+                                echo "export TF_VAR_$curr_var=$env_config_git_branch" >>$working_dir/.caps-env_$name
+                                ;;
+                            pcf_terraform_templates_path)
+                                echo "export TF_VAR_$curr_var=$name/templates/terraform" >>$working_dir/.caps-env_$name
+                                ;;
+                            pcf_tile_templates_path)
+                                echo "export TF_VAR_$curr_var=$name/templates/tile" >>$working_dir/.caps-env_$name
+                                ;;
+                            env_config_path)
+                                echo "export TF_VAR_$curr_var=$name/config" >>$working_dir/.caps-env_$name
+                                ;;
+                            *)
+                                if [[ -n $def_val ]]; then
+                                    echo "#export TF_VAR_$curr_var=$def_val" >>$working_dir/.caps-env_$name
+                                else
+                                    echo "export TF_VAR_$curr_var=" >>$working_dir/.caps-env_$name
+                                fi
+                        esac
                     else
-                        echo "export TF_VAR_$curr_var=" >>$working_dir/.caps-env_$name
+                        if [[ -n $def_val ]]; then
+                            echo "#export TF_VAR_$curr_var=$def_val" >>$working_dir/.caps-env_$name
+                        else
+                            echo "export TF_VAR_$curr_var=" >>$working_dir/.caps-env_$name
+                        fi
                     fi
                 else
                     cnl=false
@@ -175,5 +222,13 @@ while IFS='' read -r line || [[ -n "$line" ]]; do
     fi
     
 done < "$vars_file"
+
+if [[ -n $env_config_git_repo ]]; then
+    git add $name/config/*
+    git add --force $name/templates/terraform/.keep
+    git add --force $name/templates/tile/.keep
+    git add --force .caps-env_$name
+    git commit -m "created new caps environment $name"
+fi
 
 echo -e "${GREEN}CAPs context initialized to $name."

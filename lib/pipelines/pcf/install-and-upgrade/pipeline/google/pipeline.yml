@@ -51,6 +51,15 @@ resources:
     product_version: ((opsman_major_minor_version))
     sort_by: semver
 
+- name: product-versions
+  type: s3
+  source:
+    bucket: pcf
+    endpoint: ((autos3_url))
+    access_key_id: ((autos3_access_key))
+    secret_access_key: ((autos3_secret_key))
+    regexp: downloads/versions-(.*)
+
 jobs:
 
 - name: destroy-env
@@ -263,10 +272,36 @@ jobs:
   plan:
   - aggregate:
     - get: automation
+    - get: product-versions
     - get: pivnet-opsmgr
       passed: [configure-director]
       trigger: true
       params: {globs: []}
+
+  # This task will create a release manifest which will
+  # be included with any failure or success notifications.    
+  - task: create-release-manifest
+    file: automation/lib/pipelines/pcf/install-and-upgrade/tasks/create-release-manifest/task.yml
+    input_mapping:
+      versions: product-versions
+      input-files: deploy-director-job-info
+    output_mapping: 
+      output-files: deploy-director-job-info
+    params:
+      CONCOURSE_URL: ((concourse_url))
+      CONCOURSE_USER: ((concourse_user))
+      CONCOURSE_PASSWORD: ((concourse_password))
+      AUTOS3_URL: ((autos3_url))
+      AUTOS3_ACCESS_KEY: ((autos3_access_key))
+      AUTOS3_SECRET_KEY: ((autos3_secret_key))
+      OPSMAN_HOST: ((opsman_host))
+      OPSMAN_USERNAME: ((opsman_admin_username))
+      OPSMAN_PASSWORD: ((opsman_admin_password))
+      OPSMAN_CLIENT_ID: ((opsman_client_id))
+      OPSMAN_CLIENT_SECRET: ((opsman_client_secret))
+      ENVIRONMENT: ((environment))
+      VERSION_ROW_STYLE: 'color:silver;'
+      NEW_VERSION_ROW_STYLE: 'color:black;'
 
   # Wait if the Ops Manager is currently in the
   # process of applying a change
@@ -289,7 +324,7 @@ jobs:
       OPSMAN_CLIENT_SECRET: ((opsman_client_id))
       OPSMAN_USERNAME: ((opsman_admin_username))
       OPSMAN_PASSWORD: ((opsman_admin_password))
-      DIRECTOR_ONLY: true
+      DIRECTOR_ONLY:
       DISABLE_ERRANDS:
 
   # Sets the director ready state which will 
@@ -300,6 +335,20 @@ jobs:
     params: 
       OFF_STATE: director_not_ready
       ON_STATE: director_ready
+      AUTOS3_URL: ((autos3_url))
+      AUTOS3_ACCESS_KEY: ((autos3_access_key))
+      AUTOS3_SECRET_KEY: ((autos3_secret_key))
+
+  # Update product versions determined when release
+  # manifest is created
+  - task: save-product-versions
+    file: automation/lib/inceptor/tasks/upload-object/task.yml
+    input_mapping:
+      upload_path: deploy-director-job-info
+    params: 
+      BUCKET: pcf
+      UPLOAD_PATH: downloads
+      OBJECT_NAME: versions
       AUTOS3_URL: ((autos3_url))
       AUTOS3_ACCESS_KEY: ((autos3_access_key))
       AUTOS3_SECRET_KEY: ((autos3_secret_key))

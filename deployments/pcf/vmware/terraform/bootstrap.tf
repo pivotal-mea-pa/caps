@@ -7,7 +7,7 @@ locals {
 }
 
 module "bootstrap" {
-  source = "../../../../lib/inceptor/modules/bootstrap-automation/google"
+  source = "../../../../lib/inceptor/modules/bootstrap-automation/vmware"
 
   #
   # Company information used in certificate creation
@@ -21,6 +21,22 @@ module "bootstrap" {
   province = "${var.province}"
 
   country = "${var.country}"
+
+  #
+  # VMware IaaS configuration
+  #
+  datacenter = "${var.vmw_datacenter}"
+
+  clusters              = ["${var.vmw_clusters}"]
+  ephemeral_datastores  = ["${var.vmw_ephemeral_datastores}"]
+  persistent_datastores = ["${var.vmw_persistant_datastores}"]
+
+  dmz_network         = "VM Network"
+  dmz_network_cidr    = "192.168.100.0/24"
+  dmz_network_gateway = "192.168.100.2"
+
+  admin_network      = "Admin Network"
+  admin_network_cidr = "192.168.101.0/24"
 
   #
   # VPC details
@@ -96,7 +112,7 @@ module "bootstrap" {
   #
   bootstrap_pipeline_file = "${path.module}/../pipeline/pipeline.yml"
 
-  # Email to send pipeline notifications to
+  # Email to send pipeline otifications to
   notification_email = "${var.notification_email}"
 
   # Path to cloud-inceptor scripts 
@@ -115,22 +131,19 @@ google_region: ${var.gcp_region}
 google_credentials_json: |
   ${indent(2, file(var.gcp_credentials))}
 
-vpc_dns_zone: ${var.vpc_dns_zone}
-
 bootstrap_state_bucket: ${var.terraform_state_bucket}
 bootstrap_state_prefix: ${local.bootstrap_state_prefix}
 
 automation_pipelines_repo: ${var.automation_pipelines_repo}
 automation_pipelines_branch: ${var.automation_pipelines_branch}
 
-env_config_repo: ${var.env_config_repo}
-env_config_repo_branch: ${var.env_config_repo_branch}
-env_config_path: ${var.env_config_path}
+vpc_dns_zone: ${var.vpc_dns_zone}
 
 environments: '${join(" ", var.pcf_environments)}'
+products: '${var.products}'
 
-unpause_deployment_pipeline: ${var.unpause_deployment_pipeline}
-set_start_stop_schedule: ${var.set_start_stop_schedule}
+unpause_install_pipeline: ${var.autostart_deployment_pipelines}
+set_start_stop_schedule: ${var.pcf_stop_at != "0" ? "true" : "false"}
 
 PIPELINE_VARS
 }

@@ -1,0 +1,54 @@
+locale: Asia/Dubai
+
+# PCF Ops Manager minor version to track
+opsman_major_minor_version: 2\.3\.[0-9]+$
+
+# List of products to install. This should be a space 
+# separated list of:
+#
+# product_name:product_slug/product_version_regex[:errands_to_disable[:errands_to_enable]]
+#
+# The 'errands_to_disable' and 'errands_to_enable' fields 
+# should consist of comma separated errand names.
+products: |
+  pas-small:elastic-runtime/^2\\.3\\.[0-9]+$:srt*.pivotal::
+  pks:pivotal-container-service/^1\\.2\\.[0-9]+$:*.pivotal::
+  harbor:harbor-container-registry/^1\\.6\\.[0-9]+$:*.pivotal::
+  healthwatch:p-healthwatch/^1\\.3\\.[0-9]+$:*.pivotal::
+  metrics:apm/^1\\.4\\.[0-9]+$:*.pivotal::
+  mysql:pivotal-mysql/^2\\.4\\.[0-9]+$:*.pivotal::
+  rabbitmq:p-rabbitmq/^1\\.14\\.[0-9]+$:*.pivotal::
+  redis:p-redis/^1\\.14\\.[0-9]+$:*.pivotal::
+  alerts:p-event-alerts/^1\\.2\\.[0-9]+$:*.pivotal::
+  scs:p-spring-cloud-services/^2\\.0\\.[0-9]+$:*.pivotal::
+  scdf:p-dataflow/^1\\.2\\.[0-9]+$:*.pivotal::
+  scheduler:p-scheduler/^1\\.2\\.[0-9]+$:*.pivotal::
+  credhub:credhub-service-broker/^1\\.1\\.[0-9]+$:*.pivotal::
+  sso:pivotal_single_sign-on_service/^1\\.7\\.[0-9]+$:*.pivotal::
+
+# Number of Diego Cells to deploy
+num_diego_cells: 5
+
+# Backup time and interval
+backup_interval: 1h
+backup_interval_start: 02:00 AM
+backup_interval_stop: 02:30 AM
+
+# Backups older than this age will be cleaned up
+backup_age: 2
+
+#
+# Stop / Start event pipeline trigger time periods
+#
+
+set_start_stop_schedule: false
+
+# Time in 24h format (HH:MM) when deployments in the
+# PCF environment should be stopped and VMs shutdown
+pcf_stop_at: '15:00'
+pcf_stop_trigger_days: '[Sunday, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday]'
+
+# Time in 24h format (HH:MM) when deployments
+# in the PCF environment should be started
+pcf_start_at: '09:00'
+pcf_start_trigger_days: '[Sunday, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday]'

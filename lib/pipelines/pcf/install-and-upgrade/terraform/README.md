@@ -8,12 +8,13 @@ The Terraform templates within this folder are used by concourse jobs to pave th
 caps-ci login
 
 PIPELINE=SANDBOX_deployment
-TASK=create-infrastructure
+TASK_PRE=create-infrastructure
+TASK_POST=save-terraform-output
 
 eval $(fly -t local gp -p $PIPELINE \
-  | awk "/task: $TASK/ { show=1 } show; /(on_failure:|task: save-terraform-output)/ { show=0 }" \
+  | awk "/task: $TASK_PRE/ { show=1 } show; /(on_failure:|task: $TASK_POST)/ { show=0 }" \
   | grep -A 1000 'params:' \
-  | grep -v '\s*\- task:\|^\s*params' \
+  | grep -v '\s*\(on_failure:\|\- task:\)\|^\s*params' \
   | sed 's|\\n|\\\\n|g' \
   | sed -e 's|^[[:space:]]*\([-_0-9a-zA-Z]*\): \(\S*\)|export \1=\2|' \
   | sed -e "s/=|/='/" \

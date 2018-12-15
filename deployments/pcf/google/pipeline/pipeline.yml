@@ -18,8 +18,10 @@ jobs:
   - aggregate:
     - get: automation
       trigger: true
+    - get: env-config
+      trigger: true
   - task: configure
-    file: automation/deployments/pcf/google/pipeline/task.yml
+    file: automation/lib/tasks/bootstrap/task.yml
     params:
       TRACE: ((trace))
       # Inceptor services environment
@@ -47,8 +49,8 @@ jobs:
       VPC_NAME: ((vpc_name))
       VPC_DNS_ZONE: ((vpc_dns_zone))
       ENVIRONMENTS: ((environments))
-      PRODUCTS: ((products))
-      UNPAUSE_INSTALL_PIPELINE: ((unpause_install_pipeline))
+      DEPLOYMENT: pcf
+      UNPAUSE_DEPLOYMENT_PIPELINE: ((unpause_deployment_pipeline))
       SET_START_STOP_SCHEDULE: ((set_start_stop_schedule))
 
 resources:
@@ -58,3 +60,12 @@ resources:
   source:
     uri: ((automation_pipelines_repo))
     branch: ((automation_pipelines_branch))
+
+- name: env-config
+  type: git
+  source:
+    uri: ((env_config_repo))
+    branch: ((env_config_repo_branch))
+    paths: 
+    - ((env_config_path))/**
+ 
