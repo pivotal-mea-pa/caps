@@ -88,6 +88,18 @@ variable "vpc_parent_dns_zone_name" {
   type = "string"
 }
 
+variable "vpc_cidr" {
+  default = "192.168.0.0/16"
+}
+
+variable "vpc_subnet_bits" {
+  default = "8"
+}
+
+variable "vpc_subnet_start" {
+  default = "0"
+}
+
 #
 # Bastion inception instance variables
 #
