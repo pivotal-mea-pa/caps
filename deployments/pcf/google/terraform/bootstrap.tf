@@ -33,7 +33,7 @@ module "bootstrap" {
   vpc_subnet_start = "${var.vpc_subnet_start}"
   max_azs          = "${var.max_azs}"
 
-  # DNS Name for VPC will be 'cf.tfacc.pcfs.io'
+  # DNS Name for VPC
   vpc_dns_zone = "${var.vpc_dns_zone}"
 
   vpc_internal_dns_zones = ["${var.vpc_name}.local"]
