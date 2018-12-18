@@ -121,8 +121,16 @@ variable "vpc_cidr" {
 #
 # Bastion inception instance variables
 #
-variable "bastion_instance_type" {
-  default = "n1-standard-2"
+variable "bastion_instance_memory" {
+  default = "4096"
+}
+
+variable "bastion_instance_cpus" {
+  default = "2"
+}
+
+variable "bastion_root_disk_size" {
+  default = 50
 }
 
 variable "bastion_data_disk_size" {

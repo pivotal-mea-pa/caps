@@ -56,7 +56,10 @@ module "bootstrap" {
   # Bastion configuration
   bastion_host_name = "${var.bastion_host_name}"
 
-  bastion_data_disk_size = "${var.bastion_data_disk_size}"
+  bastion_instance_memory = "${var.bastion_instance_memory}"
+  bastion_instance_cpus   = "${var.bastion_instance_cpus}"
+  bastion_root_disk_size  = "${var.bastion_root_disk_size}"
+  bastion_data_disk_size  = "${var.bastion_data_disk_size}"
 
   bastion_admin_ssh_port = "${var.bastion_admin_ssh_port}"
   bastion_admin_user     = "${var.bastion_admin_user}"
