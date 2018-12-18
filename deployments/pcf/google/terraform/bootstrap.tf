@@ -29,11 +29,11 @@ module "bootstrap" {
 
   vpc_name = "${var.vpc_name}"
 
-  vpc_cidr = "192.168.0.0/16"
+  vpc_cidr = "${var.vpc_cidr}"
 
-  vpc_subnet_bits = "8"
+  vpc_subnet_bits = "${var.vpc_subnet_bits}"
 
-  vpc_subnet_start = "0"
+  vpc_subnet_start = "${var.vpc_subnet_start}"
 
   max_azs = "${var.max_azs}"
 
