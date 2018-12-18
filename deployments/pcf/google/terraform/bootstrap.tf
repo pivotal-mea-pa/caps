@@ -27,19 +27,24 @@ module "bootstrap" {
   #
   region = "${var.gcp_region}"
 
-  vpc_name = "${var.vpc_name}"
+  vpc_name         = "${var.vpc_name}"
+  vpc_cidr         = "${var.vpc_cidr}"
+  vpc_subnet_bits  = "${var.vpc_subnet_bits}"
+  vpc_subnet_start = "${var.vpc_subnet_start}"
+  max_azs          = "${var.max_azs}"
 
-  vpc_cidr = "192.168.0.0/16"
+  vpc_cidr = "${var.vpc_cidr}"
 
-  vpc_subnet_bits = "8"
+  vpc_subnet_bits = "${var.vpc_subnet_bits}"
 
-  vpc_subnet_start = "0"
+  vpc_subnet_start = "${var.vpc_subnet_start}"
 
   max_azs = "${var.max_azs}"
 
-  # DNS Name for VPC will be 'cf.tfacc.pcfs.io'
+  # External DNS zone for VPC
   vpc_dns_zone = "${var.vpc_dns_zone}"
 
+  # Internal DNS zones within VPC
   vpc_internal_dns_zones = ["${var.vpc_name}.local"]
 
   # Name of parent zone 'tfacc.pcfs.io' to which the 

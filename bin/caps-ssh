@@ -21,7 +21,8 @@ usage () {
     echo -e "                          man's VPN. To install the sshuttle utility refer to the following"
     echo -e "                          url: ${BROWN_ORANGE}https://github.com/sshuttle/sshuttle${BLUE}. Use this only if you"
     echo -e "                          have not setup or connected through a VPN in the bastion server"
-    echo -e "                          and require direct access to VPC's internal resources.\n"
+    echo -e "                          and require direct access to VPC's internal resources."
+    echo -e "${NC}"
 }
 
 case "$1" in

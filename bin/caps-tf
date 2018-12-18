@@ -16,20 +16,17 @@ usage () {
 }
 
 case "$1" in
-    -?|--help|help)
+    '-?'|--help|help)
         usage
         exit 0
         ;;
     plan|apply|output|destroy|recreate-bastion)
         tf_action=$1
-        ;;
-    *)
-        usage
-        exit 1
+        shift
         ;;
 esac
 
-shift
+
 while [[ $# -gt 0 ]]; do
     case "$1" in
         -v|--debug)
@@ -64,7 +61,8 @@ if [[ ! -e .terraform || $terraform_init == yes ]]; then
 
     if [[ -z $TF_VAR_terraform_state_bucket ]]; then
         echo -e "\nThe following environment variable must be set in order to initialize the context.\n"
-        echo -e "    TF_VAR_terraform_state_bucket  The backend state bucket to save the bootstrap state.\n"
+        echo -e "    TF_VAR_terraform_state_bucket  The backend state bucket to save the bootstrap state."
+        echo -e "${NC}"
         exit 1
     fi
     
@@ -72,10 +70,30 @@ if [[ ! -e .terraform || $terraform_init == yes ]]; then
     echo -e "state that may already exist in the following location.\n"
     echo -e "    TF_VAR_terraform_state_bucket = $TF_VAR_terraform_state_bucket\n"
     
-    terraform init \
-        -backend-config="bucket=$TF_VAR_terraform_state_bucket" \
-        -backend-config="prefix=$bootstrap_state_prefix" \
-        $terraform_path
+    case $iaas_provider in
+        google)
+            terraform init \
+                -backend-config="bucket=$TF_VAR_terraform_state_bucket" \
+                -backend-config="prefix=$bootstrap_state_prefix" \
+                $terraform_path
+            ;;
+        *)
+            # Default is to use an S3 backend
+            if [[ -n $TF_STATE_S3_ENDPOINT ]]; then
+                terraform init \
+                    -backend-config="bucket=$TF_VAR_terraform_state_bucket" \
+                    -backend-config="key=$bootstrap_state_prefix" \
+                    -backend-config="endpoint=$TF_STATE_S3_ENDPOINT" \
+                    $terraform_path
+            else
+                # Use AWS S3 as default
+                terraform init \
+                    -backend-config="bucket=$TF_VAR_terraform_state_bucket" \
+                    -backend-config="key=$bootstrap_state_prefix" \
+                    $terraform_path
+            fi
+            ;;
+    esac
 
     # Seems to be a bug in terraform where 'output' and 'taint' command are 
     # unable to load the backend state when the working directory does not 
@@ -113,18 +131,45 @@ case $tf_action in
         rm -f terraform.plan
         ;; 
     recreate-bastion)
-        terraform taint \
-            -state=$workspace_path/.terraform/terraform.tfstate \
-            -module=bootstrap \
-            google_compute_instance.bastion
 
-        if [[ $clean == yes ]]; then
-            terraform taint \
-                -state=$workspace_path/.terraform/terraform.tfstate \
-                -module=bootstrap \
-                google_compute_disk.bastion-data-disk       
-        fi
+        case $iaas_provider in
+            google)
+                terraform taint \
+                    -state=$workspace_path/.terraform/terraform.tfstate \
+                    -module=bootstrap \
+                    google_compute_instance.bastion
 
+                if [[ $clean == yes ]]; then
+                    terraform taint \
+                        -state=$workspace_path/.terraform/terraform.tfstate \
+                        -module=bootstrap \
+                        google_compute_disk.bastion-data-disk
+                fi
+                ;;
+            vmware)
+                if [[ -n $TF_VAR_dmz_network ]]; then
+                    terraform taint \
+                        -state=$workspace_path/.terraform/terraform.tfstate \
+                        -module=bootstrap \
+                        vsphere_virtual_machine.bastion-2nic
+                else
+                    terraform taint \
+                        -state=$workspace_path/.terraform/terraform.tfstate \
+                        -module=bootstrap \
+                        vsphere_virtual_machine.bastion-1nic
+                fi
+
+                if [[ $clean == yes ]]; then
+                    terraform taint \
+                        -state=$workspace_path/.terraform/terraform.tfstate \
+                        -module=bootstrap \
+                        vsphere_virtual_disk.bastion-data-disk
+                fi
+                ;;
+            *)
+                echo -e "${RED}\nERROR! Unable to determine resources of IaaS '$iaas_provider' to taint.${NC}\n"
+                exit 1
+        esac
         $0 plan
         $0 apply
         ;;

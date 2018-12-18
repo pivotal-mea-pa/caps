@@ -4,6 +4,7 @@
 
 locals {
   bootstrap_state_prefix = "${var.vpc_name}-bootstrap"
+  has_dmz_network        = "${length(var.dmz_network) > 0}"
 }
 
 module "bootstrap" {
@@ -25,42 +26,29 @@ module "bootstrap" {
   #
   # VMware IaaS configuration
   #
-  datacenter = "${var.vmw_datacenter}"
+  datacenter = "${var.vcenter_datacenter}"
 
-  clusters              = ["${var.vmw_clusters}"]
-  ephemeral_datastores  = ["${var.vmw_ephemeral_datastores}"]
-  persistent_datastores = ["${var.vmw_persistant_datastores}"]
+  clusters             = ["${split(",", var.vcenter_clusters)}"]
+  ephemeral_datastore  = "${element(split(",", var.vcenter_ephemeral_datastores), 0)}"
+  persistent_datastore = "${element(split(",", var.vcenter_persistant_datastores), 0)}"
 
-  dmz_network         = "VM Network"
-  dmz_network_cidr    = "192.168.100.0/24"
-  dmz_network_gateway = "192.168.100.2"
+  dmz_network         = "${var.dmz_network}"
+  dmz_network_cidr    = "${var.dmz_network_cidr}"
+  dmz_network_gateway = "${var.dmz_network_gateway}"
 
-  admin_network      = "Admin Network"
-  admin_network_cidr = "192.168.101.0/24"
+  admin_network         = "${var.admin_network}"
+  admin_network_cidr    = "${var.admin_network_cidr}"
+  admin_network_gateway = "${var.admin_network_gateway}"
 
-  #
   # VPC details
-  #
-  region = "${var.gcp_region}"
-
   vpc_name = "${var.vpc_name}"
+  vpc_cidr = "${var.vpc_cidr}"
 
-  vpc_cidr = "192.168.0.0/16"
-
-  vpc_subnet_bits = "8"
-
-  vpc_subnet_start = "0"
-
-  max_azs = "${var.max_azs}"
-
-  # DNS Name for VPC will be 'cf.tfacc.pcfs.io'
+  # DNS zone for VPC.
   vpc_dns_zone = "${var.vpc_dns_zone}"
 
-  vpc_internal_dns_zones = ["${var.vpc_name}.local"]
-
-  # Name of parent zone 'tfacc.pcfs.io' to which the 
-  # name server records of the 'vpc_dns_zone' will be added.
-  dns_managed_zone_name = "${var.vpc_parent_dns_zone_name}"
+  # Internal DNS zones within VPC
+  vpc_internal_dns_zones = ["${var.vpc_dns_zone}", "${var.vpc_name}.local"]
 
   # Path to save all ssh key files
   ssh_key_file_path = "${var.ssh_key_file_path == "" ? path.module : var.ssh_key_file_path}"
@@ -68,7 +56,6 @@ module "bootstrap" {
   # Bastion configuration
   bastion_host_name = "${var.bastion_host_name}"
 
-  bastion_instance_type  = "${var.bastion_instance_type}"
   bastion_data_disk_size = "${var.bastion_data_disk_size}"
 
   bastion_admin_ssh_port = "${var.bastion_admin_ssh_port}"
@@ -80,6 +67,9 @@ module "bootstrap" {
         ? "false"
         : "true"
       : var.bastion_allow_public_ssh }"
+
+  bastion_dmz_ip   = "${cidrhost(local.has_dmz_network ? var.dmz_network_cidr : "0.0.0.0/0", 31)}"
+  bastion_admin_ip = "${cidrhost(var.admin_network_cidr, 31)}"
 
   deploy_jumpbox         = "${var.deploy_jumpbox}"
   jumpbox_data_disk_size = "${var.jumpbox_data_disk_size}"
@@ -110,7 +100,8 @@ module "bootstrap" {
   #
   # Bootstrap pipeline
   #
-  bootstrap_pipeline_file = "${path.module}/../pipeline/pipeline.yml"
+  # bootstrap_pipeline_file = "${path.module}/../pipeline/pipeline.yml"
+  bootstrap_pipeline_file = "${path.module}/../../../../lib/inceptor/pipelines/bootstrap-greeting/pipeline.yml"
 
   # Email to send pipeline otifications to
   notification_email = "${var.notification_email}"
@@ -125,25 +116,23 @@ module "bootstrap" {
   bootstrap_pipeline_vars = <<PIPELINE_VARS
 trace: ${var.trace}
 
-google_project: ${data.external.gcp_credentials.result.project_id}
-google_region: ${var.gcp_region}
+vpc_dns_zone: ${var.vpc_dns_zone}
 
-google_credentials_json: |
-  ${indent(2, file(var.gcp_credentials))}
-
+bootstrap_state_s3_endpoint: ${var.terraform_state_s3_endpoint}
 bootstrap_state_bucket: ${var.terraform_state_bucket}
 bootstrap_state_prefix: ${local.bootstrap_state_prefix}
 
 automation_pipelines_repo: ${var.automation_pipelines_repo}
 automation_pipelines_branch: ${var.automation_pipelines_branch}
 
-vpc_dns_zone: ${var.vpc_dns_zone}
+env_config_repo: ${var.env_config_repo}
+env_config_repo_branch: ${var.env_config_repo_branch}
+env_config_path: ${var.env_config_path}
 
 environments: '${join(" ", var.pcf_environments)}'
-products: '${var.products}'
 
-unpause_install_pipeline: ${var.autostart_deployment_pipelines}
-set_start_stop_schedule: ${var.pcf_stop_at != "0" ? "true" : "false"}
+unpause_deployment_pipeline: ${var.unpause_deployment_pipeline}
+set_start_stop_schedule: ${var.set_start_stop_schedule}
 
 PIPELINE_VARS
 }

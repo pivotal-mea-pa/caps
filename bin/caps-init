@@ -12,7 +12,8 @@ usage () {
     echo -e "    connected VPN sessions.\n"
     echo -e "    <NAME>                             The name of the environment. This will also be the name of your primary VPC."
     echo -e "    -d|--deployment <DEPLOYMENT_NAME>  The name of one of the deployment recipes."
-    echo -e "    -i|--iaas <IAAS_PROVIDER>          The iaas provider that the deployment has been deployed to.\n"
+    echo -e "    -i|--iaas <IAAS_PROVIDER>          The iaas provider that the deployment has been deployed to."
+    echo -e "${NC}"
 }
 
 case "$1" in

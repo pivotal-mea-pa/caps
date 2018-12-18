@@ -1,42 +1,75 @@
 #
-# Externalized Variables
+# Automation bootstrap
 #
 
 variable "trace" {
   default = "true"
 }
 
-variable "autostart_deployment_pipelines" {
+variable "unpause_deployment_pipeline" {
   default = "true"
+}
+
+variable "set_start_stop_schedule" {
+  default = "false"
 }
 
 #
 # vCenter IaaS Environment
 #
 
-variable "vmw_datacenter" {
+variable "vcenter_datacenter" {
   type = "string"
 }
 
-variable "vmw_clusters" {
-  type = "list"
+# Comma separated list of availability zone clusters
+variable "vcenter_clusters" {
+  type = "string"
 }
 
-variable "vmw_ephemeral_datastores" {
-  type = "list"
+# Comma separated list of ephemeral data stores
+variable "vcenter_ephemeral_datastores" {
+  type = "string"
 }
 
-variable "vmw_persistant_datastores" {
-  type = "list"
+# Comma separated list of persistent data stores
+variable "vcenter_persistant_datastores" {
+  type = "string"
 }
 
-variable "gcp_storage_secret_key" {
+# VCenter Networks
+
+variable "dmz_network" {
+  default = ""
+}
+
+variable "dmz_network_cidr" {
+  default = ""
+}
+
+variable "dmz_network_gateway" {
+  default = ""
+}
+
+variable "admin_network" {
+  type = "string"
+}
+
+variable "admin_network_cidr" {
+  type = "string"
+}
+
+variable "admin_network_gateway" {
   type = "string"
 }
 
 #
 # Terraform state attributes
 #
+
+variable "terraform_state_s3_endpoint" {
+  default = ""
+}
 
 variable "terraform_state_bucket" {
   type = "string"
@@ -81,7 +114,7 @@ variable "vpc_dns_zone" {
   type = "string"
 }
 
-variable "vpc_parent_dns_zone_name" {
+variable "vpc_cidr" {
   type = "string"
 }
 
@@ -178,10 +211,9 @@ variable "jumpbox_data_disk_size" {
 # Concourse Automation common attributes
 #
 
-# Locale to use for time resources
-variable "locale" {
-  type = "string"
-}
+#
+# Cloud Automation Pipelines (CAPs) repository
+#
 
 variable "automation_pipelines_repo" {
   default = "https://github.com/mevansam/caps.git"
@@ -189,6 +221,22 @@ variable "automation_pipelines_repo" {
 
 variable "automation_pipelines_branch" {
   default = "master"
+}
+
+#
+# Environment configuration repository
+#
+
+variable "env_config_repo" {
+  default = "https://github.com/mevansam/caps.git"
+}
+
+variable "env_config_repo_branch" {
+  default = "master"
+}
+
+variable "env_config_path" {
+  default = "deployments/pcf/google/config"
 }
 
 #

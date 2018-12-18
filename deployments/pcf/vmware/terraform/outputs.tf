@@ -15,37 +15,6 @@ output "root_ca_cert" {
 }
 
 #
-# GCP credentials
-#
-
-output "gcp_project" {
-  value = "${data.external.gcp_credentials.result.project_id}"
-}
-
-output "gcp_service_account_email" {
-  value = "${data.external.gcp_credentials.result.client_email}"
-}
-
-output "gcp_credentials" {
-  value     = "${file(var.gcp_credentials)}"
-  sensitive = true
-}
-
-output "gcp_region" {
-  value = "${var.gcp_region}"
-}
-
-output "gcp_storage_access_key" {
-  value     = "${var.gcp_storage_access_key}"
-  sensitive = true
-}
-
-output "gcp_storage_secret_key" {
-  value     = "${var.gcp_storage_secret_key}"
-  sensitive = true
-}
-
-#
 # Terraform state attributes
 #
 
@@ -96,17 +65,9 @@ output "vpc_dns_zone" {
   value = "${var.vpc_dns_zone}"
 }
 
-output "vpc_dns_zone_name" {
-  value = "${module.bootstrap.vpc_dns_zone_name}"
-}
-
 #
 # Concourse Automation common attributes
 #
-
-output "locale" {
-  value = "${var.locale}"
-}
 
 output "automation_pipelines_repo" {
   value = "${var.automation_pipelines_repo}"
@@ -203,10 +164,6 @@ output "num_diego_cells" {
 # Backup / Restore pipeline params
 #
 
-output "backups_bucket" {
-  value = "${google_storage_bucket.backups.name}"
-}
-
 output "backup_interval" {
   value = "${var.backup_interval}"
 }
@@ -247,19 +204,11 @@ output "pcf_start_trigger_days" {
 # Network resource attributes
 #
 output "dmz_network" {
-  value = "${module.bootstrap.dmz_network}"
-}
-
-output "dmz_subnetwork" {
-  value = "${module.bootstrap.dmz_subnetwork}"
+  value = "${var.dmz_network}"
 }
 
 output "admin_network" {
-  value = "${module.bootstrap.admin_network}"
-}
-
-output "admin_subnetwork" {
-  value = "${module.bootstrap.admin_subnetwork}"
+  value = "${var.admin_network}"
 }
 
 #
