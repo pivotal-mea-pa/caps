@@ -12,7 +12,8 @@ usage () {
     echo -e "    -o|--options  <TERRAFORM_OPTIONS>  Additional options to pass to terraform."
     echo -e "    -i|--init                          (Re)Initializes the terraform workspace."
     echo -e "    -c|--clean                         Ensures any rebuilds are clean (i.e. recreate-bastion with this"
-    echo -e "                                       option will ensure the persistent data volume is also recreated.\n"
+    echo -e "                                       option will ensure the persistent data volume is also recreated."
+    echo -e "${NC}"
 }
 
 case "$1" in
