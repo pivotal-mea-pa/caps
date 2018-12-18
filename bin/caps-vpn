@@ -11,7 +11,8 @@ usage () {
     echo -e "    This utility will download the VPN credentials required to access"
     echo -e "    the environment's internal resources. The credentials will be"
     echo -e "    download to the following folder.\n"
-    echo -e "       * $working_dir/tmp \n"
+    echo -e "       * $working_dir/tmp"
+    echo -e "${NC}"
 }
 
 while [[ $# -gt 0 ]]; do
