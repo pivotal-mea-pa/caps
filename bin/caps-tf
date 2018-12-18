@@ -174,3 +174,5 @@ case $tf_action in
         $0 apply
         ;;
 esac
+
+echo -e "${NC}"

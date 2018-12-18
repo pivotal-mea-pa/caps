@@ -232,4 +232,4 @@ if [[ -n $env_config_git_repo ]]; then
     git commit -m "created new caps environment $name"
 fi
 
-echo -e "${GREEN}CAPs context initialized to $name."
+echo -e "${GREEN}CAPs context initialized to $name.${NC}"
