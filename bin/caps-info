@@ -8,7 +8,8 @@ set -e
 
 usage () {
     echo -e "\n${BLUE}USAGE: caps-info\n"
-    echo -e "    This utility will display useful information about the current environment.\n"
+    echo -e "    This utility will display useful information about the current environment."
+    echo -e "${NC}"
 }
 
 while [[ $# -gt 0 ]]; do

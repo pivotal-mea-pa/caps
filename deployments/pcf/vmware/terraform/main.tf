@@ -1,9 +1,9 @@
 #
 # Backend state
 #
-# terraform {
-#   backend "s3" {}
-# }
+terraform {
+  backend "s3" {}
+}
 
 #
 # Generate passwords that will be referenced

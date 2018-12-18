@@ -46,7 +46,7 @@ function common::validate() {
         for d in $(find $root_dir/deployments -type d -depth 1 -print); do 
             echo "- \"$(basename $d)\"" 
         done
-        echo
+        echo "${NC}"
         exit 1
     fi
     if [[ ! -e $root_dir/deployments/$deployment_name/$iaas_provider ]]; then
@@ -55,11 +55,11 @@ function common::validate() {
         for d in $(find $root_dir/deployments/$deployment_name -type d -depth 1 -print); do 
             echo "- \"$(basename $d)\"" 
         done
-        echo        
+        echo "${NC}"
         exit 1
     fi
     if [[ ! -e $root_dir/deployments/$deployment_name/$iaas_provider/terraform ]]; then
-        echo -e "${RED}\nERROR! The deployment recipe does not seem to have a terraform template.\n"
+        echo -e "${RED}\nERROR! The deployment recipe does not seem to have a terraform template.${NC}\n"
         exit 1
     fi
 }
@@ -81,7 +81,7 @@ function common::initialize() {
     source $working_dir/.caps-env_$name
     if [[ -z $TF_VAR_vpc_name || $TF_VAR_vpc_name != $name ]]; then 
         echo -e "${RED}\nThe 'TF_VAR_vpc_name' environment variable must be set with a"
-        echo -e "unique name to identify this environment within you cloud account."
+        echo -e "unique name to identify this environment within you cloud account.${NC}"
         exit 1
     fi
 
@@ -109,7 +109,7 @@ function common::read_terraform_output() {
         echo -e "${RED}\nERROR! The deployment recipe needs to initialized and refreshed."
         echo -e "       Run 'caps-tf plan' to list the changes to be made. If the"
         echo -e "       environment has already been provisioned then the only"
-        echo -e "       change should be the creation of the local SSH key files.\n"
+        echo -e "       change should be the creation of the local SSH key files.${NC}\n"
         exit 1
     fi
     tf_output=$(cat $workspace_path/terraform.output)
