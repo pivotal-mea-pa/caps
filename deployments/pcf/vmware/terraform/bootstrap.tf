@@ -5,10 +5,10 @@
 locals {
   bootstrap_state_prefix = "${var.vpc_name}-bootstrap"
   has_dmz_network        = "${length(var.dmz_network) > 0}"
-  
+
   bastion_admin_name = "${length(var.bastion_host_name) == 0 
     ? var.vpc_name : var.bastion_host_name}.${var.vpc_dns_zone}"
-  
+
   bastion_dmz_ip   = "${cidrhost(local.has_dmz_network ? var.dmz_network_cidr : "0.0.0.0/0", 31)}"
   bastion_admin_ip = "${cidrhost(var.admin_network_cidr, 31)}"
 }
@@ -55,9 +55,10 @@ module "bootstrap" {
 
   # Internal DNS zones within VPC
   vpc_internal_dns_zones = ["${var.vpc_dns_zone}", "${var.vpc_name}.local"]
-  vpc_internal_dns_records = [ 
-	"${var.vpc_dns_zone}:${local.has_dmz_network ? local.bastion_dmz_ip : local.bastion_admin_ip}",
-	"${local.bastion_admin_name}:${local.bastion_admin_ip}", 
+
+  vpc_internal_dns_records = [
+    "${var.vpc_dns_zone}:${local.has_dmz_network ? local.bastion_dmz_ip : local.bastion_admin_ip}",
+    "${local.bastion_admin_name}:${local.bastion_admin_ip}",
   ]
 
   # Path to save all ssh key files
