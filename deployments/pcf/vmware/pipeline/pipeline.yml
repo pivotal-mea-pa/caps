@@ -42,9 +42,9 @@ jobs:
       IAAS: vmware
       # S3 credentials if S3 is the Terraform
       # backend for the bootstrap state
-      AWS_ACCESS_KEY_ID: 
-      AWS_SECRET_ACCESS_KEY:
-      AWS_DEFAULT_REGION:
+      S3_ACCESS_KEY_ID: ((s3_access_key_id))
+      S3_SECRET_ACCESS_KEY: ((s3_secret_access_key))
+      S3_DEFAULT_REGION: ((s3_default_region))
       # Custom S3 end-point if not 
       # targetting AWS S3
       TF_STATE_S3_ENDPOINT: ((bootstrap_state_s3_endpoint))
