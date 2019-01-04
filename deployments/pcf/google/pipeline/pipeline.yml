@@ -39,6 +39,7 @@ jobs:
       # in the inceptor library module
       PIPELINE_AUTOMATION_PATH: ((pipeline_automation_path))
       # Google Cloud Platform credentials
+      IAAS: google
       GOOGLE_PROJECT: ((google_project))
       GOOGLE_CREDENTIALS_JSON: ((google_credentials_json))
       GOOGLE_REGION: ((google_region))
