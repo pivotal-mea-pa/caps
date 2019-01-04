@@ -7,10 +7,18 @@ locals {
   has_dmz_network        = "${length(var.dmz_network) > 0}"
 
   bastion_admin_name = "${length(var.bastion_host_name) == 0 
-    ? var.vpc_name : var.bastion_host_name}.${var.vpc_dns_zone}"
+    ? var.vpc_name 
+    : var.bastion_host_name}.${var.vpc_dns_zone}"
 
-  bastion_dmz_ip   = "${cidrhost(local.has_dmz_network ? var.dmz_network_cidr : "0.0.0.0/0", 31)}"
-  bastion_admin_ip = "${cidrhost(var.admin_network_cidr, 31)}"
+  bastion_admin_ip = "${length(var.bastion_admin_ip) > 0 
+    ? var.bastion_admin_ip
+    : cidrhost(var.admin_network_cidr, 31)}"
+
+  bastion_dmz_ip = "${length(var.bastion_dmz_ip) > 0
+    ? var.bastion_dmz_ip
+    : local.has_dmz_network 
+      ? cidrhost(local.has_dmz_network ? var.dmz_network_cidr : "0.0.0.0/0", 31) 
+      : local.bastion_admin_ip}"
 }
 
 module "bootstrap" {
@@ -115,9 +123,9 @@ module "bootstrap" {
   # Bootstrap pipeline
   #
   # bootstrap_pipeline_file = "${path.module}/../pipeline/pipeline.yml"
-  bootstrap_pipeline_file = "${path.module}/../../../../lib/inceptor/pipelines/bootstrap-greeting/pipeline.yml"
+  bootstrap_pipeline_file = "${path.module}/../pipeline/pipeline.yml"
 
-  # Email to send pipeline otifications to
+  # Email to send pipeline notifications to
   notification_email = "${var.notification_email}"
 
   # Path to cloud-inceptor scripts 
@@ -131,6 +139,10 @@ module "bootstrap" {
 trace: ${var.trace}
 
 vpc_dns_zone: ${var.vpc_dns_zone}
+
+s3_access_key_id: ${var.s3_access_key_id}
+s3_secret_access_key: ${var.s3_secret_access_key}
+s3_default_region: ${var.s3_default_region}
 
 bootstrap_state_s3_endpoint: ${var.terraform_state_s3_endpoint}
 bootstrap_state_bucket: ${var.terraform_state_bucket}

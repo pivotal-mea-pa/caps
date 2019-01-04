@@ -1,0 +1,77 @@
+---
+groups:
+- name: Automate
+  jobs:
+  - bootstrap
+- name: Notify
+  jobs:
+  - notifications
+
+jobs:
+- name: bootstrap
+  public: false
+  serial: true
+  on_failure:
+    do:
+    - task: notify on bootstrap failure
+  plan:
+  - aggregate:
+    - get: automation
+      trigger: true
+    - get: env-config
+      trigger: true
+  - task: configure
+    file: automation/lib/tasks/bootstrap/task.yml
+    params:
+      TRACE: ((trace))
+      # Inceptor services environment
+      CONCOURSE_URL: ((concourse_url))
+      CONCOURSE_USER: ((concourse_user))
+      CONCOURSE_PASSWORD: ((concourse_password))
+      AUTOS3_URL: ((autos3_url))
+      AUTOS3_ACCESS_KEY: ((autos3_access_key))
+      AUTOS3_SECRET_KEY: ((autos3_secret_key))
+      SMTP_HOST: ((smtp_host))
+      SMTP_PORT: ((smtp_port))
+      EMAIL_FROM: ((automation_email))
+      EMAIL_TO: ((notification_email))
+      # Path to common automation tasks
+      # in the inceptor library module
+      PIPELINE_AUTOMATION_PATH: ((pipeline_automation_path))
+      # VMWare VSphere Platform
+      IAAS: vmware
+      # S3 credentials if S3 is the Terraform
+      # backend for the bootstrap state
+      AWS_ACCESS_KEY_ID: 
+      AWS_SECRET_ACCESS_KEY:
+      AWS_DEFAULT_REGION:
+      # Custom S3 end-point if not 
+      # targetting AWS S3
+      TF_STATE_S3_ENDPOINT: ((bootstrap_state_s3_endpoint))
+      # Terraform bootstrap state location
+      BOOTSTRAP_STATE_BUCKET: ((bootstrap_state_bucket))
+      BOOTSTRAP_STATE_PREFIX: ((bootstrap_state_prefix))
+      # VPC and environment details
+      VPC_NAME: ((vpc_name))
+      VPC_DNS_ZONE: ((vpc_dns_zone))
+      ENVIRONMENTS: ((environments))
+      DEPLOYMENT: pcf
+      UNPAUSE_DEPLOYMENT_PIPELINE: ((unpause_deployment_pipeline))
+      SET_START_STOP_SCHEDULE: ((set_start_stop_schedule))
+
+resources:
+
+- name: automation
+  type: git
+  source:
+    uri: ((automation_pipelines_repo))
+    branch: ((automation_pipelines_branch))
+
+- name: env-config
+  type: git
+  source:
+    uri: ((env_config_repo))
+    branch: ((env_config_repo_branch))
+    paths: 
+    - ((env_config_path))/**
+ 

@@ -18,6 +18,22 @@ variable "set_start_stop_schedule" {
 # vCenter IaaS Environment
 #
 
+variable "vsphere_server" {
+  type = "string"
+}
+
+variable "vsphere_user" {
+  type = "string"
+}
+
+variable "vsphere_password" {
+  type = "string"
+}
+
+variable "vsphere_allow_unverified_ssl" {
+  type = "string"
+}
+
 variable "vcenter_datacenter" {
   type = "string"
 }
@@ -66,6 +82,18 @@ variable "admin_network_gateway" {
 #
 # Terraform state attributes
 #
+
+variable "s3_access_key_id" {
+  type = "string"
+}
+
+variable "s3_secret_access_key" {
+  type = "string"
+}
+
+variable "s3_default_region" {
+  default = ""
+}
 
 variable "terraform_state_s3_endpoint" {
   default = ""
@@ -130,11 +158,25 @@ variable "bastion_instance_cpus" {
 }
 
 variable "bastion_root_disk_size" {
-  default = 50
+  default = "50"
 }
 
 variable "bastion_data_disk_size" {
-  default = 250
+  default = "250"
+}
+
+# IP for Bastion NIC on DMZ network segment. 
+# Defaults to 31st IP of DMZ network's CIDR
+# if value is empty.
+variable "bastion_dmz_ip" {
+  default = ""
+}
+
+# IP for Bastion NIC on Admin network segment. 
+# Defaults to 31st IP of DMZ network's CIDR
+# if value is empty.
+variable "bastion_admin_ip" {
+  default = ""
 }
 
 #
@@ -281,16 +323,27 @@ variable "pcf_environments" {
   default = ["sandbox"]
 }
 
-# The PCF Networks to create. The order in which subnets should 
-# be configured are provided via the 'subnet_config_order' key.
-# If you need to add subnets always add to the end of this list.
-# Otherwise any reordering will result in networks being recreated 
-# and may have undesired outcomes.
+# Network configuration for each Ops Manager instance within
+# each environment. Each configuration should be a map of
+# "vcenter_network_name", "network_cidr", "network_gateway" 
+# and "ip"
+
+#export TF_VAR_pcf_ops_manager_network='{
+#}'
+variable "pcf_ops_manager_network" {
+  type = "map"
+}
+
+# The PCF logical networks to create. The order in which subnets 
+# should be configured are provided via the 'subnet_config_order'
+# key. If you need to add subnets always add to the end of this 
+# list. Otherwise any reordering will result in networks being 
+# recreated and may have undesired outcomes.
 
 #export TF_VAR_pcf_networks='{
 #  sandbox = {
 #    service_networks    = "services,dynamic-services"
-#    subnet_config_order = "infrastructure,pas-1,services-1,dynamic-services-1,monitoring"
+#    subnet_config_order = "infrastructure,pas-1,services-1,dynamic-services-1"
 #  }
 #}'
 variable "pcf_networks" {
@@ -299,7 +352,7 @@ variable "pcf_networks" {
   default = {
     sandbox = {
       service_networks    = "services,dynamic-services"
-      subnet_config_order = "infrastructure,pas-1,services-1,dynamic-services-1,monitoring"
+      subnet_config_order = "infrastructure,pas-1,services-1,dynamic-services-1"
     }
   }
 }
@@ -308,35 +361,45 @@ variable "pcf_networks" {
 # is reserved for bootstrap services and should not be used for PCF 
 # environments.  Multiple subnets must post-fix the network name 
 # with '-#' for each subnet. Subnets are additive once they have 
-# been created.
+# been created. Each subnet configuration should be a map of
+# "vcenter_network_name", "network_cidr", "network_gateway" and 
+# "reserved_ip_ranges" used to declare the logical Bosh networks.
+#
+# For example:
+#
+# {
+#   sandbox = {
+#     infrastructure = {
+#       vcenter_network_name = "VM Network"
+#       network_cidr         = "10.193.237.0/24"
+#       network_gateway      = "10.193.237.1"
+#       reserved_ip_ranges   = "10.193.237.1-10.193.237.32,10.193.237.40-10.193.237.254"
+#     }
+#     pas-1 = {
+#       vcenter_network_name = "VM Network"
+#       network_cidr         = "10.193.237.0/24"
+#       network_gateway      = "10.193.237.1"
+#       reserved_ip_ranges   = "10.193.237.1-10.193.237.39,10.193.237.70-10.193.237.254"
+#     }
+#     services-1 = {
+#       vcenter_network_name = "VM Network"
+#       network_cidr         = "10.193.237.0/24"
+#       network_gateway      = "10.193.237.1"
+#       reserved_ip_ranges   = "10.193.237.1-10.193.237.69,10.193.237.100-10.193.237.254"
+#     }
+#     dynamic-services-1 = {
+#       vcenter_network_name = "VM Network"
+#       network_cidr         = "10.193.237.0/24"
+#       network_gateway      = "10.193.237.1"
+#       reserved_ip_ranges   = "10.193.237.1-10.193.237.99,10.193.237.150-10.193.237.254"
+#     }
+#   }
+# }'
 
 #export TF_VAR_pcf_network_subnets='{
-#  sandbox = {
-#    infrastructure     = "192.168.101.0/26"
-#    pas-1              = "192.168.4.0/22"
-#    services-1         = "192.168.8.0/22"
-#    dynamic-services-1 = "192.168.12.0/22"
-#    monitoring         = "192.168.101.64/26"
-#  }
-#}
+#}'
 variable "pcf_network_subnets" {
   type = "map"
-
-  default = {
-    sandbox = {
-      infrastructure     = "192.168.101.0/26"
-      pas-1              = "192.168.4.0/22"
-      services-1         = "192.168.8.0/22"
-      dynamic-services-1 = "192.168.12.0/22"
-      monitoring         = "192.168.101.64/26"
-    }
-  }
-}
-
-# Comma separated list of additional DNS hosts to use
-# for instances deployed to the pcf networks.
-variable "pcf_network_dns" {
-  default = "169.254.169.254"
 }
 
 #
@@ -345,69 +408,4 @@ variable "pcf_network_dns" {
 
 variable "pivnet_token" {
   type = "string"
-}
-
-# PCF Ops Manager minor version to track
-variable "opsman_major_minor_version" {
-  type = "string"
-}
-
-# List of products to install. This should be a space 
-# separated list of:
-#
-# product_name:product_slug/product_version_regex[:errands_to_disable[:errands_to_enable]]
-#
-# The 'errands_to_disable' and 'errands_to_enable' fields 
-# should consist of comma separated errand names.
-variable "products" {
-  type = "string"
-}
-
-# Number of Diego Cells to deploy
-variable "num_diego_cells" {
-  default = "1"
-}
-
-#
-# Backup / Restore pipeline params
-#
-
-variable "backup_interval" {
-  default = "1h"
-}
-
-variable "backup_interval_start" {
-  default = "02:00 AM"
-}
-
-variable "backup_interval_stop" {
-  default = "02:30 AM"
-}
-
-variable "backup_age" {
-  default = "2"
-}
-
-#
-# Stop / Start event pipeline trigger time periods
-#
-
-# Time in 24h format (HH:MM) when deployments in the
-# PCF environment should be stopped and VMs shutdown
-variable "pcf_stop_at" {
-  default = "0"
-}
-
-variable "pcf_stop_trigger_days" {
-  default = "[Sunday, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday]"
-}
-
-# Time in 24h format (HH:MM) when deployments
-# in the PCF environment should be started
-variable "pcf_start_at" {
-  default = "0"
-}
-
-variable "pcf_start_trigger_days" {
-  default = "[Sunday, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday]"
 }

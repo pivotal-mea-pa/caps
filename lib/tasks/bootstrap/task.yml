@@ -38,18 +38,29 @@ params:
   # 
   # This must be one (in lowercase):
   #
-  #   - vsphere
+  #   - vmware
   #   - openstack
   #   - aws"
   #   - azure
   #   - google
   #
-  IAAS: google
+  IAAS:
 
-  # Google Cloud Platform credentials
-  GOOGLE_PROJECT:
+  # Google Cloud Platform credentials if 
+  # GCS is the Terraform backend for the
+  # bootstrap state
   GOOGLE_CREDENTIALS_JSON:
+  GOOGLE_PROJECT:
   GOOGLE_REGION:
+
+  # S3 credentials if S3 is the Terraform
+  # backend for the bootstrap state
+  S3_ACCESS_KEY_ID:
+  S3_SECRET_ACCESS_KEY:
+  S3_DEFAULT_REGION:
+  # Custom S3 end-point if not 
+  # targetting AWS S3
+  TF_STATE_S3_ENDPOINT:
 
   # Terraform bootstrap state location
   BOOTSTRAP_STATE_BUCKET:

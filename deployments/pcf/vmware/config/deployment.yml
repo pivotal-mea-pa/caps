@@ -1,7 +1,10 @@
-locale: Asia/Dubai
+locale: 'Asia/Dubai'
 
 # PCF Ops Manager minor version to track
-opsman_major_minor_version: 2\.3\.[0-9]+$
+opsman_major_minor_version: '2\.3\.[0-9]+$'
+
+# IAAS Specific Ops Manager Image data to download from Pivnet
+opsman_pivnet_glob: '*.ova'
 
 # List of products to install. This should be a space 
 # separated list of:
@@ -30,9 +33,9 @@ products: |
 num_diego_cells: 5
 
 # Backup time and interval
-backup_interval: 1h
-backup_interval_start: 02:00 AM
-backup_interval_stop: 02:30 AM
+backup_interval: '1h'
+backup_interval_start: '02:00 AM'
+backup_interval_stop: '02:30 AM'
 
 # Backups older than this age will be cleaned up
 backup_age: 2

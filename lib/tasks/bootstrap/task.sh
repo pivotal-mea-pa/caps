@@ -44,9 +44,36 @@ EOL
 deployment_config=env-config/$VPC_NAME/config/deployment.yml
 yaml_to_env $deployment_config
 
-echo "$GOOGLE_CREDENTIALS_JSON" > .gcp-service-account.json
-export GOOGLE_CREDENTIALS=$(pwd)/.gcp-service-account.json
-gcloud auth activate-service-account --key-file=$GOOGLE_CREDENTIALS
+export TF_VAR_bootstrap_state_bucket=$BOOTSTRAP_STATE_BUCKET
+export TF_VAR_bootstrap_state_prefix=$BOOTSTRAP_STATE_PREFIX
+
+case $IAAS in
+  google)
+    if [[ -n $GOOGLE_CREDENTIALS_JSON ]]; then
+      echo "ERROR! A Google service key needs to be provided via the 'GOOGLE_CREDENTIALS_JSON' environment variable."
+      exit 1
+    fi
+
+    echo "$GOOGLE_CREDENTIALS_JSON" > .gcp-service-account.json
+    export GOOGLE_CREDENTIALS=$(pwd)/.gcp-service-account.json
+    gcloud auth activate-service-account --key-file=$GOOGLE_CREDENTIALS
+    ;;
+
+  *)
+    # Default is to use an S3 backend to save terraform state
+
+    if [[ -z $S3_ACCESS_KEY_ID || -z $S3_SECRET_ACCESS_KEY ]]; then
+      echo "ERROR! Credentials for default S3 remote backend should be provided via 'S3_ACCESS_KEY_ID' and 'S3_SECRET_ACCESS_KEY' environment variables"
+      exit 1
+    fi
+
+    export AWS_ACCESS_KEY_ID=$S3_ACCESS_KEY_ID
+    export AWS_SECRET_ACCESS_KEY=$S3_SECRET_ACCESS_KEY
+    export AWS_DEFAULT_REGION=$S3_DEFAULT_REGION
+
+    export TF_VAR_bootstrap_state_endpoint=$TF_STATE_S3_ENDPOINT
+    ;;
+esac
 
 # Create a local s3 bucket for pcf automation data
 mc config host add auto $AUTOS3_URL $AUTOS3_ACCESS_KEY $AUTOS3_SECRET_KEY
@@ -83,14 +110,12 @@ start_and_stop_patches_path=automation/lib/pipelines/$DEPLOYMENT/stop-and-start/
 terraform init $terraform_params_path
 
 terraform apply -auto-approve \
-  -var "bootstrap_state_bucket=$BOOTSTRAP_STATE_BUCKET" \
-  -var "bootstrap_state_prefix=$BOOTSTRAP_STATE_PREFIX" \
-  -var "params_template_file=$download_products_pipeline_path/${IAAS}/params.yml" \
+  -var "params_template_file=$download_products_pipeline_path/params.yml" \
   -var "params_file=download-products-params.yml" \
   -var "environment=" \
   $terraform_params_path >/dev/null
 
-eval "echo \"$(cat $download_products_pipeline_path/${IAAS}/pipeline.yml)\"" \
+eval "echo \"$(cat $download_products_pipeline_path/pipeline.yml)\"" \
   > download-products-pipeline0.yml
 
 i=0 && j=1
@@ -241,8 +266,6 @@ for e in $ENVIRONMENTS; do
   terraform init $terraform_params_path
 
   terraform apply -auto-approve \
-    -var "bootstrap_state_bucket=$BOOTSTRAP_STATE_BUCKET" \
-    -var "bootstrap_state_prefix=$BOOTSTRAP_STATE_PREFIX" \
     -var "params_template_file=$install_and_upgrade_pipeline_path/${IAAS}/params.yml" \
     -var "params_file=install-and-upgrade-params.yml" \
     -var "environment=${e}" \
@@ -278,8 +301,6 @@ for e in $ENVIRONMENTS; do
   terraform init $terraform_params_path
 
   terraform apply -auto-approve \
-    -var "bootstrap_state_bucket=$BOOTSTRAP_STATE_BUCKET" \
-    -var "bootstrap_state_prefix=$BOOTSTRAP_STATE_PREFIX" \
     -var "params_template_file=$backup_and_restore_pipeline_path/${IAAS}/params.yml" \
     -var "params_file=backup-and-restore-params.yml" \
     -var "environment=${e}" \
@@ -349,8 +370,6 @@ for e in $ENVIRONMENTS; do
   terraform init $terraform_params_path
 
   terraform apply -auto-approve \
-    -var "bootstrap_state_bucket=$BOOTSTRAP_STATE_BUCKET" \
-    -var "bootstrap_state_prefix=$BOOTSTRAP_STATE_PREFIX" \
     -var "params_template_file=$start_and_stop_pipeline_path/${IAAS}/params.yml" \
     -var "params_file=stop-and-start-params.yml" \
     -var "environment=${e}" \

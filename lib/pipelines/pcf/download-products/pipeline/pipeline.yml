@@ -1,0 +1,76 @@
+---
+resource_types:
+
+- name: pivnet
+  type: docker-image
+  source:
+    repository: pivotalcf/pivnet-resource
+    tag: latest-final
+
+resources:
+
+- name: automation
+  type: git
+  source:
+    uri: ((automation_pipelines_repo))
+    branch: ((automation_pipelines_branch))
+
+- name: schedule
+  type: time
+  source:
+    interval: 30m
+    start: "12:00 AM"
+    stop: "11:59 PM"
+    location: ((locale))
+    days: [Sunday, Monday, Tuesday, Wednesday, Thursday, Friday, Saturday]
+
+- name: opsman-download
+  type: pivnet
+  source:
+    api_token: ((pivnet_token))
+    product_slug: ops-manager
+    product_version: ((opsman_major_minor_version))
+    sort_by: semver
+
+jobs:
+
+- name: opsman-download-regulator
+  plan:
+  - get: schedule
+    trigger: true
+  - get: opsman-download
+    params: {globs: []}
+
+- name: download-opsman
+  on_failure:
+    do:
+    - task: notify on download-opsman failure
+
+  serial: true
+  plan:
+  - aggregate:
+    - get: automation
+    - get: pivnet-product 
+      resource: opsman-download
+      passed: [opsman-download-regulator]
+      trigger: true
+      params:
+        globs:
+        - ((opsman_pivnet_glob))
+
+  # Download product tile and its stemcell to local repository
+  - task: download-to-local-repo
+    file: automation/lib/pipelines/pcf/download-products/tasks/download-product/task.yml
+    params:
+      IAAS: ((iaas_type))
+      OPSMAN_HOST: ((opsman_host))
+      OPSMAN_CLIENT_ID: ((opsman_client_id))
+      OPSMAN_CLIENT_SECRET: ((opsman_client_secret))
+      OPSMAN_USERNAME: ((opsman_admin_username))
+      OPSMAN_PASSWORD: ((opsman_admin_password))
+      PIVNET_API_TOKEN: ((pivnet_token))
+      NAME: ops-manager
+      AUTOS3_URL: ((autos3_url))
+      AUTOS3_ACCESS_KEY: ((autos3_access_key))
+      AUTOS3_SECRET_KEY: ((autos3_secret_key))
+      BUCKET: pcf

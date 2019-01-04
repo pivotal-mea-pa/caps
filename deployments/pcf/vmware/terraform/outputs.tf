@@ -15,6 +15,45 @@ output "root_ca_cert" {
 }
 
 #
+# vCenter IaaS Environment
+#
+
+output "vsphere_server" {
+  value = "${var.vsphere_server}"
+}
+
+output "vsphere_user" {
+  value = "${var.vsphere_user}"
+}
+
+output "vsphere_password" {
+  value = "${var.vsphere_password}"
+}
+
+output "vsphere_allow_unverified_ssl" {
+  value = "${var.vsphere_allow_unverified_ssl}"
+}
+
+output "vcenter_datacenter" {
+  value = "${var.vcenter_datacenter}"
+}
+
+# Comma separated list of availability zone clusters
+output "vcenter_clusters" {
+  value = "${var.vcenter_clusters}"
+}
+
+# Comma separated list of ephemeral data stores
+output "vcenter_ephemeral_datastores" {
+  value = "${var.vcenter_ephemeral_datastores}"
+}
+
+# Comma separated list of persistent data stores
+output "vcenter_persistant_datastores" {
+  value = "${var.vcenter_persistant_datastores}"
+}
+
+#
 # Terraform state attributes
 #
 
@@ -109,6 +148,10 @@ output "pcf_sandbox_environment" {
 # PCF Deployment Networks CIDRs
 #
 
+output "pcf_ops_manager_network" {
+  value = "${var.pcf_ops_manager_network}"
+}
+
 output "pcf_networks" {
   value = "${var.pcf_networks}"
 }
@@ -118,7 +161,7 @@ output "pcf_network_subnets" {
 }
 
 output "pcf_network_dns" {
-  value = "${var.pcf_network_dns}"
+  value = "${local.bastion_admin_ip}"
 }
 
 #
@@ -148,56 +191,8 @@ output "credhub_encryption_key" {
   sensitive = true
 }
 
-output "opsman_major_minor_version" {
-  value = "${var.opsman_major_minor_version}"
-}
-
 output "notification_email" {
   value = "${var.notification_email}"
-}
-
-output "num_diego_cells" {
-  value = "${var.num_diego_cells}"
-}
-
-#
-# Backup / Restore pipeline params
-#
-
-output "backup_interval" {
-  value = "${var.backup_interval}"
-}
-
-output "backup_interval_start" {
-  value = "${var.backup_interval_start}"
-}
-
-output "backup_interval_stop" {
-  value = "${var.backup_interval_stop}"
-}
-
-output "backup_age" {
-  value = "${var.backup_age}"
-}
-
-#
-# Stop / Start pipeline event trigger time periods
-#
-
-output "pcf_stop_at" {
-  value = "${var.pcf_stop_at}"
-}
-
-output "pcf_stop_trigger_days" {
-  value = "${var.pcf_stop_trigger_days}"
-}
-
-output "pcf_start_at" {
-  value = "${var.pcf_start_at}"
-}
-
-output "pcf_start_trigger_days" {
-  value = "${var.pcf_start_trigger_days}"
 }
 
 #
