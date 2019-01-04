@@ -285,14 +285,14 @@ variable "pcf_networks" {
 # been created.
 
 #export TF_VAR_pcf_network_subnets='{
-#  sandbox = {
+#  sandbox = '{
 #    infrastructure     = "192.168.101.0/26"
 #    pas-1              = "192.168.4.0/22"
 #    services-1         = "192.168.8.0/22"
 #    dynamic-services-1 = "192.168.12.0/22"
 #    monitoring         = "192.168.101.64/26"
 #  }
-#}
+#}'
 variable "pcf_network_subnets" {
   type = "map"
 
