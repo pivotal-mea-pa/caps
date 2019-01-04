@@ -11,7 +11,3 @@ data "terraform_remote_state" "bootstrap" {
     prefix = "${var.bootstrap_state_prefix}"
   }
 }
-
-data "google_compute_zones" "zones" {
-  region = "${data.terraform_remote_state.bootstrap.gcp_region}"
-}
