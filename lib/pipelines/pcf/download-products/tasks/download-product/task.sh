@@ -4,110 +4,113 @@
 set -eu
 
 TILE_FILE_PATH=`find ./pivnet-product -name *.pivotal | sort | head -1`
+if [[ -n "$TILE_FILE_PATH" ]]; then
 
-STEMCELL_VERSION=$(
-  cat ./pivnet-product/metadata.json |
-  jq --raw-output \
-    '
-    [
-      .Dependencies[]
-      | select(.Release.Product.Name | contains("Stemcells"))
-      | .Release.Version
-    ]
-    | map(split(".") | map(tonumber))
-    | transpose | transpose
-    | max // empty
-    | map(tostring)
-    | join(".")
-    '
-)
-
-if [ -n "$STEMCELL_VERSION" ]; then
-
-  set +e
-  diagnostic_report=$(
-    om \
-      --target https://$OPSMAN_HOST \
-      --client-id "${OPSMAN_CLIENT_ID}" \
-      --client-secret "${OPSMAN_CLIENT_SECRET}" \
-      --username "$OPSMAN_USERNAME" \
-      --password "$OPSMAN_PASSWORD" \
-      --skip-ssl-validation \
-      curl --silent --path "/api/v0/diagnostic_report"
+  STEMCELL_VERSION=$(
+    cat ./pivnet-product/metadata.json |
+    jq --raw-output \
+      '
+      [
+        .Dependencies[]
+        | select(.Release.Product.Name | contains("Stemcells"))
+        | .Release.Version
+      ]
+      | map(split(".") | map(tonumber))
+      | transpose | transpose
+      | max // empty
+      | map(tostring)
+      | join(".")
+      '
   )
-  if [[ $? -eq 0 ]]; then
-    stemcell=$(
-      echo $diagnostic_report |
-      jq \
-        --arg version "$STEMCELL_VERSION" \
-        --arg glob "$IAAS" \
-      '.stemcells[] | select(contains($version) and contains($glob))'
-    )
-  else
-    echo "Ops Manager has not been setting so proceeding with stemcell download..."
-    stemcell=""
-  fi
-  set -e
 
-  if [[ -z "$stemcell" ]]; then
-    echo "Downloading stemcell $STEMCELL_VERSION"
-    cd ./pivnet-product
+  if [ -n "$STEMCELL_VERSION" ]; then
 
-    product_slug=$(
-      jq --raw-output \
-        '
-        if any(.Dependencies[]; select(.Release.Product.Name | contains("Stemcells for PCF (Windows)"))) then
-          "stemcells-windows-server"
-        else
-          "stemcells"
-        end
-        ' < ./metadata.json
-    )
-
-    pivnet-cli login --api-token="$PIVNET_API_TOKEN"
-    
     set +e
-    pivnet-cli download-product-files -p "$product_slug" -r $STEMCELL_VERSION -g "*${IAAS}*" --accept-eula
-    if [[ $? -ne 0 ]]; then
-      set -e
-
-      # Download stemcell from bosh.io
-      case "$IAAS" in
-        google)
-          stemcell_download_url=https://s3.amazonaws.com/bosh-gce-light-stemcells/light-bosh-stemcell-${STEMCELL_VERSION}-google-kvm-ubuntu-xenial-go_agent.tgz
-          ;;
-        # aws)
-        #   ;;
-        # azure)
-        #   ;;
-        # vsphere)
-        #   ;;
-        # openstack)
-        #   ;;
-        *)
-          echo "ERROR! Unknown IAAS - $IAAS."
-          exit 1
-          ;;
-      esac
-
-      curl -OL $stemcell_download_url
+    diagnostic_report=$(
+      om \
+        --target https://$OPSMAN_HOST \
+        --client-id "${OPSMAN_CLIENT_ID}" \
+        --client-secret "${OPSMAN_CLIENT_SECRET}" \
+        --username "$OPSMAN_USERNAME" \
+        --password "$OPSMAN_PASSWORD" \
+        --skip-ssl-validation \
+        curl --silent --path "/api/v0/diagnostic_report"
+    )
+    if [[ $? -eq 0 ]]; then
+      stemcell=$(
+        echo $diagnostic_report |
+        jq \
+          --arg version "$STEMCELL_VERSION" \
+          --arg glob "$IAAS" \
+        '.stemcells[] | select(contains($version) and contains($glob))'
+      )
     else
-      set -e
+      echo "Ops Manager has not been setting so proceeding with stemcell download..."
+      stemcell=""
     fi
+    set -e
 
-    if [ ! -f "$(find ./ -name *.tgz)" ]; then
-      echo "Stemcell file not found!"
-      exit 1
+    if [[ -z "$stemcell" ]]; then
+      echo "Downloading stemcell $STEMCELL_VERSION"
+      cd ./pivnet-product
+
+      product_slug=$(
+        jq --raw-output \
+          '
+          if any(.Dependencies[]; select(.Release.Product.Name | contains("Stemcells for PCF (Windows)"))) then
+            "stemcells-windows-server"
+          else
+            "stemcells"
+          end
+          ' < ./metadata.json
+      )
+
+      pivnet-cli login --api-token="$PIVNET_API_TOKEN"
+      
+      set +e
+      pivnet-cli download-product-files -p "$product_slug" -r $STEMCELL_VERSION -g "*${IAAS}*" --accept-eula
+      if [[ $? -ne 0 ]]; then
+        set -e
+
+        # Download stemcell from bosh.io
+        case "$IAAS" in
+          google)
+            stemcell_download_url=https://s3.amazonaws.com/bosh-gce-light-stemcells/light-bosh-stemcell-${STEMCELL_VERSION}-google-kvm-ubuntu-xenial-go_agent.tgz
+            ;;
+          # aws)
+          #   ;;
+          # azure)
+          #   ;;
+          # vsphere)
+          #   ;;
+          # openstack)
+          #   ;;
+          *)
+            echo "ERROR! Unknown IAAS - $IAAS."
+            exit 1
+            ;;
+        esac
+
+        curl -OL $stemcell_download_url
+      else
+        set -e
+      fi
+
+      if [ ! -f "$(find ./ -name *.tgz)" ]; then
+        echo "Stemcell file not found!"
+        exit 1
+      fi
+      cd -
     fi
-    cd -
   fi
+
+  unzip $TILE_FILE_PATH metadata/*
+  PRODUCT_NAME="$(cat metadata/*.yml | grep '^name' | cut -d' ' -f 2)"
+else
+  PRODUCT_NAME=${NAME}
 fi
 
 tar cvzf pivnet-product.tgz ./pivnet-product
-
-FILE_PATH=`find ./pivnet-product -name *.pivotal | sort | head -1`
-unzip $FILE_PATH metadata/*
-PRODUCT_NAME="$(cat metadata/*.yml | grep '^name' | cut -d' ' -f 2)"
 
 #
 # Upload product metadata, tile and stemcell to local s3 repo
