@@ -138,22 +138,22 @@ module "bootstrap" {
   bootstrap_pipeline_vars = <<PIPELINE_VARS
 trace: ${var.trace}
 
-vpc_dns_zone: ${var.vpc_dns_zone}
+vpc_dns_zone: '${var.vpc_dns_zone}'
 
-s3_access_key_id: ${var.s3_access_key_id}
-s3_secret_access_key: ${var.s3_secret_access_key}
-s3_default_region: ${var.s3_default_region}
+s3_access_key_id: '${var.s3_access_key_id}'
+s3_secret_access_key: '${var.s3_secret_access_key}'
+s3_default_region: '${var.s3_default_region}'
 
-bootstrap_state_s3_endpoint: ${var.terraform_state_s3_endpoint}
-bootstrap_state_bucket: ${var.terraform_state_bucket}
-bootstrap_state_prefix: ${local.bootstrap_state_prefix}
+bootstrap_state_s3_endpoint: '${var.terraform_state_s3_endpoint}'
+bootstrap_state_bucket: '${var.terraform_state_bucket}'
+bootstrap_state_prefix: '${local.bootstrap_state_prefix}'
 
-automation_pipelines_repo: ${var.automation_pipelines_repo}
-automation_pipelines_branch: ${var.automation_pipelines_branch}
+automation_pipelines_repo: '${var.automation_pipelines_repo}'
+automation_pipelines_branch: '${var.automation_pipelines_branch}'
 
-env_config_repo: ${var.env_config_repo}
-env_config_repo_branch: ${var.env_config_repo_branch}
-env_config_path: ${var.env_config_path}
+env_config_repo: '${var.env_config_repo}'
+env_config_repo_branch: '${var.env_config_repo_branch}'
+env_config_path: '${var.env_config_path}'
 
 environments: '${join(" ", var.pcf_environments)}'
 
