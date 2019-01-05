@@ -3,6 +3,11 @@
 [[ -n "$TRACE" ]] && set -x
 set -eu
 
+# Rename IAAS name as pivnet recognizes VMware as VSphere
+if [[ "$IAAS" == "vmware" ]]; then
+  export IAAS=vsphere
+fi
+
 TILE_FILE_PATH=`find ./pivnet-product -name *.pivotal | sort | head -1`
 if [[ -n "$TILE_FILE_PATH" ]]; then
 
