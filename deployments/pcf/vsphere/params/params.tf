@@ -11,6 +11,11 @@ data "template_file" "params" {
     vsphere_password             = "${data.terraform_remote_state.bootstrap.vsphere_password}"
     vsphere_allow_unverified_ssl = "${data.terraform_remote_state.bootstrap.vsphere_allow_unverified_ssl}"
 
+    vcenter_datacenter            = "${data.terraform_remote_state.bootstrap.vcenter_datacenter}"
+    vcenter_clusters              = "${data.terraform_remote_state.bootstrap.vcenter_clusters}"
+    vcenter_ephemeral_datastores  = "${data.terraform_remote_state.bootstrap.vcenter_ephemeral_datastores}"
+    vcenter_persistant_datastores = "${data.terraform_remote_state.bootstrap.vcenter_persistant_datastores}"
+
     terraform_state_bucket = "${data.terraform_remote_state.bootstrap.terraform_state_bucket}"
     bootstrap_state_prefix = "${data.terraform_remote_state.bootstrap.bootstrap_state_prefix}"
 

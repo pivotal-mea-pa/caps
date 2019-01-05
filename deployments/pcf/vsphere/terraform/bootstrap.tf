@@ -140,6 +140,16 @@ module "bootstrap" {
   bootstrap_pipeline_vars = <<PIPELINE_VARS
 trace: ${var.trace}
 
+vsphere_server: '${var.vsphere_server}'
+vsphere_user: '${var.vsphere_user}'
+vsphere_password: '${var.vsphere_password}'
+vsphere_allow_unverified_ssl: ${var.vsphere_allow_unverified_ssl}
+
+vcenter_datacenter: '${var.vcenter_datacenter}'
+vcenter_clusters: '${var.vcenter_clusters}'
+vcenter_ephemeral_datastores: '${var.vcenter_ephemeral_datastores}'
+vcenter_persistant_datastores: '${var.vcenter_persistant_datastores}'
+
 vpc_dns_zone: '${var.vpc_dns_zone}'
 
 s3_access_key_id: '${var.s3_access_key_id}'

@@ -12,22 +12,18 @@ pcf_terraform_templates_path: '${pcf_terraform_templates_path}'
 pcf_tile_templates_path: '${pcf_tile_templates_path}'
 
 #
-# GCP Credentials
+# VSphere Credentials
 #
 
-# GCP credentials JSON. The service account must have the Editor role.
-gcp_service_account_key: |
-  ${gcp_credentials}
+vsphere_server: "${vsphere_server}"
+vsphere_user: "${vsphere_user}"
+vsphere_password: "${vsphere_password}"
+vsphere_allow_unverified_ssl: "${vsphere_allow_unverified_ssl}"
 
-# Project to create the infrastructure in
-gcp_project: '${gcp_project}'
-
-# Region to create the infrastructure in
-gcp_region: '${gcp_region}'
-
-# GCP Interopable storage access key: https://console.cloud.google.com/storage/settings
-gcp_storage_access_key: '${gcp_storage_access_key}'
-gcp_storage_secret_key: '${gcp_storage_secret_key}'
+vcenter_datacenter: "${vcenter_datacenter}"
+vcenter_clusters: "${vcenter_clusters}"
+vcenter_ephemeral_datastores: "${vcenter_ephemeral_datastores}"
+vcenter_persistant_datastores: "${vcenter_persistant_datastores}"
 
 # Terraform state location
 terraform_state_bucket: "${terraform_state_bucket}"
