@@ -15,19 +15,23 @@ pcf_tile_templates_path: '${pcf_tile_templates_path}'
 # VSphere Credentials
 #
 
-vsphere_server: "${vsphere_server}"
-vsphere_user: "${vsphere_user}"
-vsphere_password: "${vsphere_password}"
-vsphere_allow_unverified_ssl: "${vsphere_allow_unverified_ssl}"
+vsphere_server: '${vsphere_server}'
+vsphere_user: '${vsphere_user}'
+vsphere_password: '${vsphere_password}'
+vsphere_allow_unverified_ssl: '${vsphere_allow_unverified_ssl}'
 
-vcenter_datacenter: "${vcenter_datacenter}"
-vcenter_clusters: "${vcenter_clusters}"
-vcenter_ephemeral_datastores: "${vcenter_ephemeral_datastores}"
-vcenter_persistant_datastores: "${vcenter_persistant_datastores}"
+vcenter_datacenter: '${vcenter_datacenter}'
+vcenter_clusters: '${vcenter_clusters}'
+vcenter_ephemeral_datastores: '${vcenter_ephemeral_datastores}'
+vcenter_persistant_datastores: '${vcenter_persistant_datastores}'
+
+vcenter_templates_path: '${vcenter_templates_path}'
+vcenter_vms_path: '${vcenter_vms_path}'
+vcenter_disks_path: '${vcenter_disks_path}'
 
 # Terraform state location
-terraform_state_bucket: "${terraform_state_bucket}"
-bootstrap_state_prefix: "${bootstrap_state_prefix}"
+terraform_state_bucket: '${terraform_state_bucket}'
+bootstrap_state_prefix: '${bootstrap_state_prefix}'
 
 # Environment identifiers
 deployment_prefix: '${vpc_name}-${environment}'
@@ -40,6 +44,14 @@ environment: '${environment}'
 # Pivnet token for downloading resources from Pivnet. Find this 
 # token at https://network.pivotal.io/users/dashboard/edit-profile
 pivnet_token: '${pivnet_token}'
+
+# Operations Manager VCenter deployment config
+opsman_vcenter_cluster: '${opsman_vcenter_cluster}'
+opsman_vcenter_datastore: '${opsman_vcenter_datastore}'
+opsman_vcenter_network: '${opsman_vcenter_network}'
+opsman_vcenter_network_cidr: '${opsman_vcenter_network_cidr}'
+opsman_vcenter_network_gateway: '${opsman_vcenter_network_gateway}'
+opsman_vcenter_ip: '${opsman_vcenter_ip}'
 
 # This should be your pcf_ert_domain with "opsman." as a prefix
 opsman_host: 'opsman.${environment}.${vpc_dns_zone}'
@@ -67,8 +79,8 @@ common_admin_password: '${common_admin_password}'
 # any clients or downstream components that will initiate TLS handshakes 
 # with the Router/HAProxy. The recommended settings are filled in below, 
 # change as necessary.
-router_tls_ciphers: "ECDHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384"
-haproxy_tls_ciphers: "DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384"
+router_tls_ciphers: 'ECDHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384'
+haproxy_tls_ciphers: 'DHE-RSA-AES128-GCM-SHA256:DHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-GCM-SHA384'
 
 # C2C Networking network CIDR
 container_networking_nw_cidr: '10.255.0.0/16'
@@ -170,4 +182,4 @@ enable_errands: ''
 # release files. "*pivotal" is the default.
 # For products such as ERT, it is recommended to use "cf*pivotal" to avoid the
 # extra download of the SRT file in PCF 1.12.*
-product_globs: "*pivotal"
+product_globs: '*pivotal'

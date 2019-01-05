@@ -38,6 +38,21 @@ variable "vcenter_datacenter" {
   type = "string"
 }
 
+# Resource paths in VCenter. This paths will be 
+# prefixed by the environment.
+
+variable "vcenter_templates_path" {
+  default = "pcf-templates"
+}
+
+variable "vcenter_vms_path" {
+  default = "pcf-vms"
+}
+
+variable "vcenter_disks_path" {
+  default = "pcf-disks"
+}
+
 # Comma separated list of availability zone clusters
 variable "vcenter_clusters" {
   type = "string"
@@ -325,12 +340,18 @@ variable "pcf_environments" {
 
 # Network configuration for each Ops Manager instance within
 # each environment. Each configuration should be a map of
-# "vcenter_network_name", "network_cidr", "network_gateway" 
-# and "ip"
+#
+#  - cluster
+#  - datastore
+#  - network
+#  - network_cidr
+#  - network_gateway
+#  - ip
+#
 
-#export TF_VAR_pcf_ops_manager_network='{
+#export TF_VAR_pcf_opsman_vcenter_config='{
 #}'
-variable "pcf_ops_manager_network" {
+variable "pcf_opsman_vcenter_config" {
   type = "map"
 }
 

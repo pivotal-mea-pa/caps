@@ -38,6 +38,18 @@ output "vcenter_datacenter" {
   value = "${var.vcenter_datacenter}"
 }
 
+output "vcenter_templates_path" {
+  value = "${var.vcenter_templates_path}"
+}
+
+output "vcenter_vms_path" {
+  value = "${var.vcenter_vms_path}"
+}
+
+output "vcenter_disks_path" {
+  value = "${var.vcenter_disks_path}"
+}
+
 # Comma separated list of availability zone clusters
 output "vcenter_clusters" {
   value = "${var.vcenter_clusters}"
@@ -148,8 +160,8 @@ output "pcf_sandbox_environment" {
 # PCF Deployment Networks CIDRs
 #
 
-output "pcf_ops_manager_network" {
-  value = "${var.pcf_ops_manager_network}"
+output "pcf_opsman_vcenter_config" {
+  value = "${var.pcf_opsman_vcenter_config}"
 }
 
 output "pcf_networks" {

@@ -55,9 +55,9 @@ jobs:
       GOVC_PASSWORD: ((vsphere_password))
       GOVC_INSECURE: ((vsphere_allow_unverified_ssl))
       VCENTER_DATACENTER: ((vcenter_datacenter))
-      VCENTER_CLUSTERS: ((vcenter_clusters))
-      VCENTER_EPHEMERAL_DATASTORES: ((vcenter_ephemeral_datastores))
-      VCENTER_PERSISTANT_DATASTORES: ((vcenter_persistant_datastores))
+      OPSMAN_VCENTER_CLUSTER: ((opsman_vcenter_cluster))
+      OPSMAN_VCENTER_DATASTORE: ((opsman_vcenter_datastore))
+      OPSMAN_VCENTER_NETWORK: ((opsman_vcenter_network))
 
   # Wait if the Ops Manager is currently in the
   # process of applying a change

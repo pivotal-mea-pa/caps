@@ -2,6 +2,14 @@
 # Parameters to be passed along when setting up the PCF pipelines
 #
 
+locals {
+  environment = "${length(var.environment) > 0 
+    ? var.environment 
+    : data.terraform_remote_state.bootstrap.pcf_sandbox_environment}"
+
+  opsman_vcenter_config = "${data.terraform_remote_state.bootstrap.pcf_opsman_vcenter_config[var.environment]}"
+}
+
 data "template_file" "params" {
   template = "${file(var.params_template_file)}"
 
@@ -21,9 +29,7 @@ data "template_file" "params" {
 
     vpc_name = "${data.terraform_remote_state.bootstrap.vpc_name}"
 
-    environment = "${length(var.environment) > 0 
-      ? var.environment 
-      : data.terraform_remote_state.bootstrap.pcf_sandbox_environment}"
+    environment = "${local.environment}"
 
     automation_pipelines_repo   = "${data.terraform_remote_state.bootstrap.automation_pipelines_repo}"
     automation_pipelines_branch = "${data.terraform_remote_state.bootstrap.automation_pipelines_branch}"
@@ -35,6 +41,17 @@ data "template_file" "params" {
     pcf_tile_templates_path      = "${data.terraform_remote_state.bootstrap.pcf_tile_templates_path}"
 
     vpc_dns_zone = "${data.terraform_remote_state.bootstrap.vpc_dns_zone}"
+
+    vcenter_templates_path = "${local.environment}_${data.terraform_remote_state.bootstrap.vcenter_templates_path}"
+    vcenter_vms_path       = "${local.environment}_${data.terraform_remote_state.bootstrap.vcenter_vms_path}"
+    vcenter_disks_path     = "${local.environment}_${data.terraform_remote_state.bootstrap.vcenter_disks_path}"
+
+    opsman_vcenter_cluster         = "${lookup(local.opsman_vcenter_config, "cluster")}"
+    opsman_vcenter_datastore       = "${lookup(local.opsman_vcenter_config, "datastore")}"
+    opsman_vcenter_network         = "${lookup(local.opsman_vcenter_config, "network")}"
+    opsman_vcenter_network_cidr    = "${lookup(local.opsman_vcenter_config, "network_cidr")}"
+    opsman_vcenter_network_gateway = "${lookup(local.opsman_vcenter_config, "network_gateway")}"
+    opsman_vcenter_ip              = "${lookup(local.opsman_vcenter_config, "ip")}"
 
     pivnet_token           = "${data.terraform_remote_state.bootstrap.pivnet_token}"
     opsman_admin_password  = "${data.terraform_remote_state.bootstrap.opsman_admin_password}"
