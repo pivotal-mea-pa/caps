@@ -30,3 +30,5 @@ common::show_env
 
 deployment_info_path=$root_dir/deployments/$deployment_name/show_info
 [[ -e $deployment_info_path ]] && source $deployment_info_path
+
+echo -e "${NC}"
