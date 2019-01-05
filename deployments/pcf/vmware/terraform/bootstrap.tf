@@ -109,7 +109,9 @@ module "bootstrap" {
   #
   concourse_admin_password = "${random_string.concourse-admin-password.result}"
 
-  concourse_server_port = "8080"
+  concourse_server_port = "${local.bastion_dmz_ip == local.bastion_admin_ip 
+    ? format("%s:8080", local.bastion_admin_ip) 
+    : "8080"}"
 
   #
   # SMTP Settings
