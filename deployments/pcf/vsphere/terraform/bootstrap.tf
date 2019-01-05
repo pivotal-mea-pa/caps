@@ -22,7 +22,7 @@ locals {
 }
 
 module "bootstrap" {
-  source = "../../../../lib/inceptor/modules/bootstrap-automation/vmware"
+  source = "../../../../lib/inceptor/modules/bootstrap-automation/vsphere"
 
   #
   # Company information used in certificate creation

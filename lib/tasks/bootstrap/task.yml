@@ -38,7 +38,7 @@ params:
   # 
   # This must be one (in lowercase):
   #
-  #   - vmware
+  #   - vsphere
   #   - openstack
   #   - aws"
   #   - azure

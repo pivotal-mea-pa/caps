@@ -147,7 +147,7 @@ case $tf_action in
                         google_compute_disk.bastion-data-disk
                 fi
                 ;;
-            vmware)
+            vsphere)
                 if [[ -n $TF_VAR_dmz_network ]]; then
                     terraform taint \
                         -state=$workspace_path/.terraform/terraform.tfstate \

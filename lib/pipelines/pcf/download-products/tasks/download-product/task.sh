@@ -3,11 +3,6 @@
 [[ -n "$TRACE" ]] && set -x
 set -eu
 
-# Rename IAAS name as pivnet recognizes VMware as VSphere
-if [[ "$IAAS" == "vmware" ]]; then
-  export IAAS=vsphere
-fi
-
 TILE_FILE_PATH=`find ./pivnet-product -name *.pivotal | sort | head -1`
 if [[ -n "$TILE_FILE_PATH" ]]; then
 
@@ -50,7 +45,7 @@ if [[ -n "$TILE_FILE_PATH" ]]; then
         '.stemcells[] | select(contains($version) and contains($glob))'
       )
     else
-      echo "Ops Manager has not been setting so proceeding with stemcell download..."
+      echo "Ops Manager has not been set so proceeding with stemcell download..."
       stemcell=""
     fi
     set -e
@@ -82,14 +77,18 @@ if [[ -n "$TILE_FILE_PATH" ]]; then
           google)
             stemcell_download_url=https://s3.amazonaws.com/bosh-gce-light-stemcells/light-bosh-stemcell-${STEMCELL_VERSION}-google-kvm-ubuntu-xenial-go_agent.tgz
             ;;
-          # aws)
-          #   ;;
-          # azure)
-          #   ;;
-          # vsphere)
-          #   ;;
-          # openstack)
-          #   ;;
+          aws)
+            stemcell_download_url=https://s3.amazonaws.com/bosh-aws-light-stemcells/light-bosh-stemcell-${STEMCELL_VERSION}-aws-xen-hvm-ubuntu-xenial-go_agent.tgz
+            ;;
+          azure)
+            stemcell_download_url=https://s3.amazonaws.com/bosh-core-stemcells/azure/bosh-stemcell-${STEMCELL_VERSION}-azure-hyperv-ubuntu-xenial-go_agent.tgz
+            ;;
+          vsphere)
+            stemcell_download_url=https://s3.amazonaws.com/bosh-core-stemcells/vsphere/bosh-stemcell-${STEMCELL_VERSION}-vsphere-esxi-ubuntu-xenial-go_agent.tgz
+            ;;
+          openstack)
+            stemcell_download_url=https://s3.amazonaws.com/bosh-core-stemcells/openstack/bosh-stemcell-${STEMCELL_VERSION}-openstack-kvm-ubuntu-xenial-go_agent.tgz
+            ;;
           *)
             echo "ERROR! Unknown IAAS - $IAAS."
             exit 1
