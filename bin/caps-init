@@ -76,7 +76,7 @@ iaas_provider=$iaas_provider
 ---EOF
 
 if [[ -e $working_dir/.caps-env_$name ]]; then
-    echo -e "${GREEN}CAPs context initialized to $name."
+    echo -e "${GREEN}CAPs context initialized to $name.${NC}"
     exit 0
 fi
 
