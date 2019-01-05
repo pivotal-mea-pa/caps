@@ -8,7 +8,7 @@ image_resource:
 
 inputs:
 - name: automation
-- name: pivnet-opsmgr
+- name: pivnet-download
 
 run:
   path: automation/lib/pipelines/pcf/install-and-upgrade/tasks/upload-opsman/vsphere/task.sh
