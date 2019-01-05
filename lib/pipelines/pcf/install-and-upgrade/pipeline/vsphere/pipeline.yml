@@ -2,11 +2,11 @@
 groups:
 - name: Install & Upgrade Director
   jobs:
-  - destroy-env
+  # - destroy-env
   - upload-opsman-image
-  - create-infrastructure
-  - configure-director
-  - deploy-director
+  # - create-infrastructure
+  # - configure-director
+  # - deploy-director
 - name: Install & Upgrade Products
 
 resources:
