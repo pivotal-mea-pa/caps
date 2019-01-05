@@ -7,7 +7,7 @@ locals {
     ? var.environment 
     : data.terraform_remote_state.bootstrap.pcf_sandbox_environment}"
 
-  opsman_vcenter_config = "${data.terraform_remote_state.bootstrap.pcf_opsman_vcenter_config[var.environment]}"
+  opsman_vcenter_config = "${data.terraform_remote_state.bootstrap.pcf_opsman_vcenter_config[local.environment]}"
 }
 
 data "template_file" "params" {
