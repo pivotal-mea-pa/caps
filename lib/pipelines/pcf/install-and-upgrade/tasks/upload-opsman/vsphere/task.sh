@@ -43,18 +43,24 @@ if [[ $? -ne 0 ]]; then
     | .Name = $image_name
     | .DiskProvisioning = "thin"
     | .NetworkMapping[].Network = $network
-    | .PowerOn = true' \
+    | .PowerOn = true
+    | .WaitForIP = true' \
     > import-spec.json
 
-#   | .PowerOn = false
-#   | .MarkAsTemplate = true' \
-
+  # Import OVA and power the VM on so that 
+  # the initial configuration is applied.
   govc import.ova \
     -dc=${VCENTER_DATACENTER} \
     -ds=${OPSMAN_VCENTER_DATASTORE} \
     -folder=${template_path} \
     -options=import-spec.json \
     $ova_file_path 
+
+  # Power of the VM and mark it as a template
+  # so it can be re-instantiated via a Terraform
+  # template.
+  govc vm.power -off /${VCENTER_DATACENTER}/vm/${VCENTER_TEMPLATES_PATH}/$name
+  govc vm.markastemplate /${VCENTER_DATACENTER}/vm/${VCENTER_TEMPLATES_PATH}/$name
 else
   echo "Ops Manager template '$name' exists skipping upload."
 fi
