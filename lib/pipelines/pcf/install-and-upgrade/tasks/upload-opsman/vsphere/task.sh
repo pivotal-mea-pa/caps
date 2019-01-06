@@ -43,9 +43,11 @@ if [[ $? -ne 0 ]]; then
     | .Name = $image_name
     | .DiskProvisioning = "thin"
     | .NetworkMapping[].Network = $network
-    | .PowerOn = false
-    | .MarkAsTemplate = true' \
+    | .PowerOn = true' \
     > import-spec.json
+
+#   | .PowerOn = false
+#   | .MarkAsTemplate = true' \
 
   govc import.ova \
     -dc=${VCENTER_DATACENTER} \
