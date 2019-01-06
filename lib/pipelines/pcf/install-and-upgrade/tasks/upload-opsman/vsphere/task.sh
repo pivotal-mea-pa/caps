@@ -24,7 +24,7 @@ if [[ $? -ne 0 ]]; then
     | jq \
     --arg image_name "$name" \
     --arg network "$OPSMAN_VCENTER_NETWORK" \
-    'del(.Deployment) | del(.PropertyMapping)
+    'del(.Deployment)
     | .Name = $image_name
     | .DiskProvisioning = "thin"
     | .NetworkMapping[].Network = $network
