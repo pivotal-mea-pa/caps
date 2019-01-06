@@ -39,7 +39,6 @@ if [[ $? -ne 0 ]]; then
     | (.PropertyMapping[] | select(.Key == "DNS")).Value = $opsman_dns_servers
     | (.PropertyMapping[] | select(.Key == "ntp_servers")).Value = $opsman_ntp_servers
     | (.PropertyMapping[] | select(.Key == "admin_password")).Value = $opsman_ssh_password
-    | (.PropertyMapping[] | select(.Key == "public_ssh_key")).Value = $opsman_ssh_public_key
     | (.PropertyMapping[] | select(.Key == "custom_hostname")).Value = $opsman_hostname
     | .Name = $image_name
     | .DiskProvisioning = "thin"
