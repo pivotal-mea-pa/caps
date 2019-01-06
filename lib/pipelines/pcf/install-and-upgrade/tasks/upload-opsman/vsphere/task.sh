@@ -33,17 +33,17 @@ if [[ $? -ne 0 ]]; then
     --arg opsman_ssh_public_key "$OPSMAN_SSH_PUBLIC_KEY" \
     --arg opsman_hostname "$OPSMAN_HOSTNAME" \
     'del(.Deployment)
-    | .PropertyMapping.ip0 = "$opsman_ip"
-    | .PropertyMapping.netmask0 = "$opsman_netmask"
-    | .PropertyMapping.gateway = "$opsman_gateway"
-    | .PropertyMapping.DNS = "$opsman_dns_servers"
-    | .PropertyMapping.ntp_servers = "$opsman_ntp_servers"
-    | .PropertyMapping.admin_password = "$opsman_ssh_password"
-    | .PropertyMapping.public_ssh_key = "$opsman_ssh_public_key"
-    | .PropertyMapping.custom_hostname = "$opsman_hostname"
-    | .Name = "$image_name"
+    | (.PropertyMapping[] | select(.Key == "ip0")).Value = $opsman_ip
+    | (.PropertyMapping[] | select(.Key == "netmask0")).Value = $opsman_netmask
+    | (.PropertyMapping[] | select(.Key == "gateway")).Value = $opsman_gateway
+    | (.PropertyMapping[] | select(.Key == "DNS")).Value = $opsman_dns_servers
+    | (.PropertyMapping[] | select(.Key == "ntp_servers")).Value = $opsman_ntp_servers
+    | (.PropertyMapping[] | select(.Key == "admin_password")).Value = $opsman_ssh_password
+    | (.PropertyMapping[] | select(.Key == "public_ssh_key")).Value = $opsman_ssh_public_key
+    | (.PropertyMapping[] | select(.Key == "custom_hostname")).Value = $opsman_hostname
+    | .Name = $image_name
     | .DiskProvisioning = "thin"
-    | .NetworkMapping[].Network = "$network"
+    | .NetworkMapping[].Network = $network
     | .PowerOn = false
     | .MarkAsTemplate = true' \
     > import-spec.json
