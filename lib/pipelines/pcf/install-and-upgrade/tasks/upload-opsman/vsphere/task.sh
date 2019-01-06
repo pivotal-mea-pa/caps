@@ -9,14 +9,14 @@ tar xvzf $download_file_path
 name=$(basename $download_file_path)
 name=${name%_*}
 
-template_path=/${VCENTER_DATACENTER}/vm/${VCENTER_TEMPLATES_PATH}
+vm_folder=/${VCENTER_DATACENTER}/vm/${VCENTER_VMS_PATH}
 
 ova_file_path=$(find ./pivnet-product -name *.ova | sort | head -1)
 
 set +e
-govc ls ${template_path} | grep ${name} >/dev/null 2>&1
+govc ls ${vm_folder} | grep ${name} >/dev/null 2>&1
 if [[ $? -ne 0 ]]; then
-  govc folder.create "${template_path}" >/dev/null 2>&1
+  govc folder.create "${vm_folder}" >/dev/null 2>&1
   set -e
 
   govc import.spec \
@@ -39,6 +39,7 @@ if [[ $? -ne 0 ]]; then
     | (.PropertyMapping[] | select(.Key == "DNS")).Value = $opsman_dns_servers
     | (.PropertyMapping[] | select(.Key == "ntp_servers")).Value = $opsman_ntp_servers
     | (.PropertyMapping[] | select(.Key == "admin_password")).Value = $opsman_ssh_password
+    | (.PropertyMapping[] | select(.Key == "public_ssh_key")).Value = $opsman_ssh_public_key
     | (.PropertyMapping[] | select(.Key == "custom_hostname")).Value = $opsman_hostname
     | .Name = $image_name
     | .DiskProvisioning = "thin"
@@ -52,15 +53,9 @@ if [[ $? -ne 0 ]]; then
   govc import.ova \
     -dc=${VCENTER_DATACENTER} \
     -ds=${OPSMAN_VCENTER_DATASTORE} \
-    -folder=${template_path} \
+    -folder=${vm_folder} \
     -options=import-spec.json \
     $ova_file_path 
-
-  # Power of the VM and mark it as a template
-  # so it can be re-instantiated via a Terraform
-  # template.
-  govc vm.power -off /${VCENTER_DATACENTER}/vm/${VCENTER_TEMPLATES_PATH}/$name
-  govc vm.markastemplate /${VCENTER_DATACENTER}/vm/${VCENTER_TEMPLATES_PATH}/$name
 else
   echo "Ops Manager template '$name' exists skipping upload."
 fi
