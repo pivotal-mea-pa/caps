@@ -74,6 +74,7 @@ module "bootstrap" {
 
   # Bastion configuration
   bastion_host_name = "${var.bastion_host_name}"
+  bastion_dns       = "${var.bastion_dns}"
 
   bastion_instance_memory = "${var.bastion_instance_memory}"
   bastion_instance_cpus   = "${var.bastion_instance_cpus}"

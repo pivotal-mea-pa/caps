@@ -157,7 +157,7 @@ output "pcf_sandbox_environment" {
 }
 
 #
-# PCF Deployment Networks CIDRs
+# PCF Deployment Network configurations
 #
 
 output "pcf_opsman_vcenter_config" {
@@ -173,6 +173,10 @@ output "pcf_network_subnets" {
 }
 
 output "pcf_network_dns" {
+  value = "${local.bastion_admin_ip}"
+}
+
+output "pcf_network_ntp" {
   value = "${local.bastion_admin_ip}"
 }
 

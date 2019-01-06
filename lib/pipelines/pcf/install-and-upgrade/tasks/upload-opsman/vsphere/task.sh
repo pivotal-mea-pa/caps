@@ -24,10 +24,26 @@ if [[ $? -ne 0 ]]; then
     | jq \
     --arg image_name "$name" \
     --arg network "$OPSMAN_VCENTER_NETWORK" \
+    --arg opsman_ip "$OPSMAN_IP" \
+    --arg opsman_netmask "$OPSMAN_NETMASK" \
+    --arg opsman_gateway "$OPSMAN_GATEWAY" \
+    --arg opsman_dns_servers "$OPSMAN_DNS_SERVERS" \
+    --arg opsman_ntp_servers "$OPSMAN_NTP_SERVERS" \
+    --arg opsman_ssh_password "$OPSMAN_SSH_PASSWORD" \
+    --arg opsman_ssh_public_key "$OPSMAN_SSH_PUBLIC_KEY" \
+    --arg opsman_hostname "$OPSMAN_HOSTNAME" \
     'del(.Deployment)
-    | .Name = $image_name
+    | .PropertyMapping.ip0 = "$opsman_ip"
+    | .PropertyMapping.netmask0 = "$opsman_netmask"
+    | .PropertyMapping.gateway = "$opsman_gateway"
+    | .PropertyMapping.DNS = "$opsman_dns_servers"
+    | .PropertyMapping.ntp_servers = "$opsman_ntp_servers"
+    | .PropertyMapping.admin_password = "$opsman_ssh_password"
+    | .PropertyMapping.public_ssh_key = "$opsman_ssh_public_key"
+    | .PropertyMapping.custom_hostname = "$opsman_hostname"
+    | .Name = "$image_name"
     | .DiskProvisioning = "thin"
-    | .NetworkMapping[].Network = $network
+    | .NetworkMapping[].Network = "$network"
     | .PowerOn = false
     | .MarkAsTemplate = true' \
     > import-spec.json

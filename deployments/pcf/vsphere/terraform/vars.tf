@@ -201,6 +201,10 @@ variable "bastion_host_name" {
   default = "bastion"
 }
 
+variable "bastion_dns" {
+  default = ""
+}
+
 variable "bastion_admin_ssh_port" {
   default = "22"
 }

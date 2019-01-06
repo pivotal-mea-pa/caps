@@ -59,6 +59,14 @@ jobs:
       OPSMAN_VCENTER_CLUSTER: ((opsman_vcenter_cluster))
       OPSMAN_VCENTER_DATASTORE: ((opsman_vcenter_datastore))
       OPSMAN_VCENTER_NETWORK: ((opsman_vcenter_network))
+      OPSMAN_HOSTNAME: ((opsman_hostname))
+      OPSMAN_IP: ((opsman_ip))
+      OPSMAN_NETMASK: ((opsman_netmask))
+      OPSMAN_GATEWAY: ((opsman_gateway))
+      OPSMAN_DNS_SERVERS: ((opsman_dns_servers))
+      OPSMAN_NTP_SERVERS: ((opsman_ntp_servers))
+      OPSMAN_SSH_PASSWORD: ((opsman_ssh_password))
+      OPSMAN_SSH_PUBLIC_KEY: ((opsman_ssh_public_key))
 
   # Wait if the Ops Manager is currently in the
   # process of applying a change

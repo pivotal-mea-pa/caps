@@ -8,6 +8,13 @@ locals {
     : data.terraform_remote_state.bootstrap.pcf_sandbox_environment}"
 
   opsman_vcenter_config = "${data.terraform_remote_state.bootstrap.pcf_opsman_vcenter_config[local.environment]}"
+
+  opsman_vcenter_cluster         = "${lookup(local.opsman_vcenter_config, "cluster")}"
+  opsman_vcenter_datastore       = "${lookup(local.opsman_vcenter_config, "datastore")}"
+  opsman_vcenter_network         = "${lookup(local.opsman_vcenter_config, "network")}"
+  opsman_vcenter_network_cidr    = "${lookup(local.opsman_vcenter_config, "network_cidr")}"
+  opsman_vcenter_network_gateway = "${lookup(local.opsman_vcenter_config, "network_gateway")}"
+  opsman_vcenter_ip              = "${lookup(local.opsman_vcenter_config, "ip")}"
 }
 
 data "template_file" "params" {
@@ -46,12 +53,18 @@ data "template_file" "params" {
     vcenter_vms_path       = "${local.environment}_${data.terraform_remote_state.bootstrap.vcenter_vms_path}"
     vcenter_disks_path     = "${local.environment}_${data.terraform_remote_state.bootstrap.vcenter_disks_path}"
 
-    opsman_vcenter_cluster         = "${lookup(local.opsman_vcenter_config, "cluster")}"
-    opsman_vcenter_datastore       = "${lookup(local.opsman_vcenter_config, "datastore")}"
-    opsman_vcenter_network         = "${lookup(local.opsman_vcenter_config, "network")}"
-    opsman_vcenter_network_cidr    = "${lookup(local.opsman_vcenter_config, "network_cidr")}"
-    opsman_vcenter_network_gateway = "${lookup(local.opsman_vcenter_config, "network_gateway")}"
-    opsman_vcenter_ip              = "${lookup(local.opsman_vcenter_config, "ip")}"
+    opsman_vcenter_cluster   = "${local.opsman_vcenter_cluster}"
+    opsman_vcenter_datastore = "${local.opsman_vcenter_datastore}"
+    opsman_vcenter_network   = "${local.opsman_vcenter_network}"
+
+    opsman_hostname       = "opsman.${local.environment}.${data.terraform_remote_state.bootstrap.vpc_dns_zone}"
+    opsman_ip             = "${local.opsman_vcenter_ip}"
+    opsman_netmask        = "${cidrnetmask(local.opsman_vcenter_network_cidr)}"
+    opsman_gateway        = "${local.opsman_vcenter_network_gateway}"
+    opsman_dns_servers    = "${data.terraform_remote_state.bootstrap.pcf_network_dns}"
+    opsman_ntp_servers    = "${data.terraform_remote_state.bootstrap.pcf_network_ntp}"
+    opsman_ssh_password   = "${data.terraform_remote_state.bootstrap.opsman_admin_password}"
+    opsman_ssh_public_key = "${trimspace(data.terraform_remote_state.bootstrap.default_openssh_public_key)}"
 
     pivnet_token           = "${data.terraform_remote_state.bootstrap.pivnet_token}"
     opsman_admin_password  = "${data.terraform_remote_state.bootstrap.opsman_admin_password}"
