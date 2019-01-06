@@ -11,13 +11,10 @@ automation_extensions_branch: '${automation_extensions_branch}'
 pcf_terraform_templates_path: '${pcf_terraform_templates_path}'
 pcf_tile_templates_path: '${pcf_tile_templates_path}'
 
-# SSH Key to inject into the image to allow SSH to remote 
-# instances containing resources that need to be accessible
-ssh_key: ''
-
-# The User token to use when downloading stemcells and 
-# releases from the Pivotal Website (network.pivotal.io)
-pivnet_api_token: '${pivnet_token}'
+# IAAS instance tag to use for when 
+# searching for instances in deployment
+# to start or stop
+label: '${vpc_name}-pcf'
 
 # Pivotal Ops Manager host and credentials
 opsman_host: 'opsman.${environment}.${vpc_dns_zone}'
@@ -28,9 +25,3 @@ opsman_ssh_passwd: ''
 opsman_pass_phrase: '${opsman_admin_password}'
 pcfops_client: ''
 pcfops_secret: ''
-
-# Type of backup storage backend 
-backup_storage_type: 'nfs'
-
-# Destination target name where backup folder will be uploaded to
-backup_target: 'pcf'
