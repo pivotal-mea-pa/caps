@@ -17,6 +17,7 @@ set +e
 govc ls ${template_path} | grep ${name} >/dev/null 2>&1
 if [[ $? -ne 0 ]]; then
   govc folder.create "${template_path}" >/dev/null 2>&1
+  set -e
 
   govc import.spec \
     $ova_file_path \
@@ -37,6 +38,6 @@ if [[ $? -ne 0 ]]; then
     -folder=${template_path} \
     -options=import-spec.json \
     $ova_file_path 
+else
+  echo "Ops Manager template '$name' exists skipping upload."
 fi
-set -e
-
