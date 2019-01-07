@@ -42,7 +42,7 @@ function common::validate() {
         for d in $(find $root_dir/deployments -type d -depth 1 -print); do 
             echo "- \"$(basename $d)\"" 
         done
-        echo "${NC}"
+        echo -e "${NC}"
         exit 1
     fi
     if [[ ! -e $root_dir/deployments/$deployment_name/$iaas_provider ]]; then
@@ -51,7 +51,7 @@ function common::validate() {
         for d in $(find $root_dir/deployments/$deployment_name -type d -depth 1 -print); do 
             echo "- \"$(basename $d)\"" 
         done
-        echo "${NC}"
+        echo -e "${NC}"
         exit 1
     fi
     if [[ ! -e $root_dir/deployments/$deployment_name/$iaas_provider/terraform ]]; then
