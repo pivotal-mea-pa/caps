@@ -237,6 +237,10 @@ output "bastion_admin_password" {
   value = "${module.bootstrap.bastion_admin_password}"
 }
 
+output "powerdns_api_key" {
+  value = "${module.config.powerdns_api_key}"
+}
+
 output "concourse_admin_password" {
   value = "${random_string.concourse-admin-password.result}"
 }
