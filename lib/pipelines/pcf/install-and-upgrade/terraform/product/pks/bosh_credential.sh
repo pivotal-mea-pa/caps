@@ -1,5 +1,7 @@
 #!/bin/bash
 
+exec 2> >(tee bosh_credential.log 2>&1 >/dev/null)
+
 set -eu
 
 manifest=$(om "$@" curl --silent --path=/api/v0/deployed/director/manifest \
