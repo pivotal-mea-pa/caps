@@ -57,6 +57,9 @@ jobs:
       VSPHERE_USER: ((vsphere_user))
       VSPHERE_PASSWORD: ((vsphere_password))
       VSPHERE_ALLOW_UNVERIFIED_SSL: true
+      # PowerDNS Credentials
+      PDNS_SERVER_URL: ((pdns_server_url))
+      PDNS_API_KEY: ((pdns_api_key))
       # S3 credentials if S3 is the Terraform
       # backend for the bootstrap state
       S3_ACCESS_KEY_ID: ((s3_access_key_id))
@@ -124,6 +127,9 @@ jobs:
       VSPHERE_USER: ((vsphere_user))
       VSPHERE_PASSWORD: ((vsphere_password))
       VSPHERE_ALLOW_UNVERIFIED_SSL: true
+      # PowerDNS Credentials
+      PDNS_SERVER_URL: ((pdns_server_url))
+      PDNS_API_KEY: ((pdns_api_key))
       # S3 credentials if S3 is the Terraform
       # backend for the bootstrap state
       S3_ACCESS_KEY_ID: ((s3_access_key_id))
