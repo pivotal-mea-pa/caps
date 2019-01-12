@@ -68,12 +68,9 @@ params:
   TEMPLATE_OVERRIDE_PATH:
 
   # Inputs to PCF PAS infrastructure Terraform 
-  # template. Since this task destroys all 
-  # infrastructure arbitrary values for this
-  # inputs is acceptable as they will have
-  # no effect.
+  # template.
   TF_VAR_environment:
-  TF_VAR_bootstrap_state_bucket: noop
-  TF_VAR_bootstrap_state_prefix: noop
-  TF_VAR_system_domain_prefix: noop
-  TF_VAR_apps_domain_prefix: noop
+  TF_VAR_bootstrap_state_bucket:
+  TF_VAR_bootstrap_state_prefix:
+  TF_VAR_system_domain_prefix:
+  TF_VAR_apps_domain_prefix:

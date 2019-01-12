@@ -81,6 +81,8 @@ jobs:
       TEMPLATE_OVERRIDE_PATH: automation-extensions/((pcf_terraform_templates_path))/((environment))/infrastructure
       # Inputs to PCF PAS infrastructure Terraform templates
       TF_VAR_environment: ((environment))
+      TF_VAR_bootstrap_state_bucket: ((terraform_state_bucket))
+      TF_VAR_bootstrap_state_prefix: ((bootstrap_state_prefix))
 
 - name: create-infrastructure
   on_failure:
