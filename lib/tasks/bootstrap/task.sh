@@ -49,7 +49,7 @@ export TF_VAR_bootstrap_state_prefix=$BOOTSTRAP_STATE_PREFIX
 
 case $IAAS in
   google)
-    if [[ -n $GOOGLE_CREDENTIALS_JSON ]]; then
+    if [[ -z $GOOGLE_CREDENTIALS_JSON ]]; then
       echo "ERROR! A Google service key needs to be provided via the 'GOOGLE_CREDENTIALS_JSON' environment variable."
       exit 1
     fi
