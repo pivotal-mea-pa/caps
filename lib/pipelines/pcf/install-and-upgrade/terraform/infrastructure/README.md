@@ -20,13 +20,8 @@ eval $(fly -t local gp -p $PIPELINE \
   | sed -e "s/=|/='/" \
   | sed "s/}/}'/")
 
-export TF_VAR_pcf_opsman_image_name=$(fly -t local watch -j $PIPELINE/upload-opsman-image \
-  | grep 'Downloading:.*Pivotal Cloud Foundry Ops Manager' \
-  | sed 's|^.*GCP - \([0-9]*\.[0-9]*\)-build\.\([0-9]*\).*$|opsman-pcf-gcp-\1-build-\2|' \
-  | sed 's|\.|\-|g')
-
-rm -fr .terraform
 terraform init \
   -backend-config="bucket=${TERRAFORM_STATE_BUCKET}" \
-  -backend-config="prefix=${DEPLOYMENT_PREFIX}"
+  -backend-config="prefix=${DEPLOYMENT_PREFIX}" \
+  <Path to IaaS Templates>
 ```
