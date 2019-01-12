@@ -10,7 +10,6 @@ locals {
   opsman_ntp_servers    = "${data.terraform_remote_state.bootstrap.pcf_network_ntp}"
   opsman_ssh_password   = "${data.terraform_remote_state.bootstrap.opsman_admin_password}"
   opsman_ssh_public_key = "${trimspace(data.terraform_remote_state.bootstrap.default_openssh_public_key)}"
-  opsman_hostname       = "opsman.${var.environment}.${data.terraform_remote_state.bootstrap.vpc_dns_zone}"
 }
 
 #
@@ -38,7 +37,7 @@ data "template_file" "create-opsman-instance" {
     opsman_ntp_servers    = "${local.opsman_ntp_servers}"
     opsman_ssh_password   = "${local.opsman_ssh_password}"
     opsman_ssh_public_key = "${local.opsman_ssh_public_key}"
-    opsman_hostname       = "${local.opsman_hostname}"
+    opsman_hostname       = "${local.opsman_dns_name}"
     opsman_data_disk_path = "${vsphere_virtual_disk.opsman-data-disk.vmdk_path}"
   }
 }
