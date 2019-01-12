@@ -2,6 +2,10 @@
 # Deploy Pivotal Operations Manager appliance
 #
 
+data "external" "opsman-image-archive" {
+  program = ["${path.module}/get_opsman_image_archive.sh"]
+}
+
 resource "google_compute_instance" "ops-manager" {
   name = "${local.prefix}-ops-manager"
 
@@ -12,7 +16,7 @@ resource "google_compute_instance" "ops-manager" {
 
   boot_disk {
     initialize_params {
-      image = "${var.pcf_opsman_image_name}"
+      image = "${data.external.opsman-image-archive.result.image_name}"
       size  = 160
     }
   }
