@@ -2,8 +2,8 @@
 groups:
 - name: Install & Upgrade Director
   jobs:
-  - destroy-env
-  - create-infrastructure
+  - destroy-environment
+  - prepare-environment
   - configure-director
   # - deploy-director
 - name: Install & Upgrade Products
@@ -50,7 +50,7 @@ resources:
 
 jobs:
 
-- name: destroy-env
+- name: destroy-environment
   serial: true
   serial_groups: [terraform]
   plan:
@@ -109,10 +109,10 @@ jobs:
       TF_VAR_bootstrap_state_bucket: ((terraform_state_bucket))
       TF_VAR_bootstrap_state_prefix: ((bootstrap_state_prefix))
 
-- name: create-infrastructure
+- name: prepare-environment
   on_failure:
     do:
-    - task: notify on create-infrastructure failure
+    - task: notify on prepare-environment failure
 
   serial: true
   serial_groups: [terraform,opsman]
@@ -211,7 +211,7 @@ jobs:
     - get: automation
     - get: automation-extensions
     - get: opsman-image
-      passed: [create-infrastructure]
+      passed: [prepare-environment]
       trigger: true
       params:
         skip_download: 'true'
