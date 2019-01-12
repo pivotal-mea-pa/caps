@@ -15,11 +15,11 @@ resources:
     uri: ((automation_pipelines_repo))
     branch: ((automation_pipelines_branch))
 
-# - name: automation-extensions
-#   type: git
-#   source:
-#     uri: ((automation_extensions_repo))
-#     branch: ((automation_extensions_branch))
+- name: automation-extensions
+  type: git
+  source:
+    uri: ((automation_extensions_repo))
+    branch: ((automation_extensions_branch))
 
 - name: opsman-image
   type: s3
@@ -41,6 +41,7 @@ jobs:
   plan:
   - aggregate:
     - get: automation
+    - get: automation-extensions
     - get: pivnet-download
       resource: opsman-image
       trigger: true
