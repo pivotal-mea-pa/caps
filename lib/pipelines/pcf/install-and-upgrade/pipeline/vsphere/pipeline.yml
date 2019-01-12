@@ -57,6 +57,7 @@ jobs:
   - aggregate:
     - get: automation
     - get: automation-extensions
+
   - task: set-stopped-state
     file: automation/lib/inceptor/tasks/toggle-state/task.yml
     params: 
@@ -66,9 +67,15 @@ jobs:
       AUTOS3_URL: ((autos3_url))
       AUTOS3_ACCESS_KEY: ((autos3_access_key))
       AUTOS3_SECRET_KEY: ((autos3_secret_key))
+
   - task: destroy-infrastructure
     file: automation/lib/pipelines/pcf/install-and-upgrade/tasks/destroy-infrastructure/task.yml
     params:
+      # PCF Ops Manager credentials
+      OPSMAN_HOST: ((opsman_host))
+      OPSMAN_USERNAME: ((opsman_admin_username))
+      OPSMAN_PASSWORD: ((opsman_admin_password))
+      # Target IaaS type
       IAAS: ((iaas_type))
       # VSphere Credentials
       VSPHERE_SERVER: ((vsphere_server))
@@ -108,6 +115,7 @@ jobs:
     - task: notify on create-infrastructure failure
 
   serial: true
+  serial_groups: [terraform,opsman]
   plan:
   - aggregate:
     - get: automation
@@ -139,10 +147,11 @@ jobs:
       AUTOS3_ACCESS_KEY: ((autos3_access_key))
       AUTOS3_SECRET_KEY: ((autos3_secret_key))
 
-  # Upload new Ops Manager image to the IAAS
+  # Prepare the IaaS for PCF (e.g. DNS, network, Upload Ops Manager, etc.)
   - task: create-infrastructure
     file: automation/lib/pipelines/pcf/install-and-upgrade/tasks/create-infrastructure/task.yml
     params:
+      # Target IaaS type
       IAAS: ((iaas_type))
       # VSphere Credentials
       VSPHERE_SERVER: ((vsphere_server))
