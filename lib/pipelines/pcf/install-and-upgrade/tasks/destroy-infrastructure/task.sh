@@ -65,7 +65,7 @@ case $IAAS in
 
     export AWS_ACCESS_KEY_ID=$S3_ACCESS_KEY_ID
     export AWS_SECRET_ACCESS_KEY=$S3_SECRET_ACCESS_KEY
-    export AWS_DEFAULT_REGION=$S3_DEFAULT_REGION
+    # export AWS_DEFAULT_REGION=$S3_DEFAULT_REGION
     
     # Default is to use an S3 backend
     if [[ -n $TF_STATE_S3_ENDPOINT ]]; then
@@ -92,23 +92,20 @@ esac
 # Delete infrastructure
 echo "Deleting provisioned infrastructure..."
 
-# backend_type=$(cat .terraform/terraform.tfstate | jq -r .backend.type)
-# cat << ---EOF > backend.tf
-# terraform {
-#   backend "$backend_type" {}
-# }
-# ---EOF
+backend_type=$(cat .terraform/terraform.tfstate | jq -r .backend.type)
+cat << ---EOF > backend.tf
+terraform {
+  backend "$backend_type" {}
+}
+---EOF
 
-# set +e
+set +e
 
-# i=0
-# terraform destroy -force -state .terraform/terraform.tfstate $terraform_templates_path
-# while [[ $? -ne 0 && $i -lt 2 ]]; do
-#   # Retry destroy as sometimes destroy may fail due to IaaS timeouts
-#   i=$(($i+1))
-#   terraform destroy -force -state .terraform/terraform.tfstate $terraform_templates_path
-# done
-# exit $?
-
-terraform destroy -force $terraform_templates_path
+i=0
+terraform destroy -force -state .terraform/terraform.tfstate $terraform_templates_path
+while [[ $? -ne 0 && $i -lt 2 ]]; do
+  # Retry destroy as sometimes destroy may fail due to IaaS timeouts
+  i=$(($i+1))
+  terraform destroy -force -state .terraform/terraform.tfstate $terraform_templates_path
+done
 exit $?
