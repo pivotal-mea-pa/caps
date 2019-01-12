@@ -92,20 +92,23 @@ esac
 # Delete infrastructure
 echo "Deleting provisioned infrastructure..."
 
-backend_type=$(cat .terraform/terraform.tfstate | jq -r .backend.type)
-cat << ---EOF > backend.tf
-terraform {
-  backend "$backend_type" {}
-}
----EOF
+# backend_type=$(cat .terraform/terraform.tfstate | jq -r .backend.type)
+# cat << ---EOF > backend.tf
+# terraform {
+#   backend "$backend_type" {}
+# }
+# ---EOF
 
-set +e
+# set +e
 
-i=0
-terraform destroy -force -state .terraform/terraform.tfstate $terraform_templates_path
-while [[ $? -ne 0 && $i -lt 2 ]]; do
-  # Retry destroy as sometimes destroy may fail due to IaaS timeouts
-  i=$(($i+1))
-  terraform destroy -force -state .terraform/terraform.tfstate $terraform_templates_path
-done
+# i=0
+# terraform destroy -force -state .terraform/terraform.tfstate $terraform_templates_path
+# while [[ $? -ne 0 && $i -lt 2 ]]; do
+#   # Retry destroy as sometimes destroy may fail due to IaaS timeouts
+#   i=$(($i+1))
+#   terraform destroy -force -state .terraform/terraform.tfstate $terraform_templates_path
+# done
+# exit $?
+
+terraform destroy -force $terraform_templates_path
 exit $?
