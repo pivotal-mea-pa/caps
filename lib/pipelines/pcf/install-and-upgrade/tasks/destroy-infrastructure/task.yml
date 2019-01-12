@@ -16,6 +16,11 @@ run:
 params:
   TRACE: Y
 
+  # PCF Ops Manager credentials
+  OPSMAN_HOST:
+  OPSMAN_USERNAME:
+  OPSMAN_PASSWORD:
+
   # Target IaaS type which is propogated
   # to all downstream deployment and 
   # operational configurations.
