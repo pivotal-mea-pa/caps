@@ -62,7 +62,11 @@ module "bootstrap" {
   vpc_dns_zone = "${var.vpc_dns_zone}"
 
   # Internal DNS zones within VPC
-  vpc_internal_dns_zones = ["${var.vpc_dns_zone}", "${var.vpc_name}.local"]
+  vpc_internal_dns_zones = [
+    "${var.vpc_dns_zone}",
+    "${formatlist("%s.${var.vpc_dns_zone}", var.pcf_environments)}",
+    "${var.vpc_name}.local",
+  ]
 
   vpc_internal_dns_records = [
     "${var.vpc_dns_zone}:${local.has_dmz_network ? local.bastion_dmz_ip : local.bastion_admin_ip}",
