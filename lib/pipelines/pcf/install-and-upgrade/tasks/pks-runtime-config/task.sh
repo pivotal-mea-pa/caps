@@ -60,7 +60,7 @@ $bosh -d $harbor_deployment ssh harbor-app -c \
 terraform init \
   -backend-config="bucket=${TERRAFORM_STATE_BUCKET}" \
   -backend-config="prefix=${DEPLOYMENT_PREFIX}-pks-config" \
-  automation/lib/pipelines/pcf/install-and-upgrade/terraform/product/pks
+  automation/lib/pipelines/pcf/install-and-upgrade/terraform/pks-runtime
 
 terraform apply -auto-approve \
   -var "opsman_target=${OPSMAN_HOST}" \
@@ -70,4 +70,4 @@ terraform apply -auto-approve \
   -var "opsman_password=${OPSMAN_PASSWORD}" \
   -var "infrastructure_state_bucket=${TERRAFORM_STATE_BUCKET}" \
   -var "infrastructure_state_prefix=${DEPLOYMENT_PREFIX}" \
-  automation/lib/pipelines/pcf/install-and-upgrade/terraform/product/pks
+  automation/lib/pipelines/pcf/install-and-upgrade/terraform/pks-runtime

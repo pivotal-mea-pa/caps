@@ -5,7 +5,7 @@ source ~/scripts/opsman-func.sh
 [[ -n "$TRACE" ]] && set -x
 set -e
 
-terraform_templates_path=automation/lib/pipelines/pcf/install-and-upgrade/terraform/${IAAS}/infrastructure
+terraform_templates_path=automation/lib/pipelines/pcf/install-and-upgrade/terraform/infrastructure/${IAAS}
 if [[ -n $TEMPLATE_OVERRIDE_PATH && -d $TEMPLATE_OVERRIDE_PATH ]]; then
   cp -r ${TEMPLATE_OVERRIDE_PATH}/${IAAS} $terraform_templates_path
 fi

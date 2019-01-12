@@ -14,14 +14,14 @@ export GOOGLE_REGION=${GCP_REGION}
 terraform init \
   -backend-config="bucket=${TERRAFORM_STATE_BUCKET}" \
   -backend-config="prefix=${DEPLOYMENT_PREFIX}-k8s-clusters" \
-  automation/lib/pipelines/pcf/install-and-upgrade/terraform/google/pks-loadbalancers
+  automation/lib/pipelines/pcf/install-and-upgrade/terraform/pks-loadbalancers/google
 
 set +e
 terraform apply \
   -auto-approve \
   -var "infrastructure_state_bucket=${TERRAFORM_STATE_BUCKET}" \
   -var "infrastructure_state_prefix=${DEPLOYMENT_PREFIX}" \
-  automation/lib/pipelines/pcf/install-and-upgrade/terraform/google/pks-loadbalancers
+  automation/lib/pipelines/pcf/install-and-upgrade/terraform/pks-loadbalancers/google
 
 # The re-ordering of cluster resources in the enumerations
 # can cause load balancer artifacts to be deleted and recreated.
@@ -35,5 +35,5 @@ if [[ $? -ne 0 ]]; then
     -auto-approve \
     -var "infrastructure_state_bucket=${TERRAFORM_STATE_BUCKET}" \
     -var "infrastructure_state_prefix=${DEPLOYMENT_PREFIX}" \
-    automation/lib/pipelines/pcf/install-and-upgrade/terraform/google/pks-loadbalancers
+    automation/lib/pipelines/pcf/install-and-upgrade/terraform/pks-loadbalancers/google
 fi

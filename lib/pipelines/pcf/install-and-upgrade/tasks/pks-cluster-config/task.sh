@@ -96,6 +96,6 @@ else
 fi
 
 # Run IAAS specific cluster configuration
-if [[ -e automation/lib/pipelines/pcf/install-and-upgrade/tasks/pks-cluster-config/${IAAS}/task.sh ]]; then
-  automation/lib/pipelines/pcf/install-and-upgrade/tasks/pks-cluster-config/${IAAS}/task.sh 
+if [[ -e automation/lib/pipelines/pcf/install-and-upgrade/tasks/pks-cluster-config/${IAAS}/create-pks-loadbalancers.sh ]]; then
+  automation/lib/pipelines/pcf/install-and-upgrade/tasks/pks-cluster-config/${IAAS}/create-pks-loadbalancers.sh 
 fi
