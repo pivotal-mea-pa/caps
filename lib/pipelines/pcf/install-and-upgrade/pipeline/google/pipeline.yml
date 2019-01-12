@@ -201,10 +201,11 @@ jobs:
   - aggregate:
     - get: automation
     - get: automation-extensions
-    - get: pivnet-opsmgr
+    - get: opsman-image
       passed: [prepare-environment]
       trigger: true
-      params: {globs: []}
+      params:
+        skip_download: 'true'
   - get: terraform-output
 
   # Initialize Ops Manager. This is a no-op
@@ -271,10 +272,11 @@ jobs:
   - aggregate:
     - get: automation
     - get: product-versions
-    - get: pivnet-opsmgr
-      passed: [configure-director]
+    - get: opsman-image
+      passed: [prepare-environment]
       trigger: true
-      params: {globs: []}
+      params:
+        skip_download: 'true'
 
   # This task will create a release manifest which will
   # be included with any failure or success notifications.    
