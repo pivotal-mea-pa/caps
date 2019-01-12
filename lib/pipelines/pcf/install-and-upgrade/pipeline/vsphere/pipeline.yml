@@ -3,8 +3,7 @@ groups:
 - name: Install & Upgrade Director
   jobs:
   # - destroy-env
-  - upload-opsman-image
-  # - create-infrastructure
+  - create-infrastructure
   # - configure-director
   # - deploy-director
 - name: Install & Upgrade Products
@@ -33,10 +32,10 @@ resources:
 
 jobs:
 
-- name: create-pcf-infrastructure
+- name: create-infrastructure
   on_failure:
     do:
-    - task: notify on create-pcf-infrastructure failure
+    - task: notify on create-infrastructure failure
 
   serial: true
   plan:
@@ -70,7 +69,7 @@ jobs:
       AUTOS3_SECRET_KEY: ((autos3_secret_key))
 
   # Upload new Ops Manager image to the IAAS
-  - task: create-pcf-infrastructure
+  - task: create-infrastructure
     file: automation/lib/pipelines/pcf/install-and-upgrade/tasks/create-infrastructure/task.yml
     params:
       # VSphere Credentials
