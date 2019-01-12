@@ -4,9 +4,9 @@
 
 locals {
   prefix = "${data.terraform_remote_state.bootstrap.vpc_name}-${var.environment}"
-  
+
   vcenter_datacenter = "${data.terraform_remote_state.bootstrap.vcenter_datacenter}"
-  
+
   opsman_vcenter_config = "${data.terraform_remote_state.bootstrap.pcf_opsman_vcenter_config[var.environment]}"
 
   opsman_vcenter_cluster         = "${lookup(local.opsman_vcenter_config, "cluster")}"

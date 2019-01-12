@@ -2,7 +2,7 @@
 # Deploy Pivotal Operations Manager appliance
 #
 
-local {
+locals {
   opsman_ip             = "${local.opsman_vcenter_ip}"
   opsman_netmask        = "${cidrnetmask(local.opsman_vcenter_network_cidr)}"
   opsman_gateway        = "${local.opsman_vcenter_network_gateway}"
@@ -10,30 +10,110 @@ local {
   opsman_ntp_servers    = "${data.terraform_remote_state.bootstrap.pcf_network_ntp}"
   opsman_ssh_password   = "${data.terraform_remote_state.bootstrap.opsman_admin_password}"
   opsman_ssh_public_key = "${trimspace(data.terraform_remote_state.bootstrap.default_openssh_public_key)}"
-  opsman_hostname       = "opsman.${local.environment}.${data.terraform_remote_state.bootstrap.vpc_dns_zone}"
+  opsman_hostname       = "opsman.${var.environment}.${data.terraform_remote_state.bootstrap.vpc_dns_zone}"
 }
 
 #
 # Ops Manager Instance
 #
 
-#data "external" "opsman-instance" {
-#  program = ["${path.module}/upload_opsman_image.sh",
-#    "${local.vcenter_datacenter}",
-#    "${vsphere_folder.vms.path}",
-	"${local.opsman_vcenter_cluster}",
-    "${local.opsman_vcenter_network}",
-	"${local.opsman_vcenter_datastore}",
-    "${local.opsman_ip}",
-    "${local.opsman_netmask}",
-    "${local.opsman_gateway}",
-    "${local.opsman_dns_servers}",
-    "${local.opsman_ntp_servers}",
-	"${local.opsman_ssh_password}",
-    "${local.opsman_ssh_public_key}",
-    "${local.opsman_hostname}",
-	"${vsphere_virtual_disk.opsman-data-disk.vmdk_path}",
-  ]
+data "external" "opsman-image-archive" {
+  program = ["${path.module}/get_opsman_image_archive.sh"]
+}
+
+data "template_file" "create-opsman-instance" {
+  template = "${file("${path.module}/create_opsman_instance.sh")}"
+
+  vars {
+    opsman-image-archive  = "${data.external.opsman-image-archive.result.path}"
+    vcenter_datacenter    = "${local.vcenter_datacenter}"
+    vcenter_vms_path      = "${vsphere_folder.vms.path}"
+    vcenter_cluster       = "${local.opsman_vcenter_cluster}"
+    vcenter_network       = "${local.opsman_vcenter_network}"
+    vcenter_datastore     = "${local.opsman_vcenter_datastore}"
+    opsman_ip             = "${local.opsman_ip}"
+    opsman_netmask        = "${local.opsman_netmask}"
+    opsman_gateway        = "${local.opsman_gateway}"
+    opsman_dns_servers    = "${local.opsman_dns_servers}"
+    opsman_ntp_servers    = "${local.opsman_ntp_servers}"
+    opsman_ssh_password   = "${local.opsman_ssh_password}"
+    opsman_ssh_public_key = "${local.opsman_ssh_public_key}"
+    opsman_hostname       = "${local.opsman_hostname}"
+    opsman_data_disk_path = "${vsphere_virtual_disk.opsman-data-disk.vmdk_path}"
+  }
+}
+
+data "template_file" "delete-opsman-instance" {
+  template = "${file("${path.module}/delete_opsman_instance.sh")}"
+
+  vars {
+    vcenter_datacenter = "${local.vcenter_datacenter}"
+    vcenter_vms_path   = "${vsphere_folder.vms.path}"
+  }
+}
+
+resource "null_resource" "opsman-instance" {
+  provisioner "local-exec" {
+    command = <<CREATE
+/bin/bash <<'ESH'
+${data.template_file.create-opsman-instance.rendered}
+ESH
+CREATE
+  }
+
+  provisioner "file" {
+    content     = "${data.template_file.mount-opsman-data-volume.rendered}"
+    destination = "/home/ubuntu/mount-opsman-data-volume.sh"
+  }
+
+  provisioner "file" {
+    content     = "${data.template_file.import-installation.rendered}"
+    destination = "/home/ubuntu/import-installation.sh"
+  }
+
+  provisioner "file" {
+    content     = "${data.template_file.export-installation.rendered}"
+    destination = "/home/ubuntu/export-installation.sh"
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "chmod 0744 /home/ubuntu/mount-opsman-data-volume.sh",
+      "chmod 0744 /home/ubuntu/import-installation.sh",
+      "chmod 0744 /home/ubuntu/export-installation.sh",
+      "echo '${local.opsman_ssh_password}' | sudo -S sh -c /home/ubuntu/mount-opsman-data-volume.sh",
+    ]
+  }
+
+  # On Destroy
+  provisioner "remote-exec" {
+    inline = [
+      "/home/ubuntu/export-installation.sh",
+    ]
+
+    when = "destroy"
+  }
+
+  provisioner "local-exec" {
+    when = "destroy"
+
+    command = <<DESTROY
+/bin/bash <<'ESH'
+${data.template_file.delete-opsman-instance.rendered}
+ESH
+DESTROY
+  }
+
+  connection {
+    type        = "ssh"
+    user        = "ubuntu"
+    private_key = "${data.terraform_remote_state.bootstrap.default_openssh_private_key}"
+    host        = "${local.opsman_ip}"
+  }
+
+  triggers {
+    opsman-image-archive = "${data.external.opsman-image-archive.result.path}"
+  }
 }
 
 #
