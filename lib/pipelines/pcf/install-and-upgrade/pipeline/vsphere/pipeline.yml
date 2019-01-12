@@ -33,10 +33,10 @@ resources:
 
 jobs:
 
-- name: upload-opsman-image
+- name: create-pcf-infrastructure
   on_failure:
     do:
-    - task: notify on upload-opsman-image failure
+    - task: notify on create-pcf-infrastructure failure
 
   serial: true
   plan:
@@ -45,29 +45,6 @@ jobs:
     - get: pivnet-download
       resource: opsman-image
       trigger: true
-
-  # Upload new Ops Manager image to the IAAS
-  - task: upload
-    file: automation/lib/pipelines/pcf/install-and-upgrade/tasks/upload-opsman/vsphere/task.yml
-    params:
-      GOVC_URL: https://((vsphere_server))
-      GOVC_USERNAME: ((vsphere_user))
-      GOVC_PASSWORD: ((vsphere_password))
-      GOVC_INSECURE: ((vsphere_allow_unverified_ssl))
-      VCENTER_DATACENTER: ((vcenter_datacenter))
-      VCENTER_VMS_PATH: ((vcenter_vms_path))
-      VCENTER_DISKS_PATH: ((vcenter_disks_path))
-      OPSMAN_VCENTER_CLUSTER: ((opsman_vcenter_cluster))
-      OPSMAN_VCENTER_DATASTORE: ((opsman_vcenter_datastore))
-      OPSMAN_VCENTER_NETWORK: ((opsman_vcenter_network))
-      OPSMAN_HOSTNAME: ((opsman_hostname))
-      OPSMAN_IP: ((opsman_ip))
-      OPSMAN_NETMASK: ((opsman_netmask))
-      OPSMAN_GATEWAY: ((opsman_gateway))
-      OPSMAN_DNS_SERVERS: ((opsman_dns_servers))
-      OPSMAN_NTP_SERVERS: ((opsman_ntp_servers))
-      OPSMAN_SSH_PASSWORD: ((opsman_ssh_password))
-      OPSMAN_SSH_PUBLIC_KEY: ((opsman_ssh_public_key))
 
   # Wait if the Ops Manager is currently in the
   # process of applying a change
@@ -91,3 +68,30 @@ jobs:
       AUTOS3_URL: ((autos3_url))
       AUTOS3_ACCESS_KEY: ((autos3_access_key))
       AUTOS3_SECRET_KEY: ((autos3_secret_key))
+
+  # Upload new Ops Manager image to the IAAS
+  - task: create-pcf-infrastructure
+    file: automation/lib/pipelines/pcf/install-and-upgrade/tasks/create-infrastructure/task.yml
+    params:
+      # VSphere Credentials
+      VSPHERE_SERVER: ((vsphere_server))
+      VSPHERE_USER: ((vsphere_user))
+      VSPHERE_PASSWORD: ((vsphere_password))
+      VSPHERE_ALLOW_UNVERIFIED_SSL: true
+      # The bucket where the Terraform state 
+      # will be saved
+      TERRAFORM_STATE_BUCKET: ((terraform_state_bucket))
+      # Prefix to use with cloud resource names 
+      # as well as the location of Terraform
+      # state
+      DEPLOYMENT_PREFIX: ((deployment_prefix))
+      # Path for additional Terraform templates
+      # that customize the default infrastructure
+      # templates 
+      TEMPLATE_OVERRIDE_PATH: automation-extensions/((pcf_terraform_templates_path))/((environment))/infrastructure      
+      # Inputs to PCF PAS infrastructure Terraform templates
+      TF_VAR_environment: ((environment))
+      TF_VAR_bootstrap_state_bucket: ((terraform_state_bucket))
+      TF_VAR_bootstrap_state_prefix: ((bootstrap_state_prefix))
+      TF_VAR_system_domain_prefix: ((system_domain_prefix))
+      TF_VAR_apps_domain_prefix: ((apps_domain_prefix))
