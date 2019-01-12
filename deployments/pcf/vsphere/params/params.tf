@@ -31,6 +31,14 @@ data "template_file" "params" {
     vcenter_ephemeral_datastores  = "${data.terraform_remote_state.bootstrap.vcenter_ephemeral_datastores}"
     vcenter_persistant_datastores = "${data.terraform_remote_state.bootstrap.vcenter_persistant_datastores}"
 
+    pdns_server_url = "http://${data.terraform_remote_state.bootstrap.bastion_admin_fqdn}:8888"
+    pdns_api_key    = "${data.terraform_remote_state.bootstrap.powerdns_api_key}"
+
+    s3_access_key_id            = "${data.terraform_remote_state.bootstrap.s3_access_key_id}"
+    s3_secret_access_key        = "${data.terraform_remote_state.bootstrap.s3_secret_access_key}"
+    s3_default_region           = "${data.terraform_remote_state.bootstrap.s3_default_region}"
+    terraform_state_s3_endpoint = "${data.terraform_remote_state.bootstrap.terraform_state_s3_endpoint}"
+
     terraform_state_bucket = "${data.terraform_remote_state.bootstrap.terraform_state_bucket}"
     bootstrap_state_prefix = "${data.terraform_remote_state.bootstrap.bootstrap_state_prefix}"
 

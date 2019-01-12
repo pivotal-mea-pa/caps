@@ -2,7 +2,7 @@
 groups:
 - name: Install & Upgrade Director
   jobs:
-  # - destroy-env
+  - destroy-env
   - create-infrastructure
   # - configure-director
   # - deploy-director
@@ -31,6 +31,50 @@ resources:
     regexp: downloads/ops-manager_(.*).tgz
 
 jobs:
+
+- name: destroy-env
+  serial: true
+  serial_groups: [terraform]
+  plan:
+  - aggregate:
+    - get: automation
+    - get: automation-extensions
+  - task: set-stopped-state
+    file: automation/lib/inceptor/tasks/toggle-state/task.yml
+    params: 
+      OFF_STATE: started
+      ON_STATE: stopped
+      VERSION_INCREMENT: 0
+      AUTOS3_URL: ((autos3_url))
+      AUTOS3_ACCESS_KEY: ((autos3_access_key))
+      AUTOS3_SECRET_KEY: ((autos3_secret_key))
+  - task: destroy-infrastructure
+    file: automation/lib/pipelines/pcf/install-and-upgrade/tasks/destroy-infrastructure/task.yml
+    params:
+      # VSphere Credentials
+      VSPHERE_SERVER: ((vsphere_server))
+      VSPHERE_USER: ((vsphere_user))
+      VSPHERE_PASSWORD: ((vsphere_password))
+      VSPHERE_ALLOW_UNVERIFIED_SSL: true
+      # S3 credentials if S3 is the Terraform
+      # backend for the bootstrap state
+      S3_ACCESS_KEY_ID: ((s3_access_key_id))
+      S3_SECRET_ACCESS_KEY: ((s3_secret_access_key))
+      S3_DEFAULT_REGION: ((s3_default_region))
+      # Custom S3 end-point if not 
+      # targetting AWS S3
+      TF_STATE_S3_ENDPOINT: ((terraform_state_s3_endpoint))
+      # The bucket where the Terraform state 
+      # will be saved
+      TERRAFORM_STATE_BUCKET: ((terraform_state_bucket))
+      # Prefix to use with cloud resource names 
+      # as well as the location of Terraform
+      # state
+      DEPLOYMENT_PREFIX: ((deployment_prefix))
+      # Path for additional Terraform templates
+      # that customize the default infrastructure
+      # templates 
+      TEMPLATE_OVERRIDE_PATH: automation-extensions/((pcf_terraform_templates_path))/((environment))/infrastructure
 
 - name: create-infrastructure
   on_failure:
@@ -78,6 +122,14 @@ jobs:
       VSPHERE_USER: ((vsphere_user))
       VSPHERE_PASSWORD: ((vsphere_password))
       VSPHERE_ALLOW_UNVERIFIED_SSL: true
+      # S3 credentials if S3 is the Terraform
+      # backend for the bootstrap state
+      S3_ACCESS_KEY_ID: ((s3_access_key_id))
+      S3_SECRET_ACCESS_KEY: ((s3_secret_access_key))
+      S3_DEFAULT_REGION: ((s3_default_region))
+      # Custom S3 end-point if not 
+      # targetting AWS S3
+      TF_STATE_S3_ENDPOINT: ((terraform_state_s3_endpoint))
       # The bucket where the Terraform state 
       # will be saved
       TERRAFORM_STATE_BUCKET: ((terraform_state_bucket))
@@ -88,7 +140,7 @@ jobs:
       # Path for additional Terraform templates
       # that customize the default infrastructure
       # templates 
-      TEMPLATE_OVERRIDE_PATH: automation-extensions/((pcf_terraform_templates_path))/((environment))/infrastructure      
+      TEMPLATE_OVERRIDE_PATH: automation-extensions/((pcf_terraform_templates_path))/((environment))/infrastructure
       # Inputs to PCF PAS infrastructure Terraform templates
       TF_VAR_environment: ((environment))
       TF_VAR_bootstrap_state_bucket: ((terraform_state_bucket))

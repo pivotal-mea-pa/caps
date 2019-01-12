@@ -23,8 +23,6 @@ locals {
 
 variable "environment" {}
 
-variable "pcf_opsman_image_name" {}
-
 # Network
 
 variable "system_domain_prefix" {}

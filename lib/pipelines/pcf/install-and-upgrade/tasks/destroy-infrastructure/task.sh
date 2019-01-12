@@ -3,13 +3,24 @@
 source ~/scripts/opsman-func.sh
 
 [[ -n "$TRACE" ]] && set -x
-set -e
+set -eu
 
 terraform_templates_path=automation/lib/pipelines/pcf/install-and-upgrade/terraform/${IAAS}/infrastructure
 if [[ -n $TEMPLATE_OVERRIDE_PATH && -d $TEMPLATE_OVERRIDE_PATH ]]; then
   cp -r ${TEMPLATE_OVERRIDE_PATH}/${IAAS} $terraform_templates_path
 fi
 
+# Delete infrastructure provisioned by Ops Manager
+if [[ "$(opsman::check_available "https://$OPSMAN_HOST")" == "available" ]]; then
+  om \
+    --target https://$OPSMAN_HOST \
+    --skip-ssl-validation \
+    --username "$OPSMAN_USERNAME" \
+    --password "$OPSMAN_PASSWORD" \
+    delete-installation
+fi
+
+# Initialize IaaS environment variables
 case $IAAS in
   google)
     if [[ -n $GCP_SERVICE_ACCOUNT_KEY ]]; then
@@ -23,7 +34,7 @@ case $IAAS in
 
     export GOOGLE_PROJECT=${GCP_PROJECT}
     export GOOGLE_REGION=${GCP_REGION}
-    
+
     terraform init \
       -backend-config="bucket=${TERRAFORM_STATE_BUCKET}" \
       -backend-config="prefix=${DEPLOYMENT_PREFIX}" \
@@ -78,18 +89,9 @@ case $IAAS in
     ;;
 esac
 
-terraform plan \
-  -out=terraform.plan \
-  ${terraform_templates_path}
+# Delete infrastructure
+echo "Deleting provisioned infrastructure..."
 
-terraform apply \
-  -auto-approve \
-  -parallelism=5 \
-  terraform.plan
-
-# Seems to be a bug in terraform where 'output' and 'taint' command are 
-# unable to load the backend state when the working directory does not 
-# have the backend resource template file.
 backend_type=$(cat .terraform/terraform.tfstate | jq -r .backend.type)
 cat << ---EOF > backend.tf
 terraform {
@@ -97,7 +99,13 @@ terraform {
 }
 ---EOF
 
-terraform output -json \
-  -state .terraform/terraform.tfstate \
-  | jq -r --arg q "'" '. | to_entries[] | "\(.key)=\($q)\(.value.value)\($q)"' \
-  > upload_path/pcf-env.sh
+set +e
+
+i=0
+terraform destroy -force -state .terraform/terraform.tfstate $terraform_templates_path
+while [[ $? -ne 0 && $i -lt 2 ]]; do
+  # Retry destroy as sometimes destroy may fail due to IaaS timeouts
+  i=$(($i+1))
+  terraform destroy -force -state .terraform/terraform.tfstate $terraform_templates_path
+done
+exit $?

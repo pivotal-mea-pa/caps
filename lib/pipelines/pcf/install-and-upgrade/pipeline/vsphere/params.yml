@@ -29,6 +29,17 @@ vcenter_templates_path: '${vcenter_templates_path}'
 vcenter_vms_path: '${vcenter_vms_path}'
 vcenter_disks_path: '${vcenter_disks_path}'
 
+# PowerDNS Credentials
+
+pdns_server_url: '${pdns_server_url}'
+pdns_api_key: '${pdns_api_key}'
+
+# External S3 bucket used to save Terraform state
+s3_access_key_id: '${data.terraform_remote_state.bootstrap.s3_access_key_id}'
+s3_secret_access_key: '${data.terraform_remote_state.bootstrap.s3_secret_access_key}'
+s3_default_region: '${data.terraform_remote_state.bootstrap.s3_default_region}'
+terraform_state_s3_endpoint: '${data.terraform_remote_state.bootstrap.terraform_state_s3_endpoint}'
+
 # Terraform state location
 terraform_state_bucket: '${terraform_state_bucket}'
 bootstrap_state_prefix: '${bootstrap_state_prefix}'

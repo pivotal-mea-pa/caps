@@ -66,6 +66,26 @@ output "vcenter_persistant_datastores" {
 }
 
 #
+# External S3 bucket used to save Terraform state
+#
+
+output "s3_access_key_id" {
+  value = "${var.s3_access_key_id}"
+}
+
+output "s3_secret_access_key" {
+  value = "${var.s3_secret_access_key}"
+}
+
+output "s3_default_region" {
+  value = "${var.s3_default_region}"
+}
+
+output "terraform_state_s3_endpoint" {
+  value = "${var.terraform_state_s3_endpoint}"
+}
+
+#
 # Terraform state attributes
 #
 

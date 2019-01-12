@@ -9,17 +9,13 @@ image_resource:
 inputs:
 - name: automation
 - name: automation-extensions
-- name: pivnet-download
-
-outputs:
-- name: upload_path
 
 run:
-  path: automation/lib/pipelines/pcf/install-and-upgrade/tasks/create-infrastructure/task.sh
+  path: automation/lib/pipelines/pcf/install-and-upgrade/tasks/destroy-infrastructure/task.sh
 
 params:
   TRACE: Y
-  
+
   # Target IaaS type which is propogated
   # to all downstream deployment and 
   # operational configurations.
@@ -70,9 +66,9 @@ params:
   # that customize the default infrastructure
   # templates 
   TEMPLATE_OVERRIDE_PATH:
-  
-  # Inputs to PCF PAS infrastructure Terraform
-  # templates
+
+  # Inputs to PCF PAS infrastructure Terraform 
+  # template.
   TF_VAR_environment:
   TF_VAR_bootstrap_state_bucket:
   TF_VAR_bootstrap_state_prefix:
