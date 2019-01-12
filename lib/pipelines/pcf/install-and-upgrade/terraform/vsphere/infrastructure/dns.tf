@@ -15,15 +15,13 @@ locals {
 # Add internal DNS records
 #
 
-
-# resource "powerdns_record" "foobar" {
-#   zone    = "${local.env_domain}."
-#   name    = "${local.opsman_dns_name}."
-#   type    = "A"
-#   ttl     = 300
-#   records = ["${local.opsman_vcenter_ip}"]
-# }
-
+resource "powerdns_record" "opsman" {
+  zone    = "${local.env_domain}."
+  name    = "${local.opsman_dns_name}."
+  type    = "A"
+  ttl     = 3600
+  records = ["${local.opsman_vcenter_ip}"]
+}
 
 # resource "google_dns_record_set" "wildcard-apps-dns" {
 #   managed_zone = "${google_dns_managed_zone.env_dns_zone.name}"
