@@ -12,7 +12,7 @@ fi
 
 case $IAAS in
   google)
-    if [[ -n $GCP_SERVICE_ACCOUNT_KEY ]]; then
+    if [[ -z $GCP_SERVICE_ACCOUNT_KEY ]]; then
       echo "ERROR! A Google service key JSON contents need to be provided via the 'GCP_SERVICE_ACCOUNT_KEY' environment variable."
       exit 1
     fi
