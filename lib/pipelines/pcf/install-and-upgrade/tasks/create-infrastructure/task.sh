@@ -6,9 +6,6 @@ root=$PWD
 [[ -n "$TRACE" ]] && set -x
 set -e
 
-export TF_VAR_bootstrap_state_bucket=$BOOTSTRAP_STATE_BUCKET
-export TF_VAR_bootstrap_state_prefix=$BOOTSTRAP_STATE_PREFIX
-
 case $IAAS in
   google)
     if [[ -n $GOOGLE_CREDENTIALS_JSON ]]; then
@@ -24,7 +21,7 @@ case $IAAS in
   vsphere)
     if [[ -z $VSPHERE_SERVER
       || -z $VSPHERE_USER
-      || -z $VSPHERE_PASSWORD ]]
+      || -z $VSPHERE_PASSWORD ]]; then
     
       echo "ERROR! Connection and credential environment for '$IAAS' has not be set."
         exit 1
