@@ -204,7 +204,8 @@ jobs:
     - get: opsman-image
       passed: [create-infrastructure]
       trigger: true
-      params: {globs: []}
+      params:
+        skip_download: 'true'
   - get: terraform-output
 
   # Initialize Ops Manager. This is a no-op
