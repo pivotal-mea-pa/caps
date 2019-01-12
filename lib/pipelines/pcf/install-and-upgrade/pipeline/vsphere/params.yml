@@ -61,15 +61,6 @@ opsman_vcenter_cluster: '${opsman_vcenter_cluster}'
 opsman_vcenter_datastore: '${opsman_vcenter_datastore}'
 opsman_vcenter_network: '${opsman_vcenter_network}'
 
-opsman_hostname: '${opsman_hostname}'
-opsman_ip: '${opsman_ip}'
-opsman_netmask: '${opsman_netmask}'
-opsman_gateway: '${opsman_gateway}'
-opsman_dns_servers: '${opsman_dns_servers}'
-opsman_ntp_servers: '${opsman_ntp_servers}'
-opsman_ssh_password: '${opsman_ssh_password}'
-opsman_ssh_public_key: '${opsman_ssh_public_key}'
-
 # This should be your pcf_ert_domain with "opsman." as a prefix
 opsman_host: 'opsman.${environment}.${vpc_dns_zone}'
 
