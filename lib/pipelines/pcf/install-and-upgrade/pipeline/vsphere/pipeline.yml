@@ -4,7 +4,7 @@ groups:
   jobs:
   - destroy-env
   - create-infrastructure
-  # - configure-director
+  - configure-director
   # - deploy-director
 - name: Install & Upgrade Products
 
