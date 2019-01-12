@@ -2,86 +2,51 @@
 # Deploy Pivotal Operations Manager appliance
 #
 
-locals {
-  opsman_vcenter_config = "${data.terraform_remote_state.bootstrap.pcf_opsman_vcenter_config[var.environment]}"
-
-  vcenter_datacenter     = "${data.terraform_remote_state.bootstrap.vcenter_datacenter}"
-  vcenter_templates_path = "${var.environment}_${data.terraform_remote_state.bootstrap.vcenter_templates_path}"
-  vcenter_vms_path       = "${var.environment}_${data.terraform_remote_state.bootstrap.vcenter_vms_path}"
-  vcenter_disks_path     = "${var.environment}_${data.terraform_remote_state.bootstrap.vcenter_disks_path}"
-
-  opsman_vcenter_cluster   = "${lookup(local.opsman_vcenter_config, "cluster")}"
-  opsman_vcenter_datastore = "${lookup(local.opsman_vcenter_config, "datastore")}"
-  opsman_vcenter_network   = "${lookup(local.opsman_vcenter_config, "network")}"
-}
-
-#
-# Lookup VCenter resources for Ops Manager deployment
-#
-
-data "vsphere_datacenter" "dc" {
-  name = "${local.vcenter_datacenter}"
-}
-
-data "vsphere_compute_cluster" "cl" {
-  name          = "${local.opsman_vcenter_cluster}"
-  datacenter_id = "${data.vsphere_datacenter.dc.id}"
-}
-
-data "vsphere_datastore" "ds" {
-  name          = "${local.opsman_vcenter_datastore}"
-  datacenter_id = "${data.vsphere_datacenter.dc.id}"
-}
-
-data "vsphere_network" "nw" {
-  name          = "${local.opsman_vcenter_network}"
-  datacenter_id = "${data.vsphere_datacenter.dc.id}"
-}
-
-data "vsphere_virtual_machine" "opsman-template" {
-  name          = "${local.vcenter_templates_path}/${var.pcf_opsman_image_name}"
-  datacenter_id = "${data.vsphere_datacenter.dc.id}"
-}
-
-#
-# VCenter folder for VPC
-#
-
-resource "vsphere_folder" "vms" {
-  path          = "${local.vcenter_vms_path}"
-  type          = "vm"
-  datacenter_id = "${data.vsphere_datacenter.dc.id}"
+local {
+  opsman_ip             = "${local.opsman_vcenter_ip}"
+  opsman_netmask        = "${cidrnetmask(local.opsman_vcenter_network_cidr)}"
+  opsman_gateway        = "${local.opsman_vcenter_network_gateway}"
+  opsman_dns_servers    = "${data.terraform_remote_state.bootstrap.pcf_network_dns}"
+  opsman_ntp_servers    = "${data.terraform_remote_state.bootstrap.pcf_network_ntp}"
+  opsman_ssh_password   = "${data.terraform_remote_state.bootstrap.opsman_admin_password}"
+  opsman_ssh_public_key = "${trimspace(data.terraform_remote_state.bootstrap.default_openssh_public_key)}"
+  opsman_hostname       = "opsman.${local.environment}.${data.terraform_remote_state.bootstrap.vpc_dns_zone}"
 }
 
 #
 # Ops Manager Instance
 #
 
-resource "vsphere_virtual_machine" "opsman" {
-  name   = "${var.pcf_opsman_image_name}}"
-  folder = "${vsphere_folder.vms.path}"
+#data "external" "opsman-instance" {
+#  program = ["${path.module}/upload_opsman_image.sh",
+#    "${local.vcenter_datacenter}",
+#    "${vsphere_folder.vms.path}",
+	"${local.opsman_vcenter_cluster}",
+    "${local.opsman_vcenter_network}",
+	"${local.opsman_vcenter_datastore}",
+    "${local.opsman_ip}",
+    "${local.opsman_netmask}",
+    "${local.opsman_gateway}",
+    "${local.opsman_dns_servers}",
+    "${local.opsman_ntp_servers}",
+	"${local.opsman_ssh_password}",
+    "${local.opsman_ssh_public_key}",
+    "${local.opsman_hostname}",
+	"${vsphere_virtual_disk.opsman-data-disk.vmdk_path}",
+  ]
+}
 
-  resource_pool_id = "${data.vsphere_compute_cluster.cl.resource_pool_id}"
-  datastore_id     = "${data.vsphere_datastore.ds.id}"
+#
+# Ops Manager data volume
+#
 
-  guest_id  = "${data.vsphere_virtual_machine.opsman-template.guest_id}"
-  scsi_type = "${data.vsphere_virtual_machine.opsman-template.scsi_type}"
-
-  network_interface {
-    network_id   = "${data.vsphere_network.nw.id}"
-    adapter_type = "${data.vsphere_virtual_machine.opsman-template.network_interface_types[0]}"
-  }
-
-  disk {
-    label            = "disk0"
-    size             = "${data.vsphere_virtual_machine.opsman-template.disks.0.size}"
-    eagerly_scrub    = "${data.vsphere_virtual_machine.opsman-template.disks.0.eagerly_scrub}"
-    thin_provisioned = "${data.vsphere_virtual_machine.opsman-template.disks.0.thin_provisioned}"
-  }
-
-  clone {
-    template_uuid = "${data.vsphere_virtual_machine.opsman-template.id}"
-  }
+resource "vsphere_virtual_disk" "opsman-data-disk" {
+  size               = "100"
+  vmdk_path          = "/${local.disks_path}/opsman-data.vmdk"
+  datacenter         = "${data.vsphere_datacenter.dc.name}"
+  datastore          = "${data.vsphere_datastore.ds.name}"
+  type               = "thin"
+  create_directories = "true"
 }
 
 #

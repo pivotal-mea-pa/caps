@@ -42,15 +42,15 @@ variable "vcenter_datacenter" {
 # prefixed by the environment.
 
 variable "vcenter_templates_path" {
-  default = "pcf-templates"
+  default = "templates"
 }
 
 variable "vcenter_vms_path" {
-  default = "pcf-vms"
+  default = "vms"
 }
 
 variable "vcenter_disks_path" {
-  default = "pcf-disks"
+  default = "disks"
 }
 
 # Comma separated list of availability zone clusters

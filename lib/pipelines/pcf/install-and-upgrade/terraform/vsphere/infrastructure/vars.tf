@@ -1,10 +1,20 @@
 #
 # Local Variables
 #
+
 locals {
   prefix = "${data.terraform_remote_state.bootstrap.vpc_name}-${var.environment}"
+  
+  vcenter_datacenter = "${data.terraform_remote_state.bootstrap.vcenter_datacenter}"
+  
+  opsman_vcenter_config = "${data.terraform_remote_state.bootstrap.pcf_opsman_vcenter_config[var.environment]}"
 
-  # num_azs = "${min(data.terraform_remote_state.bootstrap.max_azs, length(data.google_compute_zones.available.names))}"
+  opsman_vcenter_cluster         = "${lookup(local.opsman_vcenter_config, "cluster")}"
+  opsman_vcenter_datastore       = "${lookup(local.opsman_vcenter_config, "datastore")}"
+  opsman_vcenter_network         = "${lookup(local.opsman_vcenter_config, "network")}"
+  opsman_vcenter_network_cidr    = "${lookup(local.opsman_vcenter_config, "network_cidr")}"
+  opsman_vcenter_network_gateway = "${lookup(local.opsman_vcenter_config, "network_gateway")}"
+  opsman_vcenter_ip              = "${lookup(local.opsman_vcenter_config, "ip")}"
 }
 
 #
