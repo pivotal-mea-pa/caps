@@ -21,6 +21,15 @@ resources:
     uri: ((automation_extensions_repo))
     branch: ((automation_extensions_branch))
 
+- name: terraform-output
+  type: s3
+  source:
+    bucket: pcf
+    endpoint: ((autos3_url))
+    access_key_id: ((autos3_access_key))
+    secret_access_key: ((autos3_secret_key))
+    regexp: terraform-output/pcf-env-(.*).sh
+
 - name: opsman-image
   type: s3
   source:
@@ -29,6 +38,15 @@ resources:
     access_key_id: ((autos3_access_key))
     secret_access_key: ((autos3_secret_key))
     regexp: downloads/ops-manager_(.*).tgz
+
+# - name: product-versions
+#   type: s3
+#   source:
+#     bucket: pcf
+#     endpoint: ((autos3_url))
+#     access_key_id: ((autos3_access_key))
+#     secret_access_key: ((autos3_secret_key))
+#     regexp: downloads/versions-(.*)
 
 jobs:
 
@@ -159,3 +177,176 @@ jobs:
       TF_VAR_bootstrap_state_prefix: ((bootstrap_state_prefix))
       TF_VAR_system_domain_prefix: ((system_domain_prefix))
       TF_VAR_apps_domain_prefix: ((apps_domain_prefix))
+
+  # Save terraform output so it can be referenced
+  # by external scripts.
+  - task: save-terraform-output
+    file: automation/lib/inceptor/tasks/upload-object/task.yml
+    params: 
+      BUCKET: pcf
+      UPLOAD_PATH: terraform-output
+      OBJECT_NAME: pcf-env.sh
+      AUTOS3_URL: ((autos3_url))
+      AUTOS3_ACCESS_KEY: ((autos3_access_key))
+      AUTOS3_SECRET_KEY: ((autos3_secret_key))
+
+- name: configure-director
+  on_failure:
+    do:
+    - task: notify on configure-director failure
+
+  serial: true
+  serial_groups: [opsman]
+  plan:
+  - aggregate:
+    - get: automation
+    - get: automation-extensions
+    - get: opsman-image
+      passed: [create-infrastructure]
+      trigger: true
+      params: {globs: []}
+  - get: terraform-output
+
+  # Initialize Ops Manager. This is a no-op
+  # if the Ops Manager has already been 
+  # initialized.
+  - task: configure-opsman-authentication
+    file: automation/lib/pipelines/pcf/install-and-upgrade/tasks/configure-opsman/task.yml
+    params:
+      OPSMAN_HOST: ((opsman_host))
+      OPSMAN_USERNAME: ((opsman_admin_username))
+      OPSMAN_PASSWORD: ((opsman_admin_password))
+      OPSMAN_CLIENT_ID: ((opsman_client_id))
+      OPSMAN_CLIENT_SECRET: ((opsman_client_secret))
+      OPSMAN_DECRYPTION_KEY: ((opsman_admin_password))
+
+#   # Configure the Ops Manager Bosh Director
+#   - task: configure-director
+#     file: automation/lib/pipelines/pcf/install-and-upgrade/tasks/configure-director/task.yml
+#     params:
+#       OPSMAN_HOST: ((opsman_host))
+#       OPSMAN_CLIENT_ID: ((opsman_client_id))
+#       OPSMAN_CLIENT_SECRET: ((opsman_client_secret))
+#       OPSMAN_USERNAME: ((opsman_admin_username))
+#       OPSMAN_PASSWORD: ((opsman_admin_password))
+#       # The IAAS to configure for
+#       IAAS: ((iaas_type))
+#       # JQ configuration template overrides 
+#       TEMPLATE_OVERRIDE_PATH: automation-extensions/((pcf_tile_templates_path))/director
+#       # IAAS properties
+#       GCP_SERVICE_ACCOUNT_KEY: ((gcp_service_account_key))
+#       GCP_PROJECT: ((gcp_project))
+#       GCP_REGION: ((gcp_region))
+#       DEPLOYMENT_PREFIX: ((deployment_prefix))
+#       # Director properties
+#       NTP_SERVERS: ''                 # Default '0.pool.ntp.org,1.pool.ntp.org'
+#       RESURRECTOR_ENABLED: ''         # Default 'true'
+#       POST_DEPLOY_ENABLED: true
+#       RETRY_BOSH_DEPLOYS:  ''         # Default 'true'
+#       # Availability Zone properties
+#       AVAILABILITY_ZONES: ''          # Sourced from terraform output
+#       CURR_AZ_CONFIGURATION: ''       # Retrieved from via OM CLI
+#       # Network properties
+#       ICMP_CHECKS_ENABLED: ''         # Default 'false'
+#       PCF_NETWORKS: ''                # Sourced from terraform output
+#       CURR_NETWORK_CONFIGURATION: ''  # Retrieved from via OM CLI
+#       # AZ and Network assignement properties
+#       NETWORK: ''                     # Default 'infrastructure'
+#       # Security properties
+#       TRUSTED_CERTIFICATES: ''        # Sourced from terraform output
+#       # Resource properties
+#       INTERNET_CONNECTED: ''          # Default 'false'
+
+# - name: deploy-director
+#   on_failure:
+#     do:
+#     - task: notify on deploy-director failure
+#   on_success:
+#     do:
+#     - task: notify on deploy-director success
+
+#   serial: true
+#   serial_groups: [opsman]
+#   plan:
+#   - aggregate:
+#     - get: automation
+#     - get: product-versions
+#     - get: opsman-image
+#       passed: [configure-director]
+#       trigger: true
+#       params: {globs: []}
+
+#   # This task will create a release manifest which will
+#   # be included with any failure or success notifications.    
+#   - task: create-release-manifest
+#     file: automation/lib/pipelines/pcf/install-and-upgrade/tasks/create-release-manifest/task.yml
+#     input_mapping:
+#       versions: product-versions
+#       input-files: deploy-director-job-info
+#     output_mapping: 
+#       output-files: deploy-director-job-info
+#     params:
+#       CONCOURSE_URL: ((concourse_url))
+#       CONCOURSE_USER: ((concourse_user))
+#       CONCOURSE_PASSWORD: ((concourse_password))
+#       AUTOS3_URL: ((autos3_url))
+#       AUTOS3_ACCESS_KEY: ((autos3_access_key))
+#       AUTOS3_SECRET_KEY: ((autos3_secret_key))
+#       OPSMAN_HOST: ((opsman_host))
+#       OPSMAN_USERNAME: ((opsman_admin_username))
+#       OPSMAN_PASSWORD: ((opsman_admin_password))
+#       OPSMAN_CLIENT_ID: ((opsman_client_id))
+#       OPSMAN_CLIENT_SECRET: ((opsman_client_secret))
+#       ENVIRONMENT: ((environment))
+#       VERSION_ROW_STYLE: 'color:silver;'
+#       NEW_VERSION_ROW_STYLE: 'color:black;'
+
+#   # Wait if the Ops Manager is currently in the
+#   # process of applying a change
+#   - task: wait-if-apply-in-progress
+#     file: automation/lib/tasks/opsman/wait-opsman/task.yml
+#     params:
+#       OPSMAN_HOST: ((opsman_host))
+#       OPSMAN_USERNAME: ((opsman_admin_username))
+#       OPSMAN_PASSWORD: ((opsman_admin_password))
+#       OPSMAN_CLIENT_ID: ((opsman_client_id))
+#       OPSMAN_CLIENT_SECRET: ((opsman_client_secret))
+
+#   # Invoke Ops Manager Apply changes and ensure
+#   # only changes to director will be applied
+#   - task: deploy-director
+#     file: automation/lib/tasks/opsman/apply-changes/task.yml
+#     params:
+#       OPSMAN_HOST: ((opsman_host))
+#       OPSMAN_CLIENT_ID: ((opsman_client_id))
+#       OPSMAN_CLIENT_SECRET: ((opsman_client_id))
+#       OPSMAN_USERNAME: ((opsman_admin_username))
+#       OPSMAN_PASSWORD: ((opsman_admin_password))
+#       DIRECTOR_ONLY:
+#       DISABLE_ERRANDS:
+
+#   # Sets the director ready state which will 
+#   # allow any jobs that depend on the director
+#   # to be up to proceed.
+#   - task: set-director-ready
+#     file: automation/lib/inceptor/tasks/toggle-state/task.yml
+#     params: 
+#       OFF_STATE: director_not_ready
+#       ON_STATE: director_ready
+#       AUTOS3_URL: ((autos3_url))
+#       AUTOS3_ACCESS_KEY: ((autos3_access_key))
+#       AUTOS3_SECRET_KEY: ((autos3_secret_key))
+
+#   # Update product versions determined when release
+#   # manifest is created
+#   - task: save-product-versions
+#     file: automation/lib/inceptor/tasks/upload-object/task.yml
+#     input_mapping:
+#       upload_path: deploy-director-job-info
+#     params: 
+#       BUCKET: pcf
+#       UPLOAD_PATH: downloads
+#       OBJECT_NAME: versions
+#       AUTOS3_URL: ((autos3_url))
+#       AUTOS3_ACCESS_KEY: ((autos3_access_key))
+#       AUTOS3_SECRET_KEY: ((autos3_secret_key))
