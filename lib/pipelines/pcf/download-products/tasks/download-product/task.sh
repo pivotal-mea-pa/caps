@@ -138,3 +138,13 @@ fi
 
 # Upload new files
 mc cp ./pivnet-product.tgz auto/${BUCKET}/downloads/${PRODUCT_VERSION}_${PRODUCT_NAME}.tgz
+
+# Create placeholder versions file if one does not exist
+set +e
+mc ls auto/${BUCKET}/downloads | grep " versions-" 2>&1 >/dev/null
+if [[ $? -ne 0 ]]; then
+  touch versions-0
+  mc cp ./versions-0 auto/${BUCKET}/downloads/versions-0
+fi
+
+exit 1
