@@ -5,7 +5,7 @@ exec 2> >(tee get_opsman_image_archive.log 2>&1 >/dev/null)
 set -exu
 
 opsman_image_archive=$(find ./pivnet-download -name "*.tgz" | sort | head -1)
-tar xvzf $opsman_image_archive
+tar xzf $opsman_image_archive
 
 # us: ops-manager-us/pcf-gcp-1.9.2.tar.gz -> ops-manager-us/pcf-gcp-1.9.2.tar.gz
 opsman_bucket_path=$(grep -i 'us:.*.tar.gz' pivnet-product/*GCP.yml | cut -d' ' -f2)
