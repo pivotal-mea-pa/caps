@@ -96,8 +96,10 @@ resource "google_compute_instance" "ops-manager" {
   }
 
   depends_on = [
+    "google_compute_network_peering.pcf-admin",
+    "google_compute_network_peering.admin-pcf",
+    "google_compute_firewall.admin-to-pcf-allow-all",
     "google_compute_subnetwork.pcf",
-    "google_compute_firewall.allow-ert-all",
     "null_resource.upload-opsman-image",
   ]
 }
