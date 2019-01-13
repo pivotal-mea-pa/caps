@@ -146,5 +146,3 @@ if [[ $? -ne 0 ]]; then
   touch versions-0
   mc cp ./versions-0 auto/${BUCKET}/downloads/versions-0
 fi
-
-exit 1
