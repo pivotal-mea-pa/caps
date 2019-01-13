@@ -97,6 +97,7 @@ resource "google_compute_instance" "ops-manager" {
 
   depends_on = [
     "google_compute_subnetwork.pcf",
+    "google_compute_firewall.allow-ert-all",
     "null_resource.upload-opsman-image",
   ]
 }
