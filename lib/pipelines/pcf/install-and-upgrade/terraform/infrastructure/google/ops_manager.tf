@@ -2,8 +2,31 @@
 # Deploy Pivotal Operations Manager appliance
 #
 
-data "external" "opsman-image-archive" {
-  program = ["${path.module}/get_opsman_image_archive.sh"]
+data "external" "get-opsman-image-archive" {
+  program = ["${path.module}/scripts/get_opsman_image_archive.sh"]
+}
+
+data "template_file" "upload-opsman-image" {
+  template = "${file("${path.module}/scripts/upload_opsman_image.sh")}"
+
+  vars {
+    opsman_image_name  = "${data.external.get-opsman-image-archive.result.image_name}"
+    opsman_bucket_path = "${data.external.get-opsman-image-archive.result.bucket_path}"
+  }
+}
+
+resource "null_resource" "upload-opsman-image" {
+  provisioner "local-exec" {
+    command = <<UPLOAD
+/bin/bash <<'ESH'
+${data.template_file.upload-opsman-image.rendered}
+ESH
+UPLOAD
+  }
+
+  triggers {
+    opsman-image-name = "${data.external.get-opsman-image-archive.result.image_name}"
+  }
 }
 
 resource "google_compute_instance" "ops-manager" {
@@ -16,7 +39,7 @@ resource "google_compute_instance" "ops-manager" {
 
   boot_disk {
     initialize_params {
-      image = "${data.external.opsman-image-archive.result.image_name}"
+      image = "${data.external.get-opsman-image-archive.result.image_name}"
       size  = 160
     }
   }
@@ -72,7 +95,10 @@ resource "google_compute_instance" "ops-manager" {
     host        = "${self.network_interface.0.address}"
   }
 
-  depends_on = ["google_compute_subnetwork.pcf"]
+  depends_on = [
+    "google_compute_subnetwork.pcf",
+    "null_resource.upload-opsman-image",
+  ]
 }
 
 resource "null_resource" "ops-manager" {
