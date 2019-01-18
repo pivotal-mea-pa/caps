@@ -85,13 +85,14 @@ CREATE
   }
 
   # On Destroy
-  provisioner "remote-exec" {
-    inline = [
-      "/home/ubuntu/export-installation.sh",
-    ]
+  # provisioner "remote-exec" {
+  #   inline = [
+  #     "/home/ubuntu/export-installation.sh",
+  #   ]
 
-    when = "destroy"
-  }
+
+  #   when = "destroy"
+  # }
 
   provisioner "local-exec" {
     when = "destroy"
@@ -102,14 +103,12 @@ ${data.template_file.delete-opsman-instance.rendered}
 ESH
 DESTROY
   }
-
   connection {
     type        = "ssh"
     user        = "ubuntu"
     private_key = "${data.terraform_remote_state.bootstrap.default_openssh_private_key}"
     host        = "${local.opsman_ip}"
   }
-
   triggers {
     opsman-image-archive = "${data.external.get-opsman-image-path.result.path}"
   }
