@@ -53,11 +53,6 @@ variable "vcenter_disks_path" {
   default = "disks"
 }
 
-# Comma separated list of availability zone clusters
-variable "vcenter_clusters" {
-  type = "string"
-}
-
 # Comma separated list of ephemeral data stores
 variable "vcenter_ephemeral_datastores" {
   type = "string"
@@ -66,6 +61,35 @@ variable "vcenter_ephemeral_datastores" {
 # Comma separated list of persistent data stores
 variable "vcenter_persistant_datastores" {
   type = "string"
+}
+
+# Map of availability zones defined
+# as cluster => resource pool pairs.
+#
+# example:
+#
+# {
+#   az1 = {
+#     cluster       = cluster_1 
+#     resource_pool = "cl1rp1"
+#   }
+#   az2 = {
+#     cluster       = cluster_2
+#     resource_pool = "cl1rp2"
+#   }
+# }
+#
+# If resource pool name is empty then
+# the cluster's default resource pool
+# will be used. The first entry is
+# the default singleton zone where
+# all singleton service like Ops
+# Manager will be deployed.
+
+#export TF_VAR_availability_zones='{
+#}'
+variable "availability_zones" {
+  type = "map"
 }
 
 # VCenter Networks
@@ -147,10 +171,6 @@ variable "country" {
 
 variable "vpc_name" {
   type = "string"
-}
-
-variable "max_azs" {
-  default = "1"
 }
 
 variable "vpc_dns_zone" {
@@ -345,13 +365,15 @@ variable "pcf_environments" {
 # Network configuration for each Ops Manager instance within
 # each environment. Each configuration should be a map of
 #
-#  - cluster
+#  - availability_zone
 #  - datastore
 #  - network
 #  - network_cidr
 #  - network_gateway
 #  - ip
 #
+# The "availability_zone" must reference one of the zones
+# defined in the "TF_VAR_availability_zones" variable.
 
 #export TF_VAR_pcf_opsman_vcenter_config='{
 #}'

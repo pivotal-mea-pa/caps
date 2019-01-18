@@ -2,7 +2,7 @@
 
 set -exu
 
-download_file_path=${opsman-image-archive}
+download_file_path=${opsman-image-path}
 tar xvzf $download_file_path
 
 ova_file_path=$(find ./pivnet-product -name *.ova | sort | head -1)
@@ -72,7 +72,7 @@ if [[ $? -ne 0 ]]; then
     -dc=${vcenter_datacenter} \
     -ds=${vcenter_datastore} \
     -folder=$vm_folder \
-	  -pool=/${vcenter_datacenter}/host/${vcenter_cluster}/Resources \
+	  -pool=$vcenter_resource_pool \
     -options=import-spec.json \
     $ova_file_path 1>/dev/null
 

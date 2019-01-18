@@ -2,6 +2,11 @@
 # Certificate for PCF ERT end-point
 #
 
+locals {
+  ert_ssl_cert = "${length(var.pcf_ert_ssl_cert) > 0 ? var.pcf_ert_ssl_cert : tls_locally_signed_cert.pcf-san-cert.cert_pem}"
+  ert_ssl_key  = "${length(var.pcf_ert_ssl_key) > 0 ? var.pcf_ert_ssl_key : tls_private_key.pcf-san-cert.private_key_pem}"
+}
+
 resource "tls_private_key" "pcf-san-cert" {
   algorithm = "RSA"
   rsa_bits  = "2048"

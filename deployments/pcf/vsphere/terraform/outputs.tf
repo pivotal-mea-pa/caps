@@ -50,11 +50,6 @@ output "vcenter_disks_path" {
   value = "${var.vcenter_disks_path}"
 }
 
-# Comma separated list of availability zone clusters
-output "vcenter_clusters" {
-  value = "${var.vcenter_clusters}"
-}
-
 # Comma separated list of ephemeral data stores
 output "vcenter_ephemeral_datastores" {
   value = "${var.vcenter_ephemeral_datastores}"
@@ -63,6 +58,12 @@ output "vcenter_ephemeral_datastores" {
 # Comma separated list of persistent data stores
 output "vcenter_persistant_datastores" {
   value = "${var.vcenter_persistant_datastores}"
+}
+
+# Map of availability zones defined
+# as cluster => resource pool pairs.
+output "availability_zones" {
+  value = "${var.availability_zones}"
 }
 
 #
@@ -126,10 +127,6 @@ output "country" {
 
 output "vpc_name" {
   value = "${var.vpc_name}"
-}
-
-output "max_azs" {
-  value = "${var.max_azs}"
 }
 
 output "vpc_dns_zone" {

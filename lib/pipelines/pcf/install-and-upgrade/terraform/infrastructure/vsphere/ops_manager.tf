@@ -24,10 +24,10 @@ data "template_file" "create-opsman-instance" {
   template = "${file("${path.module}/scripts/create_opsman_instance.sh")}"
 
   vars {
-    opsman-image-archive  = "${data.external.get-opsman-image-path.result.path}"
+    opsman-image-path     = "${data.external.get-opsman-image-path.result.path}"
     vcenter_datacenter    = "${local.vcenter_datacenter}"
     vcenter_vms_path      = "${vsphere_folder.vms.path}"
-    vcenter_cluster       = "${local.opsman_vcenter_cluster}"
+    vcenter_resource_pool = "${data.vsphere_resource_pool.rp.id}"
     vcenter_network       = "${local.opsman_vcenter_network}"
     vcenter_datastore     = "${local.opsman_vcenter_datastore}"
     opsman_ip             = "${local.opsman_ip}"
@@ -85,14 +85,13 @@ CREATE
   }
 
   # On Destroy
-  # provisioner "remote-exec" {
-  #   inline = [
-  #     "/home/ubuntu/export-installation.sh",
-  #   ]
+  provisioner "remote-exec" {
+    inline = [
+      "/home/ubuntu/export-installation.sh",
+    ]
 
-
-  #   when = "destroy"
-  # }
+    when = "destroy"
+  }
 
   provisioner "local-exec" {
     when = "destroy"
@@ -103,15 +102,22 @@ ${data.template_file.delete-opsman-instance.rendered}
 ESH
 DESTROY
   }
+
   connection {
     type        = "ssh"
     user        = "ubuntu"
     private_key = "${data.terraform_remote_state.bootstrap.default_openssh_private_key}"
     host        = "${local.opsman_ip}"
   }
+
   triggers {
     opsman-image-archive = "${data.external.get-opsman-image-path.result.path}"
   }
+
+  depends_on = [
+    "vsphere_folder.vms",
+    "vsphere_virtual_disk.opsman-data-disk",
+  ]
 }
 
 #

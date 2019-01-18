@@ -26,11 +26,6 @@ data "template_file" "params" {
     vsphere_password             = "${data.terraform_remote_state.bootstrap.vsphere_password}"
     vsphere_allow_unverified_ssl = "${data.terraform_remote_state.bootstrap.vsphere_allow_unverified_ssl}"
 
-    vcenter_datacenter            = "${data.terraform_remote_state.bootstrap.vcenter_datacenter}"
-    vcenter_clusters              = "${data.terraform_remote_state.bootstrap.vcenter_clusters}"
-    vcenter_ephemeral_datastores  = "${data.terraform_remote_state.bootstrap.vcenter_ephemeral_datastores}"
-    vcenter_persistant_datastores = "${data.terraform_remote_state.bootstrap.vcenter_persistant_datastores}"
-
     pdns_server_url = "http://${data.terraform_remote_state.bootstrap.bastion_admin_fqdn}:8888"
     pdns_api_key    = "${data.terraform_remote_state.bootstrap.powerdns_api_key}"
 

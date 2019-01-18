@@ -6,8 +6,8 @@ data "vsphere_datacenter" "dc" {
   name = "${local.vcenter_datacenter}"
 }
 
-data "vsphere_compute_cluster" "cl" {
-  name          = "${local.opsman_vcenter_cluster}"
+data "vsphere_resource_pool" "rp" {
+  name          = "${join("/", list(local.opsman_cluster_name, "Resources", local.opsman_cluster_resource_pool))}"
   datacenter_id = "${data.vsphere_datacenter.dc.id}"
 }
 

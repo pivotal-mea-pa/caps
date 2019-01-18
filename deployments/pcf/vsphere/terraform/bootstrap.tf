@@ -42,9 +42,10 @@ module "bootstrap" {
   #
   datacenter = "${var.vcenter_datacenter}"
 
-  clusters             = ["${split(",", var.vcenter_clusters)}"]
   ephemeral_datastore  = "${element(split(",", var.vcenter_ephemeral_datastores), 0)}"
   persistent_datastore = "${element(split(",", var.vcenter_persistant_datastores), 0)}"
+
+  availability_zones = "${var.availability_zones}"
 
   dmz_network         = "${var.dmz_network}"
   dmz_network_cidr    = "${var.dmz_network_cidr}"
@@ -144,16 +145,6 @@ module "bootstrap" {
   # when the complete params file is rendered.
   bootstrap_pipeline_vars = <<PIPELINE_VARS
 trace: ${var.trace}
-
-vsphere_server: '${var.vsphere_server}'
-vsphere_user: '${var.vsphere_user}'
-vsphere_password: '${var.vsphere_password}'
-vsphere_allow_unverified_ssl: ${var.vsphere_allow_unverified_ssl}
-
-vcenter_datacenter: '${var.vcenter_datacenter}'
-vcenter_clusters: '${var.vcenter_clusters}'
-vcenter_ephemeral_datastores: '${var.vcenter_ephemeral_datastores}'
-vcenter_persistant_datastores: '${var.vcenter_persistant_datastores}'
 
 vpc_dns_zone: '${var.vpc_dns_zone}'
 
