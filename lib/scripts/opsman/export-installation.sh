@@ -16,8 +16,7 @@ bundle exec uaac token owner get opsman admin -s "" -p "$OPSMAN_ADMIN_PASSWORD"
 TOKEN=$(bundle exec uaac context | awk '/access_token:/{ print $2 }')
 TIMESTAMP=$(date +%Y%m%d%H%M%S)
 
-sudo mkdir -p /data/exports
-sudo chown ubuntu:ubuntu /data/exports
+mkdir -p /data/exports
 
 curl -f -k "$OPSMAN_URL/api/v0/installation_asset_collection" \
   -H "Authorization: Bearer $TOKEN" \
@@ -34,5 +33,3 @@ if [[ $? -eq 0 ]]; then
   rm /data/exports/installation-$TIMESTAMP.zip
   exit 1
 fi
-
-sudo chown ubuntu:ubuntu /data/exports/installation-$TIMESTAMP.zip
