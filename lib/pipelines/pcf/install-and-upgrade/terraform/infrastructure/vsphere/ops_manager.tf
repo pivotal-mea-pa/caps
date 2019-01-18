@@ -16,15 +16,15 @@ locals {
 # Ops Manager Instance
 #
 
-data "external" "get-opsman-image-archive" {
-  program = ["${path.module}/scripts/get_opsman_image_archive.sh"]
+data "external" "get-opsman-image-path" {
+  program = ["${path.module}/scripts/get_opsman_image_path.sh"]
 }
 
 data "template_file" "create-opsman-instance" {
   template = "${file("${path.module}/scripts/create_opsman_instance.sh")}"
 
   vars {
-    opsman-image-archive  = "${data.external.get-opsman_image_name.result.path}"
+    opsman-image-archive  = "${data.external.get-opsman-image-path.result.path}"
     vcenter_datacenter    = "${local.vcenter_datacenter}"
     vcenter_vms_path      = "${vsphere_folder.vms.path}"
     vcenter_cluster       = "${local.opsman_vcenter_cluster}"
@@ -111,7 +111,7 @@ DESTROY
   }
 
   triggers {
-    opsman-image-archive = "${data.external.get-opsman_image_name.result.path}"
+    opsman-image-archive = "${data.external.get-opsman-image-path.result.path}"
   }
 }
 
