@@ -27,7 +27,7 @@ data "template_file" "create-opsman-instance" {
     opsman-image-path     = "${data.external.get-opsman-image-path.result.path}"
     vcenter_datacenter    = "${local.vcenter_datacenter}"
     vcenter_vms_path      = "${vsphere_folder.vms.path}"
-    vcenter_resource_pool = "${data.vsphere_resource_pool.rp.id}"
+    vcenter_resource_pool = "${data.vsphere_resource_pool.rp.name}"
     vcenter_network       = "${local.opsman_vcenter_network}"
     vcenter_datastore     = "${local.opsman_vcenter_datastore}"
     opsman_ip             = "${local.opsman_ip}"
