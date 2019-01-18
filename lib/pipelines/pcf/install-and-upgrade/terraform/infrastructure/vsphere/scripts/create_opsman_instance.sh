@@ -72,7 +72,7 @@ if [[ $? -ne 0 ]]; then
     -dc=${vcenter_datacenter} \
     -ds=${vcenter_datastore} \
     -folder=$vm_folder \
-	  -pool=$vcenter_resource_pool \
+	  -pool=${vcenter_resource_pool} \
     -options=import-spec.json \
     $ova_file_path 1>/dev/null
 
