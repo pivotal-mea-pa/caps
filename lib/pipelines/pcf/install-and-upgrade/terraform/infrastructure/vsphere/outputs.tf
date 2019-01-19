@@ -65,7 +65,7 @@ JSON
 }
 
 output "singleton_availability_zone" {
-  value = "${element(keys(data.terraform_remote_state.bootstrap.availability_zones), 0)}"
+  value = "${element(keys(data.terraform_remote_state.bootstrap.availability_zones[var.environment]), 0)}"
 }
 
 # PCF Networks to be configured on
