@@ -269,9 +269,10 @@ jobs:
     - get: automation
     - get: product-versions
     - get: opsman-image
-      passed: [configure-director]
+      passed: [prepare-environment]
       trigger: true
-      params: {globs: []}
+      params:
+        skip_download: 'true'
 
   # This task will create a release manifest which will
   # be included with any failure or success notifications.    
