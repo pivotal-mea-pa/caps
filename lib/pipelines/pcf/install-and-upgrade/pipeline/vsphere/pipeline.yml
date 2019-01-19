@@ -269,7 +269,7 @@ jobs:
     - get: automation
     - get: product-versions
     - get: opsman-image
-      passed: [prepare-environment]
+      passed: [configure-director]
       trigger: true
       params:
         skip_download: 'true'
