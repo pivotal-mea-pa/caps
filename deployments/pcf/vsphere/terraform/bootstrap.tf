@@ -45,7 +45,7 @@ module "bootstrap" {
   ephemeral_datastore  = "${element(split(",", var.vcenter_ephemeral_datastores), 0)}"
   persistent_datastore = "${element(split(",", var.vcenter_persistant_datastores), 0)}"
 
-  availability_zones = "${var.availability_zones}"
+  availability_zones = "${var.availability_zones[var.pcf_environments[0]]}"
 
   dmz_network         = "${var.dmz_network}"
   dmz_network_cidr    = "${var.dmz_network_cidr}"

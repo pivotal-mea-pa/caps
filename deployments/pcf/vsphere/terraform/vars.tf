@@ -64,23 +64,26 @@ variable "vcenter_persistant_datastores" {
 }
 
 # Map of availability zones defined
-# as cluster => resource pool pairs.
+# as cluster => resource pool pairs
+# for each environment.
 #
 # example:
 #
 # {
-#   az1 = {
-#     cluster       = cluster_1 
-#     resource_pool = "cl1rp1"
-#   }
-#   az2 = {
-#     cluster       = cluster_2
-#     resource_pool = "cl1rp2"
+#   sandbox = {
+#     az1 = {
+#       cluster       = cluster_1 
+#       resource_pool = "cl1rp1"
+#     }
+#     az2 = {
+#       cluster       = cluster_2
+#       resource_pool = "cl1rp2"
+#     }
 #   }
 # }
 #
 # If resource pool name is empty then
-# the cluster's default resource pool
+# the clusters default resource pool
 # will be used. The first entry is
 # the default singleton zone where
 # all singleton service like Ops

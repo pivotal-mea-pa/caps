@@ -54,6 +54,30 @@ output "vcenter_persistant_datastores" {
   value = "${data.terraform_remote_state.bootstrap.vcenter_persistant_datastores}"
 }
 
+# Map of availability zones defined
+# as cluster => resource pool pairs.
+output "pcf_availability_zones" {
+  value = <<JSON
+{
+  "azs": ${jsonencode(data.external.pcf-availability-zones.*.result)}
+}
+JSON
+}
+
+output "singleton_availability_zone" {
+  value = "${element(keys(data.terraform_remote_state.bootstrap.availability_zones), 0)}"
+}
+
+# PCF Networks to be configured on
+# Ops Manager
+output "pcf_networks" {
+  value = <<JSON
+{
+  "pcf_networks": ${jsonencode(data.external.pcf-networks.*.result)}
+}
+JSON
+}
+
 // DNS
 
 output "env_dns_zone_name_servers" {
@@ -74,12 +98,6 @@ output "tcp_domain" {
 
 output "apps_domain" {
   value = "${local.apps_domain}"
-}
-
-// Availability Zones
-
-output "singleton_availability_zone" {
-  value = "${element(keys(data.terraform_remote_state.bootstrap.availability_zones), 0)}"
 }
 
 // Certificates
