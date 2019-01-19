@@ -5,7 +5,7 @@ groups:
   - destroy-environment
   - prepare-environment
   - configure-director
-  # - deploy-director
+  - deploy-director
 - name: Install & Upgrade Products
 
 resources:
@@ -39,14 +39,14 @@ resources:
     secret_access_key: ((autos3_secret_key))
     regexp: downloads/ops-manager_(.*).tgz
 
-# - name: product-versions
-#   type: s3
-#   source:
-#     bucket: pcf
-#     endpoint: ((autos3_url))
-#     access_key_id: ((autos3_access_key))
-#     secret_access_key: ((autos3_secret_key))
-#     regexp: downloads/versions-(.*)
+- name: product-versions
+  type: s3
+  source:
+    bucket: pcf
+    endpoint: ((autos3_url))
+    access_key_id: ((autos3_access_key))
+    secret_access_key: ((autos3_secret_key))
+    regexp: downloads/versions-(.*)
 
 jobs:
 
