@@ -50,7 +50,7 @@ data "external" "pcf-networks" {
   "cidr": "${lookup(local.subnet_cidrs[local.subnet_names[count.index]], "network_cidr")}",
   "gateway": "${lookup(local.subnet_cidrs[local.subnet_names[count.index]], "network_gateway")}",
   "reserved_ip_ranges": "${lookup(local.subnet_cidrs[local.subnet_names[count.index]], "reserved_ip_ranges")}",
-  "dns": "${data.terraform_remote_state.bootstrap.pcf_network_dns}"
+  "dns": "${data.terraform_remote_state.bootstrap.pcf_network_dns}",
   "availability_zone_names": "${join(",", local.az_names)}"
 }
 RESULT
