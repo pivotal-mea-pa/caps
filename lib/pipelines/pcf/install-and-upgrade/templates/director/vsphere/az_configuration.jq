@@ -5,7 +5,7 @@
 #   "$(cat az_configuration.jq)"
 #
 
-$pcf_availability_zones | .azs
+$availability_zones | .azs
 
 |
 
