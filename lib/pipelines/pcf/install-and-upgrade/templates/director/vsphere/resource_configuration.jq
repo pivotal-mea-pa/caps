@@ -1,6 +1,6 @@
 #
 # jq -n \
-#   --arg director_persistent_disk_size '51200' \
+#   --arg director_persistent_disk_size "51200" \
 #   "$(cat resource_configuration.jq)"
 #
 
