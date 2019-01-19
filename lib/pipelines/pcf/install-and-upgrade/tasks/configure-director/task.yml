@@ -91,6 +91,7 @@ params:
   TRUSTED_CERTIFICATES: ''
   
   # Resource properties
+  DIRECTOR_PERSISTENT_DISK_SIZE: '153600'
   INTERNET_CONNECTED: true
 
 run:

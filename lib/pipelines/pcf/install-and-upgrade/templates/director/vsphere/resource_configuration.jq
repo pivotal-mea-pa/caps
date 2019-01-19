@@ -1,17 +1,13 @@
 #
 # jq -n \
-#   --argjson internet_connected false \
+#   --arg director_persistent_disk_size '51200' \
 #   "$(cat resource_configuration.jq)"
 #
 
 {
   "director": {
-    "internet_connected": $internet_connected,
     "persistent_disk": {
-      "size_mb": "153600"
-    },
-  },
-  "compilation": {
-    "internet_connected": $internet_connected
+      "size_mb": $director_persistent_disk_size
+    }
   }
 }
