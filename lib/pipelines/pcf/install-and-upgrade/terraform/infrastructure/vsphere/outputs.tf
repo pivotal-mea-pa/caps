@@ -78,7 +78,13 @@ output "pcf_networks" {
 JSON
 }
 
-// DNS
+# NTP
+
+output "pcf_network_ntp" {
+  value = "${data.terraform_remote_state.bootstrap.pcf_network_ntp}"
+}
+
+# DNS
 
 output "env_dns_zone_name_servers" {
   value = "${data.terraform_remote_state.bootstrap.pcf_network_dns}"
