@@ -1,6 +1,6 @@
 #
 # jq -n \
-#   --arg pcf_network_ntp "0.pool.ntp.org,1.pool.ntp.org" \
+#   --arg ntp_servers "0.pool.ntp.org,1.pool.ntp.org" \
 #   --argjson resurrector_enabled true \
 #   --argjson post_deploy_enabled false \
 #   --argjson retry_bosh_deploys true \
@@ -8,7 +8,7 @@
 #
 
 {
-  "ntp_servers_string": $pcf_network_ntp,
+  "ntp_servers_string": $ntp_servers,
   "resurrector_enabled": $resurrector_enabled,
   "post_deploy_enabled": $post_deploy_enabled,
   "retry_bosh_deploys": $retry_bosh_deploys,

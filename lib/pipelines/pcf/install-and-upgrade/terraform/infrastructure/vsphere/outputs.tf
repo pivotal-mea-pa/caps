@@ -56,7 +56,7 @@ output "vcenter_persistant_datastores" {
 
 # Map of availability zones defined
 # as cluster => resource pool pairs.
-output "pcf_availability_zones" {
+output "availability_zones" {
   value = <<JSON
 {
   "azs": ${jsonencode(data.external.pcf-availability-zones.*.result)}
@@ -80,7 +80,7 @@ JSON
 
 # NTP
 
-output "pcf_network_ntp" {
+output "ntp_servers" {
   value = "${data.terraform_remote_state.bootstrap.pcf_network_ntp}"
 }
 

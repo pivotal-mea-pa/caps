@@ -14,39 +14,84 @@ inputs:
 params:
   TRACE: Y
   
+  # Target IaaS type which is propogated
+  # to all downstream deployment and 
+  # operational configurations.
+  # 
+  # This must be one (in lowercase):
+  #
+  #   - vsphere
+  #   - openstack
+  #   - aws"
+  #   - azure
+  #   - google
+  #
+  IAAS:
+
+  # Google Cloud Credentials
+  GCP_SERVICE_ACCOUNT_KEY:
+  GCP_PROJECT:
+  GCP_REGION:
+  
+  # VSphere Credentials
+  VSPHERE_SERVER:
+  VSPHERE_USER:
+  VSPHERE_PASSWORD:
+  VSPHERE_ALLOW_UNVERIFIED_SSL: false
+
+  # Ops Manager Credentials
   OPSMAN_HOST:
   OPSMAN_CLIENT_ID:
   OPSMAN_CLIENT_SECRET:
   OPSMAN_USERNAME:
   OPSMAN_PASSWORD:
-  # The IAAS specific templates to configure
-  IAAS:
+
   # JQ configuration template overrides 
   TEMPLATE_PATH: automation/lib/pipelines/pcf/install-and-upgrade/templates/director
   TEMPLATE_OVERRIDE_PATH:
-  # IAAS properties
+
+  # Prefix to use with cloud resource names 
+  # as well as the location of Terraform
+  # state
   DEPLOYMENT_PREFIX:
-  GCP_SERVICE_ACCOUNT_KEY:
-  GCP_PROJECT:
-  GCP_REGION:
+
+  # VSphere Director IaaS properties
+  VCENTER_DATACENTER: ''
+  VCENTER_EPHEMERAL_DATASTORES: ''
+  VCENTER_PERSISTANT_DATASTORES: ''
+  VCENTER_TEMPLATES_PATH: 'pcf_templates'
+  VCENTER_VMS_PATH: 'pcf_vms'
+  VCENTER_DISKS_PATH: 'pcf_disk'
+  DISK_TYPE: 'thin'
+  NSX_NETWORKING_ENABLED: false
+  NSX_ADDRESS: ''
+  NSX_USERNAME: ''
+  NSX_PASSWORD: ''
+  NSX_CA_CERTIFICATE: ''
+
   # Director properties
-  NTP_SERVERS:
-  RESURRECTOR_ENABLED:
-  POST_DEPLOY_ENABLED:
-  RETRY_BOSH_DEPLOYS:
+  NTP_SERVERS: '0.pool.ntp.org,1.pool.ntp.org'
+  RESURRECTOR_ENABLED: true
+  POST_DEPLOY_ENABLED: true
+  RETRY_BOSH_DEPLOYS: true
+
   # Availability Zone properties
-  AVAILABILITY_ZONES:
-  CURR_AZ_CONFIGURATION:
+  AVAILABILITY_ZONES: ''
+  CURR_AZ_CONFIGURATION: ''
+
   # Network properties
-  ICMP_CHECKS_ENABLED:
-  PCF_NETWORKS:
-  CURR_NETWORK_CONFIGURATION:
+  ICMP_CHECKS_ENABLED: ''
+  PCF_NETWORKS: ''
+  CURR_NETWORK_CONFIGURATION: ''
+
   # AZ and Network assignement properties
-  NETWORK:
+  NETWORK: 'infrastructure'
+
   # Security properties
-  TRUSTED_CERTIFICATES:
+  TRUSTED_CERTIFICATES: ''
+  
   # Resource properties
-  INTERNET_CONNECTED:
+  INTERNET_CONNECTED: true
 
 run:
   path: automation/lib/pipelines/pcf/install-and-upgrade/tasks/configure-director/task.sh

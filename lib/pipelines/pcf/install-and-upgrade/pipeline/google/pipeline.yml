@@ -225,38 +225,24 @@ jobs:
   - task: configure-director
     file: automation/lib/pipelines/pcf/install-and-upgrade/tasks/configure-director/task.yml
     params:
+      # Target IaaS type
+      IAAS: ((iaas_type))
+      # IAAS properties
+      GCP_SERVICE_ACCOUNT_KEY: ((gcp_service_account_key))
+      GCP_PROJECT: ((gcp_project))
+      GCP_REGION: ((gcp_region))
+      # Ops Manager Credentials
       OPSMAN_HOST: ((opsman_host))
       OPSMAN_CLIENT_ID: ((opsman_client_id))
       OPSMAN_CLIENT_SECRET: ((opsman_client_secret))
       OPSMAN_USERNAME: ((opsman_admin_username))
       OPSMAN_PASSWORD: ((opsman_admin_password))
-      # The IAAS to configure for
-      IAAS: ((iaas_type))
       # JQ configuration template overrides 
       TEMPLATE_OVERRIDE_PATH: automation-extensions/((pcf_tile_templates_path))/director
-      # IAAS properties
-      GCP_SERVICE_ACCOUNT_KEY: ((gcp_service_account_key))
-      GCP_PROJECT: ((gcp_project))
-      GCP_REGION: ((gcp_region))
+      # Prefix to use with cloud resource names 
+      # as well as the location of Terraform
+      # state
       DEPLOYMENT_PREFIX: ((deployment_prefix))
-      # Director properties
-      NTP_SERVERS: ''                 # Default '0.pool.ntp.org,1.pool.ntp.org'
-      RESURRECTOR_ENABLED: ''         # Default 'true'
-      POST_DEPLOY_ENABLED: true
-      RETRY_BOSH_DEPLOYS:  ''         # Default 'true'
-      # Availability Zone properties
-      AVAILABILITY_ZONES: ''          # Sourced from terraform output
-      CURR_AZ_CONFIGURATION: ''       # Retrieved from via OM CLI
-      # Network properties
-      ICMP_CHECKS_ENABLED: ''         # Default 'false'
-      PCF_NETWORKS: ''                # Sourced from terraform output
-      CURR_NETWORK_CONFIGURATION: ''  # Retrieved from via OM CLI
-      # AZ and Network assignement properties
-      NETWORK: ''                     # Default 'infrastructure'
-      # Security properties
-      TRUSTED_CERTIFICATES: ''        # Sourced from terraform output
-      # Resource properties
-      INTERNET_CONNECTED: ''          # Default 'false'
 
 - name: deploy-director
   on_failure:

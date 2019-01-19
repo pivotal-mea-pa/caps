@@ -1,6 +1,6 @@
 #
 # jq -n \
-#   --argjson pcf_availability_zones '{}' \
+#   --argjson availability_zones '{}' \
 #   --argjson curr_az_configuration '{}' \
 #   "$(cat az_configuration.jq)"
 #

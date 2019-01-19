@@ -229,3 +229,27 @@ jobs:
       OPSMAN_CLIENT_ID: ((opsman_client_id))
       OPSMAN_CLIENT_SECRET: ((opsman_client_secret))
       OPSMAN_DECRYPTION_KEY: ((opsman_admin_password))
+
+  # Configure the Ops Manager Bosh Director
+  - task: configure-director
+    file: automation/lib/pipelines/pcf/install-and-upgrade/tasks/configure-director/task.yml
+    params:
+      # Target IaaS type
+      IAAS: ((iaas_type))
+      # VSphere Credentials
+      VSPHERE_SERVER: ((vsphere_server))
+      VSPHERE_USER: ((vsphere_user))
+      VSPHERE_PASSWORD: ((vsphere_password))
+      VSPHERE_ALLOW_UNVERIFIED_SSL: true
+      # Ops Manager Credentials
+      OPSMAN_HOST: ((opsman_host))
+      OPSMAN_CLIENT_ID: ((opsman_client_id))
+      OPSMAN_CLIENT_SECRET: ((opsman_client_secret))
+      OPSMAN_USERNAME: ((opsman_admin_username))
+      OPSMAN_PASSWORD: ((opsman_admin_password))
+      # JQ configuration template overrides 
+      TEMPLATE_OVERRIDE_PATH: automation-extensions/((pcf_tile_templates_path))/director
+      # Prefix to use with cloud resource names 
+      # as well as the location of Terraform
+      # state
+      DEPLOYMENT_PREFIX: ((deployment_prefix))
