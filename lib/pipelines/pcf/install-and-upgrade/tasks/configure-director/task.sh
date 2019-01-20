@@ -91,22 +91,24 @@ om \
 
 az_configuration=$(eval_jq_templates "az_configuration" "$TEMPLATE_PATH" "$TEMPLATE_OVERRIDE_PATH" "$IAAS")
 
-om \
-  --skip-ssl-validation \
-  --target "https://${OPSMAN_HOST}" \
-  --client-id "${OPSMAN_CLIENT_ID}" \
-  --client-secret "${OPSMAN_CLIENT_SECRET}" \
-  --username "${OPSMAN_USERNAME}" \
-  --password "${OPSMAN_PASSWORD}" \
-  curl \
-  --silent --path /api/v0/staged/director/availability_zones \
-  --request PUT --data "$(
-    jq -n \
-      --argjson az_configuration "$az_configuration" \
-      '{
-        "availability_zones": $az_configuration
-      }'
-  )"
+if [[ $az_configuration != "[]" ]]; then
+  om \
+    --skip-ssl-validation \
+    --target "https://${OPSMAN_HOST}" \
+    --client-id "${OPSMAN_CLIENT_ID}" \
+    --client-secret "${OPSMAN_CLIENT_SECRET}" \
+    --username "${OPSMAN_USERNAME}" \
+    --password "${OPSMAN_PASSWORD}" \
+    curl \
+    --silent --path /api/v0/staged/director/availability_zones \
+    --request PUT --data "$(
+      jq -n \
+        --argjson az_configuration "$az_configuration" \
+        '{
+          "availability_zones": $az_configuration
+        }'
+    )"
+fi
 
 #
 # Update director network configuration
