@@ -5,6 +5,7 @@ bastion_fqdn=$(echo -e "$tf_output" | awk '/bastion_fqdn =/{ print $3 }')
 bastion_admin_password=$(echo -e "$tf_output" | awk '/bastion_admin_password =/{ print $3 }')
 opsman_admin_password=$(echo -e "$tf_output" | awk '/opsman_admin_password =/{ print $3 }')
 common_admin_password=$(echo -e "$tf_output" | awk '/common_admin_password =/{ print $3 }')
+concourse_admin_password=$(echo -e "$tf_output" | awk '/concourse_admin_password =/{ print $3 }')
 
 [[ -z $vpc_dns_zone ]] && exit
 
@@ -32,5 +33,8 @@ for env in $(echo $pcf_environments | tr '["],' ' '); do
   echo -e "  User:                admin"
   echo -e "  Password:            $opsman_admin_password\n"
 
-  echo -e "  System admin password: $common_admin_password\n"
+  echo -e "${LIGHT_GREEN}Passwords"
+  echo -e "---------\n"
+  echo -e "${GREEN}  System admin:        $common_admin_password"
+  echo -e "  Concourse admin:     $concourse_admin_password"
 done
