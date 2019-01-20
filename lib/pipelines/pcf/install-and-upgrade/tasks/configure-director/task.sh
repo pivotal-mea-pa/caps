@@ -77,7 +77,7 @@ else
     --password "${OPSMAN_PASSWORD}" \
     curl \
     --silent --path /api/v0/staged/director/properties \
-    --request PUT --data $(
+    --request PUT --data "$(
       jq -n \
         --argjson iaas_configuration "$iaas_configuration" \
         --argjson director_configuration "$director_configuration" \
@@ -89,7 +89,7 @@ else
           "security_configuration": $security_configuration,
           "resource_configuration": $resource_configuration
         }'
-    )
+    )"
 
   om \
     --skip-ssl-validation \
