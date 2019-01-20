@@ -50,7 +50,7 @@ export CA_CERTS=$(echo -e "${OPSMAN_CA_CERT}\n${CA_CERTS}")
 # Update director resources
 #
 
-../common/configure-resources.sh "p-bosh" "resource_configuration"
+automation/lib/pipelines/pcf/install-and-upgrade/tasks/common/configure-resources.sh "p-bosh" "resource_configuration"
 
 #
 # Update director properties
