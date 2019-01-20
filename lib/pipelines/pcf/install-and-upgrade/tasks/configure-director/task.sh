@@ -46,102 +46,110 @@ OPSMAN_CA_CERT=$(om \
 
 export CA_CERTS=$(echo -e "${OPSMAN_CA_CERT}\n${CA_CERTS}")
 
+#
+# Update director resources
+#
+
+../common/configure-resources.sh "p-bosh" "resource_configuration"
+
+#
+# Update director properties
+# - https://opsman.sandbox.demo3.pocs.pcfs.io/docs#updating-director-and-iaas-properties-experimental
+#
+
 iaas_configuration=$(eval_jq_templates "iaas_configuration" "$TEMPLATE_PATH" "$TEMPLATE_OVERRIDE_PATH" "$IAAS")
 director_configuration=$(eval_jq_templates "director_configuration" "$TEMPLATE_PATH" "$TEMPLATE_OVERRIDE_PATH" "$IAAS")
-az_configuration=$(eval_jq_templates "az_configuration" "$TEMPLATE_PATH" "$TEMPLATE_OVERRIDE_PATH" "$IAAS")
-networks_configuration=$(eval_jq_templates "network_configuration" "$TEMPLATE_PATH" "$TEMPLATE_OVERRIDE_PATH" "$IAAS")
-network_assignment=$(eval_jq_templates "network_assignment" "$TEMPLATE_PATH" "$TEMPLATE_OVERRIDE_PATH" "$IAAS")
 security_configuration=$(eval_jq_templates "security_configuration" "$TEMPLATE_PATH" "$TEMPLATE_OVERRIDE_PATH" "$IAAS")
-resource_configuration=$(eval_jq_templates "resource_configuration" "$TEMPLATE_PATH" "$TEMPLATE_OVERRIDE_PATH" "$IAAS")
 
-if [[ "$TRACE" == "render-templates-only" ]]; then
+om \
+  --skip-ssl-validation \
+  --target "https://${OPSMAN_HOST}" \
+  --client-id "${OPSMAN_CLIENT_ID}" \
+  --client-secret "${OPSMAN_CLIENT_SECRET}" \
+  --username "${OPSMAN_USERNAME}" \
+  --password "${OPSMAN_PASSWORD}" \
+  curl \
+  --silent --path /api/v0/staged/director/properties \
+  --request PUT --data "$(
+    jq -n \
+      --argjson iaas_configuration "$iaas_configuration" \
+      --argjson director_configuration "$director_configuration" \
+      --argjson security_configuration "$security_configuration" \
+      --argjson resource_configuration "$resource_configuration" \
+      '{
+        "iaas_configuration": $iaas_configuration,
+        "director_configuration": $director_configuration,
+        "security_configuration": $security_configuration,
+        "resource_configuration": $resource_configuration
+      }'
+  )"
 
-  set +x
+#
+# Update director availability zones
+# - https://opsman.sandbox.demo3.pocs.pcfs.io/docs#updating-availability-zones-experimental
+#
 
-  echo -e "\n**** IAAS Configuration ****\n$iaas_configuration"
-  echo -e "\n**** Director Configuration ****\n$director_configuration"
-  echo -e "\n**** Availability Zones Configuration ****\n$az_configuration"
-  echo -e "\n**** Networks Configuration ****\n$networks_configuration"
-  echo -e "\n**** Network Assignment Configuration ****\n$network_assignment"
-  echo -e "\n**** Security Configuration ****\n$security_configuration"
-  echo -e "\n**** Resource Configuration ****\n$resource_configuration"
+az_configuration=$(eval_jq_templates "az_configuration" "$TEMPLATE_PATH" "$TEMPLATE_OVERRIDE_PATH" "$IAAS")
 
-else
+om \
+  --skip-ssl-validation \
+  --target "https://${OPSMAN_HOST}" \
+  --client-id "${OPSMAN_CLIENT_ID}" \
+  --client-secret "${OPSMAN_CLIENT_SECRET}" \
+  --username "${OPSMAN_USERNAME}" \
+  --password "${OPSMAN_PASSWORD}" \
+  curl \
+  --silent --path /api/v0/staged/director/availability_zones \
+  --request PUT --data "$(
+    jq -n \
+      --argjson az_configuration "$az_configuration" \
+      '{
+        "availability_zones": $az_configuration
+      }'
+  )"
 
-  om \
-    --skip-ssl-validation \
-    --target "https://${OPSMAN_HOST}" \
-    --client-id "${OPSMAN_CLIENT_ID}" \
-    --client-secret "${OPSMAN_CLIENT_SECRET}" \
-    --username "${OPSMAN_USERNAME}" \
-    --password "${OPSMAN_PASSWORD}" \
-    curl \
-    --silent --path /api/v0/staged/director/properties \
-    --request PUT --data "$(
-      jq -n \
-        --argjson iaas_configuration "$iaas_configuration" \
-        --argjson director_configuration "$director_configuration" \
-        --argjson security_configuration "$security_configuration" \
-        --argjson resource_configuration "$resource_configuration" \
-        '{
-          "iaas_configuration": $iaas_configuration,
-          "director_configuration": $director_configuration,
-          "security_configuration": $security_configuration,
-          "resource_configuration": $resource_configuration
-        }'
-    )"
+#
+# Update director network configuration
+# - https://opsman.sandbox.demo3.pocs.pcfs.io/docs#updating-networks-experimental
+#
 
-  om \
-    --skip-ssl-validation \
-    --target "https://${OPSMAN_HOST}" \
-    --client-id "${OPSMAN_CLIENT_ID}" \
-    --client-secret "${OPSMAN_CLIENT_SECRET}" \
-    --username "${OPSMAN_USERNAME}" \
-    --password "${OPSMAN_PASSWORD}" \
-    curl \
-    --silent --path /api/v0/staged/director/availability_zones \
-    --request PUT --data "$(
-      jq -n \
-        --argjson az_configuration "$az_configuration" \
-        '{
-          "availability_zones": $az_configuration
-        }'
-    )"
+networks_configuration=$(eval_jq_templates "network_configuration" "$TEMPLATE_PATH" "$TEMPLATE_OVERRIDE_PATH" "$IAAS")
 
-  om \
-    --skip-ssl-validation \
-    --target "https://${OPSMAN_HOST}" \
-    --client-id "${OPSMAN_CLIENT_ID}" \
-    --client-secret "${OPSMAN_CLIENT_SECRET}" \
-    --username "${OPSMAN_USERNAME}" \
-    --password "${OPSMAN_PASSWORD}" \
-    curl \
-    --silent --path /api/v0/staged/director/networks \
-    --request PUT --data "$networks_configuration"
+om \
+  --skip-ssl-validation \
+  --target "https://${OPSMAN_HOST}" \
+  --client-id "${OPSMAN_CLIENT_ID}" \
+  --client-secret "${OPSMAN_CLIENT_SECRET}" \
+  --username "${OPSMAN_USERNAME}" \
+  --password "${OPSMAN_PASSWORD}" \
+  curl \
+  --silent --path /api/v0/staged/director/networks \
+  --request PUT --data "$networks_configuration"
 
-  set +e
+set +e
 
-  # This will fail if network assignment has already been 
-  # done. If it fails simply show a warning and continue.
-  
-  data=$(jq -n \
-    --argjson network_assignment "$network_assignment" \
-    '{
-      "network_and_az": $network_assignment
-    }')
+# This will fail if network assignment has already been 
+# done. If it fails simply show a warning and continue.
 
-  om \
-    --skip-ssl-validation \
-    --target "https://${OPSMAN_HOST}" \
-    --client-id "${OPSMAN_CLIENT_ID}" \
-    --client-secret "${OPSMAN_CLIENT_SECRET}" \
-    --username "${OPSMAN_USERNAME}" \
-    --password "${OPSMAN_PASSWORD}" \
-    curl \
-    --silent --path /api/v0/staged/director/network_and_az \
-    --request PUT --data "$data"
+network_assignment=$(eval_jq_templates "network_assignment" "$TEMPLATE_PATH" "$TEMPLATE_OVERRIDE_PATH" "$IAAS")
 
-  if [[ $? -ne 0 ]]; then
-    echo "WARNING! Network assignment failed. Most likely this has already been done and cannot be changed once applied."
-  fi
+data=$(jq -n \
+  --argjson network_assignment "$network_assignment" \
+  '{
+    "network_and_az": $network_assignment
+  }')
+
+om \
+  --skip-ssl-validation \
+  --target "https://${OPSMAN_HOST}" \
+  --client-id "${OPSMAN_CLIENT_ID}" \
+  --client-secret "${OPSMAN_CLIENT_SECRET}" \
+  --username "${OPSMAN_USERNAME}" \
+  --password "${OPSMAN_PASSWORD}" \
+  curl \
+  --silent --path /api/v0/staged/director/network_and_az \
+  --request PUT --data "$data"
+
+if [[ $? -ne 0 ]]; then
+  echo "WARNING! Network assignment failed. Most likely this has already been done and cannot be changed once applied."
 fi
