@@ -1,11 +1,11 @@
 #
 # jq -n \
-#   --argjson availability_zones '{}' \
+#   --argjson availability_zone_config '{}' \
 #   --argjson curr_az_configuration '{}' \
 #   "$(cat az_configuration.jq)"
 #
 
-$availability_zones | .azs
+$availability_zone_config | .azs
 
 |
 

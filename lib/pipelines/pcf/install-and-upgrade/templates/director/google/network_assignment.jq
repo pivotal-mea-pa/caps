@@ -1,6 +1,6 @@
 #
 # jq -n \
-#   --arg availability_zones "$AVAILABILITY_ZONES" \
+#   --arg availability_zones "" \
 #   --arg network "infrastructure" \
 #   "$(cat network_assignment.jq)"
 #

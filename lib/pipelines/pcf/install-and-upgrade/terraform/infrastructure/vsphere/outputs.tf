@@ -56,7 +56,7 @@ output "vcenter_persistant_datastores" {
 
 # Map of availability zones defined
 # as cluster => resource pool pairs.
-output "availability_zones" {
+output "availability_zone_config" {
   value = <<JSON
 {
   "azs": ${jsonencode(data.external.pcf-availability-zones.*.result)}
@@ -64,8 +64,12 @@ output "availability_zones" {
 JSON
 }
 
+output "availability_zones" {
+  value = "${local.az_names}"
+}
+
 output "singleton_availability_zone" {
-  value = "${element(keys(data.terraform_remote_state.bootstrap.availability_zones[var.environment]), 0)}"
+  value = "${local.az_names[0]}"
 }
 
 # PCF Networks to be configured on

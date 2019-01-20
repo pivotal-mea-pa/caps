@@ -1,6 +1,6 @@
 #
 # jq -n \
-#   --argjson availability_zones '{}' \
+#   --arg availability_zones "" \
 #   --arg network "infrastructure" \
 #   "$(cat network_assignment.jq)"
 #
@@ -9,6 +9,6 @@
     "name": $network
   },
   "singleton_availability_zone": {
-    "name": ($availability_zones | .azs | .[0] | .name)
+    "name": ($availability_zones | split(",") | .[0])
   }
 }
