@@ -67,21 +67,6 @@ if [[ "$TRACE" == "render-templates-only" ]]; then
   echo -e "\n**** Resource Configuration ****\n$resource_configuration"
 
 else
-  data=$(jq -n \
-    --argjson iaas_configuration "$iaas_configuration" \
-    --argjson director_configuration "$director_configuration" \
-    --argjson az_configuration "$az_configuration" \
-    --argjson networks_configuration "$networks_configuration" \
-    --argjson security_configuration "$security_configuration" \
-    --argjson resource_configuration "$resource_configuration" \
-    '{
-      "iaas_configuration": $iaas_configuration,
-      "director_configuration": $director_configuration,
-      "az_configuration": $az_configuration,
-      "networks_configuration": $networks_configuration,
-      "security_configuration": $security_configuration,
-      "resource_configuration": $resource_configuration
-    }')
 
   om \
     --skip-ssl-validation \
@@ -92,7 +77,47 @@ else
     --password "${OPSMAN_PASSWORD}" \
     curl \
     --silent --path /api/v0/staged/director/properties \
-    --request PUT --data "$data"
+    --request PUT --data $(
+      jq -n \
+        --argjson iaas_configuration "$iaas_configuration" \
+        --argjson director_configuration "$director_configuration" \
+        --argjson security_configuration "$security_configuration" \
+        --argjson resource_configuration "$resource_configuration" \
+        '{
+          "iaas_configuration": $iaas_configuration,
+          "director_configuration": $director_configuration,
+          "security_configuration": $security_configuration,
+          "resource_configuration": $resource_configuration
+        }'
+    )
+
+  om \
+    --skip-ssl-validation \
+    --target "https://${OPSMAN_HOST}" \
+    --client-id "${OPSMAN_CLIENT_ID}" \
+    --client-secret "${OPSMAN_CLIENT_SECRET}" \
+    --username "${OPSMAN_USERNAME}" \
+    --password "${OPSMAN_PASSWORD}" \
+    curl \
+    --silent --path /api/v0/staged/director/availability_zones \
+    --request PUT --data $(
+      jq -n \
+        --argjson az_configuration "$az_configuration" \
+        '{
+          "availability_zones": $az_configuration
+        }'
+    )
+
+  om \
+    --skip-ssl-validation \
+    --target "https://${OPSMAN_HOST}" \
+    --client-id "${OPSMAN_CLIENT_ID}" \
+    --client-secret "${OPSMAN_CLIENT_SECRET}" \
+    --username "${OPSMAN_USERNAME}" \
+    --password "${OPSMAN_PASSWORD}" \
+    curl \
+    --silent --path /api/v0/staged/director/networks \
+    --request PUT --data "$networks_configuration"
 
   set +e
 
