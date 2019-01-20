@@ -18,11 +18,16 @@ TIMESTAMP=$(date +%Y%m%d%H%M%S)
 
 mkdir -p /data/exports
 
+set +e
 curl -f -k "$OPSMAN_URL/api/v0/installation_asset_collection" \
   -H "Authorization: Bearer $TOKEN" \
   -X GET -o /data/exports/installation-$TIMESTAMP.zip
 
-set +e
+if [[ $? -eq 22 ]]; then
+  echo -e "\nWARNING! Ops Manager returned a 400 error when attempting to export the installation."
+  echo -e "         This can happen if the Ops Manager has no staged or deployed products\n"
+  exit 0
+fi
 
 file /data/exports/installation-$TIMESTAMP.zip | grep 'ASCII text' >/dev/null 2>&1
 if [[ $? -eq 0 ]]; then
