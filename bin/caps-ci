@@ -59,22 +59,35 @@ if [[ -z $host || -z $password ]]; then
     exit 1
 fi
 
-echo -e "\nThe Concourse UI is available via the following URL: http://127.0.0.1:8080\n"
-echo -e "user: admin\npassword: $password\n"
-
 if [[ $action == login ]]; then
-    echo -e "Establishing SSH tunnel in order to access Concourse:\n  ...Creating tunnel. This will hang if you are not logged on to the VPN."
-    ps -ef | awk '/8080\:127\.0\.0\.1\:8080/{ print $2 }' | sudo xargs kill -15
-    ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no \
-        -i $workspace_path/bastion-admin-ssh-key.pem $TF_VAR_bastion_admin_user@$host \
-        -L 8080:127.0.0.1:8080 -N >/dev/null 2>&1 &
+
+    set +e
+    curl --max-time 2 $host:8080 >/dev/null 2>&1
+    if [[ $? -ne 0 ]]; then
+        set -e
+
+        echo -e "\nEstablishing SSH tunnel in order to access Concourse. This may hang if you"
+        echo -e "have not configured bastion public SSH and have not logged in to the VPN."
+        ps -ef | awk '/8080\:127\.0\.0\.1\:8080/{ print $2 }' | sudo xargs kill -15
+        ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no \
+            -i $workspace_path/bastion-admin-ssh-key.pem $TF_VAR_bastion_admin_user@$host \
+            -L 8080:127.0.0.1:8080 -N >/dev/null 2>&1 &
+
+        concourse_url=http://127.0.0.1:8080
+    else
+        set -e
+        concourse_url=http://$host:8080
+    fi
+
+    echo -e "\nThe Concourse UI is available via the following URL: $concourse_url\n"
+    echo -e "user: admin\npassword: $password\n"
 
     echo -e "  ...Logging in and synchronizing using the fly CLI."
 
     sleep 5
 
     set +e
-    flyout=$(fly -t local login -k -c http://127.0.0.1:8080 -u admin -p $password >/dev/null)
+    flyout=$(fly -t local login -k -c $concourse_url -u admin -p $password >/dev/null)
     if [[ $? -ne 0 ]]; then
         echo -e "\nERROR! Unable to login to Concourse using the fly CLI:\n${flyout}\n"
         exit 1
