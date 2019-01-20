@@ -23,7 +23,15 @@ $availability_zone_config | .azs
         | select(.name == ($az | .name)) 
         | .guid
     ) then
-      $az
+    {
+      "name": $az.name,
+      "clusters": [ 
+        {
+          "cluster": $az.cluster,
+          "resource_pool": $az.resource_pool
+        } 
+      ]
+    }
     else
       empty
     end

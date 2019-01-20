@@ -75,12 +75,10 @@ om \
       --argjson iaas_configuration "$iaas_configuration" \
       --argjson director_configuration "$director_configuration" \
       --argjson security_configuration "$security_configuration" \
-      --argjson resource_configuration "$resource_configuration" \
       '{
         "iaas_configuration": $iaas_configuration,
         "director_configuration": $director_configuration,
         "security_configuration": $security_configuration,
-        "resource_configuration": $resource_configuration
       }'
   )"
 
