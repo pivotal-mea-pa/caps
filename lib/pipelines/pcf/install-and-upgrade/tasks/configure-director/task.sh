@@ -100,13 +100,13 @@ else
     --password "${OPSMAN_PASSWORD}" \
     curl \
     --silent --path /api/v0/staged/director/availability_zones \
-    --request PUT --data $(
+    --request PUT --data "$(
       jq -n \
         --argjson az_configuration "$az_configuration" \
         '{
           "availability_zones": $az_configuration
         }'
-    )
+    )"
 
   om \
     --skip-ssl-validation \
