@@ -17,9 +17,11 @@ resource "vsphere_folder" "templates" {
     when = "destroy"
 
     command = <<CREATE
-govc ls /${local.vcenter_datacenter}/vm/${local.templates_path} \
-  | grep -e '/[0-9a-f]*-[0-9a-f]*-[0-9a-f]*-[0-9a-f]*-[0-9a-f]*' \
-  | xargs govc object.destroy
+
+for f in $(govc ls /${local.vcenter_datacenter}/vm/${local.templates_path} \
+  | grep -e '/[0-9a-f]*-[0-9a-f]*-[0-9a-f]*-[0-9a-f]*-[0-9a-f]*'); do
+  govc object.destroy $f
+done
 CREATE
   }
 }
@@ -33,9 +35,11 @@ resource "vsphere_folder" "vms" {
     when = "destroy"
 
     command = <<CREATE
-govc ls /${local.vcenter_datacenter}/vm/${local.vms_path} \
-  | grep -e '/[0-9a-f]*-[0-9a-f]*-[0-9a-f]*-[0-9a-f]*-[0-9a-f]*' \
-  | xargs govc object.destroy
+
+for f in $(govc ls /${local.vcenter_datacenter}/vm/${local.vms_path} \
+  | grep -e '/[0-9a-f]*-[0-9a-f]*-[0-9a-f]*-[0-9a-f]*-[0-9a-f]*'); do
+  govc object.destroy $f
+done
 CREATE
   }
 }
