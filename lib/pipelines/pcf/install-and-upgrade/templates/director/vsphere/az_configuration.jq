@@ -11,16 +11,21 @@ $availability_zone_config | .azs
 
 [
   foreach .[] as $az (
-    .; 
-    [] | $az + {
-      "guid": (
-        (
-          $curr_az_configuration 
-            | .[] 
-            | select(.name == ($az | .name)) 
-            | .guid
-        ) // null
-      ),
-    }
+    .; [] 
+    |
+    # VSphere AZ's that have been configured
+    # cannot be reconfigured once vms have been
+    # deployed to it, even if values are the same
+    # So simply ignore such AZs.
+    if isempty(
+      $curr_az_configuration 
+        | .[] 
+        | select(.name == ($az | .name)) 
+        | .guid
+    ) then
+      $az
+    else
+      empty
+    end
   )
 ]
