@@ -65,7 +65,7 @@ JSON
 }
 
 output "availability_zones" {
-  value = "${local.az_names}"
+  value = "${join(",", local.az_names)}"
 }
 
 output "singleton_availability_zone" {
