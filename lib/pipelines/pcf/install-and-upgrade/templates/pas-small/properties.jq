@@ -13,10 +13,10 @@
 #   --arg deployment_prefix "" \
 #   --arg system_domain "$system_domain" \
 #   --arg apps_domain "$apps_domain" \
+#   --arg ha_proxy_static_ip "" \
 #   --arg router_static_ips "" \
-#   --arg diego_brain_static_ips "" \
-#   --arg ha_proxy_static_ips "" \
 #   --arg tcp_router_static_ips "" \
+#   --arg diego_brain_static_ips "" \
 #   --arg ert_cert "$ert_cert" \
 #   --arg ert_cert_key "$ert_cert_key" \
 #   --arg routing_custom_ca_certificates "$CA_CERTS" \
@@ -74,10 +74,10 @@
 #
 +
 {
+  ".ha_proxy.static_ips": { "value": [ $ha_proxy_static_ip ] },
   ".router.static_ips": { "value": ($router_static_ips | split(",")) },
-  ".diego_brain.static_ips": { "value": ($diego_brain_static_ips | split(",")) },
-  ".ha_proxy.static_ips": { "value": ($ha_proxy_static_ips | split(",")) },
   ".tcp_router.static_ips": { "value": ($tcp_router_static_ips | split(",")) },
+  ".diego_brain.static_ips": { "value": ($diego_brain_static_ips | split(",")) },
 
   # Certificates and Private Keys for HAProxy and Router
   ".properties.networking_poe_ssl_certs": {

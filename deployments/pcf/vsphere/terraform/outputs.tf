@@ -198,6 +198,14 @@ output "pcf_network_ntp" {
 }
 
 #
+# PCF static IPS
+#
+
+output "pcf_static_ips" {
+  value = "${var.pcf_static_ips}"
+}
+
+#
 # PCF Install params
 #
 

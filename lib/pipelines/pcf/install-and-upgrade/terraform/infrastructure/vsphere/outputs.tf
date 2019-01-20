@@ -84,6 +84,24 @@ output "ntp_servers" {
   value = "${data.terraform_remote_state.bootstrap.pcf_network_ntp}"
 }
 
+# Static IPs
+
+output "ha_proxy_static_ip" {
+  value = "${local.ha_proxy_ip}"
+}
+
+output "router_static_ips" {
+  value = "${lookup(local.pcf_static_ips, "pas_router_ips", "")}"
+}
+
+output "tcp_router_static_ips" {
+  value = "${lookup(local.pcf_static_ips, "pas_tcp_router_ips", "")}"
+}
+
+output "diego_brain_static_ips" {
+  value = "${lookup(local.pcf_static_ips, "pas_diego_brains_ips", "")}"
+}
+
 # DNS
 
 output "env_dns_zone_name_servers" {

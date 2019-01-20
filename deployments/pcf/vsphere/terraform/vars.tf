@@ -452,6 +452,26 @@ variable "pcf_network_subnets" {
   type = "map"
 }
 
+# Map of additional static IP config for PAS tile for each
+# environment. 
+# 
+# For example:
+#
+# {
+#   sandbox = {
+#     pas_haproxy_ip       = "10.193.237.79"
+#     pas_router_ips       = "10.193.237.78,10.193.237.77"
+#     pas_tcp_router_ips   = "10.193.237.76,10.193.237.75"
+#     pas_diego_brains_ips = "10.193.237.74,10.193.237.73"
+#   }
+# }
+
+#export TF_VAR_pcf_static_ips='{
+#}'
+variable "pcf_static_ips" {
+  type = "map"
+}
+
 #
 # PCF Install params
 #

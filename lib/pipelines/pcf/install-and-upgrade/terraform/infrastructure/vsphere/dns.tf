@@ -9,6 +9,8 @@ locals {
   apps_domain      = "${var.apps_domain_prefix}.${local.env_domain}"
 
   opsman_dns_name = "opsman.${local.env_domain}"
+
+  ha_proxy_ip = "${lookup(local.pcf_static_ips, "pas_haproxy_ip", "")}"
 }
 
 #
@@ -23,108 +25,62 @@ resource "powerdns_record" "opsman" {
   records = ["${local.opsman_vcenter_ip}"]
 }
 
-# resource "google_dns_record_set" "wildcard-apps-dns" {
-#   managed_zone = "${google_dns_managed_zone.env_dns_zone.name}"
+resource "powerdns_record" "wildcard-apps-dns" {
+  count = "${length(local.ha_proxy_ip) > 0 ? 1 : 0}"
 
+  zone    = "${local.env_domain}."
+  name    = "*.${local.apps_domain}."
+  type    = "A"
+  ttl     = 3600
+  records = ["${local.ha_proxy_ip}"]
+}
 
-#   name = "*.${local.apps_domain}."
-#   type = "A"
-#   ttl  = 300
+resource "powerdns_record" "wildcard-sys-dns" {
+  count = "${length(local.ha_proxy_ip) > 0 ? 1 : 0}"
 
+  zone    = "${local.env_domain}."
+  name    = "*.${local.system_domain}."
+  type    = "A"
+  ttl     = 3600
+  records = ["${local.ha_proxy_ip}"]
+}
 
-#   rrdatas = ["${google_compute_global_address.pcf.address}"]
-# }
+resource "powerdns_record" "app-ssh-dns" {
+  count = "${length(local.ha_proxy_ip) > 0 ? 1 : 0}"
 
+  zone    = "${local.env_domain}."
+  name    = "ssh.${local.system_domain}."
+  type    = "A"
+  ttl     = 3600
+  records = ["${local.ha_proxy_ip}"]
+}
 
-# resource "google_dns_record_set" "wildcard-sys-dns" {
-#   managed_zone = "${google_dns_managed_zone.env_dns_zone.name}"
+resource "powerdns_record" "doppler-dns" {
+  count = "${length(local.ha_proxy_ip) > 0 ? 1 : 0}"
 
+  zone    = "${local.env_domain}."
+  name    = "doppler.${local.system_domain}."
+  type    = "A"
+  ttl     = 3600
+  records = ["${local.ha_proxy_ip}"]
+}
 
-#   name = "*.${local.system_domain}."
-#   type = "A"
-#   ttl  = 300
+resource "powerdns_record" "loggregator-dns" {
+  count = "${length(local.ha_proxy_ip) > 0 ? 1 : 0}"
 
+  zone    = "${local.env_domain}."
+  name    = "loggregator.${local.system_domain}."
+  type    = "A"
+  ttl     = 3600
+  records = ["${local.ha_proxy_ip}"]
+}
 
-#   rrdatas = ["${google_compute_global_address.pcf.address}"]
-# }
+resource "powerdns_record" "tcp-dns" {
+  count = "${length(local.ha_proxy_ip) > 0 ? 1 : 0}"
 
-
-# resource "google_dns_record_set" "app-ssh-dns" {
-#   managed_zone = "${google_dns_managed_zone.env_dns_zone.name}"
-
-
-#   name = "ssh.${local.system_domain}."
-#   type = "A"
-#   ttl  = 300
-
-
-#   rrdatas = ["${google_compute_address.cf-ssh.address}"]
-# }
-
-
-# resource "google_dns_record_set" "doppler-dns" {
-#   managed_zone = "${google_dns_managed_zone.env_dns_zone.name}"
-
-
-#   name = "doppler.${local.system_domain}."
-#   type = "A"
-#   ttl  = 300
-
-
-#   rrdatas = ["${google_compute_address.cf-gorouter-wss.address}"]
-# }
-
-
-# resource "google_dns_record_set" "loggregator-dns" {
-#   managed_zone = "${google_dns_managed_zone.env_dns_zone.name}"
-
-
-#   name = "loggregator.${local.system_domain}."
-#   type = "A"
-#   ttl  = 300
-
-
-#   rrdatas = ["${google_compute_address.cf-gorouter-wss.address}"]
-# }
-
-
-# resource "google_dns_record_set" "tcp-dns" {
-#   managed_zone = "${google_dns_managed_zone.env_dns_zone.name}"
-
-
-#   name = "tcp.${local.env_domain}."
-#   type = "A"
-#   ttl  = 300
-
-
-#   rrdatas = ["${google_compute_address.cf-tcp.address}"]
-# }
-
-
-# #
-# # Add Name Servers for ERT zone to bootstrap VPC zone.
-# #
-
-
-# data "google_dns_managed_zone" "vpc" {
-#   name = "${data.terraform_remote_state.bootstrap.vpc_dns_zone_name}"
-# }
-
-
-# resource "google_dns_record_set" "vpc" {
-#   name         = "${google_dns_managed_zone.env_dns_zone.dns_name}"
-#   managed_zone = "${data.google_dns_managed_zone.vpc.name}"
-
-
-#   type = "NS"
-#   ttl  = 300
-
-
-#   rrdatas = [
-#     "${google_dns_managed_zone.env_dns_zone.name_servers.0}",
-#     "${google_dns_managed_zone.env_dns_zone.name_servers.1}",
-#     "${google_dns_managed_zone.env_dns_zone.name_servers.2}",
-#     "${google_dns_managed_zone.env_dns_zone.name_servers.3}",
-#   ]
-# }
-
+  zone    = "${local.env_domain}."
+  name    = "tcp.${local.env_domain}."
+  type    = "A"
+  ttl     = 3600
+  records = ["${local.ha_proxy_ip}"]
+}

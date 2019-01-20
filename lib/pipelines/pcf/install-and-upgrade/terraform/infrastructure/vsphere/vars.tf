@@ -27,6 +27,8 @@ locals {
   service_networks = "${split(",", local.networks["service_networks"])}"
   subnet_names     = "${split(",", local.networks["subnet_config_order"])}"
   subnet_cidrs     = "${data.terraform_remote_state.bootstrap.pcf_network_subnets[var.environment]}"
+
+  pcf_static_ips = "${data.terraform_remote_state.bootstrap.pcf_static_ips[var.environment]}"
 }
 
 #
