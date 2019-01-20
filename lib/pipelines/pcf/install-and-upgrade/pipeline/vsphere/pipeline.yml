@@ -270,6 +270,11 @@ jobs:
     - get: product-versions
     - get: terraform-output
       trigger: true
+    - get: opsman-image
+      passed: [configure-director]
+      trigger: true
+      params:
+        skip_download: 'true'
 
   # This task will create a release manifest which will
   # be included with any failure or success notifications.    
