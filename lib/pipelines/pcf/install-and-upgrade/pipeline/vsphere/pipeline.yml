@@ -272,7 +272,6 @@ jobs:
       trigger: true
     - get: opsman-image
       passed: [configure-director]
-      trigger: true
       params:
         skip_download: 'true'
 
