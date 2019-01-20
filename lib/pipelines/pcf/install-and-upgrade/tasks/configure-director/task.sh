@@ -67,6 +67,22 @@ if [[ "$TRACE" == "render-templates-only" ]]; then
   echo -e "\n**** Resource Configuration ****\n$resource_configuration"
 
 else
+  data=$(jq -n \
+    --argjson iaas_configuration "$iaas_configuration" \
+    --argjson director_configuration "$director_configuration" \
+    --argjson az_configuration "$az_configuration" \
+    --argjson networks_configuration "$networks_configuration" \
+    --argjson security_configuration "$security_configuration" \
+    --argjson resource_configuration "$resource_configuration" \
+    '{
+      "iaas_configuration": $iaas_configuration,
+      "director_configuration": $director_configuration,
+      "az_configuration": $az_configuration,
+      "networks_configuration": $networks_configuration,
+      "security_configuration": $security_configuration,
+      "resource_configuration": $resource_configuration
+    }')
+
   om \
     --skip-ssl-validation \
     --target "https://${OPSMAN_HOST}" \
@@ -74,19 +90,21 @@ else
     --client-secret "${OPSMAN_CLIENT_SECRET}" \
     --username "${OPSMAN_USERNAME}" \
     --password "${OPSMAN_PASSWORD}" \
-    configure-director \
-    --iaas-configuration "$iaas_configuration" \
-    --director-configuration "$director_configuration" \
-    --az-configuration "$az_configuration" \
-    --networks-configuration "$networks_configuration" \
-    --security-configuration "$security_configuration" \
-    --resource-configuration "$resource_configuration"
+    curl \
+    --silent --path /api/v0/staged/director/properties \
+    --request PUT --data "$data"
 
   set +e
 
   # This will fail if network assignment has already been 
   # done. If it fails simply show a warning and continue.
   
+  data=$(jq -n \
+    --argjson network_assignment "$network_assignment" \
+    '{
+      "network_and_az": $network_assignment
+    }')
+
   om \
     --skip-ssl-validation \
     --target "https://${OPSMAN_HOST}" \
@@ -94,8 +112,9 @@ else
     --client-secret "${OPSMAN_CLIENT_SECRET}" \
     --username "${OPSMAN_USERNAME}" \
     --password "${OPSMAN_PASSWORD}" \
-    configure-director \
-    --network-assignment "$network_assignment"
+    curl \
+    --silent --path /api/v0/staged/director/network_and_az \
+    --request PUT --data "$data"
 
   if [[ $? -ne 0 ]]; then
     echo "WARNING! Network assignment failed. Most likely this has already been done and cannot be changed once applied."
