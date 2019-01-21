@@ -8,6 +8,17 @@ set -eo pipefail
 # Source terraform output variables if available
 source_variables 'terraform-output/pcf-env-*.sh'
 
+product_guid=$(om \
+  --skip-ssl-validation \
+  --target "https://${OPSMAN_HOST}" \
+  --client-id "${OPSMAN_CLIENT_ID}" \
+  --client-secret "${OPSMAN_CLIENT_SECRET}" \
+  --username "${OPSMAN_USERNAME}" \
+  --password "${OPSMAN_PASSWORD}" \
+  curl --silent --path /api/v0/staged/products \
+  | jq -r --arg product_name "$PRODUCT_NAME" \
+    '.[] | select(.type==$product_name) | .guid')
+
 # NEW_VERSION=$(cat pivnet-product/version | cut -d'#' -f1)
 # INSTALLED_VERSION=$(om \
 #   --skip-ssl-validation \
@@ -24,32 +35,60 @@ source_variables 'terraform-output/pcf-env-*.sh'
 #   exit 0
 # fi
 
-network=$(eval_jq_templates "network" "$TEMPLATE_PATH" "$TEMPLATE_OVERRIDE_PATH")
-resources=$(eval_jq_templates "resources" "$TEMPLATE_PATH" "$TEMPLATE_OVERRIDE_PATH")
+#
+# Update director resources
+#
+
+automation/lib/pipelines/pcf/install-and-upgrade/tasks/common/configure-resources.sh \
+  "p-bosh" "resource_configuration" ""
+
+#
+# Update product network and azs
+# - https://opsman.sandbox.demo3.pocs.pcfs.io/docs#configuring-networks-and-azs
+#
+
+networks_and_azs=$(eval_jq_templates "network" "$TEMPLATE_PATH" "$TEMPLATE_OVERRIDE_PATH")
+
+om \
+  --skip-ssl-validation \
+  --target "https://${OPSMAN_HOST}" \
+  --client-id "${OPSMAN_CLIENT_ID}" \
+  --client-secret "${OPSMAN_CLIENT_SECRET}" \
+  --username "${OPSMAN_USERNAME}" \
+  --password "${OPSMAN_PASSWORD}" \
+  curl \
+  --silent --path /api/v0/staged/products/$product_guid/networks_and_azs \
+  --request PUT --data "$(
+    jq -n \
+      --argjson networks_and_azs "$networks_and_azs" \
+      '{
+        "networks_and_azs": $networks_and_azs
+      }'
+  )"
+
+#
+# Update product properties
+# - https://opsman.sandbox.demo3.pocs.pcfs.io/docs#updating-a-simple-property
+#
+
 properties=$(eval_jq_templates "properties" "$TEMPLATE_PATH" "$TEMPLATE_OVERRIDE_PATH")
 
-if [[ "$TRACE" == "render-templates-only" ]]; then
-  set +x
-
-  echo -e "\n**** Network Request Body ****\n$network"
-  echo -e "\n**** Resources Request Body ****\n$resources"
-  echo -e "\n**** Properties Request Body ****\n$properties"
-  exit 0
-
-else
-  om \
-    --skip-ssl-validation \
-    --target "https://${OPSMAN_HOST}" \
-    --client-id "${OPSMAN_CLIENT_ID}" \
-    --client-secret "${OPSMAN_CLIENT_SECRET}" \
-    --username "${OPSMAN_USERNAME}" \
-    --password "${OPSMAN_PASSWORD}" \
-    configure-product \
-    --product-name $PRODUCT_NAME \
-    --product-network "$network" \
-    --product-resources "$resources" \
-    --product-properties "$properties"
-fi
+om \
+  --skip-ssl-validation \
+  --target "https://${OPSMAN_HOST}" \
+  --client-id "${OPSMAN_CLIENT_ID}" \
+  --client-secret "${OPSMAN_CLIENT_SECRET}" \
+  --username "${OPSMAN_USERNAME}" \
+  --password "${OPSMAN_PASSWORD}" \
+  curl \
+  --silent --path /api/v0/staged/products/$product_guid/properties \
+  --request PUT --data "$(
+    jq -n \
+      --argjson properties "$properties" \
+      '{
+        "properties": $properties
+      }'
+  )"
 
 #
 # Set all errands to that are configured 
