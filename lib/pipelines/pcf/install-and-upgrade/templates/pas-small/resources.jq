@@ -61,14 +61,12 @@ if $ha_proxy_static_ip != "" then
   {
     "ha_proxy": {
       "instances": 1,
-      "internet_connected": $internet_connected
     }
   }
 else
   {
     "ha_proxy": {
       "instances": 0,
-      "internet_connected": $internet_connected
     }
   }
 end
@@ -101,6 +99,9 @@ if $iaas == "aws"
     "tcp_router": {
       "internet_connected": $internet_connected,
       "elb_names": [ $pas_tcp_lb_name ]
+    },
+    "ha_proxy": {
+      "internet_connected": $internet_connected
     },
     "mysql_monitor": {
       "internet_connected": $internet_connected
