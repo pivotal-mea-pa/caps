@@ -131,6 +131,9 @@ for r in $resources; do
       | first | .filename')
 
   available_version=$(echo $available_release | sed -e 's|.*_\([0-9]*.[0-9]*.[0-9]*\)_.*|\1|')
+  if [[ "$available_version" == "null" ]]; then
+    available_version=""
+  fi
 
   name=${available_release%.tgz}
   om_product=${name#*_${available_version}_}
