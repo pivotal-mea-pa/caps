@@ -39,7 +39,7 @@ resource "powerdns_record" "wildcard-apps-dns" {
   ttl     = 3600
   records = ["${local.ha_proxy_ip}"]
 
-  # depends_on = ["powerdns_record.opsman"]
+  depends_on = ["powerdns_record.opsman"]
 }
 
 resource "powerdns_record" "wildcard-sys-dns" {
@@ -51,7 +51,7 @@ resource "powerdns_record" "wildcard-sys-dns" {
   ttl     = 3600
   records = ["${local.ha_proxy_ip}"]
 
-  # depends_on = ["powerdns_record.wildcard-apps-dns"]
+  depends_on = ["powerdns_record.wildcard-apps-dns"]
 }
 
 resource "powerdns_record" "app-ssh-dns" {
@@ -63,7 +63,7 @@ resource "powerdns_record" "app-ssh-dns" {
   ttl     = 3600
   records = ["${local.ha_proxy_ip}"]
 
-  # depends_on = ["powerdns_record.wildcard-sys-dns"]
+  depends_on = ["powerdns_record.wildcard-sys-dns"]
 }
 
 resource "powerdns_record" "doppler-dns" {
@@ -75,7 +75,7 @@ resource "powerdns_record" "doppler-dns" {
   ttl     = 3600
   records = ["${local.ha_proxy_ip}"]
 
-  # depends_on = ["powerdns_record.app-ssh-dns"]
+  depends_on = ["powerdns_record.app-ssh-dns"]
 }
 
 resource "powerdns_record" "loggregator-dns" {
@@ -87,7 +87,7 @@ resource "powerdns_record" "loggregator-dns" {
   ttl     = 3600
   records = ["${local.ha_proxy_ip}"]
 
-  # depends_on = ["powerdns_record.doppler-dns"]
+  depends_on = ["powerdns_record.doppler-dns"]
 }
 
 resource "powerdns_record" "tcp-dns" {
@@ -99,5 +99,5 @@ resource "powerdns_record" "tcp-dns" {
   ttl     = 3600
   records = ["${local.ha_proxy_ip}"]
 
-  # depends_on = ["powerdns_record.loggregator-dns"]
+  depends_on = ["powerdns_record.loggregator-dns"]
 }
