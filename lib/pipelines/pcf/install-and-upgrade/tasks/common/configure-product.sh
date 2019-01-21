@@ -19,28 +19,12 @@ product_guid=$(om \
   | jq -r --arg product_name "$PRODUCT_NAME" \
     '.[] | select(.type==$product_name) | .guid')
 
-# NEW_VERSION=$(cat pivnet-product/version | cut -d'#' -f1)
-# INSTALLED_VERSION=$(om \
-#   --skip-ssl-validation \
-#   --target "https://${OPSMAN_HOST}" \
-#   --client-id "${OPSMAN_CLIENT_ID}" \
-#   --client-secret "${OPSMAN_CLIENT_SECRET}" \
-#   --username "${OPSMAN_USERNAME}" \
-#   --password "${OPSMAN_PASSWORD}" \
-#   curl -path /api/v0/deployed/products \
-#   | jq -r --arg product_name $PRODUCT_NAME '.[] | select(.type==$product_name) | .product_version')
-
-# if [[ "$NEW_VERSION" == "$INSTALLED_VERSION" ]]; then  
-#   echo "The product tile '$PRODUCT_NAME' version '$NEW_VERSION' has already been configured and deployed."
-#   exit 0
-# fi
-
 #
 # Update director resources
 #
 
 automation/lib/pipelines/pcf/install-and-upgrade/tasks/common/configure-resources.sh \
-  "p-bosh" "resource_configuration" ""
+  "$PRODUCT_NAME" "resources" ""
 
 #
 # Update product network and azs
