@@ -73,7 +73,8 @@ end
 |
 # Merge in additonal IaaS specific configuration
 if $iaas == "aws" 
-  or $iaas == "google" then
+  or $iaas == "google" 
+  or $iaas == "azure" then
 
   . * {
     "database": {
