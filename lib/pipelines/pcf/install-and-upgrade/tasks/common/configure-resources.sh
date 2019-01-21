@@ -10,8 +10,10 @@ source_variables 'terraform-output/pcf-env-*.sh'
 
 product_name=$1
 resource_template_name=$2
+iaas=$3
 
-resource_configuration=$(eval_jq_templates "$resource_template_name" "$TEMPLATE_PATH" "$TEMPLATE_OVERRIDE_PATH" "$IAAS")
+resource_configuration=$(eval_jq_templates \
+  "$resource_template_name" "$TEMPLATE_PATH" "$TEMPLATE_OVERRIDE_PATH" "$iaas")
 
 product_guid=$(om \
   --skip-ssl-validation \
@@ -22,7 +24,7 @@ product_guid=$(om \
   --password "${OPSMAN_PASSWORD}" \
   curl --silent --path /api/v0/staged/products \
   | jq -r --arg product_name "$product_name" \
-    '.[] | select(.installation_name==$product_name) | .guid')
+    '.[] | select(.type==$product_name) | .guid')
 
 jobs=$(om \
   --skip-ssl-validation \
