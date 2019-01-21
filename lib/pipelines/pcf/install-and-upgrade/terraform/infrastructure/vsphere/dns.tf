@@ -16,6 +16,11 @@ locals {
 #
 # Add internal DNS records
 #
+# Since PowerDNS setup uses a SQLite backend
+# the updates need to happen serially as 
+# concurrent updates can fail as the database
+# file is locked for each update.
+#
 
 resource "powerdns_record" "opsman" {
   zone    = "${local.env_domain}."
@@ -34,7 +39,7 @@ resource "powerdns_record" "wildcard-apps-dns" {
   ttl     = 3600
   records = ["${local.ha_proxy_ip}"]
 
-  depends_on = ["powerdns_record.wildcard-apps-dns"]
+  depends_on = ["powerdns_record.opsman"]
 }
 
 resource "powerdns_record" "wildcard-sys-dns" {
