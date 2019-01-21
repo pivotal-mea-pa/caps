@@ -50,8 +50,10 @@ export CA_CERTS=$(echo -e "${OPSMAN_CA_CERT}\n${CA_CERTS}")
 # Update director resources
 #
 
+resource_configuration=$(eval_jq_templates \
+  "resource_configuration" "$TEMPLATE_PATH" "$TEMPLATE_OVERRIDE_PATH" "$IAAS")
 automation/lib/pipelines/pcf/install-and-upgrade/tasks/common/configure-resources.sh \
-  "p-bosh" "resource_configuration" "$IAAS"
+  "p-bosh" "$resource_configuration"
 
 #
 # Update director properties

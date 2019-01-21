@@ -1,19 +1,10 @@
 #!/bin/bash
 
-source automation/lib/scripts/utility/template-utils.sh
-
 [[ -n "$TRACE" ]] && set -x
 set -eo pipefail
 
-# Source terraform output variables if available
-source_variables 'terraform-output/pcf-env-*.sh'
-
 product_name=$1
-resource_template_name=$2
-iaas=$3
-
-resource_configuration=$(eval_jq_templates \
-  "$resource_template_name" "$TEMPLATE_PATH" "$TEMPLATE_OVERRIDE_PATH" "$iaas")
+resource_configuration=$2
 
 product_guid=$(om \
   --skip-ssl-validation \

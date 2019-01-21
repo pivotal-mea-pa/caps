@@ -23,8 +23,9 @@ product_guid=$(om \
 # Update director resources
 #
 
+resources=$(eval_jq_templates "resources" "$TEMPLATE_PATH" "$TEMPLATE_OVERRIDE_PATH")
 automation/lib/pipelines/pcf/install-and-upgrade/tasks/common/configure-resources.sh \
-  "$PRODUCT_NAME" "resources" ""
+  "$PRODUCT_NAME" "$resources" ""
 
 #
 # Update product network and azs
