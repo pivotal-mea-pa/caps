@@ -74,10 +74,10 @@
 #
 +
 {
-  ".ha_proxy.static_ips": { "value": [ $ha_proxy_static_ip ] },
-  ".router.static_ips": { "value": ($router_static_ips | split(",")) },
-  ".tcp_router.static_ips": { "value": ($tcp_router_static_ips | split(",")) },
-  ".diego_brain.static_ips": { "value": ($diego_brain_static_ips | split(",")) },
+  ".ha_proxy.static_ips": { "value": $ha_proxy_static_ip },
+  ".router.static_ips": { "value": $router_static_ips },
+  ".tcp_router.static_ips": { "value": $tcp_router_static_ips },
+  ".diego_brain.static_ips": { "value": $diego_brain_static_ips },
 
   # Certificates and Private Keys for HAProxy and Router
   ".properties.networking_poe_ssl_certs": {
@@ -307,7 +307,7 @@ end
 #
 +
 {
-  ".mysql_proxy.static_ips": { "value": ($mysql_proxy_static_ips | split(",")) },
+  ".mysql_proxy.static_ips": { "value": $mysql_proxy_static_ips },
   ".mysql_monitor.recipient_email": { "value" : $mysql_monitor_recipient_email }
 }
 
