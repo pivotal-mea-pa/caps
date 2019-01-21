@@ -7,10 +7,10 @@
 #   --arg pas_tcp_lb_name "tcp:pcf-poc1-pcf-cf-tcp-lb" \
 #   --arg pas_ssh_lb_name "tcp:pcf-poc1-pcf-ssh-proxy" \
 #   --arg pas_doppler_lb_name "tcp:pcf-poc1-pcf-wss-logs" \
-#   --arg num_control_instances "automatic"
-#   --arg num_diego_cells "automatic"
-#   --arg num_router_instances "automatic"
-#   --arg num_tcp_router_instances "automatic"
+#   --argjson num_control_instances 1 \
+#   --argjson num_diego_cells 1 \
+#   --argjson num_router_instances 1 \
+#   --argjson num_tcp_router_instances 1 \
 #   --argjson run_mysql_monitor true
 #   "$(cat resources.jq)"
 #
@@ -50,7 +50,7 @@ if $run_mysql_monitor then
 else
   {
     "mysql_monitor": {
-      "instances": "0"
+      "instances": 0
     },
   }
 end
@@ -60,14 +60,14 @@ end
 if $ha_proxy_static_ip != "" then
   {
     "ha_proxy": {
-      "instances": "1",
+      "instances": 1,
       "internet_connected": $internet_connected
     }
   }
 else
   {
     "ha_proxy": {
-      "instances": "0",
+      "instances": 0,
       "internet_connected": $internet_connected
     }
   }
