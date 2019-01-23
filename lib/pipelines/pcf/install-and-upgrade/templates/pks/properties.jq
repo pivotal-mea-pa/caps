@@ -8,6 +8,12 @@
 #    --arg gcp_worker_service_account "" \
 #    --arg gcp_project "" \
 #    --arg vpc_network_name "" \
+#    --arg vsphere_user "" \
+#    --arg vsphere_password "" \
+#    --arg vsphere_server "" \
+#    --arg vcenter_datacenter "" \
+#    --arg vcenter_persistant_datastores "" \
+#    --arg vcenter_vms_path "pcf_vms" \
 #    --argjson plan1_worker_instances 3 \
 #    --argjson plan1_allow_privileged_containers false \
 #    --arg plan1_az_placement "$AVAILABILITY_ZONES" \
@@ -113,11 +119,18 @@ if $cloud_provider == "google" then
 elif $cloud_provider == "vsphere" then
 {
   ".properties.cloud_provider": { "value": "vSphere" },
-  ".properties.cloud_provider.vsphere.vcenter_creds": { "value": "" },
-  ".properties.cloud_provider.vsphere.vcenter_ip": { "value": "" },
-  ".properties.cloud_provider.vsphere.vcenter_dc": { "value": "" },
-  ".properties.cloud_provider.vsphere.vcenter_ds": { "value": "" },
-  ".properties.cloud_provider.vsphere.vcenter_vms": { "value": "" }
+  ".properties.cloud_provider.vsphere.vcenter_master_creds": { 
+    "value": {
+      "identity": $vsphere_user,
+      "password": $vsphere_password
+    }
+  },
+  ".properties.cloud_provider.vsphere.vcenter_ip": { "value": $vsphere_server },
+  ".properties.cloud_provider.vsphere.vcenter_dc": { "value": $vcenter_datacenter },
+  ".properties.cloud_provider.vsphere.vcenter_ds": { "value": (
+      $vcenter_persistant_datastores | split(",") | first
+    ) },
+  ".properties.cloud_provider.vsphere.vcenter_vms": { "value": $vcenter_vms_path }
 }
 else
 .
