@@ -8,8 +8,6 @@ groups:
   - deploy-director
 - name: Install & Upgrade Products
 
-resource_types:
-
 resources:
 - name: automation
   type: git

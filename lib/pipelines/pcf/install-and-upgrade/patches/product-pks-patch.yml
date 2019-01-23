@@ -1,5 +1,5 @@
 - type: replace
-  path: /resource_types/-
+  path: /resource_types?/-
   value:
     name: bosh-deployment-event
     type: docker-image
