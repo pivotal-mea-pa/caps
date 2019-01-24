@@ -128,6 +128,14 @@ output "apps_domain" {
   value = "${local.apps_domain}"
 }
 
+output "pks_url" {
+  value = "pks.${local.env_domain}"
+}
+
+output "harbor_registry_fqdn" {
+  value = "harbor.${local.env_domain}"
+}
+
 // Certificates
 
 output "ca_certs" {
