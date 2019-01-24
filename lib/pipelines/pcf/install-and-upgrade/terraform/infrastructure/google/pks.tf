@@ -66,58 +66,40 @@ resource "google_service_account" "pks-master" {
   display_name = "PKS Master Node Service Account for ${local.prefix}"
 }
 
-resource "google_project_iam_binding" "pks-master-iam-computeInstanceAdmin" {
+resource "google_project_iam_member" "pks-master-iam-computeInstanceAdmin" {
   project = "${data.terraform_remote_state.bootstrap.gcp_project}"
   role    = "roles/compute.instanceAdmin.v1"
-
-  members = [
-    "serviceAccount:${google_service_account.pks-master.email}",
-  ]
+  member  = "serviceAccount:${google_service_account.pks-master.email}"
 }
 
-resource "google_project_iam_binding" "pks-master-iam-computeNetworkAdmin" {
+resource "google_project_iam_member" "pks-master-iam-computeNetworkAdmin" {
   project = "${data.terraform_remote_state.bootstrap.gcp_project}"
   role    = "roles/compute.networkAdmin"
-
-  members = [
-    "serviceAccount:${google_service_account.pks-master.email}",
-  ]
+  member  = "serviceAccount:${google_service_account.pks-master.email}"
 }
 
-resource "google_project_iam_binding" "pks-master-iam-computeSecurityAdmin" {
+resource "google_project_iam_member" "pks-master-iam-computeSecurityAdmin" {
   project = "${data.terraform_remote_state.bootstrap.gcp_project}"
   role    = "roles/compute.securityAdmin"
-
-  members = [
-    "serviceAccount:${google_service_account.pks-master.email}",
-  ]
+  member  = "serviceAccount:${google_service_account.pks-master.email}"
 }
 
-resource "google_project_iam_binding" "pks-master-iam-computeStorageAdmin" {
+resource "google_project_iam_member" "pks-master-iam-computeStorageAdmin" {
   project = "${data.terraform_remote_state.bootstrap.gcp_project}"
   role    = "roles/compute.storageAdmin"
-
-  members = [
-    "serviceAccount:${google_service_account.pks-master.email}",
-  ]
+  member  = "serviceAccount:${google_service_account.pks-master.email}"
 }
 
-resource "google_project_iam_binding" "pks-master-iam-computeViewer" {
+resource "google_project_iam_member" "pks-master-iam-computeViewer" {
   project = "${data.terraform_remote_state.bootstrap.gcp_project}"
   role    = "roles/compute.viewer"
-
-  members = [
-    "serviceAccount:${google_service_account.pks-master.email}",
-  ]
+  member  = "serviceAccount:${google_service_account.pks-master.email}"
 }
 
-resource "google_project_iam_binding" "pks-master-iam-serviceAccountUser" {
+resource "google_project_iam_member" "pks-master-iam-serviceAccountUser" {
   project = "${data.terraform_remote_state.bootstrap.gcp_project}"
   role    = "roles/iam.serviceAccountUser"
-
-  members = [
-    "serviceAccount:${google_service_account.pks-master.email}",
-  ]
+  member  = "serviceAccount:${google_service_account.pks-master.email}"
 }
 
 // PKS Worker Node services account
@@ -127,11 +109,8 @@ resource "google_service_account" "pks-worker" {
   display_name = "PKS Worker Node Service Account for ${local.prefix}"
 }
 
-resource "google_project_iam_binding" "pks-worker-iam-computeViewer" {
+resource "google_project_iam_member" "pks-worker-iam-computeViewer" {
   project = "${data.terraform_remote_state.bootstrap.gcp_project}"
   role    = "roles/compute.viewer"
-
-  members = [
-    "serviceAccount:${google_service_account.pks-worker.email}",
-  ]
+  member  = "serviceAccount:${google_service_account.pks-worker.email}"
 }
