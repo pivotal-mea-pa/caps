@@ -40,5 +40,3 @@ $bosh create-release --force --version=$new_version
 $bosh upload-release --non-interactive
 
 popd
-
-exit 1
