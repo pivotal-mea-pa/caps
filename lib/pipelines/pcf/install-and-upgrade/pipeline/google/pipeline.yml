@@ -340,3 +340,33 @@ jobs:
       AUTOS3_URL: ((autos3_url))
       AUTOS3_ACCESS_KEY: ((autos3_access_key))
       AUTOS3_SECRET_KEY: ((autos3_secret_key))
+
+- name: director-post-deploy
+  on_failure:
+    do:
+    - task: notify on director-post-deploy failure
+  on_success:
+    do:
+    - task: notify on director-post-deploy success
+
+  serial: true
+  serial_groups: [opsman]
+  plan:
+  - aggregate:
+    - get: automation
+    - get: automation-extensions
+    - get: opsman-image
+      passed: [deploy-director]
+      trigger: true
+      params:
+        skip_download: 'true'
+
+  # Create and upload deployment patcher BOSH release
+  - task: upload-patcher
+    file: automation/lib/pipelines/pcf/install-and-upgrade/tasks/upload-patcher/task.yml
+    params:
+      OPSMAN_HOST: ((opsman_host))
+      OPSMAN_CLIENT_ID: ((opsman_client_id))
+      OPSMAN_CLIENT_SECRET: ((opsman_client_id))
+      OPSMAN_USERNAME: ((opsman_admin_username))
+      OPSMAN_PASSWORD: ((opsman_admin_password))
