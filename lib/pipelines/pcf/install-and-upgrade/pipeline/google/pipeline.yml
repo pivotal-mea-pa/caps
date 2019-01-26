@@ -6,6 +6,7 @@ groups:
   - prepare-environment
   - configure-director
   - deploy-director
+  - director-post-deploy
 - name: Install & Upgrade Products
 
 resource_types:
