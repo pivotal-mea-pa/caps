@@ -5,7 +5,7 @@
     type: docker-image
     source:
       repository: mevansam/bosh-event-resource
-      tag: 0.0.3
+      tag: latest
 
 - type: replace
   path: /resources/-
@@ -32,7 +32,6 @@
       skip_ssl_validation: true
       event_source: "pivotal-container-service-.*"
       object_type: deployment
-      debug: 'y'
 
 - type: replace
   path: /jobs/-
