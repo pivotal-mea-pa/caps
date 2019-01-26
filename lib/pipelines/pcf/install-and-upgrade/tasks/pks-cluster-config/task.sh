@@ -42,7 +42,7 @@ bosh::login_client "$BOSH_CA_CERT" "$BOSH_ENVIRONMENT" "$BOSH_CLIENT" "$BOSH_CLI
 
 if [[ -e deployment-event/create ]]; then
 
-  latest_release_version=$($bosh releases | awk '/^patch-deployment/{ print $2 }')
+  latest_release_version=$($bosh releases | awk '/^patch-deployment/{ print $2 }' | head -1)
   release_version=${latest_release_version%\**}
 
   for d in $(cat deployment-event/create); do

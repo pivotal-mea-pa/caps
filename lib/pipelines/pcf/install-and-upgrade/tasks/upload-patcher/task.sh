@@ -25,4 +25,20 @@ export BOSH_CLIENT_SECRET=$(opsman::get_director_client_secret ops_manager)
 
 bosh::login_client "$BOSH_CA_CERT" "$BOSH_ENVIRONMENT" "$BOSH_CLIENT" "$BOSH_CLIENT_SECRET"
 
+pushd automation/lib/pipelines/pcf/install-and-upgrade/tasks/upload-patcher/patch-deployment-release/
+
+latest_release_version=$($bosh releases | awk '/^patch-deployment/{ print $2 }' | head -1)
+if [[ -n $latest_release_version ]]; then
+  version=${latest_release_version%.*}
+  build_number=${latest_release_version##*.}
+  new_version=${version}.$(($build_number+1))
+else
+  new_version=0.0.1
+fi
+
+$bosh create-release --force --version=$new_version
+$bosh upload-release --non-interactive
+
+popd
+
 exit 1
