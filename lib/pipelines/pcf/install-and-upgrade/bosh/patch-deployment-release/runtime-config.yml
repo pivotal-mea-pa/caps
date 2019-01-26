@@ -1,0 +1,16 @@
+---
+releases:
+- name: patch-deployment
+  version: 0+dev.1
+
+addons:
+- name: patch-docker
+  jobs:
+  - name: patch-docker
+    release: patch-deployment
+    properties:
+      insecure_registries:
+      - 1.1.1.1
+  include:
+    deployments:
+    - service-instance_f7c3a1da-b705-4a7e-a8f8-0aa0532e213c

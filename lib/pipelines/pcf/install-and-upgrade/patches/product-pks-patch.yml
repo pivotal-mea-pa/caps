@@ -168,12 +168,15 @@
       - get: automation-extensions
       - get: deployment-event
         trigger: true
-      - get: terraform-output
-        passed: ["configure-pks-runtime"]
+      - get: terraform-output        
       - get: pks-clis
         params:
           globs:
           - '*-linux-amd64-*'
+      - get: pks-tile
+        passed: ["configure-pks-runtime"]
+        params:
+          skip_download: 'true'
 
     - task: pks-cluster-config
       file: automation/lib/pipelines/pcf/install-and-upgrade/tasks/pks-cluster-config/task.yml
