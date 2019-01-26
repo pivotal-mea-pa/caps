@@ -101,15 +101,23 @@ if [[ -e deployment-event/delete ]]; then
 
     deployment=$(echo "$d" | awk -F',' '{ print $1 }')
 
-    $bosh -d $deployment manifest > $deployment.yml
-    is_kubo=$(cat $deployment.yml | awk '/^- name: kubo$/{ print $3 }')
+    set +e
+    $bosh -d $deployment deployment >/dev/null 2>&1
+    if [[ $? -eq 0 ]]; then    
+      set -e
+        
+      $bosh -d $deployment manifest > $deployment.yml
+      is_kubo=$(cat $deployment.yml | awk '/^- name: kubo$/{ print $3 }')
 
-    if [[ $is_kubo == kubo ]]; then 
+      if [[ $is_kubo == kubo ]]; then 
 
-      $bosh --non-interactive \
-        delete-config \
-        --name=patch_${deployment} \
-        --type=runtime
+        $bosh --non-interactive \
+          delete-config \
+          --name=patch_${deployment} \
+          --type=runtime
+      fi
+    else
+      set -e
     fi
   done
 fi
