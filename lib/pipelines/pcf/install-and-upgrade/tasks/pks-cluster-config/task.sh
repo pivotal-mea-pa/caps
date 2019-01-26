@@ -36,6 +36,8 @@ export BOSH_CLIENT_SECRET=$(opsman::get_director_client_secret ops_manager)
 
 bosh::login_client "$BOSH_CA_CERT" "$BOSH_ENVIRONMENT" "$BOSH_CLIENT" "$BOSH_CLIENT_SECRET"
 
+exit 1
+
 # Patch worker vms of newly created clusters so that
 # docker is restarted with harbor configured as an
 # insecure registry
