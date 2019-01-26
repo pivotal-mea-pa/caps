@@ -32,6 +32,7 @@
       skip_ssl_validation: true
       event_source: "pivotal-container-service-.*"
       object_type: deployment
+      debug: 'y'
 
 - type: replace
   path: /jobs/-
