@@ -36,8 +36,6 @@ export BOSH_CLIENT_SECRET=$(opsman::get_director_client_secret ops_manager)
 
 bosh::login_client "$BOSH_CA_CERT" "$BOSH_ENVIRONMENT" "$BOSH_CLIENT" "$BOSH_CLIENT_SECRET"
 
-exit 1
-
 # Patch worker vms of newly created clusters so that
 # docker is restarted with harbor configured as an
 # insecure registry
@@ -50,6 +48,15 @@ if [[ -e deployment-event/create ]]; then
   for d in $(cat deployment-event/create); do
     
     deployment=$(echo "$d" | awk -F',' '{ print $1 }')
+
+    set +e
+    $bosh -d $deployment deployment >/dev/null 2>&1
+    if [[ $? -ne 0 ]]; then
+      # Skip if deployment does not exist
+      set -e
+      continue
+    fi
+    set -e
 
     $bosh -d $deployment manifest > $deployment.yml
     is_kubo=$(cat $deployment.yml | awk '/^- name: kubo$/{ print $3 }')
