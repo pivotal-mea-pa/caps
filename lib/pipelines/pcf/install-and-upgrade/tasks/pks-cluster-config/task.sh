@@ -36,25 +36,65 @@ export BOSH_CLIENT_SECRET=$(opsman::get_director_client_secret ops_manager)
 
 bosh::login_client "$BOSH_CA_CERT" "$BOSH_ENVIRONMENT" "$BOSH_CLIENT" "$BOSH_CLIENT_SECRET"
 
-exit 1
-
 # Patch worker vms of newly created clusters so that
 # docker is restarted with harbor configured as an
 # insecure registry
 
-for d in $(cat deployment-event/created); do
+for d in $(cat deployment-event/create); do
   
-  $bosh -d $d ssh worker -c \
-"sudo su -l -c '
-  
-  export PATH=/var/vcap/bosh/bin:\$PATH
+  deployment=$(echo "$d" | awk -F',' '{ print $1 }')
 
-  cd /var/vcap/jobs/docker/bin
+  $bosh -d $deployment manifest > $deployment.yml
+  is_kubo=$(cat $deployment.yml | awk '/^- name: kubo$/{ print $3 }')
 
-  sed -i \"s|^case|export DOCKER_INSECURE_REGISTRIES=\\\"--insecure-registry $HARBOR_REGISTRY_FQDN\\\"\\ncase|\" ctl
-  monit restart docker
-'"
+  if [[ $is_kubo == kubo ]]; then 
 
+    cat << ---EOF > ${deployment}_runtime-config.yml
+---
+releases:
+- name: patch-deployment
+  version: 0+dev.1
+
+addons:
+- name: patch-docker
+  jobs:
+  - name: patch-docker
+    release: patch-deployment
+    properties:
+      insecure_registries:
+      - $HARBOR_REGISTRY_FQDN
+  include:
+    deployments:
+    - $deployment
+---EOF
+    
+    $bosh --non-interactive \
+      update-config \
+      --name=patch_${deployment} \
+      --type=runtime \
+      ${deployment}_runtime-config.yml
+
+    $bosh --non-interactive \
+      --deployment=${deployment} \
+      deploy \
+      $deployment.yml
+  fi
+done
+
+for d in $(cat deployment-event/delete); do
+
+  deployment=$(echo "$d" | awk -F',' '{ print $1 }')
+
+  $bosh -d $deployment manifest > $deployment.yml
+  is_kubo=$(cat $deployment.yml | awk '/^- name: kubo$/{ print $3 }')
+
+  if [[ $is_kubo == kubo ]]; then 
+
+    $bosh --non-interactive \
+      delete-config \
+      --name=patch_${deployment} \
+      --type=runtime
+  fi
 done
 
 # Retrieve PKS cluster details into variables that can 
