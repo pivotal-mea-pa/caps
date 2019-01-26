@@ -1,5 +1,5 @@
 #!/bin/bash
-
+exit 1
 source ~/scripts/opsman-func.sh
 source ~/scripts/bosh-func.sh
 root=$PWD
