@@ -55,7 +55,7 @@ for d in $(cat deployment-event/created); do
 
 done
 
-# Retrive PKS cluster details into variables that can 
+# Retrieve PKS cluster details into variables that can 
 # be passed to IAAS specific terraform templates
 
 set +e
