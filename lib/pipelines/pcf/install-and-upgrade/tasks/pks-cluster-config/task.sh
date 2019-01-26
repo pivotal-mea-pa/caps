@@ -40,20 +40,25 @@ bosh::login_client "$BOSH_CA_CERT" "$BOSH_ENVIRONMENT" "$BOSH_CLIENT" "$BOSH_CLI
 # docker is restarted with harbor configured as an
 # insecure registry
 
-for d in $(cat deployment-event/create); do
-  
-  deployment=$(echo "$d" | awk -F',' '{ print $1 }')
+if [[ -e deployment-event/create ]]; then
 
-  $bosh -d $deployment manifest > $deployment.yml
-  is_kubo=$(cat $deployment.yml | awk '/^- name: kubo$/{ print $3 }')
+  latest_release_version=$($bosh releases | awk '/^patch-deployment/{ print $2 }')
+  release_version=${latest_release_version%\**}
 
-  if [[ $is_kubo == kubo ]]; then 
+  for d in $(cat deployment-event/create); do
+    
+    deployment=$(echo "$d" | awk -F',' '{ print $1 }')
 
-    cat << ---EOF > ${deployment}_runtime-config.yml
+    $bosh -d $deployment manifest > $deployment.yml
+    is_kubo=$(cat $deployment.yml | awk '/^- name: kubo$/{ print $3 }')
+
+    if [[ $is_kubo == kubo ]]; then 
+
+      cat << ---EOF > ${deployment}_runtime-config.yml
 ---
 releases:
 - name: patch-deployment
-  version: 0+dev.1
+  version: $release_version
 
 addons:
 - name: patch-docker
@@ -67,35 +72,39 @@ addons:
     deployments:
     - $deployment
 ---EOF
-    
-    $bosh --non-interactive \
-      update-config \
-      --name=patch_${deployment} \
-      --type=runtime \
-      ${deployment}_runtime-config.yml
+      
+      $bosh --non-interactive \
+        update-config \
+        --name=patch_${deployment} \
+        --type=runtime \
+        ${deployment}_runtime-config.yml
 
-    $bosh --non-interactive \
-      --deployment=${deployment} \
-      deploy \
-      $deployment.yml
-  fi
-done
+      $bosh --non-interactive \
+        --deployment=${deployment} \
+        deploy \
+        $deployment.yml
+    fi
+  done
+fi
 
-for d in $(cat deployment-event/delete); do
+if [[ -e deployment-event/delete ]]; then
 
-  deployment=$(echo "$d" | awk -F',' '{ print $1 }')
+  for d in $(cat deployment-event/delete); do
 
-  $bosh -d $deployment manifest > $deployment.yml
-  is_kubo=$(cat $deployment.yml | awk '/^- name: kubo$/{ print $3 }')
+    deployment=$(echo "$d" | awk -F',' '{ print $1 }')
 
-  if [[ $is_kubo == kubo ]]; then 
+    $bosh -d $deployment manifest > $deployment.yml
+    is_kubo=$(cat $deployment.yml | awk '/^- name: kubo$/{ print $3 }')
 
-    $bosh --non-interactive \
-      delete-config \
-      --name=patch_${deployment} \
-      --type=runtime
-  fi
-done
+    if [[ $is_kubo == kubo ]]; then 
+
+      $bosh --non-interactive \
+        delete-config \
+        --name=patch_${deployment} \
+        --type=runtime
+    fi
+  done
+fi
 
 # Retrieve PKS cluster details into variables that can 
 # be passed to IAAS specific terraform templates
