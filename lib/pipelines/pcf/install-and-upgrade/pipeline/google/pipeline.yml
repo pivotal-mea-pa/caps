@@ -346,9 +346,6 @@ jobs:
   on_failure:
     do:
     - task: notify on director-post-deploy failure
-  on_success:
-    do:
-    - task: notify on director-post-deploy success
 
   serial: true
   serial_groups: [opsman]
