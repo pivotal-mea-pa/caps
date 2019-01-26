@@ -51,19 +51,15 @@ if [[ -e deployment-event/create ]]; then
 
     set +e
     $bosh -d $deployment deployment >/dev/null 2>&1
-    if [[ $? -ne 0 ]]; then
-      # Skip if deployment does not exist
+    if [[ $? -eq 0 ]]; then    
       set -e
-      continue
-    fi
-    set -e
 
-    $bosh -d $deployment manifest > $deployment.yml
-    is_kubo=$(cat $deployment.yml | awk '/^- name: kubo$/{ print $3 }')
+      $bosh -d $deployment manifest > $deployment.yml
+      is_kubo=$(cat $deployment.yml | awk '/^- name: kubo$/{ print $3 }')
 
-    if [[ $is_kubo == kubo ]]; then 
+      if [[ $is_kubo == kubo ]]; then 
 
-      cat << ---EOF > ${deployment}_runtime-config.yml
+        cat << ---EOF > ${deployment}_runtime-config.yml
 ---
 releases:
 - name: patch-deployment
@@ -81,17 +77,20 @@ addons:
     deployments:
     - $deployment
 ---EOF
-      
-      $bosh --non-interactive \
-        update-config \
-        --name=patch_${deployment} \
-        --type=runtime \
-        ${deployment}_runtime-config.yml
+        
+        $bosh --non-interactive \
+          update-config \
+          --name=patch_${deployment} \
+          --type=runtime \
+          ${deployment}_runtime-config.yml
 
-      $bosh --non-interactive \
-        --deployment=${deployment} \
-        deploy \
-        $deployment.yml
+        $bosh --non-interactive \
+          --deployment=${deployment} \
+          deploy \
+          $deployment.yml
+      fi
+    else
+      set -e
     fi
   done
 fi
