@@ -1,7 +1,5 @@
 #!/bin/bash
 
-set -eu
-
 # Check if all the required CLIs are available
 which bosh 2>&1 > /dev/null
 if [ $? -ne 0 ]; then
@@ -18,6 +16,8 @@ fi
 which pks >/dev/null 2>&1 || (echo "Error! 'pks' cli not found" && exit 1)
 #which bosh >/dev/null 2>&1 || (echo "Error! 'bosh' cli not found" && exit 1)
 which kubectl >/dev/null 2>&1 || (echo "Error! 'kubectl' cli not found" && exit 1)
+
+set -eu
 
 pks login --skip-ssl-validation \
   --api ${pks_url} --username ${user} --password ${password}
