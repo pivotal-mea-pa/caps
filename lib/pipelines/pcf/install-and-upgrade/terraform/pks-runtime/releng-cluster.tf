@@ -55,11 +55,11 @@ data "template_file" "pks-delete-releng-cluster" {
 
 resource "null_resource" "pks-releng-cluster" {
   provisioner "local-exec" {
-    command = "sh -c '${data.template_file.pks-create-releng-cluster.rendered}'"
+    command = "/bin/bash -c '${data.template_file.pks-create-releng-cluster.rendered}'"
   }
 
   provisioner "local-exec" {
-    command = "sh -c '${data.template_file.pks-delete-releng-cluster.rendered}'"
+    command = "/bin/bash -c '${data.template_file.pks-delete-releng-cluster.rendered}'"
     when    = "destroy"
   }
 }
