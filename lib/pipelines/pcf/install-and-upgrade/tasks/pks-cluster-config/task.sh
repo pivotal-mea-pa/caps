@@ -50,11 +50,11 @@ if [[ -e deployment-event/create ]]; then
     deployment=$(echo "$d" | awk -F',' '{ print $1 }')
 
     set +e
-    $bosh -d $deployment deployment >/dev/null 2>&1
+    $bosh --deployment=${deployment} deployment >/dev/null 2>&1
     if [[ $? -eq 0 ]]; then    
       set -e
 
-      $bosh -d $deployment manifest > $deployment.yml
+      $bosh --deployment=${deployment} manifest > $deployment.yml
       is_kubo=$(cat $deployment.yml | awk '/^- name: kubo$/{ print $3 }')
 
       if [[ $is_kubo == kubo ]]; then 
@@ -102,11 +102,11 @@ if [[ -e deployment-event/delete ]]; then
     deployment=$(echo "$d" | awk -F',' '{ print $1 }')
 
     set +e
-    $bosh -d $deployment deployment >/dev/null 2>&1
+    $bosh --deployment=${deployment} deployment >/dev/null 2>&1
     if [[ $? -eq 0 ]]; then    
       set -e
         
-      $bosh -d $deployment manifest > $deployment.yml
+      $bosh --deployment=${deployment} manifest > $deployment.yml
       is_kubo=$(cat $deployment.yml | awk '/^- name: kubo$/{ print $3 }')
 
       if [[ $is_kubo == kubo ]]; then 
