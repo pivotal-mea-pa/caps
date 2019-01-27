@@ -44,24 +44,50 @@ export BOSH_CLIENT_SECRET=$(opsman::get_director_client_secret ops_manager)
 
 bosh::login_client "$BOSH_CA_CERT" "$BOSH_ENVIRONMENT" "$BOSH_CLIENT" "$BOSH_CLIENT_SECRET"
 
+# Create Bosh runtime-config to patch Harbor as it does not
+# correctly configure the self-signed CA root certificate
+# for validation when using self-signed certificates for UAA.
 harbor_deployment=$(bosh::deployment harbor-*)
-$bosh -d $harbor_deployment ssh harbor-app -c \
-"sudo su -l -c '
-    
-  export PATH=/var/vcap/bosh/bin:\$PATH
+if [[ -n $harbor_deployment ]]; then
 
-  cd /var/vcap/jobs/harbor/config
-  cert_diff=\$(diff -u ca.crt uaa_ca.crt)
+  latest_release_version=$($bosh releases | awk '/^patch-deployment/{ print $2 }' | head -1)
+  release_version=${latest_release_version%\**}
 
-  if [[ -n "\$cert_diff" ]]; then
-    cp /var/vcap/jobs/harbor/config/ca.crt /var/vcap/jobs/harbor/config/uaa_ca.crt
+  cat << ---EOF > ${harbor_deployment}_runtime-config.yml
+---
+releases:
+- name: patch-deployment
+  version: $release_version
 
-    cd /var/vcap/jobs/harbor/bin
-    monit stop harbor
-    ./pre-start
-    monit start harbor
-  fi
-'"
+addons:
+- name: patch-harbor
+  jobs:
+  - name: patch-harbor
+    release: patch-deployment
+  include:
+    deployments:
+    - $harbor_deployment
+---EOF
+
+  $bosh \
+    --deployment=${harbor_deployment} \
+    manifest \
+    > $harbor_deployment.yml
+
+  $bosh --non-interactive \
+    update-config \
+    --name=patch_${harbor_deployment} \
+    --type=runtime \
+    ${harbor_deployment}_runtime-config.yml
+
+  $bosh --non-interactive \
+    --deployment=${harbor_deployment} \
+    deploy \
+    $harbor_deployment.yml
+fi
+
+# Apply Terraform templates to configure PKS users
+# and create initial clusters.
 
 terraform init \
   -backend-config="bucket=${TERRAFORM_STATE_BUCKET}" \
