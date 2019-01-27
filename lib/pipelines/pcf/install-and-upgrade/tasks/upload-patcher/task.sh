@@ -29,8 +29,9 @@ pushd automation/lib/pipelines/pcf/install-and-upgrade/tasks/upload-patcher/patc
 
 latest_release_version=$($bosh releases | awk '/^patch-deployment/{ print $2 }' | head -1)
 if [[ -n $latest_release_version ]]; then
-  version=${latest_release_version%.*}
-  build_number=${latest_release_version##*.}
+  release_version=${latest_release_version%\**}
+  version=${release_version%.*}
+  build_number=${release_version##*.}
   new_version=${version}.$(($build_number+1))
 else
   new_version=0.0.1
