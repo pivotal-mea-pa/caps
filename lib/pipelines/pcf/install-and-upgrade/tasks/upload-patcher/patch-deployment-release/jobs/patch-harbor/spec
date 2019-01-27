@@ -1,0 +1,6 @@
+name: patch-harbor
+
+templates:
+  bin/post-start.erb: bin/post-start
+
+properties:
