@@ -13,7 +13,5 @@ if [[ -e /var/vcap/jobs/docker/bin/job_properties.sh ]]; then
 
     echo -e "\n# Insecure registries\nexport DOCKER_INSECURE_REGISTRIES=$docker_insecure_registries\n" \
       >>/var/vcap/jobs/docker/bin/job_properties.sh
-
-    monit restart docker
   fi
 fi
