@@ -10,6 +10,7 @@ inputs:
 - name: automation
 - name: automation-extensions
 - name: terraform-output
+- name: pks-clis
 
 run:
   path: automation/lib/pipelines/pcf/install-and-upgrade/tasks/pks-runtime-config/task.sh

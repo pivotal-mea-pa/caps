@@ -4,6 +4,12 @@ source ~/scripts/opsman-func.sh
 source ~/scripts/bosh-func.sh
 root=$PWD
 
+mv pks-clis/pks-linux-amd64-* /usr/local/bin/pks
+chmod +x /usr/local/bin/pks
+
+mv pks-clis/kubectl-linux-amd64-* /usr/local/bin/kubectl
+chmod +x /usr/local/bin/kubectl
+
 source automation/lib/scripts/utility/template-utils.sh
 
 [[ -n "$TRACE" ]] && set -x

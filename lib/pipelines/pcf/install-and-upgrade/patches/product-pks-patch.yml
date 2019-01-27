@@ -130,6 +130,10 @@
       - get: automation
       - get: automation-extensions
       - get: terraform-output
+      - get: pks-clis
+        params:
+          globs:
+          - '*-linux-amd64-*'
       - get: pks-tile
         passed: [deploy]
         trigger: true
