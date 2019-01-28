@@ -1,18 +1,35 @@
 #
 # jq -n \
+#   --arg iaas "google" \
 #   --argjson internet_connected false \
 #   "$(cat resources.jq)"
 #
 
 {
-  # On Demand Broker
   "redis-on-demand-broker": {
-    "internet_connected": $internet_connected
   },
   "cf-redis-broker": {
-    "internet_connected": $internet_connected
   },
   "dedicated-node": {
-    "internet_connected": $internet_connected
   }
 }
+|
+# Merge in additonal IaaS specific configuration
+if $iaas == "aws" 
+  or $iaas == "google" 
+  or $iaas == "azure" then
+
+  . * {
+    "redis-on-demand-broker": {
+      "internet_connected": $internet_connected
+    },
+    "cf-redis-broker": {
+      "internet_connected": $internet_connected
+    },
+    "dedicated-node": {
+      "internet_connected": $internet_connected
+    }
+  }
+else
+  .
+end
