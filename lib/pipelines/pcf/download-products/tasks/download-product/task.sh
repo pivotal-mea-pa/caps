@@ -132,7 +132,7 @@ PRODUCT_VERSIONS=$(mc ls --recursive auto/${BUCKET}/downloads \
 NUM_VERSIONS=$(echo "${PRODUCT_VERSIONS}" | wc -l)
 if [[ ${NUM_VERSIONS} -gt 3 ]]; then
   for v in $(echo "${PRODUCT_VERSIONS}" | head -$((${NUM_VERSIONS}-${MIN_VERSIONS_TO_KEEP}))); do
-    echo mc rm auto/${BUCKET}/downloads/${v}.tgz
+    mc rm auto/${BUCKET}/downloads/${v}.tgz
   done
 fi
 
