@@ -126,7 +126,7 @@ PRODUCT_VERSION=${NAME}_${VERSION}
 
 # Keep only the given number of most recent versions
 PRODUCT_VERSIONS=$(mc ls --recursive auto/${BUCKET}/downloads \
-  | sort \
+  | sort -r \
   | awk "/ ${NAME}_/{ print \$5 }")
 
 NUM_VERSIONS=$(echo "${PRODUCT_VERSIONS}" | wc -l)
