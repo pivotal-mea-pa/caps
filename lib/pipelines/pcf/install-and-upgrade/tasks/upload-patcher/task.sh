@@ -29,15 +29,26 @@ pushd automation/lib/pipelines/pcf/install-and-upgrade/tasks/upload-patcher/patc
 
 latest_release_version=$($bosh releases | awk '/^patch-deployment/{ print $2 }' | head -1)
 if [[ -n $latest_release_version ]]; then
+  latest_release_info=$($bosh inspect-release patch-deployment/$latest_release_version --json | jq '[ .Tables[0].Rows[].job ]')
+
   release_version=${latest_release_version%\**}
   version=${release_version%.*}
   build_number=${release_version##*.}
   new_version=${version}.$(($build_number+1))
 else
+  latest_release_info='[]'
   new_version=0.0.1
 fi
 
-$bosh create-release --force --version=$new_version
-$bosh upload-release --non-interactive
+release_build_info=$($bosh create-release --json --force --version=$new_version | jq '[ .Tables[1].Rows[].job ]')
+
+new_jobs=$(jq -n \
+  --argjson latest "$latest_release_info" \
+  --argjson build "$release_build_info" \
+  '$build - $latest | length')
+
+if [[ $new_jobs -ne 0 ]]; then
+  $bosh upload-release --non-interactive
+fi
 
 popd
