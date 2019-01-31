@@ -307,7 +307,7 @@ end
 #
 +
 {
-  ".mysql_proxy.static_ips": { "value": $mysql_proxy_static_ips },
+  # ".mysql_proxy.static_ips": { "value": $mysql_proxy_static_ips },
   ".mysql_monitor.recipient_email": { "value" : $mysql_monitor_recipient_email }
 }
 
