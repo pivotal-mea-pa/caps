@@ -5,6 +5,8 @@
 - type: replace
   path: /jobs/name=configure-${product_name}-tile/plan/0:after
   value:
+    # This task will wait if an Ops Manager apply 
+    # process is in progress
     task: wait-if-apply-in-progress
     file: automation/lib/tasks/opsman/wait-opsman/task.yml
     params:
@@ -13,6 +15,22 @@
       OPSMAN_PASSWORD: ((opsman_admin_password))
       OPSMAN_CLIENT_ID: ((opsman_client_id))
       OPSMAN_CLIENT_SECRET: ((opsman_client_secret))
+      
+# Insert a wait-if-stopped task to the configure jobs
+# after the 'get' aggregation step. This will ensure 
+# that tiles are not staged if environment is in a
+# "stopped" state.
+- type: replace
+  path: /jobs/name=configure-${product_name}-tile/plan/0:after
+    # This task will block if the environment 
+    # has been put into stopped state
+    task: wait-if-stopped
+    file: automation/lib/inceptor/tasks/wait-on-state/task.yml
+    params: 
+      WAIT_ON_STATE: stopped
+      AUTOS3_URL: ((autos3_url))
+      AUTOS3_ACCESS_KEY: ((autos3_access_key))
+      AUTOS3_SECRET_KEY: ((autos3_secret_key))
 
 # Insert release manifest generation task to the 
 # configure jobs after the 'get' aggregation step.
