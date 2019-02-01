@@ -9,8 +9,6 @@
 #   --arg plan_3_type "galera" \
 #   --arg plan_3_service_plan_access "enable" \
 #   --argjson plan_3_instance_limit 5 \
-#   --arg plan_4_type "Inactive" \
-#   --arg plan_5_type "Inactive" \
 #   --arg notification_email "john@acme.com" \
 #   --arg s3_backup_access_key_id "" \
 #   --arg s3_backup_secret_access_key "" \
@@ -113,6 +111,15 @@ else
   }
 }
 end
++
+{
+  ".properties.plan4_selector": {
+    "value": "Inactive"
+  },
+  ".properties.plan5_selector": {
+    "value": "Inactive"
+  }
+}
 
 # Settings
 +
