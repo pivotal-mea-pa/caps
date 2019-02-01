@@ -5,7 +5,7 @@ source ~/scripts/opsman-func.sh
 iaas::initialize
 
 [[ -n "$TRACE" ]] && set -x
-set -o pipefail
+set +e -o pipefail
 
 [[ "$(opsman::check_available "https://$OPSMAN_HOST")" == "available" ]] || exit 0
 
