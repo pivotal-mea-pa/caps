@@ -13,7 +13,7 @@ run:
   path: automation/lib/tasks/opsman/wait-opsman/task.sh
 
 params:
-  TRACE: N
+  TRACE:
 
   OPSMAN_HOST:
   OPSMAN_USERNAME:
