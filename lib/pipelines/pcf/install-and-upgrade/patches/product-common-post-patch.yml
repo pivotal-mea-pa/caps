@@ -20,6 +20,7 @@
 # "stopped" state.
 - type: replace
   path: /jobs/name=configure-${product_name}-tile/plan/0:after
+  value:
     task: wait-if-stopped
     file: automation/lib/inceptor/tasks/wait-on-state/task.yml
     params: 
