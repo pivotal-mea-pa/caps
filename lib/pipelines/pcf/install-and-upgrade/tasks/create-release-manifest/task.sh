@@ -120,7 +120,13 @@ for r in $resources; do
   version=$(echo $release | jq -r .version)
   release_date=$(echo $release | jq -r .release_date)
 
-  available_release=$(curl -s $CONCOURSE_URL/api/v1/teams/main/pipelines/${environment}_deployment/resources/$p-tile/versions \
+  if [[ "$p" == "opsman" ]]; then
+    resource_name=opsman-image
+  else
+    resource_name=$p-tile
+  fi
+
+  available_release=$(curl -s $CONCOURSE_URL/api/v1/teams/main/pipelines/${environment}_deployment/resources/$resource_name/versions \
     -X GET -H "Authorization: Bearer $concourse_auth_token" \
     | jq -r '
       [ 
