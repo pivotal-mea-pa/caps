@@ -2,13 +2,13 @@
 # jq -n \
 #   --arg plan_1_type "single_node" \
 #   --arg plan_1_service_plan_access "enable" \
-#   --arg plan_1_instance_limit 20 \
+#   --argjson plan_1_instance_limit 20 \
 #   --arg plan_2_type "leader_follower" \
 #   --arg plan_2_service_plan_access "enable" \
-#   --arg plan_2_instance_limit 10 \
+#   --argjson plan_2_instance_limit 10 \
 #   --arg plan_3_type "galera" \
 #   --arg plan_3_service_plan_access "enable" \
-#   --arg plan_3_instance_limit 5 \
+#   --argjson plan_3_instance_limit 5 \
 #   --arg plan_4_type "Inactive" \
 #   --arg plan_5_type "Inactive" \
 #   --arg notification_email "john@acme.com" \
