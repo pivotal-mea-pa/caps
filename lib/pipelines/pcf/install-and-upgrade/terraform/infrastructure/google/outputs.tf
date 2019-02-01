@@ -32,6 +32,16 @@ output "gcp_storage_secret_key" {
   value = "${data.terraform_remote_state.bootstrap.gcp_storage_secret_key}"
 }
 
+# PKS Service Accounts
+
+output "gcp_master_service_account" {
+  value = "${google_service_account.pks-master.email}"
+}
+
+output "gcp_worker_service_account" {
+  value = "${google_service_account.pks-worker.email}"
+}
+
 // DNS Output
 
 output "env_dns_zone_name_servers" {
@@ -210,10 +220,7 @@ output "harbor_registry_cert_key" {
   value = "${google_compute_ssl_certificate.lb-cert.private_key}"
 }
 
-output "gcp_master_service_account" {
-  value = "${google_service_account.pks-master.email}"
-}
-
-output "gcp_worker_service_account" {
-  value = "${google_service_account.pks-worker.email}"
+# Notification Email
+output "notification_email" {
+  value = "${data.terraform_remote_state.bootstrap.notification_email}"
 }
