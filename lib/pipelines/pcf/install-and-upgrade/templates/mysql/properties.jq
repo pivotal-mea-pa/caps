@@ -1,14 +1,17 @@
 #
 # jq -n \
-#   --arg plan_1_multi_node_deployment true \
+#   --arg plan_1_type "single_node" \
 #   --arg plan_1_service_plan_access "enable" \
 #   --arg plan_1_instance_limit 20 \
-#   --arg plan_2_multi_node_deployment true \
+#   --arg plan_2_type "leader_follower" \
 #   --arg plan_2_service_plan_access "enable" \
-#   --arg plan_2_instance_limit 20 \
-#   --arg plan_3_multi_node_deployment true \
+#   --arg plan_2_instance_limit 10 \
+#   --arg plan_3_type "galera" \
 #   --arg plan_3_service_plan_access "enable" \
-#   --arg plan_3_instance_limit 20 \
+#   --arg plan_3_instance_limit 5 \
+#   --arg plan_4_type "Inactive" \
+#   --arg plan_5_type "Inactive" \
+#   --arg notification_email "john@acme.com" \
 #   --arg s3_backup_access_key_id "" \
 #   --arg s3_backup_secret_access_key "" \
 #   --arg s3_backup_endpoint_url "" \
@@ -42,23 +45,20 @@
 #
 
 # Plan configuration
-if $plan_1_instance_limit > 0 then
+if $plan_1_type != "Inactive" and $plan_1_instance_limit > 0 then
 {
-    ".properties.plan1_selector": {
-      "value": "Active"
-    },
-    ".properties.plan1_selector.active.multi_node_deployment": {
-      "value": $plan_1_multi_node_deployment
-    },
-    ".properties.plan1_selector.active.access_dropdown": {
-      "value": $plan_1_service_plan_access
-    },
-    ".properties.plan1_selector.active.az_multi_select": {
-      "value": ($availability_zones | split(","))
-    },
-    ".properties.plan1_selector.active.instance_limit": {
-      "value": $plan_1_instance_limit
-    }
+  ".properties.plan1_selector": {
+    "value": $plan_1_type
+  },
+  (".properties.plan1_selector." + $plan_1_type + ".access_dropdown"): {
+    "value": $plan_1_service_plan_access
+  },
+  (".properties.plan1_selector." + $plan_1_type + ".az_multi_select"): {
+    "value": ($availability_zones | split(","))
+  },
+  (".properties.plan1_selector." + $plan_1_type + ".instance_limit"): {
+    "value": $plan_1_instance_limit
+  }
 }
 else
 {
@@ -68,23 +68,20 @@ else
 }
 end
 +
-if $plan_2_instance_limit > 0 then
+if $plan_2_type != "Inactive" and $plan_2_instance_limit > 0 then
 {
-    ".properties.plan2_selector": {
-      "value": "Active"
-    },
-    ".properties.plan2_selector.active.multi_node_deployment": {
-      "value": $plan_2_multi_node_deployment
-    },
-    ".properties.plan2_selector.active.access_dropdown": {
-      "value": $plan_2_service_plan_access
-    },
-    ".properties.plan2_selector.active.az_multi_select": {
-      "value": ($availability_zones | split(","))
-    },
-    ".properties.plan2_selector.active.instance_limit": {
-      "value": $plan_2_instance_limit
-    }
+  ".properties.plan2_selector": {
+    "value": $plan_2_type
+  },
+  (".properties.plan2_selector." + $plan_2_type + ".access_dropdown"): {
+    "value": $plan_2_service_plan_access
+  },
+  (".properties.plan2_selector." + $plan_2_type + ".az_multi_select"): {
+    "value": ($availability_zones | split(","))
+  },
+  (".properties.plan2_selector." + $plan_2_type + ".instance_limit"): {
+    "value": $plan_2_instance_limit
+  }
 }
 else
 {
@@ -94,23 +91,20 @@ else
 }
 end
 +
-if $plan_3_instance_limit > 0 then
+if $plan_3_type != "Inactive" and $plan_3_instance_limit > 0 then
 {
-    ".properties.plan3_selector": {
-      "value": "Active"
-    },
-    ".properties.plan3_selector.active.multi_node_deployment": {
-      "value": $plan_3_multi_node_deployment
-    },
-    ".properties.plan3_selector.active.access_dropdown": {
-      "value": $plan_3_service_plan_access
-    },
-    ".properties.plan3_selector.active.az_multi_select": {
-      "value": ($availability_zones | split(","))
-    },
-    ".properties.plan3_selector.active.instance_limit": {
-      "value": $plan_3_instance_limit
-    }
+  ".properties.plan3_selector": {
+    "value": $plan_3_type
+  },
+  (".properties.plan3_selector." + $plan_3_type + ".access_dropdown"): {
+    "value": $plan_3_service_plan_access
+  },
+  (".properties.plan3_selector." + $plan_3_type + ".az_multi_select"): {
+    "value": ($availability_zones | split(","))
+  },
+  (".properties.plan3_selector." + $plan_3_type + ".instance_limit"): {
+    "value": $plan_3_instance_limit
+  }
 }
 else
 {
@@ -119,6 +113,14 @@ else
   }
 }
 end
+
+# Settings
++
+{
+  ".properties.global_recipient_email": {
+    "value": $notification_email
+  }
+}
 
 # Backup configuration
 +
@@ -298,3 +300,11 @@ else
   }
 }
 end
+
+# Service instance upgrades
++
+{
+  ".properties.deprecated_bindings_string": {
+    "value": "X"
+  }
+}
