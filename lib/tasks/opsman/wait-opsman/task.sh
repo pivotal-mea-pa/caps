@@ -1,5 +1,9 @@
 #!/bin/bash
 
+source ~/scripts/iaas-func.sh
+source ~/scripts/opsman-func.sh
+iaas::initialize
+
 [[ -n "$TRACE" ]] && set -x
 set -o pipefail
 
