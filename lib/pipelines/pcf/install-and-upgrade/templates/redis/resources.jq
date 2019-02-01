@@ -9,8 +9,6 @@
   "redis-on-demand-broker": {
   },
   "cf-redis-broker": {
-  },
-  "dedicated-node": {
   }
 }
 |
@@ -24,9 +22,6 @@ if $iaas == "aws"
       "internet_connected": $internet_connected
     },
     "cf-redis-broker": {
-      "internet_connected": $internet_connected
-    },
-    "dedicated-node": {
       "internet_connected": $internet_connected
     }
   }

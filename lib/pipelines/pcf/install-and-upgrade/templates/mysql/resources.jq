@@ -7,7 +7,6 @@
 
 {
   "dedicated-mysql-broker": {
-    "internet_connected": $internet_connected
   }
 }
 |
@@ -17,10 +16,8 @@ if $iaas == "aws"
   or $iaas == "azure" then
 
   . * {
-    "pivotal-container-service": {
-      # i.e. TCP load balancer for applications
-      "internet_connected": $internet_connected,
-      "elb_names": ($pks_lb_name | split(","))
+    "dedicated-mysql-broker": {
+      "internet_connected": $internet_connected
     }
   }
 else
