@@ -103,6 +103,16 @@
         VERSION_ROW_STYLE: 'color:silver;'
         NEW_VERSION_ROW_STYLE: 'color:black;'
 
+    # Wait if an opsman is currently in the process of applying a change
+    - task: wait-if-apply-in-progress
+      file: automation/lib/tasks/opsman/wait-opsman/task.yml
+      params:
+        OPSMAN_HOST: ((opsman_host))
+        OPSMAN_USERNAME: ((opsman_admin_username))
+        OPSMAN_PASSWORD: ((opsman_admin_password))
+        OPSMAN_CLIENT_ID: ((opsman_client_id))
+        OPSMAN_CLIENT_SECRET: ((opsman_client_secret))
+
     # Stage product tile
     - task: stage-tile
       file: automation/lib/tasks/opsman/stage-product/task.yml

@@ -1,7 +1,23 @@
+# Insert a wait-if-apply-in-progress task to the 
+# configure jobs after the 'get' aggregation step.
+# This will ensure that tiles are not staged if
+# an apply is in progress,
+- type: replace
+  path: /jobs/name=configure-${product_name}-tile/plan/0:after
+  value:
+    task: wait-if-apply-in-progress
+    file: automation/lib/tasks/opsman/wait-opsman/task.yml
+    params:
+      OPSMAN_HOST: ((opsman_host))
+      OPSMAN_USERNAME: ((opsman_admin_username))
+      OPSMAN_PASSWORD: ((opsman_admin_password))
+      OPSMAN_CLIENT_ID: ((opsman_client_id))
+      OPSMAN_CLIENT_SECRET: ((opsman_client_secret))
 
 # Insert release manifest generation task to the 
 # configure jobs after the 'get' aggregation step.
-# This will ensure the release 
+# This will ensure the release manifest is created 
+# and sent with any success/failure notifications.
 - type: replace
   path: /jobs/name=configure-${product_name}-tile/plan/0:after
   value:
