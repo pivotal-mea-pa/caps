@@ -183,6 +183,40 @@
         NUM_DIEGO_CELLS: ((num_diego_cells))
 
 - type: replace
+  path: /jobs/-
+  value:
+    name: configure-pas-runtime
+    on_failure:
+      do:
+      - task: notify on configure-pas-runtime failure
+
+    serial: true
+    plan:
+    - aggregate:
+      - get: automation
+      - get: automation-extensions
+      - get: terraform-output
+      - get: pas-tile
+        passed: [deploy]
+        trigger: true
+        params:
+          skip_download: 'true'
+
+    - task: pas-runtime-config
+      file: automation/lib/pipelines/pcf/install-and-upgrade/tasks/pas-runtime-config/task.yml
+      params:
+        GCP_CREDENTIALS: ((gcp_service_account_key))
+        GCP_PROJECT: ((gcp_project))
+        GCP_REGION: ((gcp_region))
+        DEPLOYMENT_PREFIX: ((deployment_prefix))
+        TERRAFORM_STATE_BUCKET: ((terraform_state_bucket))
+        OPSMAN_HOST: ((opsman_host))
+        OPSMAN_USERNAME: ((opsman_admin_username))
+        OPSMAN_PASSWORD: ((opsman_admin_password))
+        OPSMAN_CLIENT_ID: ((opsman_client_id))
+        OPSMAN_CLIENT_SECRET: ((opsman_client_secret))
+
+- type: replace
   path: /jobs/name=deploy/plan/0/aggregate/-
   value:
     get: pas-tile
