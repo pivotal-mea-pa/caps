@@ -202,7 +202,6 @@
       - get: terraform-output
       - get: pas-tile
         passed: [deploy]
-        trigger: true
         params:
           skip_download: 'true'
 
