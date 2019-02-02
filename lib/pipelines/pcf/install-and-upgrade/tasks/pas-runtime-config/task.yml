@@ -32,3 +32,6 @@ params:
   OPSMAN_CLIENT_SECRET:
   OPSMAN_USERNAME:
   OPSMAN_PASSWORD:
+
+  # Org Manager user for default demo org
+  TF_VAR_org_admin:
