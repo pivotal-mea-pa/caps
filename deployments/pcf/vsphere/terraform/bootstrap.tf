@@ -163,6 +163,7 @@ env_config_repo: '${var.env_config_repo}'
 env_config_repo_branch: '${var.env_config_repo_branch}'
 env_config_path: '${var.env_config_path}'
 
+num_environments: ${length(var.pcf_environments)}
 environments: '${join(" ", var.pcf_environments)}'
 
 unpause_deployment_pipeline: ${var.unpause_deployment_pipeline}

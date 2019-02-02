@@ -130,7 +130,7 @@ PRODUCT_VERSIONS=$(mc ls --recursive auto/${BUCKET}/downloads \
   | awk "/ ${NAME}_/{ print \$5 }")
 
 NUM_VERSIONS=$(echo "${PRODUCT_VERSIONS}" | wc -l)
-if [[ ${NUM_VERSIONS} -gt 3 ]]; then
+if [[ ${NUM_VERSIONS} -gt $MIN_VERSIONS_TO_KEEP ]]; then
   for v in $(echo "${PRODUCT_VERSIONS}" | head -$((${NUM_VERSIONS}-${MIN_VERSIONS_TO_KEEP}))); do
     mc rm auto/${BUCKET}/downloads/${v}
   done

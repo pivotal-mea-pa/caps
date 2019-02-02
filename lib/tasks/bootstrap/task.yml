@@ -69,6 +69,7 @@ params:
   # VPC and environment details
   VPC_NAME:
   VPC_DNS_ZONE:
+  NUM_ENVIRONMENTS:
   ENVIRONMENTS:
 
   # The name of the deployment

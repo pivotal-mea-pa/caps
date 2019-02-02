@@ -49,6 +49,7 @@ jobs:
       # VPC and environment details
       VPC_NAME: ((vpc_name))
       VPC_DNS_ZONE: ((vpc_dns_zone))
+      NUM_ENVIRONMENTS: ((num_environments))
       ENVIRONMENTS: ((environments))
       DEPLOYMENT: pcf
       UNPAUSE_DEPLOYMENT_PIPELINE: ((unpause_deployment_pipeline))

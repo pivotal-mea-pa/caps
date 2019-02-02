@@ -74,3 +74,4 @@ jobs:
       AUTOS3_ACCESS_KEY: ((autos3_access_key))
       AUTOS3_SECRET_KEY: ((autos3_secret_key))
       BUCKET: pcf
+      MIN_VERSIONS_TO_KEEP: ((num_environments))

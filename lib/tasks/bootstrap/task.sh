@@ -151,7 +151,8 @@ fly -t default set-pipeline -n \
   -v "autos3_secret_key=$AUTOS3_SECRET_KEY" \
   -v "pipeline_automation_path=$PIPELINE_AUTOMATION_PATH" \
   -v "iaas_type=$IAAS" \
-  -v "vpc_name=$VPC_NAME" >/dev/null
+  -v "vpc_name=$VPC_NAME" \
+  -v "num_environments=$NUM_ENVIRONMENTS" >/dev/null
 
 fly -t default unpause-pipeline -p download-products
 
