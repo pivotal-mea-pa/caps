@@ -53,6 +53,10 @@
   path: /groups/name=Install & Upgrade Products/jobs?/0:before
   value: configure-pas-tile
 
+- type: replace
+  path: /groups/name=Install & Upgrade Products/jobs?/0:before
+  value: configure-pas-runtime
+
 # Add jobs to configure PAS small tile
 
 - type: replace
