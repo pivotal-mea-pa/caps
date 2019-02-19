@@ -119,7 +119,7 @@ resource "null_resource" "ops-manager" {
     type        = "ssh"
     user        = "ubuntu"
     private_key = "${data.terraform_remote_state.bootstrap.default_openssh_private_key}"
-    host        = "${google_compute_instance.ops-manager.network_interface.0.address}"
+    host        = "${google_compute_instance.ops-manager.network_interface.0.network_ip}"
   }
 
   depends_on = ["google_dns_record_set.ops-manager-dns"]

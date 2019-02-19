@@ -23,7 +23,7 @@ resource "google_dns_record_set" "ops-manager-dns" {
   type = "A"
   ttl  = 300
 
-  rrdatas = ["${google_compute_instance.ops-manager.network_interface.0.address}"]
+  rrdatas = ["${google_compute_instance.ops-manager.network_interface.0.network_ip}"]
 }
 
 resource "google_dns_record_set" "wildcard-apps-dns" {
