@@ -8,7 +8,7 @@ usage () {
     echo -e "                               images will be built. This does not apply to all providers and"
     echo -e "                               will be ignored where appropriate.\n"
     echo -e "    -t|--type <TYPE>           Name of image type to build. Default is to build the inception"
-    echo -e "                               image. Additional images types may be available for the IaaS."
+    echo -e "                               image. Additional images types may be available for the IaaS.\n"
     echo -e "    -u|--upload                Upload the built image to the VMware IaaS. This is applicable"
     echo -e "                               only when image has been downloaded as it was not built in the"
     echo -e "                               same IaaS environment where it will be deployed.\n"
