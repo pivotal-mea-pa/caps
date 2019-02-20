@@ -27,7 +27,7 @@ bosh::login_client "$BOSH_CA_CERT" "$BOSH_ENVIRONMENT" "$BOSH_CLIENT" "$BOSH_CLI
 
 pushd automation/lib/pipelines/pcf/install-and-upgrade/tasks/upload-patcher/patch-deployment-release/
 
-latest_release_version=$($bosh releases | awk '/^patch-deployment/{ print $2 }' | head -1)
+latest_release_version=$($bosh releases | awk '/^patch-deployment/{ print $2 }' | head -1 | sed 's|\*$||')
 if [[ -n $latest_release_version ]]; then
   latest_release_info=$($bosh inspect-release patch-deployment/$latest_release_version --json | jq '[ .Tables[0].Rows[].job ]')
 
