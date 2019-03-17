@@ -33,18 +33,21 @@ CURR_NETWORK_CONFIGURATION=$(om \
   --password "${OPSMAN_PASSWORD}" \
   curl --silent --path /api/v0/staged/director/networks)
 
-OPSMAN_CA_CERT=$(om \
-  --skip-ssl-validation \
-  --target "https://${OPSMAN_HOST}" \
-  --client-id "${OPSMAN_CLIENT_ID}" \
-  --client-secret "${OPSMAN_CLIENT_SECRET}" \
-  --username "${OPSMAN_USERNAME}" \
-  --password "${OPSMAN_PASSWORD}" \
-  certificate-authorities \
-  --format json \
-  | jq -r '.[] | select(.issuer | match("Pivotal")) | .cert_pem')
+# BUG: Having opsman ca cert interferes 
+# with docker registry authentication
+#
+# OPSMAN_CA_CERT=$(om \
+#   --skip-ssl-validation \
+#   --target "https://${OPSMAN_HOST}" \
+#   --client-id "${OPSMAN_CLIENT_ID}" \
+#   --client-secret "${OPSMAN_CLIENT_SECRET}" \
+#   --username "${OPSMAN_USERNAME}" \
+#   --password "${OPSMAN_PASSWORD}" \
+#   certificate-authorities \
+#   --format json \
+#   | jq -r '.[] | select(.issuer | match("Pivotal")) | .cert_pem')
 
-export CA_CERTS=$(echo -e "${OPSMAN_CA_CERT}\n${CA_CERTS}")
+# export CA_CERTS=$(echo -e "${OPSMAN_CA_CERT}\n${CA_CERTS}")
 
 #
 # Update director resources
