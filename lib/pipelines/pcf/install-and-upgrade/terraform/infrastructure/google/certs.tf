@@ -14,6 +14,7 @@ resource "tls_cert_request" "pcf-san-cert" {
   dns_names = [
     "*.${local.bootstrap_domain}",
     "*.${local.env_domain}",
+    "*.releng.${local.env_domain}",
     "*.${local.apps_domain}",
     "*.${local.system_domain}",
     "*.uaa.${local.system_domain}",

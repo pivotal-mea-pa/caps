@@ -220,6 +220,14 @@ output "harbor_registry_cert_key" {
   value = "${google_compute_ssl_certificate.lb-cert.private_key}"
 }
 
+output "platform_san_cert" {
+  value = "${google_compute_ssl_certificate.lb-cert.certificate}"
+}
+
+output "platform_san_cert_key" {
+  value = "${google_compute_ssl_certificate.lb-cert.private_key}"
+}
+
 # Notification Email
 output "notification_email" {
   value = "${data.terraform_remote_state.bootstrap.notification_email}"
