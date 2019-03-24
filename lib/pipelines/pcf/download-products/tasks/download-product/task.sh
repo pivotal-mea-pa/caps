@@ -60,7 +60,7 @@ if [[ -n "$TILE_FILE_PATH" ]]; then
           if any(.Dependencies[]; select(.Release.Product.Name | contains("Stemcells for PCF (Windows)"))) then
             "stemcells-windows-server"
           else
-            "stemcells"
+            "stemcells-ubuntu-xenial"
           end
           ' < ./metadata.json
       )
@@ -75,19 +75,19 @@ if [[ -n "$TILE_FILE_PATH" ]]; then
         # Download stemcell from bosh.io
         case "$IAAS" in
           google)
-            stemcell_download_url=https://s3.amazonaws.com/bosh-gce-light-stemcells/light-bosh-stemcell-${STEMCELL_VERSION}-google-kvm-ubuntu-xenial-go_agent.tgz
+            stemcell_download_url=https://s3.amazonaws.com/bosh-gce-light-stemcells/${STEMCELL_VERSION}/light-bosh-stemcell-${STEMCELL_VERSION}-google-kvm-ubuntu-xenial-go_agent.tgz
             ;;
           aws)
-            stemcell_download_url=https://s3.amazonaws.com/bosh-aws-light-stemcells/light-bosh-stemcell-${STEMCELL_VERSION}-aws-xen-hvm-ubuntu-xenial-go_agent.tgz
+            stemcell_download_url=https://s3.amazonaws.com/bosh-aws-light-stemcells/${STEMCELL_VERSION}/light-bosh-stemcell-${STEMCELL_VERSION}-aws-xen-hvm-ubuntu-xenial-go_agent.tgz
             ;;
           azure)
-            stemcell_download_url=https://s3.amazonaws.com/bosh-core-stemcells/azure/bosh-stemcell-${STEMCELL_VERSION}-azure-hyperv-ubuntu-xenial-go_agent.tgz
+            stemcell_download_url=https://s3.amazonaws.com/bosh-core-stemcells/${STEMCELL_VERSION}/bosh-stemcell-${STEMCELL_VERSION}-azure-hyperv-ubuntu-xenial-go_agent.tgz
             ;;
           vsphere)
-            stemcell_download_url=https://s3.amazonaws.com/bosh-core-stemcells/vsphere/bosh-stemcell-${STEMCELL_VERSION}-vsphere-esxi-ubuntu-xenial-go_agent.tgz
+            stemcell_download_url=https://s3.amazonaws.com/bosh-core-stemcells/${STEMCELL_VERSION}/bosh-stemcell-${STEMCELL_VERSION}-vsphere-esxi-ubuntu-xenial-go_agent.tgz
             ;;
           openstack)
-            stemcell_download_url=https://s3.amazonaws.com/bosh-core-stemcells/openstack/bosh-stemcell-${STEMCELL_VERSION}-openstack-kvm-ubuntu-xenial-go_agent.tgz
+            stemcell_download_url=https://s3.amazonaws.com/bosh-core-stemcells/${STEMCELL_VERSION}/bosh-stemcell-${STEMCELL_VERSION}-openstack-kvm-ubuntu-xenial-go_agent.tgz
             ;;
           *)
             echo "ERROR! Unknown IAAS - $IAAS."
