@@ -84,5 +84,5 @@
         AUTOS3_SECRET_KEY: ((autos3_secret_key))
 
 - type: replace
-  path: /groups/name=Install & Upgrade Products/jobs?/-
+  path: /groups/name=Install and Upgrade Products/jobs?/-
   value: deploy

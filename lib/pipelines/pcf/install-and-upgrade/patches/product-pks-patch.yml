@@ -208,9 +208,9 @@
       TERRAFORM_STATE_BUCKET: ((terraform_state_bucket))
 
 - type: replace
-  path: /groups/name=Install & Upgrade Products/jobs?/-
+  path: /groups/name=Install and Upgrade Products/jobs?/-
   value: configure-pks-runtime
 
 - type: replace
-  path: /groups/name=Install & Upgrade Products/jobs?/-
+  path: /groups/name=Install and Upgrade Products/jobs?/-
   value: configure-pks-clusters

@@ -1,13 +1,13 @@
 ---
 groups:
-- name: Install & Upgrade Director
+- name: Install and Upgrade Director
   jobs:
   - destroy-environment
   - prepare-environment
   - configure-director
   - deploy-director
   - director-post-deploy
-- name: Install & Upgrade Products
+- name: Install and Upgrade Products
 
 resource_types:
 
