@@ -59,6 +59,7 @@ if [[ $? -eq 0 ]]; then
     cluster_instances="$cluster_instances \"$c\"=\""
 
     # Wait until cluster creation completes
+    echo -e "Ensuring creation of cluster '${c}' is complete..."
     status=$(pks cluster ${c} --json | jq -r "\"\(.last_action) \(.last_action_state)\"")
     while [[ $status == "CREATE in progress" ]]; do
 
