@@ -36,6 +36,58 @@ export BOSH_CLIENT_SECRET=$(opsman::get_director_client_secret ops_manager)
 
 bosh::login_client "$BOSH_CA_CERT" "$BOSH_ENVIRONMENT" "$BOSH_CLIENT" "$BOSH_CLIENT_SECRET"
 
+# Retrieve PKS cluster details into variables that can 
+# be passed to IAAS specific terraform templates
+
+set +e
+pks login --skip-ssl-validation --api $PKS_URL --username $PKS_ADMIN_USERNAME --password $PKS_ADMIN_PASSWORD
+if [[ $? -eq 0 ]]; then
+  set -e
+  
+  clusters='['
+  cluster_ids='{'
+  cluster_instances='{'
+
+  pks_clusters=$(pks clusters | awk '$1 != "Name" { print $1 }')
+  for c in $pks_clusters; do
+
+    info=$(pks cluster $c)
+    uuid=$(echo "$info" | awk '/UUID/{ print $ 2}')
+
+    clusters="$clusters \"$c\","
+    cluster_ids="$cluster_ids \"$c\"=\"$uuid\","
+    cluster_instances="$cluster_instances \"$c\"=\""
+
+    # Wait until cluster creation completes
+    status=$(pks cluster ${c} --json | jq -r "\"\(.last_action) \(.last_action_state)\"")
+    while [[ $status == "CREATE in progress" ]]; do
+
+      task_id=$($bosh --json tasks \
+        | jq -r ".Tables[0].Rows[] | select(.deployment==\"service-instance_$uuid\") | .id")
+      [[ -z $task_id ]] || \
+        $bosh task $task_id
+      
+      status=$(pks cluster ${c} --json | jq -r "\"\(.last_action) \(.last_action_state)\"")
+    done
+
+    master_vms=$($bosh -d service-instance_$uuid vms | awk '/master\//{ print $3"/"$5 }')
+    for vm in $master_vms; do
+      cluster_instances="${cluster_instances}$vm,"
+    done
+
+    cluster_instances="${cluster_instances:0:-1}\","
+  done
+
+  export TF_VAR_clusters="${clusters:0:-1} ]"
+  export TF_VAR_cluster_ids="${cluster_ids:0:-1} }"
+  export TF_VAR_cluster_instances="${cluster_instances:0:-1} }"
+else
+  set -e
+  export TF_VAR_clusters="[]"
+  export TF_VAR_cluster_ids="{}"
+  export TF_VAR_cluster_instances="{}"
+fi
+
 # Patch worker vms of newly created clusters so that
 # docker is restarted with harbor configured as an
 # insecure registry
@@ -120,46 +172,6 @@ if [[ -e deployment-event/delete ]]; then
       set -e
     fi
   done
-fi
-
-# Retrieve PKS cluster details into variables that can 
-# be passed to IAAS specific terraform templates
-
-set +e
-pks login --skip-ssl-validation --api $PKS_URL --username $PKS_ADMIN_USERNAME --password $PKS_ADMIN_PASSWORD
-if [[ $? -eq 0 ]]; then
-  set -e
-  
-  clusters='['
-  cluster_ids='{'
-  cluster_instances='{'
-
-  pks_clusters=$(pks clusters | awk '$1 != "Name" { print $1 }')
-  for c in $pks_clusters; do
-
-    info=$(pks cluster $c)
-    uuid=$(echo "$info" | awk '/UUID/{ print $ 2}')
-
-    clusters="$clusters \"$c\","
-    cluster_ids="$cluster_ids \"$c\"=\"$uuid\","
-    cluster_instances="$cluster_instances \"$c\"=\""
-
-    master_vms=$($bosh -d service-instance_$uuid vms | awk '/master\//{ print $3"/"$5 }')
-    for vm in $master_vms; do
-      cluster_instances="${cluster_instances}$vm,"
-    done
-
-    cluster_instances="${cluster_instances:0:-1}\","
-  done
-
-  export TF_VAR_clusters="${clusters:0:-1} ]"
-  export TF_VAR_cluster_ids="${cluster_ids:0:-1} }"
-  export TF_VAR_cluster_instances="${cluster_instances:0:-1} }"
-else
-  set -e
-  export TF_VAR_clusters="[]"
-  export TF_VAR_cluster_ids="{}"
-  export TF_VAR_cluster_instances="{}"
 fi
 
 # Run IAAS specific cluster configuration
