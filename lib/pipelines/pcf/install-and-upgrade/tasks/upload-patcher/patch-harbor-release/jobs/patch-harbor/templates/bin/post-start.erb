@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+
+set -exu
+
+if [[ -e /var/vcap/jobs/harbor/config ]]; then
+
+  cd /var/vcap/jobs/harbor/config
+
+  cp ./ca.crt ./ca_x.crt
+  echo -e "\n<%= p("opsman_ca_cert") %>" >> ./ca_x.crt
+ 
+  set +e
+  diff -u ./ca_x.crt ./uaa_ca.crt >/dev/null 2>&1
+  if [[ $? -ne 0 ]]; then
+    set -e
+
+    cp ./ca_x.crt ./uaa_ca.crt
+
+    cd /var/vcap/jobs/harbor/bin
+    ./pre-start
+  fi
+fi

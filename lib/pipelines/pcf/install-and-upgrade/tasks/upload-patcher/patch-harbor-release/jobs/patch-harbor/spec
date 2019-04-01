@@ -1,0 +1,8 @@
+name: patch-harbor
+
+templates:
+  bin/post-start.erb: bin/post-start
+
+properties:
+  opsman_ca_cert:
+    description: The CA cert for Ops Manager, which is used for signing tokens

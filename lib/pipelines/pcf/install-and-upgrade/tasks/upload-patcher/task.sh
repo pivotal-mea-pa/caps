@@ -25,30 +25,35 @@ export BOSH_CLIENT_SECRET=$(opsman::get_director_client_secret ops_manager)
 
 bosh::login_client "$BOSH_CA_CERT" "$BOSH_ENVIRONMENT" "$BOSH_CLIENT" "$BOSH_CLIENT_SECRET"
 
-pushd automation/lib/pipelines/pcf/install-and-upgrade/tasks/upload-patcher/patch-deployment-release/
+for patch_release_dir in *-release; do 
 
-latest_release_version=$($bosh releases | awk '/^patch-deployment/{ print $2 }' | head -1 | sed 's|\*$||')
-if [[ -n $latest_release_version ]]; then
-  latest_release_info=$($bosh inspect-release patch-deployment/$latest_release_version --json | jq '[ .Tables[0].Rows[].job ]')
+  pushd automation/lib/pipelines/pcf/install-and-upgrade/tasks/upload-patcher/$patch_release_dir/
+  release_name=${patch_release_dir%*-release}
 
-  release_version=${latest_release_version%\**}
-  version=${release_version%.*}
-  build_number=${release_version##*.}
-  new_version=${version}.$(($build_number+1))
-else
-  latest_release_info='[]'
-  new_version=0.0.1
-fi
+  latest_release_version=$($bosh releases | awk "/^${release_name}/{ print $2 }" | head -1 | sed 's|\*$||')
+  if [[ -n $latest_release_version ]]; then
+    latest_release_info=$($bosh inspect-release ${release_name}/$latest_release_version --json | jq '[ .Tables[0].Rows[].job ]')
 
-release_build_info=$($bosh create-release --json --force --version=$new_version | jq '[ .Tables[1].Rows[].job ]')
+    release_version=${latest_release_version%\**}
+    version=${release_version%.*}
+    build_number=${release_version##*.}
+    new_version=${version}.$(($build_number+1))
+  else
+    latest_release_info='[]'
+    new_version=0.0.1
+  fi
 
-new_jobs=$(jq -n \
-  --argjson latest "$latest_release_info" \
-  --argjson build "$release_build_info" \
-  '$build - $latest | length')
+  release_build_info=$($bosh create-release --json --force --version=$new_version | jq '[ .Tables[1].Rows[].job ]')
 
-if [[ $new_jobs -ne 0 ]]; then
-  $bosh upload-release --non-interactive
-fi
+  new_jobs=$(jq -n \
+    --argjson latest "$latest_release_info" \
+    --argjson build "$release_build_info" \
+    '$build - $latest | length')
 
-popd
+  if [[ $new_jobs -ne 0 ]]; then
+    $bosh upload-release --non-interactive
+  fi
+
+  popd
+
+done

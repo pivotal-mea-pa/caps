@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+set -exu
+
+if [[ -e /var/vcap/jobs/docker/bin/job_properties.sh ]]; then
+
+<% if_p('insecure_registries') do |insecure_registries| %>
+  # Insecure registries
+  docker_insecure_registries="<%= insecure_registries.map { |insecure_registry| "--insecure-registry=#{insecure_registry}" }.join(' ') %>"
+<% end %>
+
+  if [[ -n $docker_insecure_registries ]]; then
+
+    echo -e "\n# Insecure registries\nexport DOCKER_INSECURE_REGISTRIES=$docker_insecure_registries\n" \
+      >>/var/vcap/jobs/docker/bin/job_properties.sh
+  fi
+fi

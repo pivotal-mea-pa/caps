@@ -1,0 +1,4 @@
+---
+name: patch-harbor
+blobstore:
+  provider: local

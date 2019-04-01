@@ -1,0 +1,8 @@
+name: patch-docker
+
+templates:
+  bin/post-start.erb: bin/post-start
+
+properties:
+  insecure_registries:
+    description: "Array of insecure registries (no certificate verification for HTTPS and enable HTTP fallback)"
