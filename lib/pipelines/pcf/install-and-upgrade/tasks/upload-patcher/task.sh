@@ -31,7 +31,7 @@ for patch_release_dir in *-release; do
   pushd $patch_release_dir/
   release_name=${patch_release_dir%*-release}
 
-  latest_release_version=$($bosh releases | awk "/^${release_name}/{ print $2 }" | head -1 | sed 's|\*$||')
+  latest_release_version=$($bosh releases | awk '/^'${release_name}'/{ print $2 }' | head -1 | sed 's|\*$||')
   if [[ -n $latest_release_version ]]; then
     latest_release_info=$($bosh inspect-release ${release_name}/$latest_release_version --json | jq '[ .Tables[0].Rows[].job ]')
 
