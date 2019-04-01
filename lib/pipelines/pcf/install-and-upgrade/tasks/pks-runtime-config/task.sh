@@ -44,6 +44,18 @@ export BOSH_CLIENT_SECRET=$(opsman::get_director_client_secret ops_manager)
 
 bosh::login_client "$BOSH_CA_CERT" "$BOSH_ENVIRONMENT" "$BOSH_CLIENT" "$BOSH_CLIENT_SECRET"
 
+# Retrieve opsman certificate
+OPSMAN_CA_CERT=$(om \
+  --skip-ssl-validation \
+  --target "https://${OPSMAN_HOST}" \
+  --client-id "${OPSMAN_CLIENT_ID}" \
+  --client-secret "${OPSMAN_CLIENT_SECRET}" \
+  --username "${OPSMAN_USERNAME}" \
+  --password "${OPSMAN_PASSWORD}" \
+  certificate-authorities \
+  --format json \
+  | jq -r '.[] | select(.issuer | match("Pivotal")) | .cert_pem')
+
 # Create Bosh runtime-config to patch Harbor as it does not
 # correctly configure the self-signed CA root certificate
 # for validation when using self-signed certificates for UAA.
@@ -64,6 +76,9 @@ addons:
   jobs:
   - name: patch-harbor
     release: patch-deployment
+  properties:
+    opsman_ca_cert: |
+$(echo -e "$OPSMAN_CA_CERT" | sed 's|^|      |g')
   include:
     deployments:
     - $harbor_deployment
