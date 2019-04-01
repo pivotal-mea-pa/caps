@@ -25,9 +25,10 @@ export BOSH_CLIENT_SECRET=$(opsman::get_director_client_secret ops_manager)
 
 bosh::login_client "$BOSH_CA_CERT" "$BOSH_ENVIRONMENT" "$BOSH_CLIENT" "$BOSH_CLIENT_SECRET"
 
+pushd automation/lib/pipelines/pcf/install-and-upgrade/tasks/upload-patcher/
 for patch_release_dir in *-release; do 
 
-  pushd automation/lib/pipelines/pcf/install-and-upgrade/tasks/upload-patcher/$patch_release_dir/
+  pushd $patch_release_dir/
   release_name=${patch_release_dir%*-release}
 
   latest_release_version=$($bosh releases | awk "/^${release_name}/{ print $2 }" | head -1 | sed 's|\*$||')
@@ -55,5 +56,5 @@ for patch_release_dir in *-release; do
   fi
 
   popd
-
 done
+popd
