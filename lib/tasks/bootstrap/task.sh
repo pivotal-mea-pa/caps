@@ -135,7 +135,8 @@ for p in $(echo -e "$PRODUCTS"); do
   i=$(($i+1)) && j=$(($j+1))
 done
 
-$patch_job_notifications download-products-pipeline$i.yml > download-products-pipeline.yml
+[[ -z $EMAIL_TO ]] || \
+  $patch_job_notifications download-products-pipeline$i.yml > download-products-pipeline.yml
 
 fly -t default set-pipeline -n \
   -p download-products \
@@ -252,10 +253,12 @@ for e in $ENVIRONMENTS; do
   fi
 
   # Patch notifications to install and upgrade pipeline
-  $patch_job_notifications install-and-upgrade-pipeline$i.yml > install-and-upgrade-pipeline.yml
+  [[ -z $EMAIL_TO ]] || \
+    $patch_job_notifications install-and-upgrade-pipeline$i.yml > install-and-upgrade-pipeline.yml
 
   # Patch notifications to backup and restore pipeline
-  $patch_job_notifications backup_and_restore_pipeline$i.yml > backup-and-restore-pipeline.yml
+  [[ -z $EMAIL_TO ]] || \
+    $patch_job_notifications backup_and_restore_pipeline$i.yml > backup-and-restore-pipeline.yml
 
   #
   # Set install and upgrade pipeline
@@ -384,7 +387,8 @@ for e in $ENVIRONMENTS; do
     cp $start_and_stop_pipeline_path/${IAAS}/pipeline.yml stop-and-start-pipeline.yml
   fi
 
-  $patch_job_notifications stop-and-start-pipeline.yml > pipeline.yml
+  [[ -z $EMAIL_TO ]] || \
+    $patch_job_notifications stop-and-start-pipeline.yml > pipeline.yml
 
   pcf_stop_trigger_start=${PCF_STOP_AT:-00:00}
   pcf_stop_trigger_stop=$(add_time $pcf_stop_trigger_start 1)
