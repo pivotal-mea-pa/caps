@@ -1,0 +1,4 @@
+[submodule "lib/inceptor"]
+	path = lib/inceptor
+	url = https://github.com/mevansam/cloud-inceptor.git
+	branch = master
