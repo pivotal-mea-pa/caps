@@ -33,7 +33,7 @@ fi
 status=$(pks cluster ${cluster_name} --json | jq -r "\"\(.last_action) \(.last_action_state)\"")
 while [[ $status == "CREATE in progress" ]]; do
 
-  bosh_tasks=$(bosh\
+  bosh_tasks=$($bosh \
     --environment=${bosh_host} --ca-cert="${ca_cert}" \
     --client=${bosh_client_id} --client-secret=${bosh_client_secret} --json tasks)
 
@@ -41,7 +41,7 @@ while [[ $status == "CREATE in progress" ]]; do
     | jq -r ".Tables[0].Rows[] | select(.deployment==\"service-instance_$cluster_uuid\") | .id")
 
   if [[ -n $task_id ]]; then
-    bosh\
+    $bosh \
       --environment=${bosh_host} --ca-cert="${ca_cert}" \
       --client=${bosh_client_id} --client-secret=${bosh_client_secret} \
       task $task_id

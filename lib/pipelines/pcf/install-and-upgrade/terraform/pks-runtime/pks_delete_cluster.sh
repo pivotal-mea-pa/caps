@@ -29,7 +29,7 @@ pks delete-cluster ${cluster_name} --non-interactive
 status=$(pks cluster ${cluster_name} --json 2>/dev/null | jq -r "\"\(.last_action) \(.last_action_state)\"")
 while [[ -n $status && $status == "DELETE in progress" ]]; do
 
-  bosh_tasks=$(bosh\
+  bosh_tasks=$($bosh \
     --environment=${bosh_host} --ca-cert="${ca_cert}" \
     --client=${bosh_client_id} --client-secret=${bosh_client_secret} --json tasks)
 
@@ -39,7 +39,7 @@ while [[ -n $status && $status == "DELETE in progress" ]]; do
       | .id")
 
   if [[ -n $task_id ]]; then
-    bosh\
+    $bosh \
       --environment=${bosh_host} --ca-cert="${ca_cert}" \
       --client=${bosh_client_id} --client-secret=${bosh_client_secret} \
       task $task_id

@@ -129,7 +129,7 @@ for p in $(echo -e "$PRODUCTS"); do
   eval "echo \"$(cat $download_products_patches_path/download-product-patch.yml)\"" \
     > download-${product_name}-patch.yml
 
-  boshinterpolate -o download-${product_name}-patch.yml \
+  $bosh interpolate -o download-${product_name}-patch.yml \
     download-products-pipeline$i.yml > download-products-pipeline$j.yml
 
   i=$(($i+1)) && j=$(($j+1))
@@ -183,14 +183,14 @@ for e in $ENVIRONMENTS; do
     eval "echo \"$(cat $install_and_upgrade_patches_path/install-and-upgrade-patch.yml)\"" \
       > install-and-upgrade-patch.yml
 
-    boshinterpolate -o install-and-upgrade-patch.yml \
+    $bosh interpolate -o install-and-upgrade-patch.yml \
       install-and-upgrade-pipeline0.yml > install-and-upgrade-pipeline1.yml
 
     # Patch backup and restore pipeline
     eval "echo \"$(cat $backup_and_restore_patches_path/backup-and-restore-patch.yml)\"" \
       > backup-and-restore-patch.yml
 
-    boshinterpolate -o backup-and-restore-patch.yml \
+    $bosh interpolate -o backup-and-restore-patch.yml \
       backup_and_restore_pipeline0.yml > backup_and_restore_pipeline1.yml
 
     #
@@ -224,7 +224,7 @@ for e in $ENVIRONMENTS; do
           > install-and-upgrade-${product_name}-patch.yml
       fi
 
-      boshinterpolate -o install-and-upgrade-${product_name}-patch.yml \
+      $bosh interpolate -o install-and-upgrade-${product_name}-patch.yml \
         install-and-upgrade-pipeline$i.yml > install-and-upgrade-pipeline$j.yml
 
       # Patch backup and restore pipeline
@@ -241,7 +241,7 @@ for e in $ENVIRONMENTS; do
           > backup-and-restore-${product_name}-patch.yml
       fi
 
-      boshinterpolate -o backup-and-restore-${product_name}-patch.yml \
+      $bosh interpolate -o backup-and-restore-${product_name}-patch.yml \
         backup_and_restore_pipeline$i.yml > backup_and_restore_pipeline$j.yml
 
       i=$(($i+1)) && j=$(($j+1))      
@@ -378,7 +378,7 @@ for e in $ENVIRONMENTS; do
 
   if [[ $SET_START_STOP_SCHEDULE == true ]]; then
 
-    boshinterpolate -o $start_and_stop_patches_path/start-stop-schedule.yml \
+    $bosh interpolate -o $start_and_stop_patches_path/start-stop-schedule.yml \
       $start_and_stop_pipeline_path/${IAAS}/pipeline.yml > stop-and-start-pipeline.yml
   else
     cp $start_and_stop_pipeline_path/${IAAS}/pipeline.yml stop-and-start-pipeline.yml

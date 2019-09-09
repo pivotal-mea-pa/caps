@@ -30,7 +30,7 @@ bbr director $debug_bbr \
 bosh::login_client "$CA_CERT" "$BOSH_HOST" "$BOSH_CLIENT" "$BOSH_CLIENT_SECRET"
 
 for d in $(bosh::deployment .*); do 
-    bosh-e default -d $d -n cck \
+    $bosh -e default -d $d -n cck \
         --resolution delete_disk_reference \
         --resolution delete_vm_reference
 done
