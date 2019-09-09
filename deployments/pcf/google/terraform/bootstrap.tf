@@ -33,14 +33,6 @@ module "bootstrap" {
   vpc_subnet_start = "${var.vpc_subnet_start}"
   max_azs          = "${var.max_azs}"
 
-  vpc_cidr = "${var.vpc_cidr}"
-
-  vpc_subnet_bits = "${var.vpc_subnet_bits}"
-
-  vpc_subnet_start = "${var.vpc_subnet_start}"
-
-  max_azs = "${var.max_azs}"
-
   # External DNS zone for VPC
   vpc_dns_zone = "${var.vpc_dns_zone}"
 
