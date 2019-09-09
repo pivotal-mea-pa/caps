@@ -31,9 +31,9 @@ for patch_release_dir in *-release; do
   pushd $patch_release_dir/
   release_name=${patch_release_dir%*-release}
 
-  latest_release_version=$($bosh releases | awk '/^'${release_name}'/{ print $2 }' | head -1 | sed 's|\*$||')
+  latest_release_version=$(boshreleases | awk '/^'${release_name}'/{ print $2 }' | head -1 | sed 's|\*$||')
   if [[ -n $latest_release_version ]]; then
-    latest_release_info=$($bosh inspect-release ${release_name}/$latest_release_version --json | jq '[ .Tables[0].Rows[].job ]')
+    latest_release_info=$(boshinspect-release ${release_name}/$latest_release_version --json | jq '[ .Tables[0].Rows[].job ]')
 
     release_version=${latest_release_version%\**}
     version=${release_version%.*}
@@ -44,7 +44,7 @@ for patch_release_dir in *-release; do
     new_version=0.0.1
   fi
 
-  release_build_info=$($bosh create-release --json --force --version=$new_version | jq '[ .Tables[1].Rows[].job ]')
+  release_build_info=$(boshcreate-release --json --force --version=$new_version | jq '[ .Tables[1].Rows[].job ]')
 
   new_jobs=$(jq -n \
     --argjson latest "$latest_release_info" \
@@ -52,7 +52,7 @@ for patch_release_dir in *-release; do
     '$build - $latest | length')
 
   if [[ $new_jobs -ne 0 ]]; then
-    $bosh upload-release --non-interactive
+    boshupload-release --non-interactive
   fi
 
   popd

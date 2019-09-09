@@ -62,10 +62,10 @@ OPSMAN_CA_CERT=$(om \
 harbor_deployment=$(bosh::deployment harbor-*)
 if [[ -n $harbor_deployment ]]; then
 
-  latest_release_version=$($bosh releases | awk '/^patch-harbor/{ print $2 }' | head -1)
+  latest_release_version=$(boshreleases | awk '/^patch-harbor/{ print $2 }' | head -1)
   release_version=${latest_release_version%\**}
 
-  $bosh \
+  bosh\
     --deployment=${harbor_deployment} \
     manifest \
     > $harbor_deployment.yml
@@ -89,13 +89,13 @@ $(echo -e "$OPSMAN_CA_CERT" | sed 's|^|      |g')
     - $harbor_deployment
 ---EOF
 
-  $bosh --non-interactive \
+  bosh--non-interactive \
     update-config \
     --name=patch_${harbor_deployment} \
     --type=runtime \
     ${harbor_deployment}_runtime-config.yml
 
-  $bosh --non-interactive \
+  bosh--non-interactive \
     --deployment=${harbor_deployment} \
     deploy \
     $harbor_deployment.yml

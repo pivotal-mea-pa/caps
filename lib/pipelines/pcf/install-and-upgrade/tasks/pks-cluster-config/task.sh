@@ -63,15 +63,15 @@ if [[ $? -eq 0 ]]; then
     status=$(pks cluster ${c} --json | jq -r "\"\(.last_action) \(.last_action_state)\"")
     while [[ $status == "CREATE in progress" ]]; do
 
-      task_id=$($bosh --json tasks \
+      task_id=$(bosh--json tasks \
         | jq -r ".Tables[0].Rows[] | select(.deployment==\"service-instance_$uuid\") | .id")
       [[ -z $task_id ]] || \
-        $bosh task $task_id
+        boshtask $task_id
       
       status=$(pks cluster ${c} --json | jq -r "\"\(.last_action) \(.last_action_state)\"")
     done
 
-    master_vms=$($bosh -d service-instance_$uuid vms | awk '/master\//{ print $3"/"$5 }')
+    master_vms=$(bosh-d service-instance_$uuid vms | awk '/master\//{ print $3"/"$5 }')
     for vm in $master_vms; do
       cluster_instances="${cluster_instances}$vm,"
     done
@@ -95,7 +95,7 @@ fi
 
 if [[ -e deployment-event/create ]]; then
 
-  latest_release_version=$($bosh releases | awk '/^patch-deployment/{ print $2 }' | head -1)
+  latest_release_version=$(boshreleases | awk '/^patch-deployment/{ print $2 }' | head -1)
   release_version=${latest_release_version%\**}
 
   for d in $(cat deployment-event/create); do
@@ -103,11 +103,11 @@ if [[ -e deployment-event/create ]]; then
     deployment=$(echo "$d" | awk -F',' '{ print $1 }')
 
     set +e
-    $bosh --deployment=${deployment} deployment >/dev/null 2>&1
+    bosh--deployment=${deployment} deployment >/dev/null 2>&1
     if [[ $? -eq 0 ]]; then    
       set -e
 
-      $bosh --deployment=${deployment} manifest > $deployment.yml
+      bosh--deployment=${deployment} manifest > $deployment.yml
       is_kubo=$(cat $deployment.yml | awk '/^- name: kubo$/{ print $3 }')
 
       if [[ $is_kubo == kubo ]]; then 
@@ -131,13 +131,13 @@ addons:
     - $deployment
 ---EOF
         
-        $bosh --non-interactive \
+        bosh--non-interactive \
           update-config \
           --name=patch_${deployment} \
           --type=runtime \
           ${deployment}_runtime-config.yml
 
-        $bosh --non-interactive \
+        bosh--non-interactive \
           --deployment=${deployment} \
           deploy \
           $deployment.yml
@@ -155,16 +155,16 @@ if [[ -e deployment-event/delete ]]; then
     deployment=$(echo "$d" | awk -F',' '{ print $1 }')
 
     set +e
-    $bosh --deployment=${deployment} deployment >/dev/null 2>&1
+    bosh--deployment=${deployment} deployment >/dev/null 2>&1
     if [[ $? -eq 0 ]]; then    
       set -e
         
-      $bosh --deployment=${deployment} manifest > $deployment.yml
+      bosh--deployment=${deployment} manifest > $deployment.yml
       is_kubo=$(cat $deployment.yml | awk '/^- name: kubo$/{ print $3 }')
 
       if [[ $is_kubo == kubo ]]; then 
 
-        $bosh --non-interactive \
+        bosh--non-interactive \
           delete-config \
           --name=patch_${deployment} \
           --type=runtime
