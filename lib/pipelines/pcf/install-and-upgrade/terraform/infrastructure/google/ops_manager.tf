@@ -52,7 +52,7 @@ resource "google_compute_instance" "ops-manager" {
     subnetwork = "${local.infrastructure_subnetwork}"
   }
 
-  metadata {
+  metadata = {
     ssh-keys = "ubuntu:${data.terraform_remote_state.bootstrap.outputs.default_openssh_public_key}"
   }
 

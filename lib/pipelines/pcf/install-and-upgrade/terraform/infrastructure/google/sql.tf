@@ -19,7 +19,7 @@ resource "google_sql_database_instance" "master" {
     ip_configuration {
       ipv4_enabled = true
 
-      authorized_networks = ["${null_resource.authorized_networks.*.triggers}"]
+      authorized_networks = ["${data.null_data_source.authorized_networks.*.triggers}"]
     }
   }
 }
@@ -29,10 +29,10 @@ resource "random_string" "db_instance_name_postfix" {
   special = false
 }
 
-resource "null_resource" "authorized_networks" {
+resource "null_data_source" "authorized_networks" {
   count = "${local.num_azs}"
 
-  triggers = {
+  inputs = {
     name  = "${element(google_compute_instance.nat-gateway.*.name, count.index)}"
     value = "${element(google_compute_instance.nat-gateway.*.network_interface.0.access_config.0.nat_ip, count.index)}"
   }
