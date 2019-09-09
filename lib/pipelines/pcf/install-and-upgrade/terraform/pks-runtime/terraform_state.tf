@@ -20,7 +20,7 @@ variable "infrastructure_state_prefix" {
 data "terraform_remote_state" "pcf" {
   backend = "gcs"
 
-  config {
+  config = {
     bucket = "${var.infrastructure_state_bucket}"
     prefix = "${var.infrastructure_state_prefix}"
   }

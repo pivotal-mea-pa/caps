@@ -32,7 +32,7 @@ resource "random_string" "db_instance_name_postfix" {
 resource "null_resource" "authorized_networks" {
   count = "${local.num_azs}"
 
-  triggers {
+  triggers = {
     name  = "${element(google_compute_instance.nat-gateway.*.name, count.index)}"
     value = "${element(google_compute_instance.nat-gateway.*.network_interface.0.access_config.0.nat_ip, count.index)}"
   }

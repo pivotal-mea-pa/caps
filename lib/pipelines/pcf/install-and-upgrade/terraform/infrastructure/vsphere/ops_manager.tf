@@ -110,7 +110,7 @@ DESTROY
     host        = "${local.opsman_ip}"
   }
 
-  triggers {
+  triggers = {
     opsman-image-archive = "${data.external.get-opsman-image-path.result.path}"
   }
 

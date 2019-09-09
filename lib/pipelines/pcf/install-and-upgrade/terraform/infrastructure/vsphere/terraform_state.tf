@@ -24,7 +24,7 @@ variable "bootstrap_state_prefix" {
 data "terraform_remote_state" "bootstrap" {
   backend = "s3"
 
-  config {
+  config = {
     endpoint = "${var.bootstrap_state_endpoint}"
     bucket   = "${var.bootstrap_state_bucket}"
     key      = "${var.bootstrap_state_prefix}"

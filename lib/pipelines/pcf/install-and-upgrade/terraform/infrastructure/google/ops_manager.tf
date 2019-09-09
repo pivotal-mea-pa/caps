@@ -24,7 +24,7 @@ ESH
 UPLOAD
   }
 
-  triggers {
+  triggers = {
     opsman-image-name = "${data.external.get-opsman-image-archive.result.image_name}"
   }
 }
@@ -111,7 +111,7 @@ resource "null_resource" "ops-manager" {
     ]
   }
 
-  triggers {
+  triggers = {
     ops_manager_id = "${google_compute_instance.ops-manager.id}"
   }
 

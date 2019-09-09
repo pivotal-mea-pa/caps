@@ -20,7 +20,7 @@ variable "bootstrap_state_prefix" {
 data "terraform_remote_state" "bootstrap" {
   backend = "gcs"
 
-  config {
+  config = {
     bucket = "${var.bootstrap_state_bucket}"
     prefix = "${var.bootstrap_state_prefix}"
   }
