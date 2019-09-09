@@ -19,7 +19,7 @@ resource "google_sql_database_instance" "master" {
     ip_configuration {
       ipv4_enabled = true
 
-      authorized_networks = ["${data.null_data_source.authorized_networks.*.triggers}"]
+      authorized_networks = ["${data.null_data_source.authorized_networks.*.outputs}"]
     }
   }
 }
