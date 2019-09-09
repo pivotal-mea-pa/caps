@@ -137,34 +137,29 @@ case $tf_action in
             google)
                 terraform taint \
                     -state=$workspace_path/.terraform/terraform.tfstate \
-                    -module=bootstrap \
-                    google_compute_instance.bastion
+                    module.bootstrap.google_compute_instance.bastion
 
                 if [[ $clean == yes ]]; then
                     terraform taint \
                         -state=$workspace_path/.terraform/terraform.tfstate \
-                        -module=bootstrap \
-                        google_compute_disk.bastion-data-disk
+                        module.bootstrap.google_compute_disk.bastion-data-disk
                 fi
                 ;;
             vsphere)
                 if [[ -n $TF_VAR_dmz_network ]]; then
                     terraform taint \
                         -state=$workspace_path/.terraform/terraform.tfstate \
-                        -module=bootstrap \
-                        vsphere_virtual_machine.bastion-2nic
+                        module.bootstrap.vsphere_virtual_machine.bastion-2nic
                 else
                     terraform taint \
                         -state=$workspace_path/.terraform/terraform.tfstate \
-                        -module=bootstrap \
-                        vsphere_virtual_machine.bastion-1nic
+                        module.bootstrap.vsphere_virtual_machine.bastion-1nic
                 fi
 
                 if [[ $clean == yes ]]; then
                     terraform taint \
                         -state=$workspace_path/.terraform/terraform.tfstate \
-                        -module=bootstrap \
-                        vsphere_virtual_disk.bastion-data-disk
+                        module.bootstrap.vsphere_virtual_disk.bastion-data-disk
                 fi
                 ;;
             *)
