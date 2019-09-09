@@ -29,7 +29,7 @@ resource "random_string" "db_instance_name_postfix" {
   special = false
 }
 
-resource "null_data_source" "authorized_networks" {
+data "null_data_source" "authorized_networks" {
   count = "${local.num_azs}"
 
   inputs = {
