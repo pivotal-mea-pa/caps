@@ -23,7 +23,7 @@ data "external" "get-opsman-image-path" {
 data "template_file" "create-opsman-instance" {
   template = "${file("${path.module}/scripts/create_opsman_instance.sh")}"
 
-  vars {
+  vars = {
     opsman-image-path     = "${data.external.get-opsman-image-path.result.path}"
     vcenter_datacenter    = "${local.vcenter_datacenter}"
     vcenter_vms_path      = "${vsphere_folder.vms.path}"
@@ -45,7 +45,7 @@ data "template_file" "create-opsman-instance" {
 data "template_file" "delete-opsman-instance" {
   template = "${file("${path.module}/scripts/delete_opsman_instance.sh")}"
 
-  vars {
+  vars = {
     vcenter_datacenter = "${local.vcenter_datacenter}"
     vcenter_vms_path   = "${vsphere_folder.vms.path}"
   }
@@ -140,7 +140,7 @@ resource "vsphere_virtual_disk" "opsman-data-disk" {
 data "template_file" "export-installation" {
   template = "${file("${path.module}/../../../../../../scripts/opsman/export-installation.sh")}"
 
-  vars {
+  vars = {
     opsman_dns_name       = "${local.opsman_dns_name}"
     opsman_admin_password = "${data.terraform_remote_state.bootstrap.outputs.opsman_admin_password}"
   }
@@ -149,7 +149,7 @@ data "template_file" "export-installation" {
 data "template_file" "import-installation" {
   template = "${file("${path.module}/../../../../../../scripts/opsman/import-installation.sh")}"
 
-  vars {
+  vars = {
     opsman_dns_name       = "${local.opsman_dns_name}"
     opsman_admin_password = "${data.terraform_remote_state.bootstrap.outputs.opsman_admin_password}"
   }
@@ -158,7 +158,7 @@ data "template_file" "import-installation" {
 data "template_file" "mount-opsman-data-volume" {
   template = "${file("${path.module}/../../../../../../scripts/utility/mount-volume.sh")}"
 
-  vars {
+  vars = {
     attached_device_name = "/dev/sdb"
     mount_directory      = "/data"
     world_readable       = "true"

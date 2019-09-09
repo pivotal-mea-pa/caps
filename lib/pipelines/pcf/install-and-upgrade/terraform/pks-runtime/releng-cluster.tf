@@ -22,7 +22,7 @@ resource "uaa_user" "pks-releng-user" {
 data "template_file" "pks-create-releng-cluster" {
   template = "${file("${path.module}/pks_create_cluster.sh")}"
 
-  vars {
+  vars = {
     ca_cert            = "${data.external.bosh-creds.result.ca_cert}"
     bosh_host          = "${data.external.bosh-creds.result.host}"
     bosh_client_id     = "${data.external.bosh-creds.result.client_id}"
@@ -39,7 +39,7 @@ data "template_file" "pks-create-releng-cluster" {
 data "template_file" "pks-delete-releng-cluster" {
   template = "${file("${path.module}/pks_delete_cluster.sh")}"
 
-  vars {
+  vars = {
     ca_cert            = "${data.external.bosh-creds.result.ca_cert}"
     bosh_host          = "${data.external.bosh-creds.result.host}"
     bosh_client_id     = "${data.external.bosh-creds.result.client_id}"

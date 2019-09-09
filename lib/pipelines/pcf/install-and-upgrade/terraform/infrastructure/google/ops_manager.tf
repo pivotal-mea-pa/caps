@@ -9,7 +9,7 @@ data "external" "get-opsman-image-archive" {
 data "template_file" "upload-opsman-image" {
   template = "${file("${path.module}/scripts/upload_opsman_image.sh")}"
 
-  vars {
+  vars = {
     opsman_image_name  = "${data.external.get-opsman-image-archive.result.image_name}"
     opsman_bucket_path = "${data.external.get-opsman-image-archive.result.bucket_path}"
   }
@@ -128,7 +128,7 @@ resource "null_resource" "ops-manager" {
 data "template_file" "export-installation" {
   template = "${file("${path.module}/../../../../../../scripts/opsman/export-installation.sh")}"
 
-  vars {
+  vars = {
     opsman_dns_name       = "${local.opsman_dns_name}"
     opsman_admin_password = "${data.terraform_remote_state.bootstrap.outputs.opsman_admin_password}"
   }
@@ -137,7 +137,7 @@ data "template_file" "export-installation" {
 data "template_file" "import-installation" {
   template = "${file("${path.module}/../../../../../../scripts/opsman/import-installation.sh")}"
 
-  vars {
+  vars = {
     opsman_dns_name       = "${local.opsman_dns_name}"
     opsman_admin_password = "${data.terraform_remote_state.bootstrap.outputs.opsman_admin_password}"
   }
@@ -146,7 +146,7 @@ data "template_file" "import-installation" {
 data "template_file" "mount-opsman-data-volume" {
   template = "${file("${path.module}/../../../../../../scripts/utility/mount-volume.sh")}"
 
-  vars {
+  vars = {
     attached_device_name = "/dev/sdb"
     mount_directory      = "/data"
     world_readable       = "true"
