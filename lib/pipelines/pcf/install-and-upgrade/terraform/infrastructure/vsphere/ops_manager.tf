@@ -6,10 +6,10 @@ locals {
   opsman_ip             = "${local.opsman_vcenter_ip}"
   opsman_netmask        = "${cidrnetmask(local.opsman_vcenter_network_cidr)}"
   opsman_gateway        = "${local.opsman_vcenter_network_gateway}"
-  opsman_dns_servers    = "${data.terraform_remote_state.bootstrap.pcf_network_dns}"
-  opsman_ntp_servers    = "${data.terraform_remote_state.bootstrap.pcf_network_ntp}"
-  opsman_ssh_password   = "${data.terraform_remote_state.bootstrap.opsman_admin_password}"
-  opsman_ssh_public_key = "${trimspace(data.terraform_remote_state.bootstrap.default_openssh_public_key)}"
+  opsman_dns_servers    = "${data.terraform_remote_state.bootstrap.outputs.pcf_network_dns}"
+  opsman_ntp_servers    = "${data.terraform_remote_state.bootstrap.outputs.pcf_network_ntp}"
+  opsman_ssh_password   = "${data.terraform_remote_state.bootstrap.outputs.opsman_admin_password}"
+  opsman_ssh_public_key = "${trimspace(data.terraform_remote_state.bootstrap.outputs.default_openssh_public_key)}"
 }
 
 #
@@ -106,7 +106,7 @@ DESTROY
   connection {
     type        = "ssh"
     user        = "ubuntu"
-    private_key = "${data.terraform_remote_state.bootstrap.default_openssh_private_key}"
+    private_key = "${data.terraform_remote_state.bootstrap.outputs.default_openssh_private_key}"
     host        = "${local.opsman_ip}"
   }
 
@@ -142,7 +142,7 @@ data "template_file" "export-installation" {
 
   vars {
     opsman_dns_name       = "${local.opsman_dns_name}"
-    opsman_admin_password = "${data.terraform_remote_state.bootstrap.opsman_admin_password}"
+    opsman_admin_password = "${data.terraform_remote_state.bootstrap.outputs.opsman_admin_password}"
   }
 }
 
@@ -151,7 +151,7 @@ data "template_file" "import-installation" {
 
   vars {
     opsman_dns_name       = "${local.opsman_dns_name}"
-    opsman_admin_password = "${data.terraform_remote_state.bootstrap.opsman_admin_password}"
+    opsman_admin_password = "${data.terraform_remote_state.bootstrap.outputs.opsman_admin_password}"
   }
 }
 

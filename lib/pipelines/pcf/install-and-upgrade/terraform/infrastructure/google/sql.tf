@@ -3,7 +3,7 @@
 #
 
 resource "google_sql_database_instance" "master" {
-  region           = "${data.terraform_remote_state.bootstrap.gcp_region}"
+  region           = "${data.terraform_remote_state.bootstrap.outputs.gcp_region}"
   database_version = "MYSQL_5_6"
   name             = "${local.prefix}-${lower(random_string.db_instance_name_postfix.result)}"
 

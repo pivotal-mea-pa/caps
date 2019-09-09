@@ -1,7 +1,7 @@
 // Core Project Output
 
 output "company_name" {
-  value = "${data.terraform_remote_state.bootstrap.company_name}"
+  value = "${data.terraform_remote_state.bootstrap.outputs.company_name}"
 }
 
 output "deployment_prefix" {
@@ -13,23 +13,23 @@ output "deployment_prefix" {
 #
 
 output "vsphere_server" {
-  value = "${data.terraform_remote_state.bootstrap.vsphere_server}"
+  value = "${data.terraform_remote_state.bootstrap.outputs.vsphere_server}"
 }
 
 output "vsphere_user" {
-  value = "${data.terraform_remote_state.bootstrap.vsphere_user}"
+  value = "${data.terraform_remote_state.bootstrap.outputs.vsphere_user}"
 }
 
 output "vsphere_password" {
-  value = "${data.terraform_remote_state.bootstrap.vsphere_password}"
+  value = "${data.terraform_remote_state.bootstrap.outputs.vsphere_password}"
 }
 
 output "vsphere_allow_unverified_ssl" {
-  value = "${data.terraform_remote_state.bootstrap.vsphere_allow_unverified_ssl}"
+  value = "${data.terraform_remote_state.bootstrap.outputs.vsphere_allow_unverified_ssl}"
 }
 
 output "vcenter_datacenter" {
-  value = "${data.terraform_remote_state.bootstrap.vcenter_datacenter}"
+  value = "${data.terraform_remote_state.bootstrap.outputs.vcenter_datacenter}"
 }
 
 output "vcenter_templates_path" {
@@ -46,12 +46,12 @@ output "vcenter_disks_path" {
 
 # Comma separated list of ephemeral data stores
 output "vcenter_ephemeral_datastores" {
-  value = "${data.terraform_remote_state.bootstrap.vcenter_ephemeral_datastores}"
+  value = "${data.terraform_remote_state.bootstrap.outputs.vcenter_ephemeral_datastores}"
 }
 
 # Comma separated list of persistent data stores
 output "vcenter_persistant_datastores" {
-  value = "${data.terraform_remote_state.bootstrap.vcenter_persistant_datastores}"
+  value = "${data.terraform_remote_state.bootstrap.outputs.vcenter_persistant_datastores}"
 }
 
 # Map of availability zones defined
@@ -85,7 +85,7 @@ JSON
 # NTP
 
 output "ntp_servers" {
-  value = "${data.terraform_remote_state.bootstrap.pcf_network_ntp}"
+  value = "${data.terraform_remote_state.bootstrap.outputs.pcf_network_ntp}"
 }
 
 # Static IPs
@@ -109,7 +109,7 @@ output "diego_brain_static_ips" {
 # DNS
 
 output "env_dns_zone_name_servers" {
-  value = "${data.terraform_remote_state.bootstrap.pcf_network_dns}"
+  value = "${data.terraform_remote_state.bootstrap.outputs.pcf_network_dns}"
 }
 
 output "env_domain" {
@@ -139,7 +139,7 @@ output "harbor_registry_fqdn" {
 // Certificates
 
 output "ca_certs" {
-  value = "${data.terraform_remote_state.bootstrap.root_ca_cert}"
+  value = "${data.terraform_remote_state.bootstrap.outputs.root_ca_cert}"
 }
 
 output "saml_cert" {

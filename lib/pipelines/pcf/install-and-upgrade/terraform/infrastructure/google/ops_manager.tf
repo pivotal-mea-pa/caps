@@ -53,7 +53,7 @@ resource "google_compute_instance" "ops-manager" {
   }
 
   metadata {
-    ssh-keys = "ubuntu:${data.terraform_remote_state.bootstrap.default_openssh_public_key}"
+    ssh-keys = "ubuntu:${data.terraform_remote_state.bootstrap.outputs.default_openssh_public_key}"
   }
 
   provisioner "file" {
@@ -91,7 +91,7 @@ resource "google_compute_instance" "ops-manager" {
   connection {
     type        = "ssh"
     user        = "ubuntu"
-    private_key = "${data.terraform_remote_state.bootstrap.default_openssh_private_key}"
+    private_key = "${data.terraform_remote_state.bootstrap.outputs.default_openssh_private_key}"
     host        = "${self.network_interface.0.network_ip}"
   }
 
@@ -118,7 +118,7 @@ resource "null_resource" "ops-manager" {
   connection {
     type        = "ssh"
     user        = "ubuntu"
-    private_key = "${data.terraform_remote_state.bootstrap.default_openssh_private_key}"
+    private_key = "${data.terraform_remote_state.bootstrap.outputs.default_openssh_private_key}"
     host        = "${google_compute_instance.ops-manager.network_interface.0.network_ip}"
   }
 
@@ -130,7 +130,7 @@ data "template_file" "export-installation" {
 
   vars {
     opsman_dns_name       = "${local.opsman_dns_name}"
-    opsman_admin_password = "${data.terraform_remote_state.bootstrap.opsman_admin_password}"
+    opsman_admin_password = "${data.terraform_remote_state.bootstrap.outputs.opsman_admin_password}"
   }
 }
 
@@ -139,7 +139,7 @@ data "template_file" "import-installation" {
 
   vars {
     opsman_dns_name       = "${local.opsman_dns_name}"
-    opsman_admin_password = "${data.terraform_remote_state.bootstrap.opsman_admin_password}"
+    opsman_admin_password = "${data.terraform_remote_state.bootstrap.outputs.opsman_admin_password}"
   }
 }
 
@@ -162,6 +162,6 @@ resource "google_compute_disk" "opsman-data-disk" {
 
 resource "google_storage_bucket" "director" {
   name          = "${local.prefix}-director"
-  location      = "${data.terraform_remote_state.bootstrap.gcp_region}"
+  location      = "${data.terraform_remote_state.bootstrap.outputs.gcp_region}"
   force_destroy = true
 }

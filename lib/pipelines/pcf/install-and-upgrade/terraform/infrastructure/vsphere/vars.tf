@@ -3,13 +3,13 @@
 #
 
 locals {
-  prefix = "${data.terraform_remote_state.bootstrap.vpc_name}-${var.environment}"
+  prefix = "${data.terraform_remote_state.bootstrap.outputs.vpc_name}-${var.environment}"
 
-  vcenter_datacenter = "${data.terraform_remote_state.bootstrap.vcenter_datacenter}"
+  vcenter_datacenter = "${data.terraform_remote_state.bootstrap.outputs.vcenter_datacenter}"
 
-  opsman_vcenter_config = "${data.terraform_remote_state.bootstrap.pcf_opsman_vcenter_config[var.environment]}"
+  opsman_vcenter_config = "${data.terraform_remote_state.bootstrap.outputs.pcf_opsman_vcenter_config[var.environment]}"
 
-  availability_zones = "${data.terraform_remote_state.bootstrap.availability_zones[var.environment]}"
+  availability_zones = "${data.terraform_remote_state.bootstrap.outputs.availability_zones[var.environment]}"
   az_names           = "${keys(local.availability_zones)}"
 
   opsman_vcenter_az              = "${lookup(local.opsman_vcenter_config, "availability_zone")}"
@@ -23,12 +23,12 @@ locals {
   opsman_cluster_name          = "${local.opsman_az["cluster"]}"
   opsman_cluster_resource_pool = "${lookup(local.opsman_az, "resource_pool", "")}"
 
-  networks         = "${data.terraform_remote_state.bootstrap.pcf_networks[var.environment]}"
+  networks         = "${data.terraform_remote_state.bootstrap.outputs.pcf_networks[var.environment]}"
   service_networks = "${split(",", local.networks["service_networks"])}"
   subnet_names     = "${split(",", local.networks["subnet_config_order"])}"
-  subnet_cidrs     = "${data.terraform_remote_state.bootstrap.pcf_network_subnets[var.environment]}"
+  subnet_cidrs     = "${data.terraform_remote_state.bootstrap.outputs.pcf_network_subnets[var.environment]}"
 
-  pcf_static_ips = "${data.terraform_remote_state.bootstrap.pcf_static_ips[var.environment]}"
+  pcf_static_ips = "${data.terraform_remote_state.bootstrap.outputs.pcf_static_ips[var.environment]}"
 }
 
 #

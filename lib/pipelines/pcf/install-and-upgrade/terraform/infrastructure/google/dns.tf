@@ -91,7 +91,7 @@ resource "google_dns_record_set" "tcp-dns" {
 #
 
 data "google_dns_managed_zone" "vpc" {
-  name = "${data.terraform_remote_state.bootstrap.vpc_dns_zone_name}"
+  name = "${data.terraform_remote_state.bootstrap.outputs.vpc_dns_zone_name}"
 }
 
 resource "google_dns_record_set" "vpc" {

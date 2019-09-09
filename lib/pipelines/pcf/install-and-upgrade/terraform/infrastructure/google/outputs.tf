@@ -1,7 +1,7 @@
 // Core Project Output
 
 output "company_name" {
-  value = "${data.terraform_remote_state.bootstrap.company_name}"
+  value = "${data.terraform_remote_state.bootstrap.outputs.company_name}"
 }
 
 output "deployment_prefix" {
@@ -9,27 +9,27 @@ output "deployment_prefix" {
 }
 
 output "gcp_project" {
-  value = "${data.terraform_remote_state.bootstrap.gcp_project}"
+  value = "${data.terraform_remote_state.bootstrap.outputs.gcp_project}"
 }
 
 output "gcp_service_account_email" {
-  value = "${data.terraform_remote_state.bootstrap.gcp_service_account_email}"
+  value = "${data.terraform_remote_state.bootstrap.outputs.gcp_service_account_email}"
 }
 
 output "gcp_credentials" {
-  value = "${data.terraform_remote_state.bootstrap.gcp_credentials}"
+  value = "${data.terraform_remote_state.bootstrap.outputs.gcp_credentials}"
 }
 
 output "gcp_region" {
-  value = "${data.terraform_remote_state.bootstrap.gcp_region}"
+  value = "${data.terraform_remote_state.bootstrap.outputs.gcp_region}"
 }
 
 output "gcp_storage_access_key" {
-  value = "${data.terraform_remote_state.bootstrap.gcp_storage_access_key}"
+  value = "${data.terraform_remote_state.bootstrap.outputs.gcp_storage_access_key}"
 }
 
 output "gcp_storage_secret_key" {
-  value = "${data.terraform_remote_state.bootstrap.gcp_storage_secret_key}"
+  value = "${data.terraform_remote_state.bootstrap.outputs.gcp_storage_secret_key}"
 }
 
 # PKS Service Accounts
@@ -185,7 +185,7 @@ output "db_tls_ca" {
 // Certificates
 
 output "ca_certs" {
-  value = "${data.terraform_remote_state.bootstrap.root_ca_cert}"
+  value = "${data.terraform_remote_state.bootstrap.outputs.root_ca_cert}"
 }
 
 output "saml_cert" {
@@ -230,5 +230,5 @@ output "platform_san_cert_key" {
 
 # Notification Email
 output "notification_email" {
-  value = "${data.terraform_remote_state.bootstrap.notification_email}"
+  value = "${data.terraform_remote_state.bootstrap.outputs.notification_email}"
 }

@@ -3,9 +3,9 @@
 #
 
 locals {
-  templates_path = "${local.prefix}_${data.terraform_remote_state.bootstrap.vcenter_templates_path}"
-  vms_path       = "${local.prefix}_${data.terraform_remote_state.bootstrap.vcenter_vms_path}"
-  disks_path     = "${local.prefix}_${data.terraform_remote_state.bootstrap.vcenter_disks_path}"
+  templates_path = "${local.prefix}_${data.terraform_remote_state.bootstrap.outputs.vcenter_templates_path}"
+  vms_path       = "${local.prefix}_${data.terraform_remote_state.bootstrap.outputs.vcenter_vms_path}"
+  disks_path     = "${local.prefix}_${data.terraform_remote_state.bootstrap.outputs.vcenter_disks_path}"
 }
 
 resource "vsphere_folder" "templates" {

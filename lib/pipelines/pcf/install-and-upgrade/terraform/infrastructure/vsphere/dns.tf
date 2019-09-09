@@ -3,7 +3,7 @@
 #
 
 locals {
-  bootstrap_domain = "${data.terraform_remote_state.bootstrap.vpc_dns_zone}"
+  bootstrap_domain = "${data.terraform_remote_state.bootstrap.outputs.vpc_dns_zone}"
   env_domain       = "${var.environment}.${local.bootstrap_domain}"
   system_domain    = "${var.system_domain_prefix}.${local.env_domain}"
   apps_domain      = "${var.apps_domain_prefix}.${local.env_domain}"

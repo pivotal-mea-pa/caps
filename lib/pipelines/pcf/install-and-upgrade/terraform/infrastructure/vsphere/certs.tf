@@ -27,11 +27,11 @@ resource "tls_cert_request" "pcf-san-cert" {
 
   subject {
     common_name         = "${local.env_domain}"
-    organization        = "${data.terraform_remote_state.bootstrap.company_name}"
-    organizational_unit = "${data.terraform_remote_state.bootstrap.organization_name}"
-    locality            = "${data.terraform_remote_state.bootstrap.locality}"
-    province            = "${data.terraform_remote_state.bootstrap.province}"
-    country             = "${data.terraform_remote_state.bootstrap.country}"
+    organization        = "${data.terraform_remote_state.bootstrap.outputs.company_name}"
+    organizational_unit = "${data.terraform_remote_state.bootstrap.outputs.organization_name}"
+    locality            = "${data.terraform_remote_state.bootstrap.outputs.locality}"
+    province            = "${data.terraform_remote_state.bootstrap.outputs.province}"
+    country             = "${data.terraform_remote_state.bootstrap.outputs.country}"
   }
 }
 
@@ -40,8 +40,8 @@ resource "tls_locally_signed_cert" "pcf-san-cert" {
   cert_request_pem = "${tls_cert_request.pcf-san-cert.cert_request_pem}"
 
   ca_key_algorithm   = "RSA"
-  ca_private_key_pem = "${data.terraform_remote_state.bootstrap.root_ca_key}"
-  ca_cert_pem        = "${data.terraform_remote_state.bootstrap.root_ca_cert}"
+  ca_private_key_pem = "${data.terraform_remote_state.bootstrap.outputs.root_ca_key}"
+  ca_cert_pem        = "${data.terraform_remote_state.bootstrap.outputs.root_ca_cert}"
 
   validity_period_hours = 87600
 
@@ -75,11 +75,11 @@ resource "tls_cert_request" "saml-san" {
 
   subject {
     common_name         = "${local.env_domain}"
-    organization        = "${data.terraform_remote_state.bootstrap.company_name}"
-    organizational_unit = "${data.terraform_remote_state.bootstrap.organization_name}"
-    locality            = "${data.terraform_remote_state.bootstrap.locality}"
-    province            = "${data.terraform_remote_state.bootstrap.province}"
-    country             = "${data.terraform_remote_state.bootstrap.country}"
+    organization        = "${data.terraform_remote_state.bootstrap.outputs.company_name}"
+    organizational_unit = "${data.terraform_remote_state.bootstrap.outputs.organization_name}"
+    locality            = "${data.terraform_remote_state.bootstrap.outputs.locality}"
+    province            = "${data.terraform_remote_state.bootstrap.outputs.province}"
+    country             = "${data.terraform_remote_state.bootstrap.outputs.country}"
   }
 }
 
@@ -88,8 +88,8 @@ resource "tls_locally_signed_cert" "saml-san" {
   cert_request_pem = "${tls_cert_request.saml-san.cert_request_pem}"
 
   ca_key_algorithm   = "RSA"
-  ca_private_key_pem = "${data.terraform_remote_state.bootstrap.root_ca_key}"
-  ca_cert_pem        = "${data.terraform_remote_state.bootstrap.root_ca_cert}"
+  ca_private_key_pem = "${data.terraform_remote_state.bootstrap.outputs.root_ca_key}"
+  ca_cert_pem        = "${data.terraform_remote_state.bootstrap.outputs.root_ca_cert}"
 
   validity_period_hours = 87600
 

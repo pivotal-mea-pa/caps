@@ -2,8 +2,8 @@
 # Local Variables
 #
 locals {
-  prefix  = "${data.terraform_remote_state.bootstrap.vpc_name}-${var.environment}"
-  num_azs = "${min(data.terraform_remote_state.bootstrap.max_azs, length(data.google_compute_zones.available.names))}"
+  prefix  = "${data.terraform_remote_state.bootstrap.outputs.vpc_name}-${var.environment}"
+  num_azs = "${min(data.terraform_remote_state.bootstrap.outputs.max_azs, length(data.google_compute_zones.available.names))}"
 }
 
 #
