@@ -65,7 +65,7 @@ set -e
 
 opsman::kill_active_sessions
 opsman::login_client $OPSMAN_HOST $OPSMAN_CLIENT_ID $OPSMAN_CLIENT_SECRET $OPSMAN_DECRYPTION_KEY
-pivnet-cli login --api-token=$PIVNET_API_TOKEN
+pivnet  login --api-token=$PIVNET_API_TOKEN
 
 PRODUCTS_TO_FIX=$(opsman::get_installation | jq '.products[] | select(.stemcell==null) | .installation_name' | sed 's|"||g')
 STEMCELL_VERSIONS_TO_GET=$(for p in $(echo -e "$PRODUCTS_TO_FIX"); do
@@ -75,9 +75,9 @@ done | uniq)
 for s in $(echo -e "$STEMCELL_VERSIONS_TO_GET"); do
 
     echo "Downloading missing stemcell '$s'..."
-    pivnet-cli accept-eula --product-slug stemcells --release-version $s
+    pivnet  accept-eula --product-slug stemcells --release-version $s
 
-    PRODUCT_FILE_DETAIL=$(pivnet-cli product-files --product-slug=stemcells --release-version $s \
+    PRODUCT_FILE_DETAIL=$(pivnet  product-files --product-slug=stemcells --release-version $s \
         --format json | jq ".[] | select(.name | contains(\"vSphere\"))")
     
     FILE=$(echo -e "$PRODUCT_FILE_DETAIL" | jq .aws_object_key | sed 's|"||g')

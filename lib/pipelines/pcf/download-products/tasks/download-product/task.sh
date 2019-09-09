@@ -65,10 +65,10 @@ if [[ -n "$TILE_FILE_PATH" ]]; then
           ' < ./metadata.json
       )
 
-      pivnet-cli login --api-token="$PIVNET_API_TOKEN"
+      pivnet  login --api-token="$PIVNET_API_TOKEN"
       
       set +e
-      pivnet-cli download-product-files -p "$product_slug" -r $STEMCELL_VERSION -g "*${IAAS}*" --accept-eula
+      pivnet  download-product-files -p "$product_slug" -r $STEMCELL_VERSION -g "*${IAAS}*" --accept-eula
       if [[ $? -ne 0 ]]; then
         set -e
 
