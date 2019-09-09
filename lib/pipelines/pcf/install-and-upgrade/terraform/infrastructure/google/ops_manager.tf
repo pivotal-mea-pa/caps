@@ -156,7 +156,7 @@ data "template_file" "mount-opsman-data-volume" {
 resource "google_compute_disk" "opsman-data-disk" {
   name = "${local.prefix}-opsman-data-disk"
   type = "pd-standard"
-  zone = "${data.google_compute_zones.available.names[count.index]}"
+  zone = "${data.google_compute_zones.available.names[0]}"
   size = "100"
 }
 

@@ -16,7 +16,7 @@ resource "google_sql_database_instance" "master" {
   settings {
     tier = "db-f1-micro"
 
-    ip_configuration = {
+    ip_configuration {
       ipv4_enabled = true
 
       authorized_networks = ["${null_resource.authorized_networks.*.triggers}"]
