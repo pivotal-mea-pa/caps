@@ -5,7 +5,7 @@
 data "template_file" "params" {
   template = "${file(var.params_template_file)}"
 
-  vars {
+  vars = {
     gcp_project     = "${data.terraform_remote_state.bootstrap.gcp_project}"
     gcp_credentials = "${indent(2, data.terraform_remote_state.bootstrap.gcp_credentials)}"
     gcp_region      = "${data.terraform_remote_state.bootstrap.gcp_region}"
