@@ -134,3 +134,15 @@ elif $cloud_provider == "vsphere" then
 else
 .
 end
+
+# Configure UAA
++
+{
+  ".properties.oidc_selector": { "value": "disabled }
+}
+
+# CEIP and Telemetry
++
+{
+  ".properties.telemetry_installation_purpose_selector": { "value": "not_provided" }
+}
