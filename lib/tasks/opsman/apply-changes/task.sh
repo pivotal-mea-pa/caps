@@ -17,7 +17,7 @@ if [[ $DISABLE_ERRANDS == "true" ]]; then
     curl --path /api/v0/staged/products \
     | jq -r '.[] | select(.type != "p-bosh") | .guid')
 
-  request='{"deploy_products":"all","ignore_warnings":true,"errands":{}}'
+  request='{"errands":{}}'
 
   for product_guid in $(echo $staged_products); do
 
@@ -39,6 +39,8 @@ if [[ $DISABLE_ERRANDS == "true" ]]; then
     request=$(echo $request \
       | jq --argjson disabled_errands "$disabled_errands" '.errands *= $disabled_errands')
   done
+  echo "$request" > config.json
+  yq read config.json > config.yml
 
   om \
     --target "https://${OPSMAN_HOST}" \
@@ -47,10 +49,9 @@ if [[ $DISABLE_ERRANDS == "true" ]]; then
     --client-secret "${OPSMAN_CLIENT_SECRET}" \
     --username "${OPSMAN_USERNAME}" \
     --password "${OPSMAN_PASSWORD}" \
-    curl \
-    --path /api/v0/installations \
-    --request POST \
-    --data "$request"
+    apply-changes \
+    --ignore-warnings \
+    --config config.yml
 
 elif [[ $DIRECTOR_ONLY == "true" ]]; then
   om \
