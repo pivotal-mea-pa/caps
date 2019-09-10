@@ -323,8 +323,7 @@ jobs:
       OPSMAN_CLIENT_SECRET: ((opsman_client_id))
       OPSMAN_USERNAME: ((opsman_admin_username))
       OPSMAN_PASSWORD: ((opsman_admin_password))
-      DIRECTOR_ONLY:
-      DISABLE_ERRANDS:
+      DISABLE_ERRANDS: true
 
   # Sets the director ready state which will 
   # allow any jobs that depend on the director
