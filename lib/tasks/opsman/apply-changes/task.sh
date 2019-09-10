@@ -85,6 +85,5 @@ else
     --username "${OPSMAN_USERNAME}" \
     --password "${OPSMAN_PASSWORD}" \
     apply-changes \
-    --ignore-warnings \
-    --skip-unchanged-products
+    --ignore-warnings
 fi
