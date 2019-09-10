@@ -338,6 +338,7 @@ elif $iaas == "google" then
       ".properties.system_blobstore.external_gcs_service_account.droplets_bucket": { "value": "\($deployment_prefix)-droplets" },
       ".properties.system_blobstore.external_gcs_service_account.packages_bucket": { "value": "\($deployment_prefix)-packages" },
       ".properties.system_blobstore.external_gcs_service_account.resources_bucket": { "value": "\($deployment_prefix)-resources" },
+      ".properties.system_blobstore.external_gcs_service_account.backup_bucket": { "value": "\($deployment_prefix)-backup" }
     }
   else
     {

@@ -21,3 +21,9 @@ resource "google_storage_bucket" "resources" {
   location      = "${data.terraform_remote_state.bootstrap.outputs.gcp_region}"
   force_destroy = true
 }
+
+resource "google_storage_bucket" "backup" {
+  name          = "${local.prefix}-backup"
+  location      = "${data.terraform_remote_state.bootstrap.outputs.gcp_region}"
+  force_destroy = true
+}
