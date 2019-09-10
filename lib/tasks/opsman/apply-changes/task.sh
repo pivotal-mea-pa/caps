@@ -15,11 +15,11 @@ if [[ $DISABLE_ERRANDS == "true" ]]; then
     --username "${OPSMAN_USERNAME}" \
     --password "${OPSMAN_PASSWORD}" \
     curl --path /api/v0/staged/products \
-    | jq -r '.[] | select(.type != "p-bosh") | .guid')
+    | jq -r '.[] | select(.type != "p-bosh") | .')
 
   request='{"errands":{}}'
 
-  for product_guid in $(echo $staged_products); do
+  for product_guid in $(echo "$staged_products" | jq -r -s '.[].guid'); do
 
     errands=$(om \
       --target "https://${OPSMAN_HOST}" \
@@ -30,10 +30,13 @@ if [[ $DISABLE_ERRANDS == "true" ]]; then
       --password "$OPSMAN_PASSWORD" \
       curl --path /api/v0/staged/products/$product_guid/errands)
 
+    product_type=$(echo "$staged_products" \
+      | jq -r -s --arg product_guid "$product_guid" '.[] | select(.guid == $product_guid) | .type')
+
     disabled_errands=$(echo $errands \
       | jq '.errands[] | select(.post_deploy != null) | reduce .name as $errand ({}; .[$errand] |= false)' \
       | jq -s add \
-      | jq --arg product_guid "$product_guid" '[{ "key": $product_guid, "value": {"run_post_deploy":.}}]' \
+      | jq --arg product_type "$product_type" '[{ "key": $product_type, "value": {"run_post_deploy":.}}]' \
       | jq 'from_entries')
 
     request=$(echo $request \
