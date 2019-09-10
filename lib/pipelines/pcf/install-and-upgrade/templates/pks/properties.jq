@@ -138,7 +138,7 @@ end
 # Configure UAA
 +
 {
-  ".properties.oidc_selector": { "value": "disabled }
+  ".properties.oidc_selector": { "value": "disabled" }
 }
 
 # CEIP and Telemetry
