@@ -119,8 +119,7 @@ end
   ".properties.route_services": { "value": "enable" },
   ".properties.route_services.enable.ignore_ssl_cert_verification": { "value": true },
 
-  ".properties.container_networking_interface_plugin.silk.network_cidr": { "value": $container_networking_network_cidr },
-  ".properties.container_networking_interface_plugin.silk.dns_servers": { "value": $container_networking_dns_servers }
+  ".properties.container_networking_interface_plugin.silk.network_cidr": { "value": $container_networking_network_cidr }
 }
 +
 # TLS between HAProxy/Load Balancer and Router
