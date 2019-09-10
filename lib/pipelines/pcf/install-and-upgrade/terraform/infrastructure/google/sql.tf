@@ -19,7 +19,13 @@ resource "google_sql_database_instance" "master" {
     ip_configuration {
       ipv4_enabled = true
 
-      # authorized_networks = ["${data.null_data_source.authorized_networks.*.outputs}"]
+      dynamic "authorized_networks" {
+        for_each = data.null_data_source.authorized_networks.*.outputs
+        content {
+          name = authorized_networks.value.name
+          value   = authorized_networks.value.value
+        }
+      }
     }
   }
 }
