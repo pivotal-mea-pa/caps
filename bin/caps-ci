@@ -40,7 +40,7 @@ case "$1" in
         shift
         [[ $# -eq 0 ]] || echo -e "\nLogging out of tunnel. Additional arguments '$@' will be ignored.\n"
 
-        ps -ef | awk '/8080\:127\.0\.0\.1\:8080/{ print $2 }' | sudo xargs kill -15
+        ps -ef | awk '/8080\:127\.0\.0\.1\:8080/{ print $2 }' | xargs kill -15
         exit 0
         ;;
     *)
@@ -68,7 +68,7 @@ if [[ $action == login ]]; then
 
         echo -e "\nEstablishing SSH tunnel in order to access Concourse. This may hang if you"
         echo -e "have not configured bastion public SSH and have not logged in to the VPN."
-        ps -ef | awk '/8080\:127\.0\.0\.1\:8080/{ print $2 }' | sudo xargs kill -15
+        ps -ef | awk '/8080\:127\.0\.0\.1\:8080/{ print $2 }' | xargs kill -15
         ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeyChecking=no \
             -i $workspace_path/bastion-admin-ssh-key.pem $TF_VAR_bastion_admin_user@$host \
             -L 8080:127.0.0.1:8080 -N >/dev/null 2>&1 &
