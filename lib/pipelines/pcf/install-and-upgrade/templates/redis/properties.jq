@@ -28,7 +28,6 @@ if $small_plan_instance_limit > 0 then
 {
   ".properties.small_plan_selector": { "value": "Plan Active" },
   ".properties.small_plan_selector.active.cf_service_access": { "value": "enable" },
-  ".properties.small_plan_selector.active.az_single_select": { "value": ($availability_zones | split(",") | .[0]) },
   ".properties.small_plan_selector.active.instance_limit": { "value": $small_plan_instance_limit }
 }
 else
@@ -41,7 +40,6 @@ if $medium_plan_instance_limit > 0 then
 {
   ".properties.medium_plan_selector": { "value": "Plan Active" },
   ".properties.medium_plan_selector.active.cf_service_access": { "value": "enable" },
-  ".properties.medium_plan_selector.active.az_single_select": { "value": ($availability_zones | split(",") | .[1]) },
   ".properties.medium_plan_selector.active.instance_limit": { "value": $medium_plan_instance_limit }
 }
 else
