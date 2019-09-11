@@ -48,7 +48,7 @@ if [[ $? -eq 0 ]]; then
   cluster_ids='{'
   cluster_instances='{'
 
-  pks_clusters=$(pks clusters | awk '$1 != "Name" { print $1 }')
+  pks_clusters=$(pks clusters | awk '$1 != "PKS" && $2 != "Version" { print $1 }')
   for c in $pks_clusters; do
 
     info=$(pks cluster $c)
