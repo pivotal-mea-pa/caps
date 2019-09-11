@@ -104,17 +104,19 @@ fi
 # Apply Terraform templates to configure PKS users
 # and create initial clusters.
 
-terraform init \
-  -backend-config="bucket=${TERRAFORM_STATE_BUCKET}" \
-  -backend-config="prefix=${DEPLOYMENT_PREFIX}-pks-config" \
-  automation/lib/pipelines/pcf/install-and-upgrade/terraform/pks-runtime
+# Disabled as UAA provider is not compatible with Terraform 0.12
+#
+# terraform init \
+#   -backend-config="bucket=${TERRAFORM_STATE_BUCKET}" \
+#   -backend-config="prefix=${DEPLOYMENT_PREFIX}-pks-config" \
+#   automation/lib/pipelines/pcf/install-and-upgrade/terraform/pks-runtime
 
-terraform apply -auto-approve \
-  -var "opsman_target=${OPSMAN_HOST}" \
-  -var "opsman_client_id=${OPSMAN_CLIENT_ID}" \
-  -var "opsman_client_secret=${OPSMAN_CLIENT_SECRET}" \
-  -var "opsman_username=${OPSMAN_USERNAME}" \
-  -var "opsman_password=${OPSMAN_PASSWORD}" \
-  -var "infrastructure_state_bucket=${TERRAFORM_STATE_BUCKET}" \
-  -var "infrastructure_state_prefix=${DEPLOYMENT_PREFIX}" \
-  automation/lib/pipelines/pcf/install-and-upgrade/terraform/pks-runtime
+# terraform apply -auto-approve \
+#   -var "opsman_target=${OPSMAN_HOST}" \
+#   -var "opsman_client_id=${OPSMAN_CLIENT_ID}" \
+#   -var "opsman_client_secret=${OPSMAN_CLIENT_SECRET}" \
+#   -var "opsman_username=${OPSMAN_USERNAME}" \
+#   -var "opsman_password=${OPSMAN_PASSWORD}" \
+#   -var "infrastructure_state_bucket=${TERRAFORM_STATE_BUCKET}" \
+#   -var "infrastructure_state_prefix=${DEPLOYMENT_PREFIX}" \
+#   automation/lib/pipelines/pcf/install-and-upgrade/terraform/pks-runtime
