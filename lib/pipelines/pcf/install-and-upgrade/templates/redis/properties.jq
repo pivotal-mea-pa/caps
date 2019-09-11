@@ -28,7 +28,7 @@ if $small_plan_instance_limit > 0 then
 {
   ".properties.small_plan_selector": { "value": "Plan Active" },
   ".properties.small_plan_selector.active.cf_service_access": { "value": "enable" },
-  ".properties.small_plan_selector.active.az_multi_select": { "value": ($availability_zones | split(",") },
+  ".properties.small_plan_selector.active.az_multi_select": { "value": ($availability_zones | split(",")) },
   ".properties.small_plan_selector.active.instance_limit": { "value": $small_plan_instance_limit }
 }
 else
@@ -41,7 +41,7 @@ if $medium_plan_instance_limit > 0 then
 {
   ".properties.medium_plan_selector": { "value": "Plan Active" },
   ".properties.medium_plan_selector.active.cf_service_access": { "value": "enable" },
-  ".properties.medium_plan_selector.active.az_multi_select": { "value": ($availability_zones | split(",") },
+  ".properties.medium_plan_selector.active.az_multi_select": { "value": ($availability_zones | split(",")) },
   ".properties.medium_plan_selector.active.instance_limit": { "value": $medium_plan_instance_limit }
 }
 else
@@ -54,7 +54,7 @@ if $large_plan_instance_limit > 0 then
 {
   ".properties.large_plan_selector": { "value": "Plan Active" },
   ".properties.large_plan_selector.active.cf_service_access": { "value": "enable" },
-  ".properties.large_plan_selector.active.az_multi_select": { "value": ($availability_zones | split(",") },
+  ".properties.large_plan_selector.active.az_multi_select": { "value": ($availability_zones | split(",")) },
   ".properties.large_plan_selector.active.instance_limit": { "value": $large_plan_instance_limit }
 }
 else
