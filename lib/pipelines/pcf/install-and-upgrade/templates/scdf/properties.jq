@@ -29,12 +29,6 @@
   ".properties.dataflow_db_plan": {
     "value": $dataflow_db_plan
   },
-  ".properties.dataflow_redis_service": {
-    "value": $dataflow_redis_service
-  },
-  ".properties.dataflow_redis_plan": {
-    "value": $dataflow_redis_plan
-  },
   ".properties.dataflow_messaging_service": {
     "value": $dataflow_messaging_service
   },
