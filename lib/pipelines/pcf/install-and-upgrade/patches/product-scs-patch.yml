@@ -97,4 +97,4 @@
         OPSMAN_PASSWORD: ((opsman_admin_password))
         OPSMAN_CLIENT_ID: ((opsman_client_id))
         OPSMAN_CLIENT_SECRET: ((opsman_client_secret))
-        PRODUCT_NAME: p-spring-cloud-services
+        PRODUCT_NAME: p_spring-cloud-services

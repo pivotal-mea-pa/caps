@@ -7,26 +7,26 @@ image_resource:
     repository: appbricks/tools
 
 inputs:
-- name: automation
-- name: automation-extensions
-- name: terraform-output
-- name: pivnet-product
+  - name: automation
+  - name: automation-extensions
+  - name: terraform-output
+  - name: pivnet-product
 
 run:
   path: automation/lib/pipelines/pcf/install-and-upgrade/tasks/common/configure-product.sh
 
 params:
   TRACE: Y
-  
+
   OPSMAN_HOST:
   OPSMAN_CLIENT_ID:
   OPSMAN_CLIENT_SECRET:
   OPSMAN_USERNAME:
   OPSMAN_PASSWORD:
   # The IAAS to configure for
-  IAAS: 
+  IAAS:
   # Product configuration
-  PRODUCT_NAME: p-spring-cloud-services
+  PRODUCT_NAME: p_spring-cloud-services
   TEMPLATE_PATH: automation/lib/pipelines/pcf/install-and-upgrade/templates/scs
   TEMPLATE_OVERRIDE_PATH:
   ERRANDS_TO_DISABLE:
