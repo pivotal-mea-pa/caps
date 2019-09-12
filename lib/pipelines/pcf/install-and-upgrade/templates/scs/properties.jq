@@ -1,31 +1,19 @@
 #
 # jq -n \
-#   --argjson enable_global_access true \
-#   --argjson disable_cert_check true \
-#   --argjson secure_credentials false \
+#   --arg config_server_access "global" \
+#   --arg java_buildpack "java_buildpack_offline" \
+#   --argjson status_change_timeout_minutes 30 \
 #   "$(cat properties.jq)"
 #
 
 {
-    ".register-service-broker.enable_global_access": {
-      "value": $enable_global_access
+    ".properties.config_server_access": {
+      "value": $config_server_access
     },
-    ".deploy-service-broker.disable_cert_check": {
-      "value": false
+    ".properties.java_buildpack": {
+      "value": $java_buildpack
     },
-    ".deploy-service-broker.secure_credentials": {
-      "value": false
-    },
-    ".deploy-service-broker.persistence_store_service": {
-      "value": "p.mysql"
-    },
-    ".deploy-service-broker.persistence_store_service_plan": {
-      "value": "db-small"
-    },
-    ".deploy-service-broker.message_bus_service": {
-      "value": "p.rabbitmq"
-    },
-    ".deploy-service-broker.message_bus_service_plan": {
-      "value": "single-node"
+    ".properties.status_change_timeout_minutes": {
+      "value": $status_change_timeout_minutes
     }
 }
