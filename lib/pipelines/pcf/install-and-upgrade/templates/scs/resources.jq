@@ -6,13 +6,7 @@
 #
 
 {
-  "deploy-service-broker": {
-  },
-  "register-service-broker": {
-  },
-  "run-smoke-tests": {
-  },
-  "destroy-service-broker": {
+  "spring-cloud-services": {
   }
 }
 |
@@ -22,16 +16,7 @@ if $iaas == "aws"
   or $iaas == "azure" then
 
   . * {
-    "deploy-service-broker": {
-      "internet_connected": $internet_connected
-    },
-    "register-service-broker": {
-      "internet_connected": $internet_connected
-    },
-    "run-smoke-tests": {
-      "internet_connected": $internet_connected
-    },
-    "destroy-service-broker": {
+    "spring-cloud-services": {
       "internet_connected": $internet_connected
     }
   }
