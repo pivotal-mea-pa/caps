@@ -6,6 +6,7 @@ set -eu
 TILE_FILE_PATH=`find ./pivnet-product -name *.pivotal | sort | head -1`
 if [[ -n "$TILE_FILE_PATH" ]]; then
 
+  set +e
   STEMCELL_VERSION=$(
     cat ./pivnet-product/metadata.json |
     jq --raw-output \
@@ -22,10 +23,8 @@ if [[ -n "$TILE_FILE_PATH" ]]; then
       | join(".")
       '
   )
+  if [ $? -eq 0 && -n "$STEMCELL_VERSION" ]; then
 
-  if [ -n "$STEMCELL_VERSION" ]; then
-
-    set +e
     diagnostic_report=$(
       om \
         --target https://$OPSMAN_HOST \
@@ -106,6 +105,8 @@ if [[ -n "$TILE_FILE_PATH" ]]; then
       fi
       cd -
     fi
+  else
+    set -e
   fi
 
   unzip $TILE_FILE_PATH metadata/*
