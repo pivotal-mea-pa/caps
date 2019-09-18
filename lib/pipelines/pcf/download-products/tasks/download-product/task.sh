@@ -23,7 +23,7 @@ if [[ -n "$TILE_FILE_PATH" ]]; then
       | join(".")
       '
   )
-  if [ $? -eq 0 && -n "$STEMCELL_VERSION" ]; then
+  if [[ $? -eq 0 && -n "$STEMCELL_VERSION" ]]; then
 
     diagnostic_report=$(
       om \
