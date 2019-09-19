@@ -49,7 +49,7 @@
         outputs:
         - name: pivnet-download-updated
         run:
-          path: automation/lib/pipelines/pcf/download-products/tasks/download-product/winfs-inject.sh
+          path: automation/lib/pipelines/pcf/download-products/tasks/download-product/winfs-injector.sh
 
       
     # Upload product tile and its stemcell
