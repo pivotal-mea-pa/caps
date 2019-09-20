@@ -55,8 +55,6 @@
     # Upload product tile and its stemcell
     - task: upload-tile
       file: automation/lib/tasks/opsman/upload-product-and-stemcell/task.yml
-      input: pivnet-download-updated
-
       input_mapping:
         pivnet-download: pivnet-download-updated
       params:
