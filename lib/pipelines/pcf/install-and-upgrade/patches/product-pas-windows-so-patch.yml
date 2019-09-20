@@ -66,27 +66,27 @@
         OPSMAN_USERNAME: ((opsman_admin_username))
         OPSMAN_PASSWORD: ((opsman_admin_password))
 
-    # This task will block if the environment 
-    # has been put into stopped state
-    # - task: wait-until-started
-    #   file: automation/lib/inceptor/tasks/wait-for-state/task.yml
-    #   params: 
-    #     WAIT_FOR_STATE: started
-    #     AUTOS3_URL: ((autos3_url))
-    #     AUTOS3_ACCESS_KEY: ((autos3_access_key))
-    #     AUTOS3_SECRET_KEY: ((autos3_secret_key))
+    This task will block if the environment 
+    has been put into stopped state
+    - task: wait-until-started
+      file: automation/lib/inceptor/tasks/wait-for-state/task.yml
+      params: 
+        WAIT_FOR_STATE: started
+        AUTOS3_URL: ((autos3_url))
+        AUTOS3_ACCESS_KEY: ((autos3_access_key))
+        AUTOS3_SECRET_KEY: ((autos3_secret_key))
 
-    # Stage and apply changes
-    # - task: stage-and-apply-tile
-    #   file: automation/lib/tasks/opsman/stage-product/task.yml
-    #   params:
-    #     OPSMAN_HOST: ((opsman_host))
-    #     OPSMAN_CLIENT_ID: ((opsman_client_id))
-    #     OPSMAN_CLIENT_SECRET: ((opsman_client_secret))
-    #     OPSMAN_USERNAME: ((opsman_admin_username))
-    #     OPSMAN_PASSWORD: ((opsman_admin_password))
-    #     STAGE_AND_APPLY: true
-    #     ENABLE_ERRANDS: ((enable_errands))
+    Stage and apply changes
+    - task: stage-and-apply-tile
+      file: automation/lib/tasks/opsman/stage-product/task.yml
+      params:
+        OPSMAN_HOST: ((opsman_host))
+        OPSMAN_CLIENT_ID: ((opsman_client_id))
+        OPSMAN_CLIENT_SECRET: ((opsman_client_secret))
+        OPSMAN_USERNAME: ((opsman_admin_username))
+        OPSMAN_PASSWORD: ((opsman_admin_password))
+        STAGE_AND_APPLY: true
+        ENABLE_ERRANDS: ((enable_errands))
 
 - type: replace
   path: /groups/name=Install and Upgrade Products/jobs?/0:before
