@@ -58,7 +58,7 @@
       input: pivnet-download-updated
 
       input_mapping:
-        pivnet-product: pivnet-download-updated
+        pivnet-download: pivnet-download-updated
       params:
         OPSMAN_HOST: ((opsman_host))
         OPSMAN_CLIENT_ID: ((opsman_client_id))
