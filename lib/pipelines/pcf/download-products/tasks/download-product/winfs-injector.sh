@@ -29,6 +29,5 @@ chmod +x injector-workspace/pivnet-product/winfs-injector-linux
 PATH_TO_TILE=`find ./injector-workspace/pivnet-product/ -name *.pivotal`
 echo "PATH TO tile $PATH_TO_TILE"
 
-#./injector-workspace/pivnet-product/winfs-injector-linux --input-tile=$PATH_TO_TILE --output-tile=pivnet-download-updated/injected-tile.pivotal
-mv $PATH_TO_STEMCELL pivnet-download-updated/win-stemcell.tgz
-mv $PATH_TO_TILE pivnet-download-updated/updated-tile.pivotal
+./injector-workspace/pivnet-product/winfs-injector-linux --input-tile=$PATH_TO_TILE --output-tile=pivnet-download-updated/injected-tile.pivotal
+
