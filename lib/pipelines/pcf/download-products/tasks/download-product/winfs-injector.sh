@@ -30,6 +30,6 @@ PATH_TO_TILE=`find ./injector-workspace/pivnet-product/ -name *.pivotal`
 echo "PATH TO tile $PATH_TO_TILE"
 
 ./injector-workspace/pivnet-product/winfs-injector-linux --input-tile=$PATH_TO_TILE --output-tile=pivnet-download-updated/injected-tile.pivotal
-tar cvzf ./pivnet-download-updated/pivnet-product-stemcell.tgz ./pivnet-download-updated
+tar cvzf ./pivnet-download-updated/pivnet-product-stemcell.tgz ./pivnet-download-updated/injected-tile.pivotal ./pivnet-download-updated/$STEMCELL_FILENAME
 rm -rf pivnet-download-updated/injected-tile.pivotal
 rm -rf pivnet-download-updated/$STEMCELL_FILENAME
