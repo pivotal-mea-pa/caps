@@ -66,8 +66,8 @@
         OPSMAN_USERNAME: ((opsman_admin_username))
         OPSMAN_PASSWORD: ((opsman_admin_password))
 
-    This task will block if the environment 
-    has been put into stopped state
+    #This task will block if the environment 
+    #has been put into stopped state
     - task: wait-until-started
       file: automation/lib/inceptor/tasks/wait-for-state/task.yml
       params: 
@@ -76,7 +76,7 @@
         AUTOS3_ACCESS_KEY: ((autos3_access_key))
         AUTOS3_SECRET_KEY: ((autos3_secret_key))
 
-    Stage and apply changes
+   # Stage and apply changes
     - task: stage-and-apply-tile
       file: automation/lib/tasks/opsman/stage-product/task.yml
       params:
