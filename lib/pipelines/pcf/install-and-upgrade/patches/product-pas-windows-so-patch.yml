@@ -241,7 +241,7 @@
 - type: replace
   path: /jobs/name=deploy/plan/0/aggregate/-
   value:
-    get: pas-tile
+    get: pas-windows-tile
     passed: [configure-pas-windows-tile]
     trigger: true
     params:
