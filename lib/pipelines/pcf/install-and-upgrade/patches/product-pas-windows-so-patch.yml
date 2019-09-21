@@ -64,18 +64,86 @@
         OPSMAN_USERNAME: ((opsman_admin_username))
         OPSMAN_PASSWORD: ((opsman_admin_password))
 
-    #This task will block if the environment 
-    #has been put into stopped state
-    - task: wait-until-started
-      file: automation/lib/inceptor/tasks/wait-for-state/task.yml
+- type: replace
+  path: /groups/name=Install and Upgrade Products/jobs?/0:before
+  value: upload-pas-windows-tile
+
+- type: replace
+  path: /groups/name=Install and Upgrade Products/jobs?/0:before
+  value: configure-pas-windows-tile
+
+# Add jobs to configure PAS small tile
+
+- type: replace
+  path: /jobs/-
+  value:
+    name: configure-pas-windows-tile
+    on_failure:
+      do:
+      - task: notify on configure-pas-windows-tile failure
+
+    serial: true
+    serial_groups: [configure]
+    plan:
+    - aggregate:
+      - get: automation
+      - get: automation-extensions
+      - get: terraform-output
+      - get: product-versions
+      - get: pivnet-product
+        resource: pas-windows-tile
+        passed: [upload-pas-windows-tile]
+        trigger: true
+        params:
+          skip_download: 'true'
+
+    # This task will create a release manifest which will
+    # be included with any failure or success notifications.
+    - task: create-release-manifest
+      file: automation/lib/pipelines/pcf/install-and-upgrade/tasks/create-release-manifest/task.yml
+      input_mapping:
+        versions: product-versions
+        input-files: configure-pas-windows-tile-job-info
+      output_mapping: 
+        output-files: configure-pas-windows-tile-job-info
+      params:
+        CONCOURSE_URL: ((concourse_url))
+        CONCOURSE_USER: ((concourse_user))
+        CONCOURSE_PASSWORD: ((concourse_password))
+        AUTOS3_URL: ((autos3_url))
+        AUTOS3_ACCESS_KEY: ((autos3_access_key))
+        AUTOS3_SECRET_KEY: ((autos3_secret_key))
+        OPSMAN_HOST: ((opsman_host))
+        OPSMAN_USERNAME: ((opsman_admin_username))
+        OPSMAN_PASSWORD: ((opsman_admin_password))
+        OPSMAN_CLIENT_ID: ((opsman_client_id))
+        OPSMAN_CLIENT_SECRET: ((opsman_client_secret))
+        ENVIRONMENT: ((environment))
+        VERSION_ROW_STYLE: 'color:silver;'
+        NEW_VERSION_ROW_STYLE: 'color:black;'
+
+    # This task will block if the environment 
+    # has been put into stopped state
+    - task: wait-if-stopped
+      file: automation/lib/inceptor/tasks/wait-on-state/task.yml
       params: 
-        WAIT_FOR_STATE: started
+        WAIT_ON_STATE: stopped
         AUTOS3_URL: ((autos3_url))
         AUTOS3_ACCESS_KEY: ((autos3_access_key))
         AUTOS3_SECRET_KEY: ((autos3_secret_key))
 
-   # Stage and apply changes
-    - task: stage-and-apply-tile
+    # Wait if an opsman is currently in the process of applying a change
+    - task: wait-if-apply-in-progress
+      file: automation/lib/tasks/opsman/wait-opsman/task.yml
+      params:
+        OPSMAN_HOST: ((opsman_host))
+        OPSMAN_USERNAME: ((opsman_admin_username))
+        OPSMAN_PASSWORD: ((opsman_admin_password))
+        OPSMAN_CLIENT_ID: ((opsman_client_id))
+        OPSMAN_CLIENT_SECRET: ((opsman_client_secret))
+
+    # Stage product tile
+    - task: stage-tile
       file: automation/lib/tasks/opsman/stage-product/task.yml
       params:
         OPSMAN_HOST: ((opsman_host))
@@ -83,9 +151,98 @@
         OPSMAN_CLIENT_SECRET: ((opsman_client_secret))
         OPSMAN_USERNAME: ((opsman_admin_username))
         OPSMAN_PASSWORD: ((opsman_admin_password))
-        STAGE_AND_APPLY: true
+        STAGE_AND_APPLY: false
         ENABLE_ERRANDS: ((enable_errands))
 
+    # Configure product tile
+    - task: configure
+      file: automation/lib/pipelines/pcf/install-and-upgrade/tasks/configure-pas-small/task.yml
+      params:
+        OPSMAN_HOST: ((opsman_host))
+        OPSMAN_CLIENT_ID: ((opsman_client_id))
+        OPSMAN_CLIENT_SECRET: ((opsman_client_secret))
+        OPSMAN_USERNAME: ((opsman_admin_username))
+        OPSMAN_PASSWORD: ((opsman_admin_password))
+        # The IAAS to configure for
+        IAAS: ((iaas_type))
+        # Product configuration
+        TEMPLATE_OVERRIDE_PATH: automation-extensions/((pcf_tile_templates_path))/pas-small/((environment))
+        ERRANDS_TO_DISABLE: ${errands_to_disable}
+        ERRANDS_TO_ENABLE: ${errands_to_enable}
+        # Networking
+        NETWORK_NAME: pas
+        SINGLETON_AVAILABILITY_ZONE: '' # Sourced from terraform output
+        AVAILABILITY_ZONES: '' # Sourced from terraform output
+        # Resources
+        INTERNET_CONNECTED: ((internet_connected))
+        # Properties
+        ROUTING_CUSTOM_CA_CERTIFICATES: ((routing_custom_ca_certificates))
+        ROUTING_TLS_TERMINATION: ((routing_tls_termination))
+        ROUTER_TLS_CIPHERS: ((router_tls_ciphers))
+        HAPROXY_TLS_CIPHERS: ((haproxy_tls_ciphers))
+        HAPROXY_FORWARD_TLS: ((haproxy_forward_tls))
+        HAPROXY_BACKEND_CA: ((haproxy_backend_ca))
+        ROUTING_DISABLE_HTTP: ((routing_disable_http))
+        CONTAINER_NETWORKING_NETWORK_CIDR: ((container_networking_nw_cidr))
+        SECURITY_ACKNOWLEDGEMENT: ((security_acknowledgement))
+        CREDHUB_PRIMARY_ENCRYPTION_NAME: ((credhub_primary_encryption_name))
+        CREDHUB_ENCRYPTION_KEY_NAME1: ((credhub_encryption_key_name1))
+        CREDHUB_ENCRYPTION_KEY_SECRET1: ((credhub_encryption_key_secret1))
+        CREDHUB_ENCRYPTION_KEY_NAME2: ((credhub_encryption_key_name2))
+        CREDHUB_ENCRYPTION_KEY_SECRET2: ((credhub_encryption_key_secret2))
+        CREDHUB_ENCRYPTION_KEY_NAME3: ((credhub_encryption_key_name3))
+        CREDHUB_ENCRYPTION_KEY_SECRET3: ((credhub_encryption_key_secret3))
+        DB_TYPE: ((pas_db_type))
+        DB_USERNAME: ((db_username))
+        DB_PASSWORD: ((db_password))
+        MYSQL_MONITOR_RECIPIENT_EMAIL: ((notification_email))
+        NOTIFICATIONS_SMTP_FROM: ((automation_email))
+        NOTIFICATIONS_SMTP_ADDRESS: ((smtp_host))
+        NOTIFICATIONS_SMTP_PORT: ((smtp_port))
+        NUM_DIEGO_CELLS: ((num_diego_cells))
+
+# CF Terraform plugin is incompatible with Terraform 0.12
+#
+# - type: replace
+#   path: /jobs/-
+#   value:
+#     name: configure-pas-runtime
+#     on_failure:
+#       do:
+#       - task: notify on configure-pas-runtime failure
+
+#     serial: true
+#     plan:
+#     - aggregate:
+#       - get: automation
+#       - get: automation-extensions
+#       - get: terraform-output
+#       - get: pas-tile
+#         passed: [deploy]
+#         trigger: true
+#         params:
+#           skip_download: 'true'
+
+#     - task: pas-runtime-config
+#       file: automation/lib/pipelines/pcf/install-and-upgrade/tasks/pas-runtime-config/task.yml
+#       params:
+#         GCP_CREDENTIALS: ((gcp_service_account_key))
+#         GCP_PROJECT: ((gcp_project))
+#         GCP_REGION: ((gcp_region))
+#         DEPLOYMENT_PREFIX: ((deployment_prefix))
+#         TERRAFORM_STATE_BUCKET: ((terraform_state_bucket))
+#         OPSMAN_HOST: ((opsman_host))
+#         OPSMAN_USERNAME: ((opsman_admin_username))
+#         OPSMAN_PASSWORD: ((opsman_admin_password))
+#         OPSMAN_CLIENT_ID: ((opsman_client_id))
+#         OPSMAN_CLIENT_SECRET: ((opsman_client_secret))
+#         TF_VAR_org_admin: ((pas_org_admin_user))
+
 - type: replace
-  path: /groups/name=Install and Upgrade Products/jobs?/0:before
-  value: upload-pas-windows-tile
+  path: /jobs/name=deploy/plan/0/aggregate/-
+  value:
+    get: pas-tile
+    passed: [configure-pas-windows-tile]
+    trigger: true
+    params:
+      skip_download: 'true'
