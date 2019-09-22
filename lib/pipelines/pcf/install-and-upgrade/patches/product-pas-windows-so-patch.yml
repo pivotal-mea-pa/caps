@@ -8,7 +8,7 @@
       endpoint: ((autos3_url))
       access_key_id: ((autos3_access_key))
       secret_access_key: ((autos3_secret_key))
-      regexp: downloads/${product_slug}_(.*).tgz
+      regexp: downloads/pas-windows_2.6.4-build.9_pas-windows.tgz
 
 - type: replace
   path: /jobs/-
