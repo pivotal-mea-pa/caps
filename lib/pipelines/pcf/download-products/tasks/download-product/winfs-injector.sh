@@ -17,9 +17,14 @@ tar -xf $PATH_TO_TAR -C injector-workspace
 ##COPY STEMCELL
 mkdir pivnet-download-updated/pivnet-product
 PATH_TO_STEMCELL=`find ./injector-workspace/pivnet-product/ -name *go_agent.tgz`
-echo $PATH_TO_STEMCELL
-STEMCELL_FILENAME=`basename $PATH_TO_STEMCELL`
-mv $PATH_TO_STEMCELL pivnet-download-updated/pivnet-product/$STEMCELL_FILENAME
+
+if [ -z $PATH_TO_STEMCELL ]
+then
+    echo $PATH_TO_STEMCELL
+    STEMCELL_FILENAME=`basename $PATH_TO_STEMCELL`
+    mv $PATH_TO_STEMCELL pivnet-download-updated/pivnet-product/$STEMCELL_FILENAME
+fi
+
 
 PATH_TO_INJECTOR_ZIP=`find ./injector-workspace/pivnet-product/ -name winfs-injector-*`
 echo "PATH TO ZIP $PATH_TO_INJECTOR_ZIP"
