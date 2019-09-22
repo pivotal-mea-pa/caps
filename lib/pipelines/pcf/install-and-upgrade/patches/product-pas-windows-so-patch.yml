@@ -1,7 +1,7 @@
 - type: replace
   path: /resources/-
   value:
-    name: pas-windows-tile
+    name: pasw-tile
     type: s3
     source:
       bucket: pcf
@@ -23,7 +23,7 @@
     - aggregate:
       - get: automation
       - get: pivnet-download
-        resource: pas-windows-tile
+        resource: pasw-tile
         trigger: true
 
     # Wait for director to be in a ready state
@@ -91,7 +91,7 @@
       - get: terraform-output
       - get: product-versions
       - get: pivnet-product
-        resource: pas-windows-tile
+        resource: pasw-tile
         passed: [upload-pas-windows-tile]
         trigger: true
         params:
@@ -241,7 +241,7 @@
 - type: replace
   path: /jobs/name=deploy/plan/0/aggregate/-
   value:
-    get: pas-windows-tile
+    get: pasw-tile
     passed: [configure-pas-windows-tile]
     trigger: true
     params:
