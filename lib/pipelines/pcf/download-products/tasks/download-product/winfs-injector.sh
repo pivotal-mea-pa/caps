@@ -18,7 +18,7 @@ tar -xf $PATH_TO_TAR -C injector-workspace
 mkdir pivnet-download-updated/pivnet-product
 PATH_TO_STEMCELL=`find ./injector-workspace/pivnet-product/ -name *go_agent.tgz`
 
-if [ -z $PATH_TO_STEMCELL ]
+if [ ! -z $PATH_TO_STEMCELL ]
 then
     echo $PATH_TO_STEMCELL
     STEMCELL_FILENAME=`basename $PATH_TO_STEMCELL`
