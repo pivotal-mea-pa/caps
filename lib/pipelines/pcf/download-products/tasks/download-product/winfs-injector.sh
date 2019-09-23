@@ -42,6 +42,14 @@ cp pivnet-download/version pivnet-download-updated/pivnet-product
 cp pivnet-download/url pivnet-download-updated/pivnet-product
 
 cd pivnet-download-updated
-tar cvzf pivnet-product-stemcell.tgz ./pivnet-product/injected-tile.pivotal ./pivnet-product/$STEMCELL_FILENAME ./pivnet-product/version ./pivnet-product/url
-rm -rf ./pivnet-product/injected-tile.pivotal
-rm -rf ./pivnet-product/$STEMCELL_FILENAME
+
+if [ -z $PATH_TO_STEMCELL ]
+then
+    tar cvzf pivnet-product-stemcell.tgz ./pivnet-product/injected-tile.pivotal ./pivnet-product/$STEMCELL_FILENAME ./pivnet-product/version ./pivnet-product/url
+    rm -rf ./pivnet-product/injected-tile.pivotal
+    rm -rf ./pivnet-product/$STEMCELL_FILENAME
+
+else
+    tar cvzf pivnet-product-stemcell.tgz ./pivnet-product/injected-tile.pivotal ./pivnet-product/version ./pivnet-product/url
+    rm -rf ./pivnet-product/injected-tile.pivotal
+fi
