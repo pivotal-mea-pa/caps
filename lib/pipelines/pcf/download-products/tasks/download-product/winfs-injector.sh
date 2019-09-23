@@ -45,11 +45,11 @@ cd pivnet-download-updated
 
 if [ -z $PATH_TO_STEMCELL ]
 then
+    tar cvzf pivnet-product-stemcell.tgz ./pivnet-product/injected-tile.pivotal ./pivnet-product/version ./pivnet-product/url
+    rm -rf ./pivnet-product/injected-tile.pivotal
+
+else
     tar cvzf pivnet-product-stemcell.tgz ./pivnet-product/injected-tile.pivotal ./pivnet-product/$STEMCELL_FILENAME ./pivnet-product/version ./pivnet-product/url
     rm -rf ./pivnet-product/injected-tile.pivotal
     rm -rf ./pivnet-product/$STEMCELL_FILENAME
-
-else
-    tar cvzf pivnet-product-stemcell.tgz ./pivnet-product/injected-tile.pivotal ./pivnet-product/version ./pivnet-product/url
-    rm -rf ./pivnet-product/injected-tile.pivotal
 fi
