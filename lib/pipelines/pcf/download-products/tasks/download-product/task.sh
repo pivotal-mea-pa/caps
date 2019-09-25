@@ -9,7 +9,7 @@ if [[ -n "$TILE_FILE_PATH" ]]; then
   set +e
   STEMCELL_VERSION=$(
     cat ./pivnet-product/metadata.json |
-    jq --raw-output \
+    jq --raw-output \ 
       '
       [
         .Dependencies[]
