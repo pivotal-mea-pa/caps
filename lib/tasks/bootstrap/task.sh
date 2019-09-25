@@ -89,7 +89,8 @@ fly -t default sync
 #
 
 terraform_params_path=automation/deployments/$DEPLOYMENT/${IAAS}/params
-patch_job_notifications=automation/lib/inceptor/tasks/patches/patch_job_notifications.sh
+# patch_job_notifications=automation/lib/inceptor/tasks/patches/patch_job_notifications.sh
+patch_job_notifications=automation/lib/scripts/utility/patch_job_notifications.sh
 
 download_products_pipeline_path=automation/lib/pipelines/$DEPLOYMENT/download-products/pipeline
 download_products_patches_path=automation/lib/pipelines/$DEPLOYMENT/download-products/patches
