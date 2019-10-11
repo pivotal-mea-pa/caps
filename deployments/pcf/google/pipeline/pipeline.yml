@@ -1,11 +1,11 @@
 ---
-groups:
-- name: Automate
-  jobs:
-  - bootstrap
-- name: Notify
-  jobs:
-  - notifications
+# groups:
+# - name: Automate
+#   jobs:
+#   - bootstrap
+# - name: Notify
+#   jobs:
+#   - notifications
 
 jobs:
 - name: bootstrap
