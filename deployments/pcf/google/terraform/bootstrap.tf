@@ -65,14 +65,16 @@ module "bootstrap" {
   deploy_jumpbox         = "${var.deploy_jumpbox}"
   jumpbox_data_disk_size = "${var.jumpbox_data_disk_size}"
 
-  vpn_server_port = "${
+  vpn_type    = "openvpn"
+  vpn_network = "${var.bastion_vpn_network}"
+
+  ovpn_server_port = "${
     var.bastion_setup_vpn == "true" 
       ? var.bastion_vpn_port
       : "" }"
 
-  vpn_protocol = "${var.bastion_vpn_protocol}"
-  vpn_network  = "${var.bastion_vpn_network}"
-
+  ovpn_protocol = "${var.bastion_vpn_protocol}"
+  
   #
   # Concourse Settings
   #
