@@ -1,7 +1,7 @@
 name: patch-harbor
 
 templates:
-  bin/post-start.erb: bin/post-start
+  bin/pre-start.erb: bin/pre-start
 
 properties:
   opsman_ca_cert:
