@@ -142,7 +142,7 @@ case $tf_action in
                 if [[ $clean == yes ]]; then
                     terraform taint \
                         -state=$workspace_path/.terraform/terraform.tfstate \
-                        module.bootstrap.google_compute_disk.bastion-data-disk
+                        module.bootstrap.google_compute_disk.bastion-data
                 fi
                 ;;
             vsphere)
@@ -159,7 +159,7 @@ case $tf_action in
                 if [[ $clean == yes ]]; then
                     terraform taint \
                         -state=$workspace_path/.terraform/terraform.tfstate \
-                        module.bootstrap.vsphere_virtual_disk.bastion-data-disk
+                        module.bootstrap.vsphere_virtual_disk.bastion-data
                 fi
                 ;;
             *)
