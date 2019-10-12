@@ -378,3 +378,13 @@ jobs:
       OPSMAN_CLIENT_SECRET: ((opsman_client_id))
       OPSMAN_USERNAME: ((opsman_admin_username))
       OPSMAN_PASSWORD: ((opsman_admin_password))
+
+  # Upload runtime deployment to patch harbor
+  - task: upload-harbor-patch
+    file: automation/lib/pipelines/pcf/install-and-upgrade/tasks/set-harbor-runtime-patch/task.yml
+    params:
+      OPSMAN_HOST: ((opsman_host))
+      OPSMAN_CLIENT_ID: ((opsman_client_id))
+      OPSMAN_CLIENT_SECRET: ((opsman_client_id))
+      OPSMAN_USERNAME: ((opsman_admin_username))
+      OPSMAN_PASSWORD: ((opsman_admin_password))
