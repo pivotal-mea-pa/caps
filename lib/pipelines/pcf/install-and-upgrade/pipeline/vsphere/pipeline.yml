@@ -356,14 +356,14 @@ jobs:
 
   # Update product versions determined when release
   # manifest is created
-  - task: save-product-versions
-    file: automation/lib/inceptor/tasks/upload-object/task.yml
-    input_mapping:
-      upload_path: deploy-director-job-info
-    params: 
-      BUCKET: pcf
-      UPLOAD_PATH: downloads
-      OBJECT_NAME: versions
-      AUTOS3_URL: ((autos3_url))
-      AUTOS3_ACCESS_KEY: ((autos3_access_key))
-      AUTOS3_SECRET_KEY: ((autos3_secret_key))
+  # - task: save-product-versions
+  #   file: automation/lib/inceptor/tasks/upload-object/task.yml
+  #   input_mapping:
+  #     upload_path: deploy-director-job-info
+  #   params: 
+  #     BUCKET: pcf
+  #     UPLOAD_PATH: downloads
+  #     OBJECT_NAME: versions
+  #     AUTOS3_URL: ((autos3_url))
+  #     AUTOS3_ACCESS_KEY: ((autos3_access_key))
+  #     AUTOS3_SECRET_KEY: ((autos3_secret_key))
