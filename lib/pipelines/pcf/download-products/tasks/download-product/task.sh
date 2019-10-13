@@ -9,7 +9,7 @@ if [[ -n "$TILE_FILE_PATH" ]]; then
   set +e
   STEMCELL_VERSION=$(
     cat ./pivnet-product/metadata.json |
-    jq --raw-output \ 
+    jq --raw-output \
       '
       [
         .Dependencies[]
@@ -65,7 +65,7 @@ if [[ -n "$TILE_FILE_PATH" ]]; then
       )
 
       pivnet  login --api-token="$PIVNET_API_TOKEN"
-      
+
       set +e
       pivnet  download-product-files -p "$product_slug" -r $STEMCELL_VERSION -g "*${IAAS}*" --accept-eula
       if [[ $? -ne 0 ]]; then
