@@ -11,7 +11,7 @@ inputs:
 - name: terraform-output
 
 run:
-  path: automation/lib/pipelines/pcf/install-and-upgrade/tasks/upload-patch-harbor/task.sh
+  path: automation/lib/pipelines/pcf/install-and-upgrade/tasks/set-harbor-runtime-patch//task.sh
 
 params:
   TRACE: Y
