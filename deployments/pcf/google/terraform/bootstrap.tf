@@ -7,7 +7,7 @@ locals {
 }
 
 module "bootstrap" {
-  source = "../../../../lib/inceptor/modules/bootstrap-automation/google"
+  source = "github.com/appbricks/cloud-inceptor.git/modules/bootstrap/google"
 
   #
   # Company information used in certificate creation
@@ -35,6 +35,7 @@ module "bootstrap" {
 
   # External DNS zone for VPC
   vpc_dns_zone = "${var.vpc_dns_zone}"
+  attach_dns_zone = true
 
   # Internal DNS zones within VPC
   vpc_internal_dns_zones = ["${var.vpc_name}.local"]
