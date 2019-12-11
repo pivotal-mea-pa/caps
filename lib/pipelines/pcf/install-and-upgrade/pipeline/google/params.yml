@@ -5,6 +5,9 @@
 automation_pipelines_repo: '${automation_pipelines_repo}'
 automation_pipelines_branch: '${automation_pipelines_branch}'
 
+inceptor_pipelines_repo: '${inceptor_pipelines_repo}'
+inceptor_pipelines_branch: '${inceptor_pipelines_branch}'
+
 automation_extensions_repo: '${automation_extensions_repo}'
 automation_extensions_branch: '${automation_extensions_branch}'
 

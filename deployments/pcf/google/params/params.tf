@@ -25,6 +25,9 @@ data "template_file" "params" {
     automation_pipelines_repo   = "${data.terraform_remote_state.bootstrap.outputs.automation_pipelines_repo}"
     automation_pipelines_branch = "${data.terraform_remote_state.bootstrap.outputs.automation_pipelines_branch}"
 
+    inceptor_pipelines_repo   = "${data.terraform_remote_state.bootstrap.outputs.inceptor_pipelines_repo}"
+    inceptor_pipelines_branch = "${data.terraform_remote_state.bootstrap.outputs.inceptor_pipelines_branch}"
+
     automation_extensions_repo   = "${data.terraform_remote_state.bootstrap.outputs.automation_extensions_repo}"
     automation_extensions_branch = "${data.terraform_remote_state.bootstrap.outputs.automation_extensions_branch}"
 

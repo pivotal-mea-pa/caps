@@ -112,6 +112,14 @@ output "automation_pipelines_branch" {
   value = "${var.automation_pipelines_branch}"
 }
 
+output "inceptor_pipelines_repo" {
+  value = "${var.inceptor_pipelines_repo}"
+}
+
+output "inceptor_pipelines_branch" {
+  value = "${var.inceptor_pipelines_branch}"
+}
+
 #
 # Automation extensions git repository
 #
