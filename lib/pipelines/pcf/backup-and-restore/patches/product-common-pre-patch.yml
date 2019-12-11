@@ -20,6 +20,7 @@
     plan:
     - aggregate:
       - get: automation
+      - get: inceptor
       - get: schedule
       - get: backup-session
         passed: [backup-regulator]
@@ -82,6 +83,7 @@
     plan:
     - aggregate:
       - get: automation
+      - get: inceptor
       - get: backup-${product_name}-timestamp
         passed: [backup-${product_name}]
 

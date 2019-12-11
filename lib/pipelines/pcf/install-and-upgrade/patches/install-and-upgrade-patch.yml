@@ -13,6 +13,7 @@
     plan:
     - aggregate:
       - get: automation
+      - get: inceptor
       - get: product-versions
 
     # This task will create a release manifest which will

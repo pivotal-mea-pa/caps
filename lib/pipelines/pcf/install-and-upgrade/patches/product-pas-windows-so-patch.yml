@@ -22,6 +22,7 @@
     plan:
     - aggregate:
       - get: automation
+      - get: inceptor
       - get: pivnet-download
         resource: pasw-tile
         trigger: true
@@ -87,6 +88,7 @@
     plan:
     - aggregate:
       - get: automation
+      - get: inceptor
       - get: automation-extensions
       - get: terraform-output
       - get: product-versions
@@ -215,6 +217,7 @@
 #     plan:
 #     - aggregate:
 #       - get: automation
+#       - get: inceptor
 #       - get: automation-extensions
 #       - get: terraform-output
 #       - get: pas-tile

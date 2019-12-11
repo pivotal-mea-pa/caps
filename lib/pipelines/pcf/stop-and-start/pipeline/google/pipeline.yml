@@ -34,6 +34,7 @@ jobs:
 
   - aggregate:
     - get: automation
+    - get: inceptor
     - get: started
 
   # If an "apply" is in progress on PCF Ops 
@@ -84,6 +85,7 @@ jobs:
 
   - aggregate:
     - get: automation
+    - get: inceptor
     - get: stopped
 
   - task: new-job-session

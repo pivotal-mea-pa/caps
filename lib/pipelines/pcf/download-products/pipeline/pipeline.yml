@@ -50,6 +50,7 @@ jobs:
   plan:
   - aggregate:
     - get: automation
+    - get: inceptor
     - get: pivnet-product 
       resource: opsman-download
       passed: [opsman-download-regulator]

@@ -14,6 +14,7 @@
     plan:
     - aggregate:
       - get: automation
+      - get: inceptor
       - get: automation-extensions
       - get: terraform-output
       - get: product-versions

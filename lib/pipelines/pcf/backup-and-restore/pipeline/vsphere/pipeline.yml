@@ -38,6 +38,7 @@ jobs:
   plan:
   - aggregate:
     - get: automation
+    - get: inceptor
     - get: schedule
       trigger: true
 
@@ -109,6 +110,7 @@ jobs:
   plan:
   - aggregate:
     - get: automation
+    - get: inceptor
     - get: schedule      
     - get: backup-session
       passed: [backup-regulator]
@@ -157,6 +159,7 @@ jobs:
   plan:
   - aggregate:
     - get: automation
+    - get: inceptor
     - get: backup-opsman-timestamp
       passed: [backup-opsman]
 

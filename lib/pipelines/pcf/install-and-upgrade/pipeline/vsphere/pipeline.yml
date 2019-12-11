@@ -65,6 +65,7 @@ jobs:
   plan:
   - aggregate:
     - get: automation
+    - get: inceptor
     - get: automation-extensions
 
   - task: set-stopped-state
@@ -137,6 +138,7 @@ jobs:
   plan:
   - aggregate:
     - get: automation
+    - get: inceptor
     - get: automation-extensions
     - get: pivnet-download
       resource: opsman-image
@@ -227,6 +229,7 @@ jobs:
   plan:
   - aggregate:
     - get: automation
+    - get: inceptor
     - get: automation-extensions
     - get: terraform-output
       trigger: true
@@ -285,6 +288,7 @@ jobs:
   plan:
   - aggregate:
     - get: automation
+    - get: inceptor
     - get: product-versions
     - get: terraform-output
       trigger: true

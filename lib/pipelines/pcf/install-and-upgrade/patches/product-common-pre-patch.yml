@@ -22,6 +22,7 @@
     plan:
     - aggregate:
       - get: automation
+      - get: inceptor
       - get: pivnet-download
         resource: ${product_name}-tile
         trigger: true

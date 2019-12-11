@@ -17,6 +17,7 @@
 #     plan:
 #     - aggregate:
 #       - get: automation
+#       - get: inceptor
 #       - get: backup-pas-timestamp
 #         passed: [backup-pas]
 
