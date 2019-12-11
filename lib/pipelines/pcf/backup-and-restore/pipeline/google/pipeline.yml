@@ -200,6 +200,12 @@ resources:
     uri: ((automation_pipelines_repo))
     branch: ((automation_pipelines_branch))
 
+- name: inceptor
+  type: git
+  source:
+    uri: ((inceptor_pipelines_repo))
+    branch: ((inceptor_pipelines_branch))
+
 - name: schedule
   type: time
   source:
