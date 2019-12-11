@@ -91,9 +91,9 @@ fly -t default sync
 terraform_params_path=automation/deployments/$DEPLOYMENT/${IAAS}/params
 
 if [[ -n $EMAIL_TO ]]; then
-  patch_job_notifications=automation/lib/inceptor/tasks/patches/patch_job_notifications.sh
+  patch_job_notifications=inceptor/tasks/patches/patch_job_notifications.sh
 else
-  patch_job_notifications=automation/lib/inceptor/tasks/patches/remove_job_notifications.sh
+  patch_job_notifications=inceptor/tasks/patches/remove_job_notifications.sh
 fi
 
 download_products_pipeline_path=automation/lib/pipelines/$DEPLOYMENT/download-products/pipeline
