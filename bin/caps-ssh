@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash 
 
 root_dir=$(cd $(dirname $BASH_SOURCE)/.. && pwd)
 source $root_dir/bin/common

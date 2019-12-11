@@ -18,6 +18,8 @@ jobs:
   - aggregate:
     - get: automation
       trigger: true
+    - get: inceptor
+      trigger: true
     - get: env-config
       trigger: true
   - task: configure
@@ -62,6 +64,12 @@ resources:
   source:
     uri: ((automation_pipelines_repo))
     branch: ((automation_pipelines_branch))
+
+- name: inceptor
+  type: git
+  source:
+    uri: ((inceptor_pipelines_repo))
+    branch: ((inceptor_pipelines_branch))
 
 - name: env-config
   type: git

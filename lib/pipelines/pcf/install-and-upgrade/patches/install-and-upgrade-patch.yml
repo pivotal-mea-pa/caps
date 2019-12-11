@@ -44,7 +44,7 @@
     # This task will block if the environment 
     # has been put into stopped state
     - task: wait-if-stopped
-      file: automation/lib/inceptor/tasks/wait-on-state/task.yml
+      file: inceptor/tasks/wait-on-state/task.yml
       params: 
         WAIT_ON_STATE: stopped
         AUTOS3_URL: ((autos3_url))
@@ -75,7 +75,7 @@
 
     # Toggle the environment state to started
     - task: set-started-state
-      file: automation/lib/inceptor/tasks/toggle-state/task.yml
+      file: inceptor/tasks/toggle-state/task.yml
       params: 
         OFF_STATE: stopped
         ON_STATE: started

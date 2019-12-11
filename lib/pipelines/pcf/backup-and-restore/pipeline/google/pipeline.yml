@@ -43,7 +43,7 @@ jobs:
 
   # Wait for director to be in a ready state
   - task: wait-for-director-to-be-ready
-    file: automation/lib/inceptor/tasks/wait-for-state/task.yml
+    file: inceptor/tasks/wait-for-state/task.yml
     params: 
       WAIT_FOR_STATE: director_ready
       AUTOS3_URL: ((autos3_url))
@@ -53,7 +53,7 @@ jobs:
   # This task will wait until the 
   # environment is in a started state
   - task: wait-until-started
-    file: automation/lib/inceptor/tasks/wait-for-state/task.yml
+    file: inceptor/tasks/wait-for-state/task.yml
     params: 
       WAIT_FOR_STATE: started
       AUTOS3_URL: ((autos3_url))
@@ -74,7 +74,7 @@ jobs:
 
   # Clean up backup session
   - task: clean-up-old-backup-session
-    file: automation/lib/inceptor/tasks/upload-object/task.yml
+    file: inceptor/tasks/upload-object/task.yml
     params: 
       BUCKET: pcf
       # Path in Minio where session is saved 

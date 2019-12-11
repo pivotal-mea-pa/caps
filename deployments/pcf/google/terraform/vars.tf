@@ -206,6 +206,18 @@ variable "automation_pipelines_branch" {
 }
 
 #
+# Cloud Automation Pipelines (CAPs) repository
+#
+
+variable "inceptor_pipelines_repo" {
+  default = "https://github.com/appbricks/cloud-inceptor.git"
+}
+
+variable "inceptor_pipelines_branch" {
+  default = "master"
+}
+
+#
 # Environment configuration repository
 #
 

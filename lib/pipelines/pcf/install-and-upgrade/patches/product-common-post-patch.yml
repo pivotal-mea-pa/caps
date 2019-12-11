@@ -22,7 +22,7 @@
   path: /jobs/name=configure-${product_name}-tile/plan/0:after
   value:
     task: wait-if-stopped
-    file: automation/lib/inceptor/tasks/wait-on-state/task.yml
+    file: inceptor/tasks/wait-on-state/task.yml
     params: 
       WAIT_ON_STATE: stopped
       AUTOS3_URL: ((autos3_url))

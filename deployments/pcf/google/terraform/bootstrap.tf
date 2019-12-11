@@ -123,6 +123,9 @@ bootstrap_state_prefix: ${local.bootstrap_state_prefix}
 automation_pipelines_repo: ${var.automation_pipelines_repo}
 automation_pipelines_branch: ${var.automation_pipelines_branch}
 
+inceptor_pipelines_repo: ${var.inceptor_pipelines_repo}
+inceptor_pipelines_branch: ${var.inceptor_pipelines_branch}
+
 env_config_repo: ${var.env_config_repo}
 env_config_repo_branch: ${var.env_config_repo_branch}
 env_config_path: ${var.env_config_path}

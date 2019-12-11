@@ -28,7 +28,7 @@
 
     # Wait for director to be in a ready state
     - task: wait-for-director-to-be-ready
-      file: automation/lib/inceptor/tasks/wait-for-state/task.yml
+      file: inceptor/tasks/wait-for-state/task.yml
       params: 
         WAIT_FOR_STATE: director_ready
         AUTOS3_URL: ((autos3_url))
@@ -125,7 +125,7 @@
     # This task will block if the environment 
     # has been put into stopped state
     - task: wait-if-stopped
-      file: automation/lib/inceptor/tasks/wait-on-state/task.yml
+      file: inceptor/tasks/wait-on-state/task.yml
       params: 
         WAIT_ON_STATE: stopped
         AUTOS3_URL: ((autos3_url))

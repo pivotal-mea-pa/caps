@@ -68,7 +68,7 @@ jobs:
     - get: automation-extensions
 
   - task: set-stopped-state
-    file: automation/lib/inceptor/tasks/toggle-state/task.yml
+    file: inceptor/tasks/toggle-state/task.yml
     params: 
       OFF_STATE: started
       ON_STATE: stopped
@@ -78,7 +78,7 @@ jobs:
       AUTOS3_SECRET_KEY: ((autos3_secret_key))
 
   - task: set-director-not-ready
-    file: automation/lib/inceptor/tasks/toggle-state/task.yml
+    file: inceptor/tasks/toggle-state/task.yml
     params: 
       OFF_STATE: director_ready
       ON_STATE: director_not_ready
@@ -157,7 +157,7 @@ jobs:
   # IaaS then set the director to a not-ready state 
   # so the new one can be deployed
   - task: set-director-not-ready
-    file: automation/lib/inceptor/tasks/toggle-state/task.yml
+    file: inceptor/tasks/toggle-state/task.yml
     params: 
       OFF_STATE: director_ready
       ON_STATE: director_not_ready
@@ -208,7 +208,7 @@ jobs:
   # Save terraform output so it can be referenced
   # by external scripts.
   - task: save-terraform-output
-    file: automation/lib/inceptor/tasks/upload-object/task.yml
+    file: inceptor/tasks/upload-object/task.yml
     params: 
       BUCKET: pcf
       UPLOAD_PATH: terraform-output
@@ -346,7 +346,7 @@ jobs:
   # allow any jobs that depend on the director
   # to be up to proceed.
   - task: set-director-ready
-    file: automation/lib/inceptor/tasks/toggle-state/task.yml
+    file: inceptor/tasks/toggle-state/task.yml
     params: 
       OFF_STATE: director_not_ready
       ON_STATE: director_ready
@@ -357,7 +357,7 @@ jobs:
   # Update product versions determined when release
   # manifest is created
   # - task: save-product-versions
-  #   file: automation/lib/inceptor/tasks/upload-object/task.yml
+  #   file: inceptor/tasks/upload-object/task.yml
   #   input_mapping:
   #     upload_path: deploy-director-job-info
   #   params: 
