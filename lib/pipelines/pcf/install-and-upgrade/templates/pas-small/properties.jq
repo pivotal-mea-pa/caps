@@ -218,8 +218,14 @@ else
 }
 end
 +
+{
+  ".properties.credhub_internal_provider_keys": {
+    "value": []
+  }
+}
+|
 if $credhub_encryption_key_name1 != "" then
-  .".properties.credhub_key_encryption_passwords".value[.".properties.credhub_key_encryption_passwords".value| length] |= . + 
+  .".properties.credhub_internal_provider_keys".value[.".properties.credhub_internal_provider_keys".value| length] |= . + 
   {
     "name": $credhub_encryption_key_name1,
     "primary": ($credhub_encryption_key_name1 == $credhub_primary_encryption_name),
@@ -232,7 +238,7 @@ else
 end
 |
 if $credhub_encryption_key_name2 != "" then
-  .".properties.credhub_key_encryption_passwords".value[.".properties.credhub_key_encryption_passwords".value| length] |= . + 
+  .".properties.credhub_internal_provider_keys".value[.".properties.credhub_internal_provider_keys".value| length] |= . + 
   {
     "name": $credhub_encryption_key_name2,
     "primary": ($credhub_encryption_key_name2 == $credhub_primary_encryption_name),
@@ -245,7 +251,7 @@ else
 end
 |
 if $credhub_encryption_key_name3 != "" then
-  .".properties.credhub_key_encryption_passwords".value[.".properties.credhub_key_encryption_passwords".value| length] |= . + 
+  .".properties.credhub_internal_provider_keys".value[.".properties.credhub_internal_provider_keys".value| length] |= . + 
   {
     "name": $credhub_encryption_key_name3,
     "primary": ($credhub_encryption_key_name3 == $credhub_primary_encryption_name),
