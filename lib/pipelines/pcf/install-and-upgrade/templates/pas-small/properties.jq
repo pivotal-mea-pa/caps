@@ -218,12 +218,6 @@ else
 }
 end
 +
-{
-  ".properties.credhub_key_encryption_passwords": {
-    "value": []
-  }
-}
-|
 if $credhub_encryption_key_name1 != "" then
   .".properties.credhub_key_encryption_passwords".value[.".properties.credhub_key_encryption_passwords".value| length] |= . + 
   {
