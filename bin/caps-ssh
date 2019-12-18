@@ -76,7 +76,7 @@ common::read_terraform_output
 
 if [[ "$name" == "bastion" ]]; then
 
-    ssh_host=$(echo -e "$tf_output" | awk '/bastion_admin_fqdn =/{ print $3 }')
+    ssh_host=$(echo -e "$tf_output" | awk '/bastion_fqdn =/{ print $3 }')
     ssh_key=$workspace_path/bastion-admin-ssh-key.pem
     ssh_user=$TF_VAR_bastion_admin_user
     
