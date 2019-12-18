@@ -64,29 +64,29 @@
 # end
 
 # Configure syslog
-+
-if $tls_syslog_ca_cert != "" then
-{
-    ".properties.syslog_selector.active_with_tls.syslog_address": { "value": $syslog_address },
-    ".properties.syslog_selector.active_with_tls.syslog_port": { "value": $syslog_port },
-    ".properties.syslog_selector.active_with_tls.syslog_transport": { "value": $syslog_transport },
-    ".properties.syslog_selector.active_with_tls.syslog_format": { "value": $syslog_format },
-    ".properties.syslog_selector.active_with_tls.syslog_permitted_peer": { "value": $tls_syslog_permitted_peer },
-    ".properties.syslog_selector.active_with_tls.syslog_ca_cert": { "value": $tls_syslog_ca_cert }
-}
-else 
+# +
+# if $tls_syslog_ca_cert != "" then
+# {
+#     ".properties.syslog_selector.active_with_tls.syslog_address": { "value": $syslog_address },
+#     ".properties.syslog_selector.active_with_tls.syslog_port": { "value": $syslog_port },
+#     ".properties.syslog_selector.active_with_tls.syslog_transport": { "value": $syslog_transport },
+#     ".properties.syslog_selector.active_with_tls.syslog_format": { "value": $syslog_format },
+#     ".properties.syslog_selector.active_with_tls.syslog_permitted_peer": { "value": $tls_syslog_permitted_peer },
+#     ".properties.syslog_selector.active_with_tls.syslog_ca_cert": { "value": $tls_syslog_ca_cert }
+# }
+# else 
 
-  if $syslog_address != "" then
-  {
-    ".properties.syslog_selector.active.syslog_address": { "value": $syslog_address },
-    ".properties.syslog_selector.active.syslog_port": { "value": $syslog_port },
-    ".properties.syslog_selector.active.syslog_transport": { "value": $syslog_transport },
-    ".properties.syslog_selector.active.syslog_format": { "value": $syslog_format }
-  }
-  else
-  {
-    ".properties.syslog_selector": { "value": "No" } 
-  }
-  end
+#   if $syslog_address != "" then
+#   {
+#     ".properties.syslog_selector.active.syslog_address": { "value": $syslog_address },
+#     ".properties.syslog_selector.active.syslog_port": { "value": $syslog_port },
+#     ".properties.syslog_selector.active.syslog_transport": { "value": $syslog_transport },
+#     ".properties.syslog_selector.active.syslog_format": { "value": $syslog_format }
+#   }
+#   else
+#   {
+#     ".properties.syslog_selector": { "value": "No" } 
+#   }
+#   end
 
-end
+# end
