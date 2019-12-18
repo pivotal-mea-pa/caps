@@ -15,8 +15,7 @@
     "name": $service_network_name,
   },
   "singleton_availability_zone": {
-    "name": "europe-west1-c",
-    # "name": $singleton_availability_zone,
+    "name": $singleton_availability_zone,
   },
   "other_availability_zones": ($availability_zones | split(",") | map({name: .}))
 }
