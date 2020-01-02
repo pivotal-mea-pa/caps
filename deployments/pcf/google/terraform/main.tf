@@ -1,4 +1,30 @@
 #
+# SSH Keys
+#
+
+locals {
+  ssh_key_file_path = var.ssh_key_file_path == "" ? path.module : var.ssh_key_file_path
+}
+
+resource "local_file" "bastion-ssh-key" {
+  content  = module.bootstrap.bastion_admin_sshkey
+  filename = "${local.ssh_key_file_path}/bastion-admin-ssh-key.pem"
+
+  provisioner "local-exec" {
+    command = "chmod 0600 ${local.ssh_key_file_path}/bastion-admin-ssh-key.pem"
+  }
+}
+
+resource "local_file" "default-ssh-key" {
+  content  = module.bootstrap.default_openssh_private_key
+  filename = "${local.ssh_key_file_path}/default-ssh-key.pem"
+
+  provisioner "local-exec" {
+    command = "chmod 0600 ${local.ssh_key_file_path}/default-ssh-key.pem"
+  }
+}
+
+#
 # Backend state
 #
 terraform {

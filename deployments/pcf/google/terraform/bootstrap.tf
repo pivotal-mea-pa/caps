@@ -44,9 +44,6 @@ module "bootstrap" {
   # name server records of the 'vpc_dns_zone' will be added.
   dns_managed_zone_name = "${var.vpc_parent_dns_zone_name}"
 
-  # Path to save all ssh key files
-  ssh_key_file_path = "${var.ssh_key_file_path == "" ? path.module : var.ssh_key_file_path}"
-
   # Bastion configuration
   bastion_host_name = "${var.bastion_host_name}"
 
